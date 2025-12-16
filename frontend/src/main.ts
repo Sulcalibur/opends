@@ -1,27 +1,27 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
-import { createRouter, createWebHistory } from 'vue-router'
-import { setupPrimeVue } from './plugins/primevue'
-import App from './App.vue'
+import PrimeVue from 'primevue/config'
 
-// PrimeVue CSS
-import 'primeicons/primeicons.css'
-import '@/assets/css/primevue-overrides.css'
+import App from './App.vue'
+import router from './router'
+
+// Import PrimeVue CSS (PrimeVue handles this internally with the config)
+// Import OpenDS design token overrides
+import './assets/css/primevue-overrides.css'
 
 const app = createApp(App)
 
-const router = createRouter({
-  history: createWebHistory(),
-  routes: [
-    {
-      path: '/',
-      name: 'home',
-      component: () => import('@/components/HomePage.vue')
-    }
-  ]
-})
-
-setupPrimeVue(app)
 app.use(createPinia())
 app.use(router)
+app.use(PrimeVue, {
+  theme: {
+    preset: 'aura',
+    options: {
+      darkModeSelector: '.dark',
+      cssLayer: false
+    }
+  },
+  ripple: true
+})
+
 app.mount('#app')
