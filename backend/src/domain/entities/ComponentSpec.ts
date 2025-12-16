@@ -21,8 +21,8 @@ export class ComponentSpec {
   @Column({ type: 'varchar', length: 255, nullable: true })
   variant?: string | null
 
-  @Column({ type: 'jsonb', default: {} })
-  properties!: Record<string, unknown>
+  @Column({ type: 'simple-json' })
+  properties: Record<string, unknown> = {}
 
   @ManyToOne(() => DesignFile, file => file.components, {
     onDelete: 'CASCADE'

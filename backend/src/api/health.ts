@@ -1,4 +1,5 @@
 import type { FastifyPluginAsync } from 'fastify'
+import { dataSource } from '../infrastructure/database/data-source'
 
 export const healthRoutes: FastifyPluginAsync = async (fastify) => {
   fastify.get('/', async () => {
@@ -10,12 +11,23 @@ export const healthRoutes: FastifyPluginAsync = async (fastify) => {
     }
   })
   
-  fastify.get('/ready', async () => {
-    // TODO: Add database connection check
-    return {
-      status: 'ready',
-      database: 'connected', // Placeholder
-      timestamp: new Date().toISOString()
+  fastify.get('/ready', async (_, reply) => {
+    try {
+      const isDbConnected = dataSource.isInitialized
+      const status = isDbConnected ? 'ready' : 'degraded'
+      
+      return {
+        status,
+        database: isDbConnected ? 'connected' : 'disconnected',
+        timestamp: new Date().toISOString()
+      }
+    } catch (error) {
+      return reply.status(503).send({
+        status: 'unhealthy',
+        database: 'error',
+        error: 'Database connection failed',
+        timestamp: new Date().toISOString()
+      })
     }
   })
   

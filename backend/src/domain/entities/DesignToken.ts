@@ -30,7 +30,7 @@ export class DesignToken {
   @Column({ type: 'varchar', length: 32 })
   type!: TokenType
 
-  @Column({ type: 'jsonb' })
+  @Column({ type: 'simple-json' })
   value!: unknown
 
   @ManyToOne(() => DesignFile, file => file.tokens, {

@@ -6,12 +6,11 @@ import { ComponentSpec } from '../../domain/entities/ComponentSpec'
 import { DesignToken } from '../../domain/entities/DesignToken'
 
 export const dataSource = new DataSource({
-  type: 'postgres',
-  url: config.databaseUrl,
-  synchronize: false,
+  type: 'sqlite',
+  database: './opends.db',
+  synchronize: true, // Auto-create tables for development (SQLite doesn't need migrations)
   logging: config.isDevelopment,
-  entities: [DesignFile, ComponentSpec, DesignToken],
-  migrations: ['src/infrastructure/database/migrations/*.ts']
+  entities: [DesignFile, ComponentSpec, DesignToken]
 })
 
 export async function initDataSource() {
