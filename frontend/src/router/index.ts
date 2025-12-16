@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 
-// Import views (to be created)
-const LoginView = { template: '<div class="p-6">Login Page (TODO)</div>' }
-const DashboardView = { template: '<div class="p-6">Dashboard (TODO)</div>' }
-const DesignFilesView = { template: '<div class="p-6">Design Files (TODO)</div>' }
-const ComponentsView = { template: '<div class="p-6">Components (TODO)</div>' }
-const TokensView = { template: '<div class="p-6">Design Tokens (TODO)</div>' }
-const CodegenView = { template: '<div class="p-6">Code Generation (TODO)</div>' }
-const SettingsView = { template: '<div class="p-6">Settings (TODO)</div>' }
+// Import views
+import DashboardView from '../views/DashboardView.vue'
+import LoginView from '../views/LoginView.vue'
+import DesignFilesView from '../views/DesignFilesView.vue'
+import ComponentsView from '../views/ComponentsView.vue'
+import TokensView from '../views/TokensView.vue'
+import CodegenView from '../views/CodegenView.vue'
+import SettingsView from '../views/SettingsView.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -66,10 +66,14 @@ const router = createRouter({
 
 // Navigation guard for authentication
 router.beforeEach((to, _from, next) => {
-  // TODO: Replace with actual auth check
-  const isAuthenticated = true
+  // Check if route requires authentication
+  const requiresAuth = to.meta && (to.meta as any).requiresAuth
   
-  if (to.meta && (to.meta as any).requiresAuth && !isAuthenticated) {
+  // For now, use mock authentication
+  // TODO: Replace with actual auth store check
+  const isAuthenticated = localStorage.getItem('auth_token') !== null
+  
+  if (requiresAuth && !isAuthenticated) {
     next('/login')
   } else if (to.name === 'login' && isAuthenticated) {
     next('/')
