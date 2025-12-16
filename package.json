@@ -1,0 +1,51 @@
+{
+  "name": "opends",
+  "version": "0.1.0",
+  "description": "Open-source, self-hosted design system platform that bridges design tools with development workflows",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:frontend": "npm run dev --workspace=frontend",
+    "dev:backend": "npm run dev --workspace=backend",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces",
+    "lint": "npm run lint --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "husky": "^9.0.11"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  },
+  "keywords": [
+    "design-system",
+    "penpot",
+    "figma",
+    "vue",
+    "react",
+    "svelte",
+    "component-generation",
+    "design-tokens"
+  ],
+  "author": "OpenDS Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opends/opends"
+  },
+  "bugs": {
+    "url": "https://github.com/opends/opends/issues"
+  },
+  "homepage": "https://opends.dev"
+}
