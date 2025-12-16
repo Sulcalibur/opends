@@ -2,12 +2,12 @@
 
 ## Install Dependencies
 ```bash
-npm i
+pnpm i
 ```
 
 ## Run Dev Servers
 ```bash
-npm run dev
+pnpm run dev
 ```
 
 ## Configure Environment

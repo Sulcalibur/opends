@@ -9,13 +9,13 @@
     "backend"
   ],
   "scripts": {
-    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
-    "dev:frontend": "npm run dev --workspace=frontend",
-    "dev:backend": "npm run dev --workspace=backend",
-    "build": "npm run build --workspaces",
-    "test": "npm run test --workspaces",
-    "lint": "npm run lint --workspaces",
-    "typecheck": "npm run typecheck --workspaces",
+    "dev": "concurrently \"pnpm --filter=@opends/backend run dev\" \"pnpm --filter=@opends/frontend run dev\"",
+    "dev:frontend": "pnpm --filter=@opends/frontend run dev",
+    "dev:backend": "pnpm --filter=@opends/backend run dev",
+    "build": "pnpm --filter=@opends/frontend --filter=@opends/backend run build",
+    "test": "pnpm --filter=@opends/frontend --filter=@opends/backend run test",
+    "lint": "pnpm --filter=@opends/frontend --filter=@opends/backend run lint",
+    "typecheck": "pnpm --filter=@opends/frontend --filter=@opends/backend run typecheck",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
     "docker:down": "docker-compose down",
@@ -27,7 +27,7 @@
   },
   "engines": {
     "node": ">=18.0.0",
-    "npm": ">=9.0.0"
+    "pnpm": ">=8.0.0"
   },
   "keywords": [
     "design-system",

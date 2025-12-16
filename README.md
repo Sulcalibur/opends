@@ -4,8 +4,8 @@ OpenDS is an open-source, self-hosted design system platform that bridges design
 
 ## Development
 ```bash
-npm i
-npm run dev
+pnpm i
+pnpm run dev
 ```
 
 ## Workspaces
@@ -13,11 +13,11 @@ npm run dev
 - `backend/` — Fastify API
 
 ## Testing
-- Unit: Vitest (`npm run test`)
-- E2E: Playwright (`npm run e2e` in `frontend/`)
+- Unit: Vitest (`pnpm run test`)
+- E2E: Playwright (`pnpm run e2e` in `frontend/`)
 
 ## Docker
 ```bash
-npm run docker:up
+pnpm run docker:up
 ```
 
