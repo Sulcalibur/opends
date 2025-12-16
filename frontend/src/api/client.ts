@@ -11,6 +11,7 @@ export interface DesignFile {
   id: string
   name: string
   source: 'penpot' | 'figma'
+  url: string
   createdAt: string
   updatedAt: string
 }
@@ -122,6 +123,14 @@ class ApiClient {
   }
 
   // Design Files
+  async createDesignFile(data: { name: string; source: 'penpot' | 'figma'; url: string; apiToken?: string }): Promise<DesignFile> {
+    return this.request<DesignFile>({
+      method: 'POST',
+      url: '/api/design-files',
+      data,
+    })
+  }
+
   async listDesignFiles(): Promise<{ files: DesignFile[] }> {
     return this.request<{ files: DesignFile[] }>({
       method: 'GET',

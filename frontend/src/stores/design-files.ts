@@ -51,6 +51,23 @@ export const useDesignFilesStore = defineStore('design-files', () => {
     }
   }
 
+  async function createFile(data: { name: string; source: 'penpot' | 'figma'; url: string; apiToken?: string }) {
+    try {
+      loading.value = true
+      error.value = null
+      
+      const newFile = await apiClient.createDesignFile(data)
+      files.value.push(newFile)
+      
+      return newFile
+    } catch (err: any) {
+      error.value = err.message || 'Failed to create design file'
+      throw err
+    } finally {
+      loading.value = false
+    }
+  }
+
   function isSyncing(id: string) {
     return syncingFiles.value.has(id)
   }
@@ -70,6 +87,7 @@ export const useDesignFilesStore = defineStore('design-files', () => {
     fetchFiles,
     syncFile,
     getFile,
+    createFile,
     isSyncing,
     clearError,
   }

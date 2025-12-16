@@ -26,10 +26,15 @@
         Design Tokens
       </router-link>
       
-      <router-link to="/codegen" class="nav-item" active-class="active">
+       <router-link to="/codegen" class="nav-item" active-class="active">
         <i class="pi pi-code mr-2" />
         Code Generation
       </router-link>
+      
+      <a v-if="isAuthenticated" href="/documentation" class="nav-item" target="_self">
+        <i class="pi pi-book mr-2" />
+        Documentation
+      </a>
       
       <div class="sidebar-divider" />
       
@@ -60,11 +65,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import Avatar from 'primevue/avatar'
 import ToggleButton from 'primevue/togglebutton'
+import { useAuthStore } from '../stores/auth'
 
+const authStore = useAuthStore()
 const isDarkMode = ref(false)
+
+const isAuthenticated = computed(() => authStore.isAuthenticated)
 
 const toggleTheme = () => {
   if (isDarkMode.value) {

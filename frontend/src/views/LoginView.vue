@@ -1,21 +1,21 @@
 <template>
   <div class="login-view">
-    <div class="flex items-center justify-center min-h-screen bg-surface-50 dark:bg-surface-900">
-      <Card class="w-full max-w-md">
+    <div class="flex align-items-center justify-content-center min-h-screen surface-ground">
+      <Card class="w-full max-w-30rem">
         <template #title>
           <div class="text-center">
-            <h1 class="text-2xl font-bold text-surface-900 dark:text-surface-50">
+            <h1 class="text-2xl font-bold mb-2">
               Welcome to OpenDS
             </h1>
-            <p class="text-surface-600 dark:text-surface-400 mt-2">
+            <p class="text-color-secondary">
               Sign in to your account
             </p>
           </div>
         </template>
         <template #content>
-          <div class="space-y-4">
+          <div class="flex flex-column gap-4">
             <div class="field">
-              <label for="email" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              <label for="email" class="block mb-2">
                 Email
               </label>
               <InputText 
@@ -28,7 +28,7 @@
             </div>
             
             <div class="field">
-              <label for="password" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+              <label for="password" class="block mb-2">
                 Password
               </label>
               <Password 
@@ -41,21 +41,21 @@
               />
             </div>
             
-            <div class="flex items-center justify-between">
-              <div class="flex items-center">
+            <div class="flex align-items-center justify-content-between">
+              <div class="flex align-items-center">
                 <Checkbox v-model="rememberMe" inputId="remember" binary />
-                <label for="remember" class="ml-2 text-sm text-surface-600 dark:text-surface-400">
+                <label for="remember" class="ml-2">
                   Remember me
                 </label>
               </div>
-              <a href="#" class="text-sm text-primary-600 hover:text-primary-500 dark:text-primary-400">
+              <a href="#" class="text-sm text-primary">
                 Forgot password?
               </a>
             </div>
           </div>
         </template>
         <template #footer>
-          <div class="space-y-4">
+          <div class="flex flex-column gap-3">
             <Button 
               label="Sign In" 
               severity="primary" 
@@ -65,11 +65,11 @@
             />
             
             <div class="text-center">
-              <p class="text-sm text-surface-600 dark:text-surface-400">
+              <p class="text-sm text-color-secondary">
                 Don't have an account? 
                 <a 
                   href="#" 
-                  class="text-primary-600 hover:text-primary-500 dark:text-primary-400 font-medium"
+                  class="text-primary font-medium"
                   @click.prevent="showRegister = true"
                 >
                   Sign up
@@ -88,9 +88,9 @@
       header="Create Account"
       :style="{ width: '450px' }"
     >
-      <div class="space-y-4">
+      <div class="flex flex-column gap-4">
         <div class="field">
-          <label for="register-name" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+          <label for="register-name" class="block mb-2">
             Full Name
           </label>
           <InputText 
@@ -102,7 +102,7 @@
         </div>
         
         <div class="field">
-          <label for="register-email" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+          <label for="register-email" class="block mb-2">
             Email
           </label>
           <InputText 
@@ -115,7 +115,7 @@
         </div>
         
         <div class="field">
-          <label for="register-password" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+          <label for="register-password" class="block mb-2">
             Password
           </label>
           <Password 
@@ -129,7 +129,7 @@
         </div>
         
         <div class="field">
-          <label for="register-confirm" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+          <label for="register-confirm" class="block mb-2">
             Confirm Password
           </label>
           <Password 
@@ -142,15 +142,15 @@
           />
         </div>
         
-        <div class="flex items-center">
+        <div class="flex align-items-center">
           <Checkbox v-model="acceptTerms" inputId="terms" binary />
-          <label for="terms" class="ml-2 text-sm text-surface-600 dark:text-surface-400">
+          <label for="terms" class="ml-2">
             I agree to the 
-            <a href="#" class="text-primary-600 hover:text-primary-500 dark:text-primary-400">
+            <a href="#" class="text-primary">
               Terms of Service
             </a>
             and 
-            <a href="#" class="text-primary-600 hover:text-primary-500 dark:text-primary-400">
+            <a href="#" class="text-primary">
               Privacy Policy
             </a>
           </label>
@@ -158,7 +158,7 @@
       </div>
       
       <template #footer>
-        <div class="flex gap-2 justify-end">
+        <div class="flex gap-2 justify-content-end">
           <Button 
             label="Cancel" 
             severity="secondary" 

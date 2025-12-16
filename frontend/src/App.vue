@@ -30,13 +30,6 @@ const isAuthenticated = ref(true)
 <style>
 #app {
   min-height: 100vh;
-  background: var(--opends-admin-gray-50);
-  color: var(--opends-admin-gray-900);
-}
-
-.dark #app {
-  background: var(--opends-admin-gray-900);
-  color: var(--opends-admin-gray-100);
 }
 
 .auth-layout {
@@ -60,7 +53,6 @@ const isAuthenticated = ref(true)
 
 .app-content {
   flex: 1;
-  padding: 2rem;
   overflow-y: auto;
 }
 </style>

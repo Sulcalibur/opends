@@ -1,28 +1,28 @@
 <template>
-  <div class="dashboard-view">
-    <div class="dashboard-header">
-      <h1 class="text-3xl font-bold text-surface-900 dark:text-surface-50">Dashboard</h1>
-      <p class="text-surface-600 dark:text-surface-400 mt-2">
+  <div class="dashboard-view p-4">
+    <div class="dashboard-header mb-6">
+      <h1 class="text-2xl font-bold mb-2">Dashboard</h1>
+      <p class="text-color-secondary">
         Welcome to your design system management dashboard
       </p>
     </div>
 
-    <div class="dashboard-stats mt-8">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div class="dashboard-stats mb-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <!-- Design Files Card -->
-        <Card class="shadow-sm hover:shadow-md transition-shadow duration-200">
+        <Card>
           <template #title>
-            <div class="flex items-center gap-3">
-              <i class="pi pi-file text-primary-500 text-xl"></i>
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-file text-primary"></i>
               <span>Design Files</span>
             </div>
           </template>
           <template #content>
             <div class="text-center">
-              <div class="text-4xl font-bold text-surface-900 dark:text-surface-50">
+              <div class="text-3xl font-bold mb-2">
                 {{ stats.designFiles }}
               </div>
-              <div class="text-surface-600 dark:text-surface-400 mt-2">
+              <div class="text-color-secondary">
                 Connected design files
               </div>
             </div>
@@ -39,19 +39,19 @@
         </Card>
 
         <!-- Components Card -->
-        <Card class="shadow-sm hover:shadow-md transition-shadow duration-200">
+        <Card>
           <template #title>
-            <div class="flex items-center gap-3">
-              <i class="pi pi-box text-primary-500 text-xl"></i>
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-box text-primary"></i>
               <span>Components</span>
             </div>
           </template>
           <template #content>
             <div class="text-center">
-              <div class="text-4xl font-bold text-surface-900 dark:text-surface-50">
+              <div class="text-3xl font-bold mb-2">
                 {{ stats.components }}
               </div>
-              <div class="text-surface-600 dark:text-surface-400 mt-2">
+              <div class="text-color-secondary">
                 Design system components
               </div>
             </div>
@@ -68,19 +68,19 @@
         </Card>
 
         <!-- Design Tokens Card -->
-        <Card class="shadow-sm hover:shadow-md transition-shadow duration-200">
+        <Card>
           <template #title>
-            <div class="flex items-center gap-3">
-              <i class="pi pi-palette text-primary-500 text-xl"></i>
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-palette text-primary"></i>
               <span>Design Tokens</span>
             </div>
           </template>
           <template #content>
             <div class="text-center">
-              <div class="text-4xl font-bold text-surface-900 dark:text-surface-50">
+              <div class="text-3xl font-bold mb-2">
                 {{ stats.designTokens }}
               </div>
-              <div class="text-surface-600 dark:text-surface-400 mt-2">
+              <div class="text-color-secondary">
                 Color, spacing, typography tokens
               </div>
             </div>
@@ -97,25 +97,25 @@
         </Card>
 
         <!-- Recent Syncs Card -->
-        <Card class="shadow-sm hover:shadow-md transition-shadow duration-200">
+        <Card>
           <template #title>
-            <div class="flex items-center gap-3">
-              <i class="pi pi-sync text-primary-500 text-xl"></i>
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-sync text-primary"></i>
               <span>Recent Syncs</span>
             </div>
           </template>
           <template #content>
             <div class="text-center">
-              <div class="text-4xl font-bold text-surface-900 dark:text-surface-50">
+              <div class="text-3xl font-bold mb-2">
                 {{ stats.recentSyncs }}
               </div>
-              <div class="text-surface-600 dark:text-surface-400 mt-2">
+              <div class="text-color-secondary">
                 Last 24 hours
               </div>
             </div>
           </template>
           <template #footer>
-            <div class="text-sm text-surface-500 dark:text-surface-400">
+            <div class="text-sm text-color-secondary">
               Last sync: {{ lastSyncFormatted }}
             </div>
           </template>
@@ -124,36 +124,36 @@
     </div>
 
     <!-- Quick Actions -->
-    <div class="dashboard-actions mt-8">
+    <div class="dashboard-actions mb-6">
       <Card>
         <template #title>
-          <div class="flex items-center gap-3">
-            <i class="pi pi-bolt text-primary-500"></i>
+          <div class="flex align-items-center gap-2">
+            <i class="pi pi-bolt text-primary"></i>
             <span>Quick Actions</span>
           </div>
         </template>
         <template #content>
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="flex flex-column md:flex-row gap-3">
             <Button 
               label="Add Design File" 
               icon="pi pi-plus" 
               severity="primary"
               @click="$router.push('/design-files')"
-              class="w-full"
+              class="flex-1"
             />
             <Button 
               label="Generate Code" 
               icon="pi pi-code" 
               severity="secondary"
               @click="$router.push('/codegen')"
-              class="w-full"
+              class="flex-1"
             />
             <Button 
               label="View Documentation" 
               icon="pi pi-book" 
               severity="help"
               @click="openDocs"
-              class="w-full"
+              class="flex-1"
             />
           </div>
         </template>
@@ -161,12 +161,12 @@
     </div>
 
     <!-- Recent Activity -->
-    <div class="dashboard-activity mt-8">
+    <div class="dashboard-activity">
       <Card>
         <template #title>
-          <div class="flex items-center justify-between">
-            <div class="flex items-center gap-3">
-              <i class="pi pi-history text-primary-500"></i>
+          <div class="flex align-items-center justify-content-between">
+            <div class="flex align-items-center gap-2">
+              <i class="pi pi-history text-primary"></i>
               <span>Recent Activity</span>
             </div>
             <Button 
@@ -178,31 +178,31 @@
           </div>
         </template>
         <template #content>
-          <div v-if="loading" class="text-center py-8">
+          <div v-if="loading" class="text-center py-4">
             <ProgressSpinner />
           </div>
-          <div v-else-if="recentActivity.length === 0" class="text-center py-8 text-surface-500 dark:text-surface-400">
-            <i class="pi pi-inbox text-4xl mb-4"></i>
+          <div v-else-if="recentActivity.length === 0" class="text-center py-4 text-color-secondary">
+            <i class="pi pi-inbox text-3xl mb-3"></i>
             <p>No recent activity</p>
           </div>
-          <div v-else class="space-y-4">
+          <div v-else class="flex flex-column gap-3">
             <div 
               v-for="activity in recentActivity" 
               :key="activity.id"
-              class="activity-item flex items-center gap-4 p-4 rounded-lg border border-surface-200 dark:border-surface-700 hover:bg-surface-50 dark:hover:bg-surface-800 transition-colors"
+              class="activity-item flex align-items-center gap-3 p-3 border-round surface-border border-1 hover:surface-hover transition-all transition-duration-200"
             >
               <div class="activity-icon">
                 <i :class="[activity.icon, activity.iconColor]" class="text-xl"></i>
               </div>
               <div class="activity-content flex-1">
-                <div class="font-medium text-surface-900 dark:text-surface-50">
+                <div class="font-medium">
                   {{ activity.title }}
                 </div>
-                <div class="text-sm text-surface-600 dark:text-surface-400">
+                <div class="text-sm text-color-secondary">
                   {{ activity.description }}
                 </div>
               </div>
-              <div class="activity-time text-sm text-surface-500 dark:text-surface-400">
+              <div class="activity-time text-sm text-color-secondary">
                 {{ activity.time }}
               </div>
             </div>

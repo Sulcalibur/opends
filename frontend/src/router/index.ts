@@ -9,6 +9,7 @@ import ComponentsView from '../views/ComponentsView.vue'
 import TokensView from '../views/TokensView.vue'
 import CodegenView from '../views/CodegenView.vue'
 import SettingsView from '../views/SettingsView.vue'
+import ConnectionsPage from '../pages/ConnectionsPage.vue'
 
 const routes: RouteRecordRaw[] = [
   {
@@ -51,6 +52,12 @@ const routes: RouteRecordRaw[] = [
     path: '/settings',
     name: 'settings',
     component: SettingsView,
+    meta: { requiresAuth: true }
+  },
+  {
+    path: '/connections',
+    name: 'connections',
+    component: ConnectionsPage,
     meta: { requiresAuth: true }
   },
   {

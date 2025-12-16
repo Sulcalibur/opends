@@ -4,9 +4,12 @@ import helmet from '@fastify/helmet'
 import rateLimit from '@fastify/rate-limit'
 import swagger from '@fastify/swagger'
 import swaggerUi from '@fastify/swagger-ui'
+import fastifyStatic from '@fastify/static'
 import { config } from './config'
 import { healthRoutes } from './api/health'
 import { designFileRoutes } from './api/design-files'
+import { authRoutes } from './api/auth'
+import { pluginRoutes } from './api/plugin'
 
 const fastify = Fastify({
   logger: {
@@ -56,10 +59,23 @@ async function main() {
       deepLinking: false
     }
   })
+
+  // Serve documentation static files
+  await fastify.register(fastifyStatic, {
+    root: `${process.cwd()}/static/documentation`,
+    prefix: '/documentation',
+    decorateReply: false
+  })
   
+  // Log documentation availability
+  fastify.log.info(`Documentation available at http://${config.host}:${config.port}/documentation`)
+
   // Register routes
   await fastify.register(healthRoutes, { prefix: '/api/health' })
   await fastify.register(designFileRoutes, { prefix: '/api/design-files' })
+  await fastify.register(authRoutes, { prefix: '/api/auth' })
+  await fastify.register(pluginRoutes, { prefix: '/api/plugin' })
+  await fastify.register((await import('./api/files')).filesRoutes, { prefix: '/api/files' })
   
   // Start server
   try {

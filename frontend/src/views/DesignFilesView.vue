@@ -1,10 +1,10 @@
 <template>
-  <div class="design-files-view">
-    <div class="view-header">
-      <div class="flex items-center justify-between">
+  <div class="design-files-view p-4">
+    <div class="view-header mb-6">
+      <div class="flex align-items-center justify-content-between">
         <div>
-          <h1 class="text-3xl font-bold text-surface-900 dark:text-surface-50">Design Files</h1>
-          <p class="text-surface-600 dark:text-surface-400 mt-2">
+          <h1 class="text-2xl font-bold mb-2">Design Files</h1>
+          <p class="text-color-secondary">
             Connect and manage your design files from Penpot or Figma
           </p>
         </div>
@@ -17,22 +17,22 @@
       </div>
     </div>
 
-    <div class="view-content mt-8">
+    <div class="view-content">
       <Card>
         <template #title>
-          <div class="flex items-center gap-3">
-            <i class="pi pi-file text-primary-500"></i>
+          <div class="flex align-items-center gap-2">
+            <i class="pi pi-file text-primary"></i>
             <span>Connected Design Files</span>
           </div>
         </template>
         <template #content>
-          <div v-if="loading" class="text-center py-8">
+          <div v-if="loading" class="text-center py-4">
             <ProgressSpinner />
           </div>
-          <div v-else-if="designFiles.length === 0" class="text-center py-8 text-surface-500 dark:text-surface-400">
-            <i class="pi pi-inbox text-4xl mb-4"></i>
-            <p class="text-lg mb-2">No design files connected</p>
-            <p class="text-sm mb-6">Connect your first design file to get started</p>
+          <div v-else-if="designFiles.length === 0" class="text-center py-4 text-color-secondary">
+            <i class="pi pi-inbox text-3xl mb-3"></i>
+            <p class="mb-2">No design files connected</p>
+            <p class="text-sm mb-4">Connect your first design file to get started</p>
             <Button 
               label="Add Design File" 
               icon="pi pi-plus" 
@@ -40,11 +40,11 @@
               @click="showAddDialog = true"
             />
           </div>
-          <div v-else class="space-y-4">
+          <div v-else>
             <DataTable :value="designFiles" class="p-datatable-sm">
               <Column field="name" header="Name" sortable>
                 <template #body="{ data }">
-                  <div class="flex items-center gap-3">
+                  <div class="flex align-items-center gap-2">
                     <i :class="getSourceIcon(data.source)" class="text-xl"></i>
                     <span>{{ data.name }}</span>
                   </div>
@@ -68,14 +68,14 @@
               <Column header="Actions">
                 <template #body="{ data }">
                   <div class="flex gap-2">
-                    <Button 
-                      icon="pi pi-sync" 
-                      severity="secondary" 
-                      size="small"
-                      :loading="syncingFile === data.id"
-                      @click="syncDesignFile(data.id)"
-                      v-tooltip="'Sync from source'"
-                    />
+                     <Button 
+                       icon="pi pi-sync" 
+                       severity="secondary" 
+                       size="small"
+                       :loading="designFilesStore.isSyncing(data.id)"
+                       @click="syncDesignFile(data.id)"
+                       v-tooltip="'Sync from source'"
+                     />
                     <Button 
                       icon="pi pi-eye" 
                       severity="secondary" 
@@ -106,47 +106,47 @@
       header="Add Design File"
       :style="{ width: '500px' }"
     >
-      <div class="space-y-6">
+      <div class="flex flex-column gap-4">
         <div>
-          <label class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+          <label class="block mb-2">
             Design Tool
           </label>
-          <div class="grid grid-cols-2 gap-4">
+          <div class="flex gap-3">
             <div 
               :class="[
-                'p-4 border rounded-lg cursor-pointer transition-all',
+                'p-3 border-round cursor-pointer transition-all flex-1',
                 selectedSource === 'penpot' 
-                  ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' 
-                  : 'border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600'
+                  ? 'border-primary bg-primary-50' 
+                  : 'surface-border border-1 hover:surface-hover'
               ]"
               @click="selectedSource = 'penpot'"
             >
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center">
-                  <i class="pi pi-palette text-purple-600 dark:text-purple-400"></i>
+              <div class="flex align-items-center gap-2">
+                <div class="w-8 h-8 bg-purple-50 border-round flex align-items-center justify-content-center">
+                  <i class="pi pi-palette text-purple-500"></i>
                 </div>
                 <div>
                   <div class="font-medium">Penpot</div>
-                  <div class="text-sm text-surface-500 dark:text-surface-400">Open source design tool</div>
+                  <div class="text-sm text-color-secondary">Open source design tool</div>
                 </div>
               </div>
             </div>
             <div 
               :class="[
-                'p-4 border rounded-lg cursor-pointer transition-all',
+                'p-3 border-round cursor-pointer transition-all flex-1',
                 selectedSource === 'figma' 
-                  ? 'border-primary-500 bg-primary-50 dark:bg-primary-900/20' 
-                  : 'border-surface-200 dark:border-surface-700 hover:border-surface-300 dark:hover:border-surface-600'
+                  ? 'border-primary bg-primary-50' 
+                  : 'surface-border border-1 hover:surface-hover'
               ]"
               @click="selectedSource = 'figma'"
             >
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center">
-                  <i class="pi pi-desktop text-blue-600 dark:text-blue-400"></i>
+              <div class="flex align-items-center gap-2">
+                <div class="w-8 h-8 bg-blue-50 border-round flex align-items-center justify-content-center">
+                  <i class="pi pi-desktop text-blue-500"></i>
                 </div>
                 <div>
                   <div class="font-medium">Figma</div>
-                  <div class="text-sm text-surface-500 dark:text-surface-400">Popular design platform</div>
+                  <div class="text-sm text-color-secondary">Popular design platform</div>
                 </div>
               </div>
             </div>
@@ -154,7 +154,7 @@
         </div>
 
         <div class="field">
-          <label for="file-name" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+          <label for="file-name" class="block mb-2">
             File Name
           </label>
           <InputText 
@@ -166,7 +166,7 @@
         </div>
 
         <div class="field">
-          <label for="file-url" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+          <label for="file-url" class="block mb-2">
             File URL or ID
           </label>
           <InputText 
@@ -175,7 +175,7 @@
             :placeholder="selectedSource === 'penpot' ? 'Penpot file URL' : 'Figma file URL'"
             class="w-full"
           />
-          <p class="text-sm text-surface-500 dark:text-surface-400 mt-2">
+          <p class="text-sm text-color-secondary mt-2">
             {{ selectedSource === 'penpot' 
               ? 'Enter the full URL of your Penpot file' 
               : 'Enter the Figma file URL or file ID' 
@@ -184,7 +184,7 @@
         </div>
 
         <div v-if="selectedSource === 'penpot'" class="field">
-          <label for="api-token" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+          <label for="api-token" class="block mb-2">
             Penpot API Token
           </label>
           <Password 
@@ -195,11 +195,11 @@
             placeholder="Enter your API token"
             class="w-full"
           />
-          <p class="text-sm text-surface-500 dark:text-surface-400 mt-2">
+          <p class="text-sm text-color-secondary mt-2">
             <a 
               href="https://help.penpot.app/technical-guide/integrations/#api-token" 
               target="_blank"
-              class="text-primary-600 hover:text-primary-500 dark:text-primary-400"
+              class="text-primary"
             >
               How to get your Penpot API token
             </a>
@@ -207,7 +207,7 @@
         </div>
 
         <div v-if="selectedSource === 'figma'" class="field">
-          <label for="figma-token" class="block text-sm font-medium text-surface-700 dark:text-surface-300 mb-2">
+          <label for="figma-token" class="block mb-2">
             Figma Personal Access Token
           </label>
           <Password 
@@ -218,11 +218,11 @@
             placeholder="Enter your Figma token"
             class="w-full"
           />
-          <p class="text-sm text-surface-500 dark:text-surface-400 mt-2">
+          <p class="text-sm text-color-secondary mt-2">
             <a 
               href="https://www.figma.com/developers/api#access-tokens" 
               target="_blank"
-              class="text-primary-600 hover:text-primary-500 dark:text-primary-400"
+              class="text-primary"
             >
               How to get your Figma access token
             </a>
@@ -231,7 +231,7 @@
       </div>
 
       <template #footer>
-        <div class="flex gap-2 justify-end">
+        <div class="flex gap-2 justify-content-end">
           <Button 
             label="Cancel" 
             severity="secondary" 
@@ -255,12 +255,12 @@
       header="Confirm Delete"
       :style="{ width: '400px' }"
     >
-      <div class="space-y-4">
-        <div class="flex items-center gap-4">
-          <i class="pi pi-exclamation-triangle text-3xl text-red-500"></i>
+      <div class="flex flex-column gap-3">
+        <div class="flex align-items-center gap-3">
+           <i class="pi pi-exclamation-triangle text-2xl text-red-400"></i>
           <div>
             <p class="font-medium">Are you sure you want to delete this design file?</p>
-            <p class="text-surface-600 dark:text-surface-400 mt-1">
+            <p class="text-color-secondary mt-1">
               This will remove "{{ fileToDelete?.name }}" and all associated data.
               This action cannot be undone.
             </p>
@@ -269,7 +269,7 @@
       </div>
 
       <template #footer>
-        <div class="flex gap-2 justify-end">
+        <div class="flex gap-2 justify-content-end">
           <Button 
             label="Cancel" 
             severity="secondary" 
@@ -299,10 +299,12 @@ import Column from 'primevue/column'
 import Tag from 'primevue/tag'
 import ProgressSpinner from 'primevue/progressspinner'
 
-import { apiClient, type DesignFile } from '../api/client'
+import { useDesignFilesStore } from '../stores/design-files'
+import type { DesignFile } from '../api/client'
 
-const loading = ref(true)
-const designFiles = ref<DesignFile[]>([])
+const designFilesStore = useDesignFilesStore()
+const loading = computed(() => designFilesStore.loading)
+const designFiles = computed(() => designFilesStore.files)
 const syncingFile = ref<string | null>(null)
 
 const showAddDialog = ref(false)
@@ -321,7 +323,7 @@ const canConnectFile = computed(() => {
 })
 
 function getSourceIcon(source: 'penpot' | 'figma') {
-  return source === 'penpot' ? 'pi pi-palette text-purple-500' : 'pi pi-desktop text-blue-500'
+  return source === 'penpot' ? 'pi pi-palette text-purple-400' : 'pi pi-desktop text-blue-400'
 }
 
 function getSourceSeverity(source: 'penpot' | 'figma') {
@@ -335,21 +337,16 @@ function formatDate(dateString: string) {
 
 async function loadDesignFiles() {
   try {
-    loading.value = true
-    const response = await apiClient.listDesignFiles()
-    designFiles.value = response.files
+    await designFilesStore.fetchFiles()
   } catch (error) {
     console.error('Failed to load design files:', error)
-  } finally {
-    loading.value = false
   }
 }
 
 async function syncDesignFile(id: string) {
   try {
     syncingFile.value = id
-    await apiClient.syncDesignFile(id)
-    await loadDesignFiles() // Refresh the list
+    await designFilesStore.syncFile(id)
   } catch (error) {
     console.error('Failed to sync design file:', error)
   } finally {
@@ -389,12 +386,12 @@ async function connectDesignFile() {
   
   try {
     connectingFile.value = true
-    // TODO: Implement connect endpoint
-    console.log('Connect design file:', {
+    
+    await designFilesStore.createFile({
       name: newFileName.value,
       source: selectedSource.value,
       url: newFileUrl.value,
-      token: apiToken.value
+      apiToken: apiToken.value || undefined
     })
     
     // Reset form
@@ -402,9 +399,6 @@ async function connectDesignFile() {
     newFileUrl.value = ''
     apiToken.value = ''
     showAddDialog.value = false
-    
-    // Refresh list
-    await loadDesignFiles()
   } catch (error) {
     console.error('Failed to connect design file:', error)
   } finally {

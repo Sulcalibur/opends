@@ -24,6 +24,12 @@ export class ComponentSpec {
   @Column({ type: 'simple-json' })
   properties: Record<string, unknown> = {}
 
+  @Column({ type: 'varchar', length: 255, nullable: true, name: 'external_id' })
+  externalId?: string
+
+  @Column({ type: 'text', nullable: true })
+  description?: string
+
   @ManyToOne(() => DesignFile, file => file.components, {
     onDelete: 'CASCADE'
   })

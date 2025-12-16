@@ -43,10 +43,11 @@ cp frontend/.env.example frontend/.env
 pnpm run dev
 ```
 
-### 5. Access the Application
+ ### 5. Access the Application
 - **Design System App**: http://localhost:3000
 - **Backend API**: http://localhost:3001
 - **API Documentation**: http://localhost:3001/docs
+- **Integrated Documentation**: http://localhost:3001/documentation (accessible from sidebar)
 
 ## Environment Variables
 

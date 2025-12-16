@@ -12,7 +12,9 @@
     "dev": "concurrently \"pnpm --filter=@opends/backend run dev\" \"pnpm --filter=@opends/frontend run dev\"",
     "dev:frontend": "pnpm --filter=@opends/frontend run dev",
     "dev:backend": "pnpm --filter=@opends/backend run dev",
+    "dev:docs": "vitepress dev docs --port 5174",
     "build": "pnpm --filter=@opends/frontend --filter=@opends/backend run build",
+    "docs:build": "vitepress build docs && cp -r docs/.vitepress/dist/* backend/static/documentation/",
     "test": "pnpm --filter=@opends/frontend --filter=@opends/backend run test",
     "lint": "pnpm --filter=@opends/frontend --filter=@opends/backend run lint",
     "typecheck": "pnpm --filter=@opends/frontend --filter=@opends/backend run typecheck",
@@ -23,7 +25,8 @@
   },
   "devDependencies": {
     "concurrently": "^8.2.2",
-    "husky": "^9.0.11"
+    "husky": "^9.0.11",
+    "vitepress": "^1.6.4"
   },
   "engines": {
     "node": ">=18.0.0",
@@ -48,5 +51,8 @@
   "bugs": {
     "url": "https://github.com/opends/opends/issues"
   },
-  "homepage": "https://opends.dev"
+  "homepage": "https://opends.dev",
+  "dependencies": {
+    "sqlite3": "^5.1.7"
+  }
 }

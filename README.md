@@ -90,6 +90,9 @@ pnpm run docker:up
 pnpm run docker:build
 ```
 
+## Simplified Setup
+- See `docs/quickstart.md` for one-command dev, Docker Compose, and Coolify deployment using `deploy/coolify/stack.yml`.
+
 ## Testing
 - **Unit Tests**: Vitest (`pnpm run test`)
 - **E2E Tests**: Playwright (`cd frontend && pnpm run e2e`)
@@ -106,4 +109,3 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for development guidelines.
 ## License
 
 MIT License - see [LICENSE](LICENSE) for details.
-

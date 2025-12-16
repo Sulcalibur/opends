@@ -1,5 +1,6 @@
 /* OpenDS Design Tokens for Admin Interface */
 :root {
+  --font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   /* Primary Colors */
   --opends-admin-primary-50: #eff6ff;
   --opends-admin-primary-100: #dbeafe;
@@ -72,6 +73,10 @@
   --opends-admin-spacing-md: 1rem;
   --opends-admin-spacing-lg: 1.5rem;
   --opends-admin-spacing-xl: 2rem;
+}
+
+html, body, #app, .p-component {
+  font-family: var(--font-family);
 }
 
 /* Dark mode overrides */
