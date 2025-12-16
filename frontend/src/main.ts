@@ -1,7 +1,12 @@
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createRouter, createWebHistory } from 'vue-router'
+import { setupPrimeVue } from './plugins/primevue'
 import App from './App.vue'
+
+// PrimeVue CSS
+import 'primeicons/primeicons.css'
+import '@/assets/css/primevue-overrides.css'
 
 const app = createApp(App)
 
@@ -16,6 +21,7 @@ const router = createRouter({
   ]
 })
 
+setupPrimeVue(app)
 app.use(createPinia())
 app.use(router)
 app.mount('#app')

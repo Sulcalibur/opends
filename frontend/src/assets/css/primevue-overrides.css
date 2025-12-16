@@ -1,0 +1,125 @@
+/* PrimeVue CSS Overrides for OpenDS Admin Interface */
+
+:root {
+  /* OpenDS Admin Interface Design System - Color System */
+  --opends-admin-primary-50: #eff6ff;
+  --opends-admin-primary-100: #dbeafe;
+  --opends-admin-primary-200: #bfdbfe;
+  --opends-admin-primary-300: #93c5fd;
+  --opends-admin-primary-400: #60a5fa;
+  --opends-admin-primary-500: #3b82f6;
+  --opends-admin-primary-600: #2563eb;
+  --opends-admin-primary-700: #1d4ed8;
+  --opends-admin-primary-800: #1e40af;
+  --opends-admin-primary-900: #1e3a8a;
+  --opends-admin-primary-950: #172554;
+  
+  --opends-admin-gray-50: #f9fafb;
+  --opends-admin-gray-100: #f3f4f6;
+  --opends-admin-gray-200: #e5e7eb;
+  --opends-admin-gray-300: #d1d5db;
+  --opends-admin-gray-400: #9ca3af;
+  --opends-admin-gray-500: #6b7280;
+  --opends-admin-gray-600: #4b5563;
+  --opends-admin-gray-700: #374151;
+  --opends-admin-gray-800: #1f2937;
+  --opends-admin-gray-900: #111827;
+  --opends-admin-gray-950: #030712;
+  
+  --opends-admin-success-500: #10b981;
+  --opends-admin-warning-500: #f59e0b;
+  --opends-admin-danger-500: #ef4444;
+  --opends-admin-info-500: #3b82f6;
+  
+  /* OpenDS Admin Interface Design System - Spacing */
+  --opends-admin-spacing-xs: 0.25rem;
+  --opends-admin-spacing-sm: 0.5rem;
+  --opends-admin-spacing-md: 1rem;
+  --opends-admin-spacing-lg: 1.5rem;
+  --opends-admin-spacing-xl: 2rem;
+  --opends-admin-spacing-2xl: 3rem;
+  
+  /* OpenDS Admin Interface Design System - Border Radius */
+  --opends-admin-border-radius-sm: 0.25rem;
+  --opends-admin-border-radius-md: 0.375rem;
+  --opends-admin-border-radius-lg: 0.5rem;
+  --opends-admin-border-radius-xl: 0.75rem;
+  --opends-admin-border-radius-2xl: 1rem;
+  
+  /* OpenDS Admin Interface Design System - Typography */
+  --opends-admin-font-family: system-ui, -apple-system, sans-serif;
+  --opends-admin-font-size-xs: 0.75rem;
+  --opends-admin-font-size-sm: 0.875rem;
+  --opends-admin-font-size-base: 1rem;
+  --opends-admin-font-size-lg: 1.125rem;
+  --opends-admin-font-size-xl: 1.25rem;
+  --opends-admin-font-size-2xl: 1.5rem;
+  --opends-admin-font-size-3xl: 1.875rem;
+  --opends-admin-font-size-4xl: 2.25rem;
+  
+  /* Map OpenDS Admin Design Tokens to PrimeVue CSS Variables */
+  --p-primary-50: var(--opends-admin-primary-50);
+  --p-primary-100: var(--opends-admin-primary-100);
+  --p-primary-200: var(--opends-admin-primary-200);
+  --p-primary-300: var(--opends-admin-primary-300);
+  --p-primary-400: var(--opends-admin-primary-400);
+  --p-primary-500: var(--opends-admin-primary-500);
+  --p-primary-600: var(--opends-admin-primary-600);
+  --p-primary-700: var(--opends-admin-primary-700);
+  --p-primary-800: var(--opends-admin-primary-800);
+  --p-primary-900: var(--opends-admin-primary-900);
+  --p-primary-950: var(--opends-admin-primary-950);
+  
+  --p-surface-0: var(--opends-admin-gray-50);
+  --p-surface-50: var(--opends-admin-gray-100);
+  --p-surface-100: var(--opends-admin-gray-200);
+  --p-surface-200: var(--opends-admin-gray-300);
+  --p-surface-300: var(--opends-admin-gray-400);
+  --p-surface-400: var(--opends-admin-gray-500);
+  --p-surface-500: var(--opends-admin-gray-600);
+  --p-surface-600: var(--opends-admin-gray-700);
+  --p-surface-700: var(--opends-admin-gray-800);
+  --p-surface-800: var(--opends-admin-gray-900);
+  --p-surface-900: var(--opends-admin-gray-950);
+  
+  --p-success-500: var(--opends-admin-success-500);
+  --p-warning-500: var(--opends-admin-warning-500);
+  --p-danger-500: var(--opends-admin-danger-500);
+  --p-info-500: var(--opends-admin-info-500);
+  
+  /* Component-specific overrides */
+  --p-button-border-radius: var(--opends-admin-border-radius-md);
+  --p-input-field-border-radius: var(--opends-admin-border-radius-sm);
+  --p-border-radius: var(--opends-admin-border-radius-md);
+  
+  --p-font-family: var(--opends-admin-font-family);
+  --p-font-size: var(--opends-admin-font-size-base);
+}
+
+/* Dark mode support */
+.dark {
+  /* Invert colors for dark mode */
+  --opends-admin-primary-50: #172554;
+  --opends-admin-primary-100: #1e3a8a;
+  --opends-admin-primary-200: #1e40af;
+  --opends-admin-primary-300: #1d4ed8;
+  --opends-admin-primary-400: #2563eb;
+  --opends-admin-primary-500: #3b82f6;
+  --opends-admin-primary-600: #60a5fa;
+  --opends-admin-primary-700: #93c5fd;
+  --opends-admin-primary-800: #bfdbfe;
+  --opends-admin-primary-900: #dbeafe;
+  --opends-admin-primary-950: #eff6ff;
+  
+  --opends-admin-gray-50: #030712;
+  --opends-admin-gray-100: #111827;
+  --opends-admin-gray-200: #1f2937;
+  --opends-admin-gray-300: #374151;
+  --opends-admin-gray-400: #4b5563;
+  --opends-admin-gray-500: #6b7280;
+  --opends-admin-gray-600: #9ca3af;
+  --opends-admin-gray-700: #d1d5db;
+  --opends-admin-gray-800: #e5e7eb;
+  --opends-admin-gray-900: #f3f4f6;
+  --opends-admin-gray-950: #f9fafb;
+}
