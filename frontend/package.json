@@ -19,7 +19,10 @@
     "vue": "^3.4.0",
     "vue-router": "^4.2.0",
     "pinia": "^2.1.0",
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "primevue": "^4.5.3",
+    "@primevue/themes": "^4.5.3",
+    "primeicons": "^7.0.0"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.0",
