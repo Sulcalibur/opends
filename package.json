@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "Open-source, self-hosted design system platform that bridges design tools with development workflows",
   "private": true,
+  "type": "module",
   "workspaces": [
     "frontend",
     "backend"
@@ -18,7 +19,7 @@
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
     "docker:down": "docker-compose down",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "devDependencies": {
     "concurrently": "^8.2.2",

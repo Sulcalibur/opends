@@ -1,28 +1,32 @@
 // @ts-check
+import eslintPluginVue from 'eslint-plugin-vue'
+import vueParser from 'vue-eslint-parser'
 import tseslint from '@typescript-eslint/eslint-plugin'
 import tsParser from '@typescript-eslint/parser'
 import prettier from 'eslint-config-prettier'
 
-/** @type {import('eslint').Linter.Config[]} */
 export default [
   {
-    files: ['**/*.{ts,tsx,js,jsx}'],
+    files: ['**/*.vue', '**/*.{ts,tsx}'],
     ignores: ['node_modules/**', 'dist/**', 'coverage/**'],
     languageOptions: {
-      parser: tsParser,
+      parser: vueParser,
       parserOptions: {
         ecmaVersion: 'latest',
-        sourceType: 'module'
+        sourceType: 'module',
+        extraFileExtensions: ['.vue'],
+        parser: tsParser
       }
     },
     plugins: {
+      vue: eslintPluginVue,
       '@typescript-eslint': tseslint
     },
     rules: {
       '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
-      '@typescript-eslint/consistent-type-imports': 'error',
-      'no-console': ['warn', { allow: ['warn', 'error'] }],
-      'no-debugger': 'warn'
+      'vue/multi-word-component-names': 'off',
+      'vue/no-mutating-props': 'error',
+      'vue/no-unused-components': 'warn'
     }
   },
   prettier

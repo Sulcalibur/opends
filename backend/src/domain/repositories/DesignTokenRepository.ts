@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm'
+import type { Repository } from 'typeorm'
 import { DesignToken } from '../entities/DesignToken'
 import { dataSource } from '../../infrastructure/database/data-source'
 

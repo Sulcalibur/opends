@@ -10,7 +10,7 @@
     "test": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest --coverage",
-    "lint": "eslint . --ext .js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "lint": "eslint . --fix",
     "typecheck": "tsc --noEmit",
     "format": "prettier --write .",
     "migration:generate": "typeorm migration:generate -d src/infrastructure/database/data-source.ts",

@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm'
+import type { Repository } from 'typeorm'
 import { ComponentSpec } from '../entities/ComponentSpec'
 import { dataSource } from '../../infrastructure/database/data-source'
 
