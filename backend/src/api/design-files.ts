@@ -1,4 +1,4 @@
-import { FastifyPluginAsync } from 'fastify'
+import type { FastifyPluginAsync } from 'fastify'
 import { DesignFileRepository } from '../domain/repositories/DesignFileRepository'
 import { initDataSource } from '../infrastructure/database/data-source'
 
