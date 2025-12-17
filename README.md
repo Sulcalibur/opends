@@ -4,11 +4,15 @@ OpenDS is an open-source, self-hosted design system platform that bridges design
 
 ## ⚠️ Important: This is the Product Repository
 
-**This repository contains the actual OpenDS design system application that users self-host.**
+**This repository contains the complete OpenDS design system platform.**
 
-- **Marketing website**: [opends.dev](https://opends.dev)
-- **Live demo**: Hosted at [demo.opends.dev](https://demo.opends.dev)
-- **Documentation**: Available at [opends.dev/docs](https://opends.dev/docs)
+### **Production Architecture:**
+- **Documentation**: [opends.dev](https://opends.dev) (VitePress, public)
+- **Application**: [app.opends.dev](https://app.opends.dev) (Vue.js dashboard, protected)
+- **API**: [api.opends.dev](https://api.opends.dev) (Fastify backend)
+
+### **For Self-Hosting:**
+Users deploy the full stack (frontend + backend + database) to their own infrastructure.
 
 ## 🚀 One-Click Deployment with Coolify
 
@@ -121,6 +125,48 @@ pnpm run typecheck
 
 # Build for production
 pnpm run build
+```
+
+## 🌐 Production Deployment (opends.dev)
+
+### **Separate Services Architecture:**
+```
+opends.dev (Cloudflare Pages) → Documentation site (public)
+app.opends.dev (Coolify) → Tools dashboard (protected)
+api.opends.dev (Coolify) → Backend API
+```
+
+### **Deployment Steps:**
+
+#### **1. Documentation (opends.dev)**
+```bash
+# Build documentation
+pnpm build:docs
+
+# Output: docs/.vitepress/dist/
+# Deploy to Cloudflare Pages, Vercel, Netlify, etc.
+```
+
+#### **2. Application & API (app.opends.dev + api.opends.dev)**
+```bash
+# Using Coolify (recommended):
+# 1. Connect GitHub repo to Coolify
+# 2. Select deploy/coolify/stack.yml
+# 3. Configure environment variables
+# 4. Deploy!
+
+# Or manually with Docker:
+docker-compose up -d
+```
+
+#### **3. Environment Variables:**
+```env
+# For app.opends.dev
+VITE_API_URL=https://api.opends.dev
+
+# For api.opends.dev  
+CORS_ORIGIN=https://app.opends.dev,https://opends.dev
+PUBLIC_BASE_URL=https://api.opends.dev
 ```
 
 ## 📊 Deployment Comparison

@@ -27,7 +27,25 @@ const fastify = Fastify({
 async function main() {
   // Register plugins
   await fastify.register(cors, {
-    origin: config.corsOrigin,
+    origin: (origin, cb) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return cb(null, true)
+      
+      // List of allowed origins
+      const allowedOrigins = [
+        'http://localhost:3000',
+        'http://localhost:3001',
+        'https://app.opends.dev',
+        'https://opends.dev'
+      ]
+      
+      if (allowedOrigins.includes(origin) || config.corsOrigin.includes(origin)) {
+        return cb(null, true)
+      }
+      
+      // Reject requests from other origins
+      return cb(new Error('Not allowed by CORS'), false)
+    },
     credentials: true
   })
   
@@ -55,21 +73,9 @@ async function main() {
     }
   })
 
-  // Serve documentation static files
-  await fastify.register(fastifyStatic, {
-    root: `${process.cwd()}/static/documentation`,
-    prefix: '/documentation',
-    decorateReply: false,
-    index: ['index.html']
-  })
-  
-  // Add explicit route for documentation root to serve index.html
-  fastify.get('/documentation', async (_request, reply) => {
-    return reply.redirect('/documentation/index.html')
-  })
-  
-  // Log documentation availability
-  fastify.log.info(`Documentation available at http://${config.host}:${config.port}/documentation`)
+  // Documentation is now served separately at opends.dev (Cloudflare Pages)
+  // API documentation (Swagger) is available at /docs
+  fastify.log.info(`API documentation available at http://${config.host}:${config.port}/docs`)
 
   // Apply rate limiting to API routes only
   // Note: Rate limiting is applied globally but documentation is static files

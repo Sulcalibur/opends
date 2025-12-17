@@ -55,7 +55,8 @@ class ApiClient {
   private baseURL: string
 
   constructor() {
-    this.baseURL = import.meta.env['VITE_API_URL'] || 'http://localhost:3001'
+    this.baseURL = import.meta.env['VITE_API_URL'] || 
+      (import.meta.env.PROD ? 'https://api.opends.dev' : 'http://localhost:3001')
     
     this.client = axios.create({
       baseURL: this.baseURL,
