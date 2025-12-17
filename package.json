@@ -12,31 +12,18 @@
     "dev": "concurrently \"pnpm --filter=@opends/backend run dev\" \"pnpm --filter=@opends/frontend run dev\"",
     "dev:frontend": "pnpm --filter=@opends/frontend run dev",
     "dev:backend": "pnpm --filter=@opends/backend run dev",
-    
-    // Documentation (opends.dev)
     "dev:docs": "vitepress dev docs --port 5174",
     "build:docs": "vitepress build docs",
-    
-    // Application (app.opends.dev)
     "build:app": "pnpm --filter=@opends/frontend run build",
-    
-    // API (api.opends.dev) 
     "build:api": "pnpm --filter=@opends/backend run build",
-    
-    // Full builds
     "build": "pnpm --filter=@opends/frontend --filter=@opends/backend run build",
     "build:production": "pnpm build:docs && pnpm build:app && pnpm build:api",
-    
-    // Testing & quality
     "test": "pnpm --filter=@opends/frontend --filter=@opends/backend run test",
     "lint": "pnpm --filter=@opends/frontend --filter=@opends/backend run lint",
     "typecheck": "pnpm --filter=@opends/frontend --filter=@opends/backend run typecheck",
-    
-    // Docker
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
     "docker:down": "docker-compose down",
-    
     "prepare": "husky"
   },
   "devDependencies": {
