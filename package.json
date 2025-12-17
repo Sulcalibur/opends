@@ -1,0 +1,58 @@
+{
+  "name": "opends",
+  "version": "0.1.0",
+  "description": "Open-source, self-hosted design system platform that bridges design tools with development workflows",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "dev": "concurrently \"pnpm --filter=@opends/backend run dev\" \"pnpm --filter=@opends/frontend run dev\"",
+    "dev:frontend": "pnpm --filter=@opends/frontend run dev",
+    "dev:backend": "pnpm --filter=@opends/backend run dev",
+    "dev:docs": "vitepress dev docs --port 5174",
+    "build": "pnpm --filter=@opends/frontend --filter=@opends/backend run build",
+    "docs:build": "vitepress build docs && cp -r docs/.vitepress/dist/* backend/static/documentation/",
+    "test": "pnpm --filter=@opends/frontend --filter=@opends/backend run test",
+    "lint": "pnpm --filter=@opends/frontend --filter=@opends/backend run lint",
+    "typecheck": "pnpm --filter=@opends/frontend --filter=@opends/backend run typecheck",
+    "docker:build": "docker-compose build",
+    "docker:up": "docker-compose up",
+    "docker:down": "docker-compose down",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "husky": "^9.0.11",
+    "vitepress": "^1.6.4"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "pnpm": ">=8.0.0"
+  },
+  "keywords": [
+    "design-system",
+    "penpot",
+    "figma",
+    "vue",
+    "react",
+    "svelte",
+    "component-generation",
+    "design-tokens"
+  ],
+  "author": "OpenDS Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/opends/opends"
+  },
+  "bugs": {
+    "url": "https://github.com/opends/opends/issues"
+  },
+  "homepage": "https://opends.dev",
+  "dependencies": {
+    "sqlite3": "^5.1.7"
+  }
+}
