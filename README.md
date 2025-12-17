@@ -7,9 +7,14 @@ OpenDS is an open-source, self-hosted design system platform that bridges design
 **This repository contains the complete OpenDS design system platform.**
 
 ### **Production Architecture:**
-- **Documentation**: [opends.dev](https://opends.dev) (VitePress, public)
-- **Application**: [app.opends.dev](https://app.opends.dev) (Vue.js dashboard, protected)
-- **API**: [api.opends.dev](https://api.opends.dev) (Fastify backend)
+- **Documentation**: [opends.dev](https://cbe5d64a.opends-docs.pages.dev) (VitePress on Cloudflare Pages)
+- **Application**: [app.opends.dev](https://app.opends.dev) (Vue.js dashboard on Coolify)
+- **API**: [api.opends.dev](https://api.opends.dev) (Fastify backend on Coolify)
+
+### **Current Deployment Status:**
+- ✅ **Documentation**: Deployed to Cloudflare Pages
+- ⏳ **Application + API**: Ready for Coolify deployment
+- 🔧 **DNS Configuration**: Pending domain setup
 
 ### **For Self-Hosting:**
 Users deploy the full stack (frontend + backend + database) to their own infrastructure.
