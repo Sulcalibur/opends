@@ -31,9 +31,10 @@
         Code Generation
       </router-link>
       
-      <a v-if="isAuthenticated" href="/documentation" class="nav-item" target="_self">
+      <a :href="documentationUrl" class="nav-item" target="_blank" rel="noopener noreferrer" title="Open documentation in new tab">
         <i class="pi pi-book mr-2" />
         Documentation
+        <i class="pi pi-external-link ml-2" style="font-size: 0.75rem;" />
       </a>
       
       <div class="sidebar-divider" />
@@ -68,12 +69,13 @@
 import { ref, onMounted, computed } from 'vue'
 import Avatar from 'primevue/avatar'
 import ToggleButton from 'primevue/togglebutton'
-import { useAuthStore } from '../stores/auth'
 
-const authStore = useAuthStore()
 const isDarkMode = ref(false)
 
-const isAuthenticated = computed(() => authStore.isAuthenticated)
+const documentationUrl = computed(() => {
+  const baseUrl = import.meta.env['VITE_API_URL'] || 'http://localhost:3001'
+  return `${baseUrl}/documentation`
+})
 
 const toggleTheme = () => {
   if (isDarkMode.value) {

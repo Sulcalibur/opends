@@ -6,12 +6,41 @@ OpenDS is an open-source, self-hosted design system platform that bridges design
 
 **This repository contains the actual OpenDS design system application that users self-host.**
 
-- **Marketing website**: Separate repository (`opends-marketing`)
-- **Live demo**: Hosted at `demo.opends.dev`
-- **Documentation**: Available on the marketing site
+- **Marketing website**: [opends.dev](https://opends.dev)
+- **Live demo**: Hosted at [demo.opends.dev](https://demo.opends.dev)
+- **Documentation**: Available at [opends.dev/docs](https://opends.dev/docs)
 
-## Quick Start (Self-Hosting)
+## 🚀 One-Click Deployment with Coolify
 
+OpenDS is optimized for easy deployment with [Coolify](https://coolify.io). Deploy your own instance in minutes:
+
+### **Option 1: Deploy to Your Coolify Instance**
+1. **Install Coolify** (self-hosted or use [Coolify Cloud](https://coolify.io))
+2. **Add GitHub repository**: `opends/opends`
+3. **Select "Docker Compose"** as source
+4. **Choose file**: `deploy/coolify/stack.yml`
+5. **Configure environment variables** (see below)
+6. **Click Deploy** 🚀
+
+### **Option 2: Manual Docker Compose**
+```bash
+# Clone repository
+git clone https://github.com/opends/opends.git
+cd opends/deploy/coolify
+
+# Copy environment template
+cp .env.example .env
+# Edit .env with your configuration
+
+# Start with Docker Compose
+docker-compose -f stack.yml up -d
+
+# Access the application
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:3001
+```
+
+### **Option 3: Development Setup**
 ```bash
 # Install dependencies
 pnpm i
@@ -24,7 +53,7 @@ pnpm run dev
 # Backend API: http://localhost:3001
 ```
 
-## Project Structure
+## 🏗️ Project Structure
 
 ```
 opends/ (this repository)
@@ -34,15 +63,22 @@ opends/ (this repository)
 │   │   ├── layouts/   # Application layout components
 │   │   ├── components/# Feature components
 │   │   └── router/    # Vue Router configuration
+│   └── Dockerfile     # Production Docker image
 ├── backend/           # Fastify API backend
 │   ├── src/
 │   │   ├── api/       # REST API endpoints
 │   │   ├── domain/    # Business logic and entities
 │   │   └── infrastructure/ # Database, storage, external services
-└── docs/              # Technical documentation
+│   └── Dockerfile     # Production Docker image
+├── deploy/coolify/    # Coolify deployment configurations
+│   ├── stack.yml      # Development stack (builds from source)
+│   ├── services.yml   # Production stack (uses pre-built images)
+│   └── .env.example   # Environment template
+├── docs/              # Technical documentation
+└── docker-compose.yml # Simple development setup
 ```
 
-## Features
+## ✨ Features
 
 ### Design System Application
 - **Design File Management**: Connect to Penpot, sync design files
@@ -58,7 +94,14 @@ opends/ (this repository)
 - **Queue System**: BullMQ for background processing
 - **External Integrations**: Penpot API integration
 
-## Development
+### Deployment & Operations
+- **Coolify Optimized**: One-click deployment with Coolify
+- **Docker Ready**: Production-ready Docker images
+- **Health Monitoring**: Built-in health checks for all services
+- **Auto-scaling**: Ready for horizontal scaling
+- **Backup Ready**: Database volume persistence
+
+## 🛠️ Development
 
 ```bash
 # Install all dependencies
@@ -80,18 +123,123 @@ pnpm run typecheck
 pnpm run build
 ```
 
-## Docker Deployment
+## 📊 Deployment Comparison
 
+| Method | Best For | Complexity | Features |
+|--------|----------|------------|----------|
+| **Coolify** | Production teams, easy updates | ⭐⭐ | Auto-SSL, backups, monitoring, team access |
+| **Docker Compose** | Single server, full control | ⭐⭐⭐ | Full stack, persistent data, health checks |
+| **Development** | Local development, testing | ⭐ | Hot reload, easy debugging |
+
+## 🔧 Troubleshooting
+
+### **Coolify Deployment Issues**
+1. **"Build failed"**: Check Docker build logs in Coolify
+2. **"Database connection failed"**: Verify PostgreSQL is running and credentials are correct
+3. **"CORS errors"**: Update `CORS_ORIGIN` to match your domain
+4. **"Health check failed"**: Services may need more time to start (wait 30-60 seconds)
+
+### **Common Solutions**
 ```bash
-# Start with Docker Compose
-pnpm run docker:up
+# Reset and rebuild
+docker-compose -f deploy/coolify/stack.yml down
+docker-compose -f deploy/coolify/stack.yml up --build -d
 
-# Build Docker images
-pnpm run docker:build
+# Check service status
+docker-compose -f deploy/coolify/stack.yml ps
+
+# View logs
+docker-compose -f deploy/coolify/stack.yml logs -f backend
 ```
 
-## Simplified Setup
-- See `docs/quickstart.md` for one-command dev, Docker Compose, and Coolify deployment using `deploy/coolify/stack.yml`.
+### **Port Conflicts**
+If ports 3000 or 3001 are already in use:
+```yaml
+# In deploy/coolify/stack.yml, change:
+frontend:
+  ports:
+    - "8080:80"  # Change 3000 to 8080
+
+backend:
+  ports:
+    - "8081:3001"  # Change 3001 to 8081
+```
+
+## 📋 Environment Configuration
+
+### **Required Environment Variables**
+```env
+# Security (generate strong random strings)
+JWT_SECRET=your-32-character-secret-key-here
+TOKEN_ENC_KEY=your-32-character-encryption-key-here
+
+# Database (auto-configured in Coolify)
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=secure-password
+POSTGRES_DB=opends
+
+# CORS (set to your domain)
+CORS_ORIGIN=https://your-domain.com
+```
+
+### **Optional Integrations**
+```env
+# Figma OAuth (for Figma integration)
+FIGMA_CLIENT_ID=your-figma-client-id
+FIGMA_CLIENT_SECRET=your-figma-client-secret
+FIGMA_REDIRECT_URI=https://your-domain.com/api/auth/figma/callback
+
+# Penpot OAuth (for Penpot integration)
+PENPOT_CLIENT_ID=your-penpot-client-id
+PENPOT_CLIENT_SECRET=your-penpot-client-secret
+PENPOT_REDIRECT_URI=https://your-domain.com/api/auth/penpot/callback
+```
+
+## 🐳 Docker Deployment
+
+### **Quick Start (Simplified)**
+```bash
+# Start with default configuration
+docker-compose up -d
+
+# Access:
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:3001
+# PostgreSQL: localhost:5432
+# Redis: localhost:6379
+```
+
+### **Using Pre-built Images (Production)**
+```bash
+# Use the production stack with pre-built images
+cd deploy/coolify
+docker-compose -f services.yml up -d
+```
+
+### **Building from Source (Development)**
+```bash
+# Build and run from source
+cd deploy/coolify
+docker-compose -f stack.yml up --build -d
+```
+
+### **Docker Commands**
+```bash
+# View logs
+docker-compose logs -f
+
+# Stop services
+docker-compose down
+
+# Rebuild and restart
+docker-compose up --build -d
+
+# Check service status
+docker-compose ps
+
+# View specific service logs
+docker-compose logs -f backend
+```
 
 ## Testing
 - **Unit Tests**: Vitest (`pnpm run test`)
