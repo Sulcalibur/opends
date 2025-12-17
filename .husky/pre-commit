@@ -1,6 +1,4 @@
-#!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
-npm run lint --silent
-npm run typecheck --silent
-
+npm run lint --workspace=@opends/frontend --silent
+npm run lint --workspace=@opends/backend --silent
+npm run typecheck --workspace=@opends/frontend --silent
+npm run typecheck --workspace=@opends/backend --silent
