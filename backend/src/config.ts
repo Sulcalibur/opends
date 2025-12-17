@@ -9,7 +9,7 @@ const envSchema = z.object({
   HOST: z.string().default('0.0.0.0'),
   LOG_LEVEL: z.enum(['fatal', 'error', 'warn', 'info', 'debug', 'trace']).default('info'),
   CORS_ORIGIN: z.string().default('http://localhost:3000'),
-  DATABASE_URL: z.string().default('sqlite://./opends.db'),
+  DATABASE_URL: z.string().default('postgresql://postgres:postgres@localhost:5432/opends'),
   REDIS_URL: z.string().default('redis://localhost:6379'),
   JWT_SECRET: z.string().min(32).default('development-secret-key-change-in-production'),
   PENPOT_API_URL: z.string().default('https://design.penpot.app/api'),
@@ -19,7 +19,8 @@ const envSchema = z.object({
   S3_ACCESS_KEY_ID: z.string().optional(),
   S3_SECRET_ACCESS_KEY: z.string().optional(),
   S3_BUCKET: z.string().default('opends-assets'),
-  S3_FORCE_PATH_STYLE: z.string().transform(val => val === 'true').default('false')
+  S3_FORCE_PATH_STYLE: z.string().transform(val => val === 'true').default('false'),
+  PUBLIC_BASE_URL: z.string().default('http://localhost:3001')
 })
 
 const env = envSchema.parse(process.env)
@@ -41,6 +42,7 @@ export const config = {
   s3SecretAccessKey: env.S3_SECRET_ACCESS_KEY,
   s3Bucket: env.S3_BUCKET,
   s3ForcePathStyle: env.S3_FORCE_PATH_STYLE,
+  publicBaseUrl: env.PUBLIC_BASE_URL,
   isDevelopment: env.NODE_ENV === 'development',
   isProduction: env.NODE_ENV === 'production'
 } as const

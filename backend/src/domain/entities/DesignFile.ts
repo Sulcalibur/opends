@@ -22,6 +22,18 @@ export class DesignFile {
   @Column({ type: 'varchar', length: 16 })
   source!: DesignSource
 
+  @Column({ type: 'varchar', length: 2048, nullable: true })
+  url?: string
+
+  @Column({ type: 'varchar', length: 255, nullable: true, name: 'external_id' })
+  externalId?: string
+
+  @Column({ type: 'text', nullable: true, name: 'api_token' })
+  apiToken?: string
+
+  @Column({ type: 'timestamp', nullable: true, name: 'synced_at' })
+  syncedAt?: Date
+
   @OneToMany(() => ComponentSpec, spec => spec.designFile, { cascade: true })
   components!: ComponentSpec[]
 

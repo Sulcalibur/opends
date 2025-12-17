@@ -33,6 +33,12 @@ export class DesignToken {
   @Column({ type: 'simple-json' })
   value!: unknown
 
+  @Column({ type: 'varchar', length: 255, nullable: true, name: 'external_id' })
+  externalId?: string
+
+  @Column({ type: 'text', nullable: true })
+  description?: string
+
   @ManyToOne(() => DesignFile, file => file.tokens, {
     onDelete: 'CASCADE'
   })

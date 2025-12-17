@@ -98,7 +98,10 @@ export class DesignSyncService {
         try {
           const designToken = new DesignToken()
           designToken.name = penpotToken.name
-          designToken.type = penpotToken.type
+          // Map Penpot token type to our TokenType
+          const tokenType = penpotToken.type === 'typography' ? 'typography' : 
+                           penpotToken.type === 'color' ? 'color' : 'other'
+          designToken.type = tokenType
           designToken.value = penpotToken.value
           designToken.designFile = designFile
 

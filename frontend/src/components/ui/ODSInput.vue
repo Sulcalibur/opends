@@ -1,54 +1,30 @@
 <template>
-  <div class="ods-input-wrapper">
-    <label v-if="label" :for="id" class="ods-input-label">
-      {{ label }}
-      <span v-if="required" class="ods-input-required">*</span>
-    </label>
-    <InputText
-      :id="inputId"
-      v-bind="$attrs"
-      :model-value="modelValue"
-      :class="[customClass, { 'p-invalid': error }]"
-      :aria-invalid="error ? 'true' : 'false'"
-      :aria-describedby="error ? `${inputId}-error` : undefined"
-      @update:model-value="$emit('update:modelValue', $event)"
-      @input="$emit('input', $event)"
-      @change="$emit('change', $event)"
-    />
-    <small v-if="error" :id="`${inputId}-error`" class="ods-input-error">
-      {{ error }}
-    </small>
-    <small v-else-if="hint" class="ods-input-hint">
-      {{ hint }}
-    </small>
+  <div class="ods-input">
+    <label v-if="label" class="ods-input-label">{{ label }}</label>
+    <InputText v-bind="$attrs" :class="{ 'p-invalid': error }">
+      <slot />
+    </InputText>
+    <small v-if="hint && !error" class="ods-input-hint">{{ hint }}</small>
+    <small v-if="error" class="ods-input-error">{{ error }}</small>
   </div>
 </template>
 
 <script setup lang="ts">
 import InputText from 'primevue/inputtext'
-import { computed } from 'vue'
 
-const props = defineProps<{
-  modelValue?: string
+defineProps<{
   label?: string
-  id?: string
-  required?: boolean
-  error?: string
   hint?: string
-  customClass?: string
+  error?: string
 }>()
 
-defineEmits<{
-  'update:modelValue': [value: string]
-  input: [event: Event]
-  change: [event: Event]
-}>()
-
-const inputId = computed(() => props.id || `input-${Math.random().toString(36).substr(2, 9)}`)
+defineOptions({
+  inheritAttrs: false
+})
 </script>
 
 <style scoped>
-.ods-input-wrapper {
+.ods-input {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
@@ -57,20 +33,27 @@ const inputId = computed(() => props.id || `input-${Math.random().toString(36).s
 .ods-input-label {
   font-weight: 500;
   color: var(--opends-admin-gray-700);
-  font-size: 0.875rem;
 }
 
-.ods-input-required {
-  color: var(--opends-admin-danger-500);
-}
-
-.ods-input-error {
-  color: var(--opends-admin-danger-500);
-  font-size: 0.75rem;
+.dark .ods-input-label {
+  color: var(--opends-admin-gray-300);
 }
 
 .ods-input-hint {
   color: var(--opends-admin-gray-500);
-  font-size: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.dark .ods-input-hint {
+  color: var(--opends-admin-gray-400);
+}
+
+.ods-input-error {
+  color: var(--opends-admin-danger-500);
+  font-size: 0.875rem;
+}
+
+.dark .ods-input-error {
+  color: var(--opends-admin-danger-400);
 }
 </style>

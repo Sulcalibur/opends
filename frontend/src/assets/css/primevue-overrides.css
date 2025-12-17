@@ -1,7 +1,7 @@
-/* PrimeVue CSS Overrides for OpenDS Admin Interface */
-
+/* OpenDS Design Tokens for Admin Interface */
 :root {
-  /* OpenDS Admin Interface Design System - Color System */
+  --font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  /* Primary Colors */
   --opends-admin-primary-50: #eff6ff;
   --opends-admin-primary-100: #dbeafe;
   --opends-admin-primary-200: #bfdbfe;
@@ -12,8 +12,44 @@
   --opends-admin-primary-700: #1d4ed8;
   --opends-admin-primary-800: #1e40af;
   --opends-admin-primary-900: #1e3a8a;
-  --opends-admin-primary-950: #172554;
   
+  /* Success Colors */
+  --opends-admin-success-50: #f0fdf4;
+  --opends-admin-success-100: #dcfce7;
+  --opends-admin-success-200: #bbf7d0;
+  --opends-admin-success-300: #86efac;
+  --opends-admin-success-400: #4ade80;
+  --opends-admin-success-500: #22c55e;
+  --opends-admin-success-600: #16a34a;
+  --opends-admin-success-700: #15803d;
+  --opends-admin-success-800: #166534;
+  --opends-admin-success-900: #14532d;
+  
+  /* Warning Colors */
+  --opends-admin-warning-50: #fffbeb;
+  --opends-admin-warning-100: #fef3c7;
+  --opends-admin-warning-200: #fde68a;
+  --opends-admin-warning-300: #fcd34d;
+  --opends-admin-warning-400: #fbbf24;
+  --opends-admin-warning-500: #f59e0b;
+  --opends-admin-warning-600: #d97706;
+  --opends-admin-warning-700: #b45309;
+  --opends-admin-warning-800: #92400e;
+  --opends-admin-warning-900: #78350f;
+  
+  /* Danger Colors */
+  --opends-admin-danger-50: #fef2f2;
+  --opends-admin-danger-100: #fee2e2;
+  --opends-admin-danger-200: #fecaca;
+  --opends-admin-danger-300: #fca5a5;
+  --opends-admin-danger-400: #f87171;
+  --opends-admin-danger-500: #ef4444;
+  --opends-admin-danger-600: #dc2626;
+  --opends-admin-danger-700: #b91c1c;
+  --opends-admin-danger-800: #991b1b;
+  --opends-admin-danger-900: #7f1d1d;
+  
+  /* Gray Colors */
   --opends-admin-gray-50: #f9fafb;
   --opends-admin-gray-100: #f3f4f6;
   --opends-admin-gray-200: #e5e7eb;
@@ -24,102 +60,63 @@
   --opends-admin-gray-700: #374151;
   --opends-admin-gray-800: #1f2937;
   --opends-admin-gray-900: #111827;
-  --opends-admin-gray-950: #030712;
   
-  --opends-admin-success-500: #10b981;
-  --opends-admin-warning-500: #f59e0b;
-  --opends-admin-danger-500: #ef4444;
-  --opends-admin-info-500: #3b82f6;
+  /* Border Radius */
+  --opends-admin-border-radius-sm: 0.25rem;
+  --opends-admin-border-radius-md: 0.375rem;
+  --opends-admin-border-radius-lg: 0.5rem;
+  --opends-admin-border-radius-xl: 0.75rem;
   
-  /* OpenDS Admin Interface Design System - Spacing */
+  /* Spacing */
   --opends-admin-spacing-xs: 0.25rem;
   --opends-admin-spacing-sm: 0.5rem;
   --opends-admin-spacing-md: 1rem;
   --opends-admin-spacing-lg: 1.5rem;
   --opends-admin-spacing-xl: 2rem;
-  --opends-admin-spacing-2xl: 3rem;
-  
-  /* OpenDS Admin Interface Design System - Border Radius */
-  --opends-admin-border-radius-sm: 0.25rem;
-  --opends-admin-border-radius-md: 0.375rem;
-  --opends-admin-border-radius-lg: 0.5rem;
-  --opends-admin-border-radius-xl: 0.75rem;
-  --opends-admin-border-radius-2xl: 1rem;
-  
-  /* OpenDS Admin Interface Design System - Typography */
-  --opends-admin-font-family: system-ui, -apple-system, sans-serif;
-  --opends-admin-font-size-xs: 0.75rem;
-  --opends-admin-font-size-sm: 0.875rem;
-  --opends-admin-font-size-base: 1rem;
-  --opends-admin-font-size-lg: 1.125rem;
-  --opends-admin-font-size-xl: 1.25rem;
-  --opends-admin-font-size-2xl: 1.5rem;
-  --opends-admin-font-size-3xl: 1.875rem;
-  --opends-admin-font-size-4xl: 2.25rem;
-  
-  /* Map OpenDS Admin Design Tokens to PrimeVue CSS Variables */
-  --p-primary-50: var(--opends-admin-primary-50);
-  --p-primary-100: var(--opends-admin-primary-100);
-  --p-primary-200: var(--opends-admin-primary-200);
-  --p-primary-300: var(--opends-admin-primary-300);
-  --p-primary-400: var(--opends-admin-primary-400);
-  --p-primary-500: var(--opends-admin-primary-500);
-  --p-primary-600: var(--opends-admin-primary-600);
-  --p-primary-700: var(--opends-admin-primary-700);
-  --p-primary-800: var(--opends-admin-primary-800);
-  --p-primary-900: var(--opends-admin-primary-900);
-  --p-primary-950: var(--opends-admin-primary-950);
-  
-  --p-surface-0: var(--opends-admin-gray-50);
-  --p-surface-50: var(--opends-admin-gray-100);
-  --p-surface-100: var(--opends-admin-gray-200);
-  --p-surface-200: var(--opends-admin-gray-300);
-  --p-surface-300: var(--opends-admin-gray-400);
-  --p-surface-400: var(--opends-admin-gray-500);
-  --p-surface-500: var(--opends-admin-gray-600);
-  --p-surface-600: var(--opends-admin-gray-700);
-  --p-surface-700: var(--opends-admin-gray-800);
-  --p-surface-800: var(--opends-admin-gray-900);
-  --p-surface-900: var(--opends-admin-gray-950);
-  
-  --p-success-500: var(--opends-admin-success-500);
-  --p-warning-500: var(--opends-admin-warning-500);
-  --p-danger-500: var(--opends-admin-danger-500);
-  --p-info-500: var(--opends-admin-info-500);
-  
-  /* Component-specific overrides */
-  --p-button-border-radius: var(--opends-admin-border-radius-md);
-  --p-input-field-border-radius: var(--opends-admin-border-radius-sm);
-  --p-border-radius: var(--opends-admin-border-radius-md);
-  
-  --p-font-family: var(--opends-admin-font-family);
-  --p-font-size: var(--opends-admin-font-size-base);
 }
 
-/* Dark mode support */
-.dark {
-  /* Invert colors for dark mode */
-  --opends-admin-primary-50: #172554;
-  --opends-admin-primary-100: #1e3a8a;
-  --opends-admin-primary-200: #1e40af;
-  --opends-admin-primary-300: #1d4ed8;
-  --opends-admin-primary-400: #2563eb;
-  --opends-admin-primary-500: #3b82f6;
-  --opends-admin-primary-600: #60a5fa;
-  --opends-admin-primary-700: #93c5fd;
-  --opends-admin-primary-800: #bfdbfe;
-  --opends-admin-primary-900: #dbeafe;
-  --opends-admin-primary-950: #eff6ff;
-  
-  --opends-admin-gray-50: #030712;
-  --opends-admin-gray-100: #111827;
-  --opends-admin-gray-200: #1f2937;
-  --opends-admin-gray-300: #374151;
-  --opends-admin-gray-400: #4b5563;
-  --opends-admin-gray-500: #6b7280;
-  --opends-admin-gray-600: #9ca3af;
-  --opends-admin-gray-700: #d1d5db;
-  --opends-admin-gray-800: #e5e7eb;
-  --opends-admin-gray-900: #f3f4f6;
-  --opends-admin-gray-950: #f9fafb;
+html, body, #app, .p-component {
+  font-family: var(--font-family);
 }
+
+/* Dark mode overrides */
+.dark {
+  --opends-admin-gray-50: #111827;
+  --opends-admin-gray-100: #1f2937;
+  --opends-admin-gray-200: #374151;
+  --opends-admin-gray-300: #4b5563;
+  --opends-admin-gray-400: #6b7280;
+  --opends-admin-gray-500: #9ca3af;
+  --opends-admin-gray-600: #d1d5db;
+  --opends-admin-gray-700: #e5e7eb;
+  --opends-admin-gray-800: #f3f4f6;
+  --opends-admin-gray-900: #f9fafb;
+}
+
+/* Apply tokens to PrimeVue components */
+.p-button {
+  border-radius: var(--opends-admin-border-radius-md);
+}
+
+.p-inputtext {
+  border-radius: var(--opends-admin-border-radius-md);
+}
+
+.p-card {
+  border-radius: var(--opends-admin-border-radius-lg);
+}
+
+/* Utility classes */
+.text-primary { color: var(--opends-admin-primary-500); }
+.text-success { color: var(--opends-admin-success-500); }
+.text-warning { color: var(--opends-admin-warning-500); }
+.text-danger { color: var(--opends-admin-danger-500); }
+.text-info { color: var(--opends-admin-primary-400); }
+.text-muted { color: var(--opends-admin-gray-500); }
+
+.dark .text-primary { color: var(--opends-admin-primary-400); }
+.dark .text-success { color: var(--opends-admin-success-400); }
+.dark .text-warning { color: var(--opends-admin-warning-400); }
+.dark .text-danger { color: var(--opends-admin-danger-400); }
+.dark .text-info { color: var(--opends-admin-primary-300); }
+.dark .text-muted { color: var(--opends-admin-gray-400); }
