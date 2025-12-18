@@ -1,0 +1,70 @@
+colors:
+  primary:
+    value: "#3b82f6"
+    description: "Primary brand color"
+  secondary:
+    value: "#8b5cf6"
+    description: "Secondary brand color"
+  success:
+    value: "#10b981"
+    description: "Success state color"
+  warning:
+    value: "#f59e0b"
+    description: "Warning state color"
+  danger:
+    value: "#ef4444"
+    description: "Error/danger state color"
+
+typography:
+  heading-1:
+    value:
+      fontFamily: "Inter"
+      fontSize: "48px"
+      fontWeight: 700
+      lineHeight: 1.2
+    description: "Main page headings"
+  heading-2:
+    value:
+      fontFamily: "Inter"
+      fontSize: "36px"
+      fontWeight: 600
+      lineHeight: 1.3
+    description: "Section headings"
+  body:
+    value:
+      fontFamily: "Inter"
+      fontSize: "16px"
+      fontWeight: 400
+      lineHeight: 1.6
+    description: "Body text"
+
+spacing:
+  xs:
+    value: "4px"
+    description: "Extra small spacing"
+  sm:
+    value: "8px"
+    description: "Small spacing"
+  md:
+    value: "16px"
+    description: "Medium spacing"
+  lg:
+    value: "24px"
+    description: "Large spacing"
+  xl:
+    value: "32px"
+    description: "Extra large spacing"
+
+radius:
+  sm:
+    value: "4px"
+    description: "Small border radius"
+  md:
+    value: "8px"
+    description: "Medium border radius"
+  lg:
+    value: "12px"
+    description: "Large border radius"
+  full:
+    value: "9999px"
+    description: "Full circle/rounded"

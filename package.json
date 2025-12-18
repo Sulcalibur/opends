@@ -1,48 +1,37 @@
 {
   "name": "opends",
-  "version": "0.1.0",
-  "description": "Open-source, self-hosted design system platform that bridges design tools with development workflows",
+  "version": "0.2.0",
+  "description": "Simple, self-hosted design system documentation tool",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "frontend",
-    "backend"
-  ],
   "scripts": {
-    "dev": "concurrently \"pnpm --filter=@opends/backend run dev\" \"pnpm --filter=@opends/frontend run dev\"",
-    "dev:frontend": "pnpm --filter=@opends/frontend run dev",
-    "dev:backend": "pnpm --filter=@opends/backend run dev",
+    "dev": "cd simplified && pnpm run dev",
     "dev:docs": "vitepress dev docs --port 5174",
     "build:docs": "vitepress build docs",
-    "build:app": "pnpm --filter=@opends/frontend run build",
-    "build:api": "pnpm --filter=@opends/backend run build",
-    "build": "pnpm --filter=@opends/frontend --filter=@opends/backend run build",
-    "build:production": "pnpm build:docs && pnpm build:app && pnpm build:api",
-    "test": "pnpm --filter=@opends/frontend --filter=@opends/backend run test",
-    "lint": "pnpm --filter=@opends/frontend --filter=@opends/backend run lint",
-    "typecheck": "pnpm --filter=@opends/frontend --filter=@opends/backend run typecheck",
+    "build": "cd simplified && pnpm run build",
+    "test": "cd simplified && pnpm run test",
+    "lint": "cd simplified && pnpm run lint",
+    "typecheck": "cd simplified && pnpm run typecheck",
     "docker:build": "docker-compose build",
     "docker:up": "docker-compose up",
     "docker:down": "docker-compose down",
-    "prepare": "husky"
+    "prepare": "husky",
+    "migrate": "cd simplified && node migrate.js",
+    "test-app": "cd simplified && node test-app.js"
   },
   "devDependencies": {
-    "concurrently": "^8.2.2",
     "husky": "^9.0.11",
     "vitepress": "^1.6.4"
   },
   "engines": {
     "node": ">=18.0.0",
-    "pnpm": ">=8.0.0"
+    "npm": ">=8.0.0"
   },
   "keywords": [
     "design-system",
-    "penpot",
-    "figma",
+    "documentation",
     "vue",
-    "react",
-    "svelte",
-    "component-generation",
+    "self-hosted",
     "design-tokens"
   ],
   "author": "OpenDS Contributors",
@@ -54,8 +43,5 @@
   "bugs": {
     "url": "https://github.com/opends/opends/issues"
   },
-  "homepage": "https://opends.dev",
-  "dependencies": {
-    "sqlite3": "^5.1.7"
-  }
+  "homepage": "https://opends.dev"
 }
