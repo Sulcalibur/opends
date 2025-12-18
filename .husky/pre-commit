@@ -1,4 +1,4 @@
-npm run lint --workspace=@opends/frontend --silent
-npm run lint --workspace=@opends/backend --silent
-npm run typecheck --workspace=@opends/frontend --silent
-npm run typecheck --workspace=@opends/backend --silent
+# Run lint and typecheck in simplified directory if it exists
+if [ -d "simplified" ]; then
+  cd simplified && pnpm run lint && pnpm run typecheck
+fi

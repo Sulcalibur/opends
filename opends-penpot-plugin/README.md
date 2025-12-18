@@ -15,8 +15,8 @@ Sync your Penpot design system to the OpenDS platform.
 
 1. **Build the plugin:**
    ```bash
-   npm install
-   npm run build
+    pnpm install
+    pnpm run build
    ```
 
 2. **Install in Penpot:**
@@ -79,8 +79,8 @@ package.json        # Dependencies
 
 ### Building
 ```bash
-npm run build      # Build plugin
-npm run dev        # Watch mode
+pnpm run build      # Build plugin
+pnpm run dev        # Watch mode
 ```
 
 ### Testing
