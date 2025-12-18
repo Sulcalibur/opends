@@ -326,12 +326,61 @@ class OpenDSSyncPlugin {
             button.disabled = false
           }
           
-          async function syncToOpenDS() {
-            const configJson = await penpot.storage.get('opends_config')
-            if (!configJson) {
-              showStatus('Not connected to OpenDS', 'error', 'sync-status')
-              return
-            }
+           async function syncToOpenDS() {
+             const button = document.querySelector('#sync-ui .primary-button')
+             const originalText = button.textContent
+             button.textContent = 'Extracting...'
+             button.disabled = true
+             
+             showStatus('Extracting design system data...', 'info', 'sync-status')
+             
+             try {
+               // Extract data from Penpot
+               const library = penpot.library.local
+               const colors = library.colors || []
+               const components = library.components || []
+               
+               const data = {
+                 version: '1.0',
+                 source: 'penpot',
+                 exportedAt: new Date().toISOString(),
+                 fileName: 'Current Design File',
+                 colors: colors.map(color => ({
+                   name: color.name || `color-${color.id}`,
+                   value: color.value || '#000000',
+                   type: 'color',
+                   description: color.description || ''
+                 })),
+                 components: components.map(component => ({
+                   name: component.name || `Component ${component.id}`,
+                   description: component.description || '',
+                   category: 'penpot'
+                 }))
+               }
+               
+               showStatus(`Extracted ${data.components.length} components, ${data.colors.length} colors`, 'info', 'sync-status')
+               
+               // Create download link
+               const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+               const url = URL.createObjectURL(blob)
+               const a = document.createElement('a')
+               a.href = url
+               a.download = `opends-export-${new Date().toISOString().slice(0, 10)}.json`
+               document.body.appendChild(a)
+               a.click()
+               document.body.removeChild(a)
+               URL.revokeObjectURL(url)
+               
+               await penpot.storage.set('opends_last_export', new Date().toISOString())
+               showStatus(`✅ Exported ${data.components.length} components and ${data.colors.length} colors! Download started.`, 'success', 'sync-status')
+               
+             } catch (error) {
+               showStatus('Export error: ' + error.message, 'error', 'sync-status')
+             }
+             
+             button.textContent = originalText
+             button.disabled = false
+           }
             
             const config = JSON.parse(configJson)
             const button = document.querySelector('#sync-ui .primary-button')

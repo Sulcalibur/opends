@@ -1,0 +1,7 @@
+name: My Design System
+version: 1.0.0
+description: A design system managed by OpenDS
+repository: https://github.com/your-org/design-system
+designTool: penpot
+designFileId: null
+syncFrequency: manual

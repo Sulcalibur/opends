@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  opends:
+    build: .
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_APP_TITLE=OpenDS
+      - VITE_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
+      - VITE_DATABASE_PATH=/app/data/opends.db
+      - VITE_PENPOT_API_URL=${PENPOT_API_URL:-https://design.penpot.app/api}
+    volumes:
+      - opends_data:/app/data
+      - opends_design_data:/app/design-system-data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  opends_data:
+    driver: local
+  opends_design_data:
+    driver: local
