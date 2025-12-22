@@ -10,6 +10,7 @@
     "build:docs": "vitepress build docs",
     "build": "cd simplified && pnpm run build",
     "test": "cd simplified && pnpm run test",
+    "test:simplified": "vitest simplified/src/api/admin/auth.test.ts",
     "lint": "cd simplified && pnpm run lint",
     "typecheck": "cd simplified && pnpm run typecheck",
     "docker:build": "docker-compose build",
@@ -21,7 +22,8 @@
   },
   "devDependencies": {
     "husky": "^9.0.11",
-    "vitepress": "^1.6.4"
+    "vitepress": "^1.6.4",
+    "vitest": "^4.0.16"
   },
   "engines": {
     "node": ">=18.0.0",

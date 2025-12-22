@@ -12,7 +12,7 @@
     "format": "prettier --write .",
     "generate:docs": "node scripts/generate-docs.js",
     "sync:penpot": "node scripts/sync-penpot.js",
-    "sync:figma": "node scripts/sync-figma.js"
+    "test": "../../node_modules/.bin/vitest"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
@@ -25,7 +25,10 @@
     "primevue": "^4.5.3",
     "uuid": "^9.0.0",
     "vue": "^3.4.0",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.0",
+    "express": "^5.2.1",
+    "cors": "^2.8.5",
+    "js-yaml": "^4.1.1"
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.0",
