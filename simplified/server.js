@@ -99,7 +99,7 @@ function mergeTokens(existing, newTokens) {
 
 
 const app = express()
-const PORT = process.env.PORT || 3000
+const PORT = process.env.PORT || 3002
 
 // Middleware
 app.use(cors())
@@ -142,12 +142,12 @@ app.post('/api/plugin/sync', async (req, res) => {
     // Process typographies
     typographies.forEach(typography => {
       tokens.push({
-          name: typography.name || `typography-${typography.id}`,
-          value: typography.value || '16px',
-          type: 'typography',
-          category: 'typography',
-          description: typography.description
-        })
+        name: typography.name || `typography-${typography.id}`,
+        value: typography.value || '16px',
+        type: 'typography',
+        category: 'typography',
+        description: typography.description
+      })
     })
 
     // Save tokens to YAML
@@ -208,7 +208,7 @@ app.post('/api/plugin/sync', async (req, res) => {
 // Simple API key authentication (for MVP)
 const API_KEYS = new Set(['test-api-key', 'opends-simple-key'])
 
-app.use('/api/plugin/*', (req, res, next) => {
+app.use('/api/plugin', (req, res, next) => {
   const authHeader = req.headers.authorization
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({ error: 'Missing API key' })
@@ -222,21 +222,9 @@ app.use('/api/plugin/*', (req, res, next) => {
   next()
 })
 
-// Admin API endpoints
-app.post('/api/admin/login', async (req, res) => {
-  const { username, password } = req.body
-
-  // Simple hardcoded admin for MVP
-  if (username === 'admin' && password === 'admin') {
-    res.json({
-      success: true,
-      token: 'admin-token-mvp',
-      user: { username: 'admin', role: 'admin' }
-    })
-  } else {
-    res.status(401).json({ success: false, error: 'Invalid credentials' })
-  }
-})
+// Admin API Routes
+import authRouter from './src/api/admin/auth.js'
+app.use('/api/admin', authRouter)
 
 app.get('/api/admin/stats', async (_req, res) => {
   try {
@@ -274,6 +262,6 @@ app.listen(PORT, () => {
 })
 
 // Serve Vue SPA for all other routes
-app.get('*', (_req, res) => {
+app.get(/(.*)/, (_req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'))
 })

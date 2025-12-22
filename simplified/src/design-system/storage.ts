@@ -13,6 +13,7 @@ export interface DesignToken {
 export interface ComponentSpec {
   name: string
   description?: string
+  category?: string
   props: any[]
   slots?: any[]
   events?: any[]
@@ -191,19 +192,19 @@ class DesignSystemStorage {
   importFromJSON(json: string): boolean {
     try {
       const data = JSON.parse(json)
-      
+
       if (data.tokens && Array.isArray(data.tokens)) {
         this.saveTokens(data.tokens)
       }
-      
+
       if (data.components && Array.isArray(data.components)) {
         this.saveComponents(data.components)
       }
-      
+
       if (data.config) {
         this.saveConfig(data.config)
       }
-      
+
       return true
     } catch (error) {
       console.error('Error importing from JSON:', error)

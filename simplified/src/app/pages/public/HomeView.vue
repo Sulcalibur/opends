@@ -1,59 +1,59 @@
 <template>
   <div class="home-view">
-    <div class="hero-section">
-      <div class="container">
-        <h1 class="hero-title">OpenDS</h1>
-        <p class="hero-subtitle">Simple, self-hosted design system documentation</p>
-        <p class="hero-description">
+    <div class="hero-section py-32">
+      <div class="container text-center">
+        <h1 class="hero-title mb-6">OpenDS</h1>
+        <p class="hero-subtitle mb-8 text-xl opacity-90">Simple, self-hosted design system documentation</p>
+        <p class="hero-description mx-auto mb-12">
           Connect your design tools, manage tokens and components, and generate beautiful documentation.
         </p>
-        <div class="hero-actions">
-          <Button label="Get Started" severity="primary" @click="goToDocs" />
-          <Button label="View Components" severity="secondary" @click="goToComponents" />
+        <div class="hero-actions flex justify-center gap-4">
+          <Button label="Get Started" severity="primary" size="large" @click="goToDocs" rounded />
+          <Button label="View Components" severity="secondary" size="large" @click="goToComponents" text class="text-white hover:bg-white-alpha-10" />
         </div>
       </div>
     </div>
 
-    <div class="features-section">
+    <div class="features-section py-20 bg-surface-50">
       <div class="container">
-        <h2 class="section-title">Why OpenDS?</h2>
+        <h2 class="section-title text-center mb-12">Why OpenDS?</h2>
         <div class="grid">
-          <div class="col-12 md:col-4">
-            <Card class="feature-card">
+          <div class="col-12 md:col-span-4">
+            <Card class="feature-card h-full shadow-lg border-none">
               <template #title>
-                <div class="flex align-items-center gap-2">
-                  <i class="pi pi-sync text-primary"></i>
-                  <span>Design Tool Integration</span>
+                <div class="flex items-center gap-4 mb-2">
+                  <i class="pi pi-sync text-primary text-2xl"></i>
+                  <span class="font-bold text-xl">Design Tool Integration</span>
                 </div>
               </template>
               <template #content>
-                <p>Connect to Penpot or Figma and sync your design files automatically.</p>
+                <p class="text-lg text-slate-600">Connect to Penpot or Figma and sync your design files automatically.</p>
               </template>
             </Card>
           </div>
-          <div class="col-12 md:col-4">
-            <Card class="feature-card">
+          <div class="col-12 md:col-span-4">
+            <Card class="feature-card h-full shadow-lg border-none">
               <template #title>
-                <div class="flex align-items-center gap-2">
-                  <i class="pi pi-palette text-green-500"></i>
-                  <span>Design Token Management</span>
+                <div class="flex items-center gap-4 mb-2">
+                  <i class="pi pi-palette text-green-500 text-2xl"></i>
+                  <span class="font-bold text-xl">Design Token Management</span>
                 </div>
               </template>
               <template #content>
-                <p>Manage colors, typography, spacing, and other design tokens in one place.</p>
+                <p class="text-lg text-slate-600">Manage colors, typography, spacing, and other design tokens in one place.</p>
               </template>
             </Card>
           </div>
-          <div class="col-12 md:col-4">
-            <Card class="feature-card">
+          <div class="col-12 md:col-span-4">
+            <Card class="feature-card h-full shadow-lg border-none">
               <template #title>
-                <div class="flex align-items-center gap-2">
-                  <i class="pi pi-code text-blue-500"></i>
-                  <span>Component Documentation</span>
+                <div class="flex items-center gap-4 mb-2">
+                  <i class="pi pi-code text-blue-500 text-2xl"></i>
+                  <span class="font-bold text-xl">Component Documentation</span>
                 </div>
               </template>
               <template #content>
-                <p>Generate beautiful documentation for your components with live examples.</p>
+                <p class="text-lg text-slate-600">Generate beautiful documentation for your components with live examples.</p>
               </template>
             </Card>
           </div>
@@ -61,15 +61,15 @@
       </div>
     </div>
 
-    <div class="cta-section">
+    <div class="cta-section py-32 bg-white text-center">
       <div class="container">
-        <h2 class="section-title">Ready to get started?</h2>
-        <p class="cta-description">
+        <h2 class="section-title mb-6">Ready to get started?</h2>
+        <p class="cta-description text-xl mb-12 max-w-2xl mx-auto text-slate-600">
           Deploy your own instance in minutes or try the demo.
         </p>
-        <div class="cta-actions">
-          <Button label="View Demo" severity="primary" outlined />
-          <Button label="Admin Login" severity="secondary" @click="goToLogin" />
+        <div class="cta-actions flex justify-center gap-4">
+          <Button label="View Demo" severity="secondary" size="large" outlined />
+          <Button label="Admin Login" severity="primary" size="large" @click="goToLogin" />
         </div>
       </div>
     </div>
@@ -97,106 +97,20 @@ function goToLogin() {
 </script>
 
 <style scoped>
-.home-view {
-  min-height: 100vh;
-}
-
 .hero-section {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
   color: white;
-  padding: 6rem 2rem;
-  text-align: center;
-}
-
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-.hero-title {
-  font-size: 4rem;
-  font-weight: 800;
-  margin-bottom: 1rem;
-  line-height: 1.1;
-}
-
-.hero-subtitle {
-  font-size: 1.5rem;
-  margin-bottom: 1.5rem;
-  opacity: 0.9;
 }
 
 .hero-description {
-  font-size: 1.125rem;
-  max-width: 600px;
-  margin: 0 auto 2rem;
-  opacity: 0.8;
-  line-height: 1.6;
-}
-
-.hero-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.features-section {
-  padding: 5rem 2rem;
-  background: var(--surface-50);
-}
-
-.section-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 3rem;
-  color: var(--surface-900);
-}
-
-.feature-card {
-  height: 100%;
-  transition: transform 0.2s ease;
-}
-
-.feature-card:hover {
-  transform: translateY(-4px);
-}
-
-.cta-section {
-  padding: 5rem 2rem;
-  text-align: center;
-  background: var(--surface-100);
-}
-
-.cta-description {
+  max-width: 700px;
   font-size: 1.25rem;
-  color: var(--surface-700);
-  margin-bottom: 2rem;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  opacity: 0.8;
 }
 
-.cta-actions {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-@media (max-width: 768px) {
-  .hero-title {
-    font-size: 2.5rem;
-  }
-  
-  .hero-subtitle {
-    font-size: 1.25rem;
-  }
-  
-  .section-title {
-    font-size: 2rem;
-  }
+/* Feature card hover effect */
+.feature-card:hover {
+  transform: translateY(-8px);
+  transition: transform 0.3s ease;
 }
 </style>
