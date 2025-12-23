@@ -14,16 +14,19 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: npm
+          node-version: 20
+          cache: 'pnpm'
+      - name: Enable corepack
+        run: corepack enable
+      - name: Predeploy checks
+        run: pnpm run ci:predeploy
       - name: Install
-        run: npm i
+        run: pnpm install --frozen-lockfile
       - name: Lint
-        run: npm run lint
+        run: pnpm run lint
       - name: Typecheck
-        run: npm run typecheck
+        run: pnpm run typecheck
       - name: Test
-        run: npm run test
+        run: pnpm run test
       - name: Build
-        run: npm run build
-
+        run: pnpm run build

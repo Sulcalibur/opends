@@ -4,6 +4,7 @@
   "description": "Simple, self-hosted design system documentation tool",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.11.1",
   "scripts": {
     "dev": "pnpm --filter opends-simplified run dev",
     "dev:docs": "vitepress dev docs --port 5174",
@@ -18,7 +19,9 @@
     "docker:down": "docker-compose down",
     "prepare": "husky",
     "migrate": "cd simplified && node migrate.js",
-    "test-app": "cd simplified && node test-app.js"
+    "test-app": "cd simplified && node test-app.js",
+    "ci:predeploy": "node scripts/predeploy-checks.mjs",
+    "ci:rollback": "node scripts/cloudflare-rollback.mjs"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^5.0.0",
@@ -34,7 +37,7 @@
     "vue-tsc": "^1.8.0"
   },
   "engines": {
-    "node": ">=18.0.0",
+    "node": ">=20.0.0",
     "npm": ">=8.0.0"
   },
   "keywords": [
