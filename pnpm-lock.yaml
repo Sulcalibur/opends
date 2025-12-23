@@ -35,6 +35,9 @@ importers:
       vitest:
         specifier: ^4.0.16
         version: 4.0.16(@types/node@20.19.27)(jiti@1.21.7)
+      vue:
+        specifier: ^3.4.0
+        version: 3.5.26(typescript@5.3.3)
       vue-tsc:
         specifier: ^1.8.0
         version: 1.8.27(typescript@5.3.3)
