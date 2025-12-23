@@ -12,7 +12,7 @@
     "format": "prettier --write .",
     "generate:docs": "node scripts/generate-docs.js",
     "sync:penpot": "node scripts/sync-penpot.js",
-    "test": "../node_modules/.bin/vitest"
+    "test": "vitest"
   },
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
