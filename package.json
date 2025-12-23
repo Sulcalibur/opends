@@ -9,7 +9,7 @@
     "dev": "pnpm --filter opends-simplified run dev",
     "dev:docs": "vitepress dev docs --port 5174",
     "build:docs": "vitepress build docs",
-    "build": "pnpm --filter opends-simplified run build",
+    "build": "pnpm --filter opends-simplified run build && node scripts/pages-output-sync.mjs",
     "test": "pnpm --filter opends-simplified run test",
     "test:simplified": "vitest simplified/src/api/admin/auth.test.ts",
     "lint": "pnpm --filter opends-simplified run lint",
