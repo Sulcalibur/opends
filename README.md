@@ -1,23 +1,64 @@
 # OpenDS
 
-OpenDS is an open-source, self-hosted design system platform that bridges design tools with development workflows.
+**Open-source, self-hosted alternative to [ZeroHeight](https://zeroheight.com)**
 
-## ⚠️ Important: This is the Product Repository
+Bridge design tools (Penpot, Figma, Sketch) with development workflows. Sync components, manage design tokens, and generate beautiful documentation for your design system.
 
-**This repository contains the complete OpenDS design system platform.**
+---
 
-### **Production Architecture:**
-- **Documentation**: [opends.dev](https://cbe5d64a.opends-docs.pages.dev) (VitePress on Cloudflare Pages)
-- **Application**: [app.opends.dev](https://app.opends.dev) (Vue.js dashboard on Coolify)
-- **API**: [api.opends.dev](https://api.opends.dev) (Fastify backend on Coolify)
+## 🎯 What is OpenDS?
 
-### **Current Deployment Status:**
-- ✅ **Documentation**: Deployed to Cloudflare Pages
-- ⏳ **Application + API**: Ready for Coolify deployment
-- 🔧 **DNS Configuration**: Pending domain setup
+OpenDS is a **two-part system**:
+
+1. **Marketing Site** ([opends.dev](https://cbe5d64a.opends-docs.pages.dev))
+   - Public documentation and guides
+   - Feature showcase and downloads
+   - Community resources
+
+2. **Self-Hosted Application** (you deploy to your infrastructure)
+   - Private design system management
+   - Component library and token editor
+   - Team collaboration with authentication
+   - Admin panel for organization settings
+
+→ See **[Dual Architecture Guide](./DUAL_ARCHITECTURE.md)** for complete details
+
+---
+
+## 📖 Documentation
+
+### **Planning & Strategy**
+- 📋 **[Project Scope](./PROJECT_SCOPE.md)** - Vision, features, and roadmap
+- 📊 **[Product Requirements](./PRODUCT_REQUIREMENTS.md)** - Detailed PRD with user stories
+- ✅ **[Project Status](./PROJECT_STATUS.md)** - Current progress and milestones
+- 🎨 **[Design System Research](./DESIGN_SYSTEM_RESEARCH.md)** - ZeroHeight comparison and patterns
+
+### **Technical Documentation**
+- 🏗️ **[Architecture](./ARCHITECTURE.md)** - System design and tech stack
+- 🔐 **[Dual Architecture](./DUAL_ARCHITECTURE.md)** - Marketing site vs self-hosted app
+- 🎨 **[UI/UX Specification](./UI_UX_SPECIFICATION.md)** - Design patterns and components
+- 💻 **[Developer Guide](./DEVELOPER_GUIDE.md)** - Setup and development workflow
+
+### **Quick Links**
+- 🚀 [Deployment Guide](#-one-click-deployment-with-coolify)
+- 💻 [Development Setup](#-development)
+- 📚 [Full Documentation Site](https://cbe5d64a.opends-docs.pages.dev)
+- 🤝 [Contributing Guidelines](./CONTRIBUTING.md)
+- 📑 [Documentation Index](./DOCUMENTATION_INDEX.md) - All docs organized
+
+---
+
+## ⚠️ Repository Structure
+
+### **This Repository Contains:**
+- `docs/` - Marketing site (VitePress) → Deployed to opends.dev
+- `simplified/` - Self-hosted application (Vue 3) → For users to deploy
+- `opends-penpot-plugin/` - Penpot integration plugin
+- `openspec/` - Technical specifications
+- `deploy/` - Deployment configurations (Docker, Coolify)
 
 ### **For Self-Hosting:**
-Users deploy the full stack (frontend + backend + database) to their own infrastructure.
+Users download and deploy the `simplified/` application to their own infrastructure with full authentication and admin controls.
 
 ## 🚀 One-Click Deployment with Coolify
 
