@@ -12,6 +12,64 @@ class OpenDSSimplePlugin {
     this.penpot = penpot
   }
 
+  private extractComponentSpecs(components: any[]): any[] {
+    return components.map(component => {
+      const spec = {
+        id: component.id,
+        name: component.name || `Component ${component.id}`,
+        properties: {},
+        description: component.description || ''
+      }
+
+      // Extract basic properties from component
+      if (component.shapes && component.shapes.length > 0) {
+        const mainShape = component.shapes[0]
+
+        // Extract size if available
+        if (mainShape.width && mainShape.height) {
+          spec.properties.width = mainShape.width
+          spec.properties.height = mainShape.height
+        }
+
+        // Extract component type based on shape types
+        const shapeTypes = component.shapes.map((shape: any) => shape.type).filter(Boolean)
+        if (shapeTypes.includes('text')) {
+          spec.properties.type = 'text-component'
+        } else if (shapeTypes.includes('path') || shapeTypes.includes('rect')) {
+          spec.properties.type = 'visual-component'
+        } else {
+          spec.properties.type = 'mixed-component'
+        }
+
+        // Extract props from shape data
+        spec.properties.shapeCount = component.shapes.length
+        spec.properties.shapeTypes = [...new Set(shapeTypes)]
+
+        // Extract text content if present
+        const textShapes = component.shapes.filter((shape: any) => shape.type === 'text')
+        if (textShapes.length > 0) {
+          spec.properties.textContent = textShapes.map((shape: any) =>
+            shape.content || shape.text || ''
+          ).join(' ')
+        }
+
+        // Extract colors used
+        const colors = new Set<string>()
+        component.shapes.forEach((shape: any) => {
+          if (shape.fill && shape.fill.color) {
+            colors.add(shape.fill.color)
+          }
+          if (shape.stroke && shape.stroke.color) {
+            colors.add(shape.stroke.color)
+          }
+        })
+        spec.properties.colors = Array.from(colors)
+      }
+
+      return spec
+    })
+  }
+
   async initialize() {
     console.log('OpenDS Simple Export plugin initializing...')
     this.showExportUI()
@@ -194,10 +252,11 @@ class OpenDSSimplePlugin {
                   type: 'color',
                   description: color.description || ''
                 })),
-                components: components.map(component => ({
-                  name: component.name || 'Component ' + component.id,
-                  description: component.description || '',
-                  category: 'penpot'
+                components: this.extractComponentSpecs(components).map(comp => ({
+                  name: comp.name,
+                  description: comp.description || '',
+                  category: 'penpot',
+                  properties: comp.properties
                 }))
               }
               

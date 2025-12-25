@@ -226,6 +226,10 @@ app.use('/api/plugin', (req, res, next) => {
 import authRouter from './src/api/admin/auth.js'
 app.use('/api/admin', authRouter)
 
+// Component API Routes
+import componentsRouter from './src/api/components.js'
+app.use('/api/components', componentsRouter)
+
 app.get('/api/admin/stats', async (_req, res) => {
   try {
     const tokensPath = path.join(__dirname, 'design-system-data', 'tokens.yaml')

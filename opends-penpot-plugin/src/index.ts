@@ -86,6 +86,64 @@ class OpenDSSyncPlugin {
     this.penpot.localStorage.setItem(STORAGE_KEYS.CONFIG, JSON.stringify(config))
   }
 
+  private extractComponentSpecs(components: any[]): Component[] {
+    return components.map(component => {
+      const spec: Component = {
+        id: component.id,
+        name: component.name || `Component ${component.id}`,
+        properties: {},
+        description: component.description || ''
+      }
+
+      // Extract basic properties from component
+      if (component.shapes && component.shapes.length > 0) {
+        const mainShape = component.shapes[0]
+
+        // Extract size if available
+        if (mainShape.width && mainShape.height) {
+          spec.properties.width = mainShape.width
+          spec.properties.height = mainShape.height
+        }
+
+        // Extract component type based on shape types
+        const shapeTypes = component.shapes.map((shape: any) => shape.type).filter(Boolean)
+        if (shapeTypes.includes('text')) {
+          spec.properties.type = 'text-component'
+        } else if (shapeTypes.includes('path') || shapeTypes.includes('rect')) {
+          spec.properties.type = 'visual-component'
+        } else {
+          spec.properties.type = 'mixed-component'
+        }
+
+        // Extract props from shape data
+        spec.properties.shapeCount = component.shapes.length
+        spec.properties.shapeTypes = [...new Set(shapeTypes)]
+
+        // Extract text content if present
+        const textShapes = component.shapes.filter((shape: any) => shape.type === 'text')
+        if (textShapes.length > 0) {
+          spec.properties.textContent = textShapes.map((shape: any) =>
+            shape.content || shape.text || ''
+          ).join(' ')
+        }
+
+        // Extract colors used
+        const colors = new Set<string>()
+        component.shapes.forEach((shape: any) => {
+          if (shape.fill && shape.fill.color) {
+            colors.add(shape.fill.color)
+          }
+          if (shape.stroke && shape.stroke.color) {
+            colors.add(shape.stroke.color)
+          }
+        })
+        spec.properties.colors = Array.from(colors)
+      }
+
+      return spec
+    })
+  }
+
   private showWelcomeUI() {
     const html = `
       <!DOCTYPE html>
@@ -293,15 +351,21 @@ class OpenDSSyncPlugin {
             
             showStatus('Testing connection...', 'info')
             
-            try {
-              // Test connection
-              const response = await fetch(url + '/api/plugin/health', {
-                headers: {
-                  'Authorization': 'Bearer ' + apiKey
-                }
-              })
-              
-              if (response.ok) {
+             try {
+               // Test connection with timeout
+               const controller = new AbortController()
+               const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
+
+               const response = await fetch(url + '/api/plugin/health', {
+                 headers: {
+                   'Authorization': 'Bearer ' + apiKey
+                 },
+                 signal: controller.signal
+               })
+
+               clearTimeout(timeoutId)
+
+               if (response.ok) {
                 // Save configuration
                 await penpot.storage.set('opends_config', JSON.stringify({
                   url,
@@ -318,9 +382,13 @@ class OpenDSSyncPlugin {
               } else {
                 showStatus('Connection failed: ' + response.status, 'error')
               }
-            } catch (error) {
-              showStatus('Connection error: ' + error.message, 'error')
-            }
+             } catch (error) {
+               if (error.name === 'AbortError') {
+                 showStatus('Connection timeout: Please check your URL and try again', 'error')
+               } else {
+                 showStatus('Connection error: ' + error.message, 'error')
+               }
+             }
             
             button.textContent = originalText
             button.disabled = false
@@ -340,23 +408,24 @@ class OpenDSSyncPlugin {
                const colors = library.colors || []
                const components = library.components || []
                
-               const data = {
-                 version: '1.0',
-                 source: 'penpot',
-                 exportedAt: new Date().toISOString(),
-                 fileName: 'Current Design File',
-                 colors: colors.map(color => ({
-                   name: color.name || `color-${color.id}`,
-                   value: color.value || '#000000',
-                   type: 'color',
-                   description: color.description || ''
-                 })),
-                 components: components.map(component => ({
-                   name: component.name || `Component ${component.id}`,
-                   description: component.description || '',
-                   category: 'penpot'
-                 }))
-               }
+                const data = {
+                  version: '1.0',
+                  source: 'penpot',
+                  exportedAt: new Date().toISOString(),
+                  fileName: 'Current Design File',
+                  colors: colors.map(color => ({
+                    name: color.name || `color-${color.id}`,
+                    value: color.value || '#000000',
+                    type: 'color',
+                    description: color.description || ''
+                  })),
+                  components: this.extractComponentSpecs(components).map(comp => ({
+                    name: comp.name,
+                    description: comp.description,
+                    category: 'penpot',
+                    properties: comp.properties
+                  }))
+                }
                
                showStatus(`Extracted ${data.components.length} components, ${data.colors.length} colors`, 'info', 'sync-status')
                
@@ -396,49 +465,69 @@ class OpenDSSyncPlugin {
               const colors = library.colors || []
               const components = library.components || []
               
-              const data = {
-                fileId: 'test-file-id',
-                fileName: 'Current Design File',
-                colors: colors.map(color => ({
-                  id: color.id,
-                  name: color.name,
-                  type: 'color',
-                  value: color.value,
-                  description: color.description
-                })),
-                typographies: [],
-                components: components.map(component => ({
-                  id: component.id,
-                  name: component.name,
-                  properties: {
-                    type: 'component',
-                    shapes: component.shapes?.length || 0
-                  },
-                  description: component.description
-                })),
-                syncedAt: new Date().toISOString()
-              }
+                const data = {
+                  fileId: 'test-file-id',
+                  fileName: 'Current Design File',
+                  colors: colors.map(color => ({
+                    id: color.id,
+                    name: color.name,
+                    type: 'color',
+                    value: color.value,
+                    description: color.description
+                  })),
+                  typographies: [],
+                  components: this.extractComponentSpecs(components),
+                  syncedAt: new Date().toISOString()
+                }
               
               showStatus(\`Sending \${data.components.length} components, \${data.colors.length} colors...\`, 'info', 'sync-status')
               
-              // Send to OpenDS
-              const response = await fetch(config.url + '/api/plugin/sync', {
-                method: 'POST',
-                headers: {
-                  'Authorization': 'Bearer ' + config.apiKey,
-                  'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-              })
-              
-              if (response.ok) {
-                const result = await response.json()
-                await penpot.storage.set('opends_last_sync', new Date().toISOString())
-                showStatus(\`✅ Synced \${result.components} components and \${result.tokens} tokens!\`, 'success', 'sync-status')
-              } else {
-                const error = await response.text()
-                showStatus('Sync failed: ' + error, 'error', 'sync-status')
-              }
+               // Send to OpenDS with retry logic
+               const maxRetries = 3
+               let retryCount = 0
+               let success = false
+               let lastError = ''
+
+               while (retryCount < maxRetries && !success) {
+                 try {
+                   showStatus(\`Sending data to OpenDS (attempt \${retryCount + 1}/\${maxRetries})...\`, 'info', 'sync-status')
+
+                   const response = await fetch(config.url + '/api/plugin/sync', {
+                     method: 'POST',
+                     headers: {
+                       'Authorization': 'Bearer ' + config.apiKey,
+                       'Content-Type': 'application/json'
+                     },
+                     body: JSON.stringify(data)
+                   })
+
+                   if (response.ok) {
+                     const result = await response.json()
+                     await penpot.storage.set('opends_last_sync', new Date().toISOString())
+                     showStatus(\`✅ Synced \${result.components || data.components.length} components and \${result.tokens || data.colors.length} tokens!\`, 'success', 'sync-status')
+                     success = true
+                   } else {
+                     const error = await response.text()
+                     lastError = \`HTTP \${response.status}: \${error}\`
+                     console.error('Sync failed:', lastError)
+                     retryCount++
+                     if (retryCount < maxRetries) {
+                       await new Promise(resolve => setTimeout(resolve, 1000 * retryCount)) // Exponential backoff
+                     }
+                   }
+                 } catch (error) {
+                   lastError = error.message
+                   console.error('Sync error:', error)
+                   retryCount++
+                   if (retryCount < maxRetries) {
+                     await new Promise(resolve => setTimeout(resolve, 1000 * retryCount))
+                   }
+                 }
+               }
+
+               if (!success) {
+                 showStatus(\`Sync failed after \${maxRetries} attempts: \${lastError}\`, 'error', 'sync-status')
+               }
               
             } catch (error) {
               showStatus('Sync error: ' + error.message, 'error', 'sync-status')
