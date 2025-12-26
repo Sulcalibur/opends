@@ -1,0 +1,9 @@
+{{#each components}}
+export { default as {{componentName}} } from './{{componentName}}.svelte'
+{{/each}}
+
+export default {
+  {{#each components}}
+  {{componentName}},
+  {{/each}}
+}

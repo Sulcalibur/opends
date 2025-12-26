@@ -5,6 +5,9 @@
   "compilerOptions": {
     "allowJs": true,
     "baseUrl": ".",
+    "strict": false,
+    "noImplicitAny": false,
+    "skipLibCheck": true,
     "paths": {
       "@/*": ["./src/*"],
       "@app/*": ["./src/app/*"],

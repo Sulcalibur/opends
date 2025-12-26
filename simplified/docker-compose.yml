@@ -1,6 +1,25 @@
 version: '3.8'
 
 services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_DB=opends
+      - POSTGRES_USER=opends
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-opends_password}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U opends -d opends"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # OpenDS Application
   opends:
     build: .
     ports:
@@ -8,11 +27,13 @@ services:
     environment:
       - VITE_APP_TITLE=OpenDS
       - VITE_ADMIN_PASSWORD=${ADMIN_PASSWORD:-admin}
-      - VITE_DATABASE_PATH=/app/data/opends.db
+      - VITE_DATABASE_URL=postgresql://opends:${POSTGRES_PASSWORD:-opends_password}@postgres:5432/opends
       - VITE_PENPOT_API_URL=${PENPOT_API_URL:-https://design.penpot.app/api}
     volumes:
-      - opends_data:/app/data
       - opends_design_data:/app/design-system-data
+    depends_on:
+      postgres:
+        condition: service_healthy
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost/health"]
@@ -21,7 +42,7 @@ services:
       retries: 3
 
 volumes:
-  opends_data:
+  postgres_data:
     driver: local
   opends_design_data:
     driver: local

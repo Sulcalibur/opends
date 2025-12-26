@@ -1,0 +1,66 @@
+import React, { forwardRef{{#if typescript}}, FC{{/if}} } from 'react'
+{{#if styling}}
+import styled from 'styled-components'
+{{/if}}
+
+{{#if typescript}}
+interface {{componentNamePascal}}Props {
+  {{#each props}}
+  {{name}}{{#if required}}?{{/if}}: {{type}}
+  {{/each}}
+  className?: string
+  children?: React.ReactNode
+}
+
+export interface {{componentNamePascal}}Ref {
+  // Add ref properties if needed
+}
+{{/if}}
+
+const {{componentNamePascal}} = forwardRef<{{#if typescript}}{{componentNamePascal}}Ref{{/if}}HTMLElement, {{#if typescript}}{{componentNamePascal}}Props{{/if}}any>(({
+  {{#each props}}
+  {{name}},
+  {{/each}}
+  className,
+  children,
+  ...props
+}, ref) => {
+  return (
+    {{#if styling}}
+    <Styled{{componentNamePascal}}
+      ref={ref}
+      className={className}
+      {{#each props}}
+      {{name}}={{{name}}}
+      {{/each}}
+      {...props}
+    >
+      {children}
+    </Styled{{componentNamePascal}}>
+    {{else}}
+    <div
+      ref={ref}
+      className={`component-{{componentNameKebab}} ${className || ''}`}
+      {{#each props}}
+      data-{{name}}={{{name}}}
+      {{/each}}
+      {...props}
+    >
+      {children}
+    </div>
+    {{/if}}
+  )
+})
+
+{{componentNamePascal}}.displayName = '{{componentNamePascal}}'
+
+{{#if styling}}
+const Styled{{componentNamePascal}} = styled.div`
+  /* Component styles */
+  &.component-{{componentNameKebab}} {
+    /* Add styles here */
+  }
+`
+{{/if}}
+
+export default {{componentNamePascal}}

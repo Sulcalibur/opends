@@ -24,15 +24,35 @@
         Design System
       </div>
 
-      <router-link 
-        to="/tokens" 
-        class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
-        active-class="bg-indigo-50 text-indigo-700"
-        :class="[$route.path.startsWith('/tokens') ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
-      >
-        <i class="pi pi-palette" :class="[$route.path.startsWith('/tokens') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']"></i>
-        Tokens
-      </router-link>
+       <router-link
+         to="/admin/tokens"
+         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
+         active-class="bg-indigo-50 text-indigo-700"
+         :class="[$route.path === '/admin/tokens' ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
+       >
+         <i class="pi pi-palette" :class="[$route.path === '/admin/tokens' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']"></i>
+         Token Editor
+       </router-link>
+
+       <router-link
+         to="/admin/components"
+         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
+         active-class="bg-indigo-50 text-indigo-700"
+         :class="[$route.path === '/admin/components' ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
+       >
+         <i class="pi pi-box" :class="[$route.path === '/admin/components' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']"></i>
+         Component Manager
+       </router-link>
+
+       <router-link
+         to="/admin/codegen"
+         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
+         active-class="bg-indigo-50 text-indigo-700"
+         :class="[$route.path === '/admin/codegen' ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
+       >
+         <i class="pi pi-code" :class="[$route.path === '/admin/codegen' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']"></i>
+         Code Generator
+       </router-link>
 
       <router-link 
         to="/components" 

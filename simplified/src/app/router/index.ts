@@ -10,6 +10,9 @@ const TokensView = () => import('@/app/pages/public/TokensView.vue')
 // Admin routes
 const LoginView = () => import('@/app/pages/admin/LoginView.vue')
 const DashboardView = () => import('@/app/pages/admin/DashboardView.vue')
+const AdminTokensView = () => import('@/app/pages/admin/AdminTokensView.vue')
+const AdminComponentsView = () => import('@/app/pages/admin/AdminComponentsView.vue')
+const AdminCodeGenView = () => import('@/app/pages/admin/AdminCodeGenView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -21,25 +24,17 @@ const router = createRouter({
       component: HomeView,
       meta: { public: true }
     },
+
+    // Documentation routes - simplified
     {
       path: '/docs',
       name: 'docs',
-      component: DocsView,
+      component: {
+        template: '<div class="p-8"><h1 class="text-2xl font-bold">Documentation</h1><p>Coming soon...</p></div>'
+      },
       meta: { public: true }
     },
-    {
-      path: '/components',
-      name: 'components',
-      component: ComponentsView,
-      meta: { public: true }
-    },
-    {
-      path: '/tokens',
-      name: 'tokens',
-      component: TokensView,
-      meta: { public: true }
-    },
-    
+
     // Admin routes
     {
       path: '/login',
@@ -47,7 +42,7 @@ const router = createRouter({
       component: LoginView,
       meta: { public: true }
     },
-    
+
     // Admin dashboard
     {
       path: '/admin',
@@ -55,7 +50,8 @@ const router = createRouter({
       component: DashboardView,
       meta: { requiresAuth: true }
     },
-    
+
+
     // Catch-all redirect
     {
       path: '/:pathMatch(.*)*',
@@ -67,7 +63,7 @@ const router = createRouter({
 // Auth guard
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
-  
+
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
     next('/login')
   } else if (to.meta.public && authStore.isAuthenticated && to.name === 'login') {

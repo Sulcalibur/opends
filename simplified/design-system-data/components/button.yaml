@@ -1,68 +1,28 @@
 name: Button
-description: A clickable button component for user interaction
+description: A versatile button component for actions and links
+category: inputs
+status: stable
 props:
-  - name: variant
+  - name: label
     type: string
-    values:
-      - primary
-      - secondary
-      - outline
-      - text
+    required: true
+    description: Button text
+  - name: severity
+    type: string
     default: primary
-    description: Visual style variant
-    required: false
+    description: Button style (primary, secondary, etc.)
   - name: size
     type: string
-    values:
-      - small
-      - medium
-      - large
     default: medium
-    description: Size of the button
-    required: false
+    description: Button size (small, medium, large)
   - name: disabled
     type: boolean
-    default: false
-    description: Whether the button is disabled
-    required: false
-  - name: loading
-    type: boolean
-    default: false
-    description: Show loading state
-    required: false
-slots:
-  - name: default
-    description: Button content (text or icon)
-  - name: icon
-    description: Icon slot (for icon-only buttons)
-events:
-  - name: click
-    description: Emitted when button is clicked
-    payload: MouseEvent
+    default: 'false'
+    description: Whether button is disabled
 examples:
-  - |
-    <Button variant="primary" size="medium">
-      Click me
-    </Button>
-  - |
-    <Button variant="secondary" size="small" icon="pi pi-check">
-      Save
-    </Button>
-  - |
-    <Button variant="outline" :loading="true">
-      Loading...
-    </Button>
-usage: |
-  Use buttons for actions that trigger an event. Choose the variant
-  based on the importance of the action:
-  
-  - **Primary**: Main action on a page
-  - **Secondary**: Secondary actions
-  - **Outline**: Less prominent actions
-  - **Text**: Minimal visual impact
-  
-  Buttons should have clear, action-oriented labels.
-notes:
-  - Buttons should be at least 44x44px for touch targets
-  - Use aria-label for icon-only buttons
-  - Consider button placement in the visual hierarchy
+  - name: Primary Button
+    code: <Button label="Click me" severity="primary" />
+  - name: Disabled Button
+    code: <Button label="Disabled" severity="secondary" disabled />
+usage: Use for primary actions, form submissions, and navigation.
+notes: Supports icons and loading states.

@@ -2,8 +2,8 @@
   <div class="login-view">
     <div class="login-container">
       <div class="text-center mb-8">
-        <h1 class="text-white text-5xl mb-2">Welcome Back</h1>
-        <p class="text-white opacity-80 text-xl">Sign in to manage your design system</p>
+        <h1 class="text-gray-900 text-5xl mb-2">Welcome Back</h1>
+        <p class="text-gray-700 text-xl">Sign in to manage your design system</p>
       </div>
 
       <Card class="login-card shadow-2xl border-none">
@@ -58,7 +58,7 @@
       </Card>
 
       <div class="login-footer mt-8">
-        <p class="text-white opacity-60 text-center text-sm font-medium">
+        <p class="text-gray-600 text-center text-sm font-medium">
           OpenDS v{{ version }} • Simple, self-hosted design system tool
         </p>
       </div>
@@ -197,7 +197,7 @@ function showHelp() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   padding: 2rem;
 }
 

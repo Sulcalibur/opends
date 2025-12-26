@@ -1,20 +1,17 @@
 <template>
   <div id="app">
-    <Toast />
-    <router-view />
+    <h1>Hello OpenDS</h1>
+    <p>This is a test to see if the app loads.</p>
   </div>
 </template>
 
 <script setup lang="ts">
-import Toast from 'primevue/toast'
+// Temporarily simplified to test if Vite works
 </script>
 
 <style>
 #app {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  min-height: 100vh;
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+  padding: 20px;
 }
 </style>

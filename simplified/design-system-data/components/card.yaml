@@ -1,0 +1,25 @@
+name: Card
+description: Container for grouping related content
+category: layout
+status: stable
+props:
+  - name: title
+    type: string
+    required: false
+    description: Card title
+  - name: subtitle
+    type: string
+    required: false
+    description: Card subtitle
+  - name: elevation
+    type: number
+    default: '1'
+    description: Shadow depth (0-5)
+examples:
+  - name: Basic Card
+    code: |-
+      <Card title="Card Title">
+        <p>Card content goes here</p>
+      </Card>
+usage: Use for grouping related information, product cards, or content sections.
+notes: Supports header and footer slots.

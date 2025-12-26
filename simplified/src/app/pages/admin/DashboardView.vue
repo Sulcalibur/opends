@@ -26,8 +26,7 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <!-- Active Styleguide Card -->
               <div class="bg-white rounded-lg border border-gray-200 shadow-sm hover:shadow-md transition-shadow overflow-hidden group cursor-pointer relative">
-                <div class="h-32 bg-gradient-to-r from-indigo-500 to-purple-500 relative">
-                   <div class="absolute inset-0 bg-black/5 group-hover:bg-transparent transition-colors"></div>
+                 <div class="h-32 bg-gradient-to-r from-indigo-500 to-purple-500 relative">
                    <div class="absolute bottom-4 left-4">
                      <div class="w-10 h-10 bg-white rounded-md flex items-center justify-center shadow-sm">
                        <i class="pi pi-box text-indigo-600 text-xl"></i>

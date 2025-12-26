@@ -106,9 +106,9 @@
         
          <div v-if="selectedComponent.examples?.length">
           <h4 class="text-sm font-bold text-gray-900 mb-3">Example</h4>
-          <div class="bg-gray-900 rounded-lg p-4 overflow-x-auto">
-             <pre class="text-xs text-blue-300 font-mono">{{ selectedComponent.examples[0] }}</pre>
-          </div>
+          <div class="bg-gray-50 rounded-lg p-4 overflow-x-auto border border-gray-200">
+             <pre class="text-xs text-gray-800 font-mono">{{ selectedComponent.examples[0] }}</pre>
+           </div>
         </div>
       </div>
     </Dialog>

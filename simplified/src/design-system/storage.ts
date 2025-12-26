@@ -3,11 +3,14 @@
 
 // Types
 export interface DesignToken {
-  name: string
-  type: 'color' | 'size' | 'spacing' | 'typography' | 'shadow' | 'radius' | 'other'
-  value: any
-  description?: string
-  category?: string
+   id?: string
+   name: string
+   type: 'color' | 'size' | 'spacing' | 'typography' | 'shadow' | 'radius' | 'other' | 'borderRadius' | 'number' | 'fontSizes' | 'fontWeights'
+   value: any
+   description?: string
+   category?: string
+   set?: string // Token set (e.g., "Sulei Default")
+   rawValue?: string // Original value before resolution
 }
 
 export interface ComponentSpec {
@@ -77,6 +80,36 @@ class DesignSystemStorage {
     const tokens = this.getTokens()
     tokens.push(token)
     this.saveTokens(tokens)
+  }
+
+  createToken(tokenData: Omit<DesignToken, 'id'>): DesignToken {
+    const tokens = this.getTokens()
+    const newToken: DesignToken = {
+      id: `token-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+      ...tokenData
+    }
+    tokens.push(newToken)
+    this.saveTokens(tokens)
+    return newToken
+  }
+
+  updateToken(id: string, tokenData: Partial<DesignToken>): DesignToken | null {
+    const tokens = this.getTokens()
+    const index = tokens.findIndex(t => t.id === id)
+    if (index === -1) return null
+
+    tokens[index] = { ...tokens[index], ...tokenData }
+    this.saveTokens(tokens)
+    return tokens[index]
+  }
+
+  deleteToken(id: string): boolean {
+    const tokens = this.getTokens()
+    const filteredTokens = tokens.filter(t => t.id !== id)
+    if (filteredTokens.length === tokens.length) return false
+
+    this.saveTokens(filteredTokens)
+    return true
   }
 
   // Component operations
