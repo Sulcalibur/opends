@@ -107,6 +107,7 @@ const toast = useToast()
 const loading = ref(false)
 const searchQuery = ref('')
 const selectedCategory = ref('')
+const showCreateDialog = ref(false)
 
 // Types
 interface Component {
@@ -160,6 +161,16 @@ const loadComponents = async () => {
   } finally {
     loading.value = false
   }
+}
+
+const editComponent = (component: Component) => {
+  // TODO: Implement edit functionality
+  console.log('Edit component', component)
+}
+
+const confirmDelete = (component: Component) => {
+  // TODO: Implement delete confirmation
+  console.log('Delete component', component)
 }
 
 

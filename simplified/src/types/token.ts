@@ -24,6 +24,12 @@ export interface DesignToken {
     createdAt: Date;
     updatedAt: Date;
     deletedAt?: Date;
+    path: string;
+    type: 'value' | 'reference' | 'alias';
+    references?: string[];
+    metadata?: Record<string, any>;
+    parent_id?: string;
+    resolved_value?: any;
 }
 
 export type TokenValue =

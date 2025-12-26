@@ -12,16 +12,12 @@
 
         <!-- Search -->
         <div class="mb-6">
-          <InputText
-            v-model="searchQuery"
-            placeholder="Search components..."
-            class="w-full"
-            @input="filterComponents"
-          >
-            <template #prefix>
-              <i class="pi pi-search"></i>
-            </template>
-          </InputText>
+            <InputText
+              v-model="searchQuery"
+              placeholder="Search components..."
+              class="w-full"
+              @input="filterComponents"
+            />
         </div>
 
         <!-- Loading -->

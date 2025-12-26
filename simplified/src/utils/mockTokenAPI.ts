@@ -3,7 +3,7 @@
  * Simulates token CRUD operations for development and testing
  */
 
-import type { DesignToken } from './tokenUtils.js'
+import type { DesignToken } from '../types/token'
 
 // In-memory token storage
 let mockTokens: DesignToken[] = [
@@ -15,34 +15,42 @@ let mockTokens: DesignToken[] = [
     description: 'Primary brand color',
     path: 'primary',
     type: 'value',
-    metadata: { source: 'design-system' }
+    metadata: { source: 'design-system' },
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01')
   },
   {
     id: '2',
     name: 'secondary',
     category: 'color',
     value: '#6b7280',
-    description: 'Secondary color',
+    description: 'Secondary brand color',
     path: 'secondary',
-    type: 'value'
+    type: 'value',
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01')
   },
   {
     id: '3',
-    name: 'spacing-sm',
+    name: 'spacing-md',
     category: 'spacing',
-    value: '0.5rem',
-    description: 'Small spacing unit',
-    path: 'spacing-sm',
-    type: 'value'
+    value: '1rem',
+    description: 'Medium spacing',
+    path: 'spacing.md',
+    type: 'value',
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01')
   },
   {
     id: '4',
-    name: 'font-family',
+    name: 'font-family-base',
     category: 'typography',
-    value: 'Inter, system-ui, sans-serif',
-    description: 'Primary font family',
-    path: 'font-family',
-    type: 'value'
+    value: 'Inter, sans-serif',
+    description: 'Base font family',
+    path: 'typography.fontFamily.base',
+    type: 'value',
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-01')
   }
 ]
 
@@ -119,7 +127,8 @@ export class MockTokenAPI {
       description: tokenData.description,
       createdAt: new Date(),
       updatedAt: new Date(),
-      path
+      path,
+      type: 'value'
     }
 
     mockTokens.push(newToken)
@@ -193,7 +202,9 @@ export class MockTokenAPI {
           value: '',
           path: token.category,
           type: 'value',
-          children: []
+          children: [],
+          createdAt: new Date(),
+          updatedAt: new Date()
         }
 
         // Add tokens in this category as children

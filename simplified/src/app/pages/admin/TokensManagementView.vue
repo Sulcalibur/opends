@@ -246,9 +246,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, onMounted } from 'vue'
-import { useConfirm } from 'primevue/useconfirm'
+import { ref, computed, reactive, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
+import { useConfirm } from 'primevue/useconfirm'
+
+declare global {
+  interface Window {
+    searchTimeout: ReturnType<typeof setTimeout>
+  }
+}
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Dropdown from 'primevue/dropdown'
