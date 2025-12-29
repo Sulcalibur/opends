@@ -1,5 +1,5 @@
 import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { tmpdir } from 'node:os';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, getResponseStatus, createError, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getRouterParam, getHeader, getValidatedQuery, getResponseStatusText } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/h3@1.15.4/node_modules/h3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, createError, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, getResponseStatus, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getRouterParam, getHeader, getValidatedQuery, getResponseStatusText } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/h3@1.15.4/node_modules/h3/dist/index.mjs';
 import { Server } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
@@ -2671,10 +2671,20 @@ new Proxy(/* @__PURE__ */ Object.create(null), {
   }
 });
 
-getContext("nitro-app", {
+const nitroAsyncContext = getContext("nitro-app", {
   asyncContext: false,
   AsyncLocalStorage: void 0
 });
+function useEvent() {
+  try {
+    return nitroAsyncContext.use().event;
+  } catch {
+    const hint = "Enable the experimental flag using `experimental.asyncContext: true`.";
+    throw createError({
+      message: `Nitro request context is not available. ${hint}`
+    });
+  }
+}
 
 const config$1 = useRuntimeConfig();
 const _routeRulesMatcher = toRouteMatcher(
@@ -3532,9 +3542,13 @@ class UniversalDatabase {
     __publicField(this, "_type");
     __publicField(this, "sqliteDb", null);
     __publicField(this, "pgPool", null);
+    __publicField(this, "d1Db", null);
     __publicField(this, "config");
     this._type = config.type;
     this.config = config;
+    if (config.type === "d1" && config.d1Binding) {
+      this.d1Db = config.d1Binding;
+    }
   }
   /**
    * Get database type
@@ -3550,8 +3564,10 @@ class UniversalDatabase {
     try {
       if (this.type === "sqlite") {
         await this.connectSQLite();
-      } else {
+      } else if (this.type === "postgres") {
         await this.connectPostgres();
+      } else if (this.type === "d1") {
+        await this.connectD1();
       }
       console.log("[DB] Connection successful");
     } catch (error) {
@@ -3593,7 +3609,20 @@ class UniversalDatabase {
     });
   }
   /**
-   * Execute a query (works for both SQLite and PostgreSQL)
+   * Connect to Cloudflare D1
+   */
+  async connectD1() {
+    var _a;
+    if (this.d1Db) return;
+    if (typeof process !== "undefined" && ((_a = process.env) == null ? void 0 : _a.DB)) {
+      this.d1Db = process.env.DB;
+    }
+    if (!this.d1Db) {
+      console.warn('[DB] D1 database binding not found. Ensure "DB" binding is configured in wrangler.toml');
+    }
+  }
+  /**
+   * Execute a query (works for SQLite, PostgreSQL, and D1)
    */
   async query(text, params) {
     const start = Date.now();
@@ -3601,8 +3630,10 @@ class UniversalDatabase {
       let result;
       if (this.type === "sqlite") {
         result = await this.querySQLite(text, params);
-      } else {
+      } else if (this.type === "postgres") {
         result = await this.queryPostgres(text, params);
+      } else {
+        result = await this.queryD1(text, params);
       }
       const duration = Date.now() - start;
       if (duration > 1e3) {
@@ -3645,6 +3676,35 @@ class UniversalDatabase {
     return { rows: result.rows, rowCount: result.rowCount || 0 };
   }
   /**
+   * D1 query execution
+   */
+  async queryD1(text, params) {
+    if (!this.d1Db) {
+      const event = useEvent();
+      if (event && event.context && event.context.cloudflare && event.context.cloudflare.env) {
+        this.d1Db = event.context.cloudflare.env.DB;
+      }
+    }
+    if (!this.d1Db) {
+      throw new Error("D1 database not connected or binding missing");
+    }
+    const sqliteQuery = text.replace(/\$\d+/g, "?");
+    try {
+      const stmt = this.d1Db.prepare(sqliteQuery);
+      const finalStmt = params ? stmt.bind(...params) : stmt;
+      if (text.trim().toUpperCase().startsWith("SELECT")) {
+        const { results } = await finalStmt.all();
+        return { rows: results || [], rowCount: (results == null ? void 0 : results.length) || 0 };
+      } else {
+        const result = await finalStmt.run();
+        return { rows: [], rowCount: result.meta.changes || 0 };
+      }
+    } catch (e) {
+      console.error("[DB] D1 Error:", e);
+      throw e;
+    }
+  }
+  /**
    * Get client for transactions (PostgreSQL only)
    */
   async getClient() {
@@ -3679,6 +3739,10 @@ class UniversalDatabase {
       } finally {
         client.release();
       }
+    } else if (this.type === "d1") {
+      return await callback(async (query, params) => {
+        return await this.query(query, params);
+      });
     }
     throw new Error("Transaction not supported");
   }
@@ -3715,6 +3779,11 @@ class UniversalDatabase {
         idleCount: this.pgPool.idleCount,
         waitingCount: this.pgPool.waitingCount
       };
+    } else if (this.type === "d1") {
+      return {
+        type: "d1",
+        status: "connected"
+      };
     }
     return null;
   }
@@ -3733,18 +3802,28 @@ class UniversalDatabase {
   }
 }
 let db = null;
-function parseDatabaseConfig(url) {
+function parseDatabaseConfig(url = "") {
+  var _a, _b;
+  if (typeof process !== "undefined" && ((_a = process.env) == null ? void 0 : _a.NODE_ENV) === "production" && !url) {
+    return { type: "d1", url: "d1://opends" };
+  }
+  if (((_b = globalThis._importMeta_.env) == null ? void 0 : _b.SSR) && process.env.CF_PAGES === "1") {
+    return { type: "d1", url: "d1://opends" };
+  }
   if (url.startsWith("postgresql://") || url.startsWith("postgres://")) {
     return { type: "postgres", url };
   } else if (url.startsWith("sqlite:") || url.startsWith("file:")) {
     return { type: "sqlite", url };
+  } else if (url.startsWith("d1:")) {
+    return { type: "d1", url };
   } else {
-    return { type: "sqlite", url: `sqlite:${url}` };
+    const defaultUrl = url || "./data/opends.db";
+    return { type: "sqlite", url: `sqlite:${defaultUrl}` };
   }
 }
 function getDatabase() {
   if (!db) {
-    const url = process.env.DATABASE_URL || "sqlite:./data/opends.db";
+    const url = process.env.DATABASE_URL;
     const config = parseDatabaseConfig(url);
     db = new UniversalDatabase(config);
   }
@@ -7048,7 +7127,22 @@ _Nzj5DUM5UIdwlrZ7bP1QoC7nKXUgo5gjg3gw4Xgr39c,
 _9tFYlCNN1IjDUyACW2zDzhyHqQ2bJmWPZHBj9KxSbk
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"54ddf-b+FUtUFO+BFMbMK9AeNY9akBKGA\"",
+    "mtime": "2025-12-29T23:04:50.149Z",
+    "size": 347615,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"130549-NQbf99zpp4AOCb6P3W3jByaeEyg\"",
+    "mtime": "2025-12-29T23:04:50.151Z",
+    "size": 1246537,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -8850,7 +8944,7 @@ const register_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.definePro
   default: register_post
 }, Symbol.toStringTag, { value: 'Module' }));
 
-class ComponentRepository {
+let ComponentRepository$1 = class ComponentRepository {
   /**
    * Get all components (excluding deleted)
    */
@@ -8989,8 +9083,8 @@ class ComponentRepository {
     });
     return stats;
   }
-}
-const ComponentRepository$1 = new ComponentRepository();
+};
+const ComponentRepository = new ComponentRepository$1();
 
 const _id__delete$2 = asyncHandler(async (event) => {
   const id = getRouterParam(event, "id");
@@ -9009,7 +9103,7 @@ const _id__delete$2 = asyncHandler(async (event) => {
     setResponseStatus(event, 401);
     return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
   }
-  const deleted = await ComponentRepository$1.delete(id);
+  const deleted = await ComponentRepository.delete(id);
   if (!deleted) {
     setResponseStatus(event, 404);
     return createErrorResponse(ErrorCodes.NOT_FOUND, "Component not found");
@@ -9028,7 +9122,7 @@ const _id__get = asyncHandler(async (event) => {
     setResponseStatus(event, 400);
     return createErrorResponse(ErrorCodes.VALIDATION_ERROR, "Component ID is required");
   }
-  const component = await ComponentRepository$1.findById(id);
+  const component = await ComponentRepository.findById(id);
   if (!component) {
     setResponseStatus(event, 404);
     return createErrorResponse(ErrorCodes.NOT_FOUND, "Component not found");
@@ -9069,7 +9163,7 @@ const _id__put$2 = asyncHandler(async (event) => {
   }
   const body = await readBody(event);
   const data = updateSchema$1.parse(body);
-  const component = await ComponentRepository$1.update(id, data, payload.userId);
+  const component = await ComponentRepository.update(id, data, payload.userId);
   if (!component) {
     setResponseStatus(event, 404);
     return createErrorResponse(ErrorCodes.NOT_FOUND, "Component not found");
@@ -9089,8 +9183,8 @@ const index_get$4 = asyncHandler(async (event) => {
     status: query.status,
     search: query.search
   };
-  const components = await ComponentRepository$1.findAll(filters);
-  const stats = await ComponentRepository$1.getStats();
+  const components = await ComponentRepository.findAll(filters);
+  const stats = await ComponentRepository.getStats();
   return createSuccessResponse({
     components,
     stats
@@ -9125,7 +9219,7 @@ const index_post$2 = asyncHandler(async (event) => {
   }
   const body = await readBody(event);
   const data = componentSchema.parse(body);
-  const existing = await ComponentRepository$1.findByName(data.name);
+  const existing = await ComponentRepository.findByName(data.name);
   if (existing) {
     setResponseStatus(event, 409);
     return createErrorResponse(
@@ -9133,7 +9227,7 @@ const index_post$2 = asyncHandler(async (event) => {
       `Component with name "${data.name}" already exists`
     );
   }
-  const component = await ComponentRepository$1.create({
+  const component = await ComponentRepository.create({
     ...data,
     created_by: payload.userId
   });
@@ -9198,7 +9292,7 @@ const health_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProper
   default: health_get
 }, Symbol.toStringTag, { value: 'Module' }));
 
-class DesignTokenRepository {
+let DesignTokenRepository$1 = class DesignTokenRepository {
   /**
    * Get all tokens (excluding deleted)
    */
@@ -9329,8 +9423,8 @@ class DesignTokenRepository {
     }
     return { imported, skipped, errors };
   }
-}
-const DesignTokenRepository$1 = new DesignTokenRepository();
+};
+const DesignTokenRepository = new DesignTokenRepository$1();
 
 const _id__delete = asyncHandler(async (event) => {
   const id = getRouterParam(event, "id");
@@ -9349,7 +9443,7 @@ const _id__delete = asyncHandler(async (event) => {
     setResponseStatus(event, 401);
     return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
   }
-  const deleted = await DesignTokenRepository$1.delete(id);
+  const deleted = await DesignTokenRepository.delete(id);
   if (!deleted) {
     setResponseStatus(event, 404);
     return createErrorResponse(ErrorCodes.NOT_FOUND, "Token not found");
@@ -9387,7 +9481,7 @@ const _id__put = asyncHandler(async (event) => {
   }
   const body = await readBody(event);
   const data = updateSchema.parse(body);
-  const token = await DesignTokenRepository$1.update(id, data, payload.userId);
+  const token = await DesignTokenRepository.update(id, data, payload.userId);
   if (!token) {
     setResponseStatus(event, 404);
     return createErrorResponse(ErrorCodes.NOT_FOUND, "Token not found");
@@ -9401,7 +9495,7 @@ const _id__put$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const export_get = asyncHandler(async (event) => {
-  const tokens = await DesignTokenRepository$1.exportTokens();
+  const tokens = await DesignTokenRepository.exportTokens();
   return createSuccessResponse({ tokens });
 });
 
@@ -9427,7 +9521,7 @@ const import_post = asyncHandler(async (event) => {
   }
   const body = await readBody(event);
   const data = importSchema.parse(body);
-  const result = await DesignTokenRepository$1.importTokens(data.tokens, payload.userId);
+  const result = await DesignTokenRepository.importTokens(data.tokens, payload.userId);
   return createSuccessResponse(result);
 });
 
@@ -9442,8 +9536,8 @@ const index_get$2 = asyncHandler(async (event) => {
     category: query.category,
     search: query.search
   };
-  const tokens = await DesignTokenRepository$1.findAll(filters);
-  const stats = await DesignTokenRepository$1.getStats();
+  const tokens = await DesignTokenRepository.findAll(filters);
+  const stats = await DesignTokenRepository.getStats();
   return createSuccessResponse({
     tokens,
     stats
@@ -9475,7 +9569,7 @@ const index_post = asyncHandler(async (event) => {
   }
   const body = await readBody(event);
   const data = tokenSchema.parse(body);
-  const existing = await DesignTokenRepository$1.findByName(data.name);
+  const existing = await DesignTokenRepository.findByName(data.name);
   if (existing) {
     setResponseStatus(event, 409);
     return createErrorResponse(
@@ -9483,7 +9577,7 @@ const index_post = asyncHandler(async (event) => {
       `Token with name "${data.name}" already exists`
     );
   }
-  const token = await DesignTokenRepository$1.create({
+  const token = await DesignTokenRepository.create({
     ...data,
     created_by: payload.userId
   });
