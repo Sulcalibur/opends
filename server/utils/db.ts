@@ -32,7 +32,7 @@ class UniversalDatabase {
     constructor(config: DbConfig) {
         this._type = config.type
         this.config = config
-        
+
         // If D1 binding is provided directly in config
         if (config.type === 'd1' && config.d1Binding) {
             this.d1Db = config.d1Binding
@@ -120,13 +120,13 @@ class UniversalDatabase {
         // Try to find D1 binding in global scope (common in some CF setups)
         // @ts-ignore
         if (typeof process !== 'undefined' && process.env?.DB) {
-             // @ts-ignore
+            // @ts-ignore
             this.d1Db = process.env.DB as D1Database
-        } 
-        
+        }
+
         if (!this.d1Db) {
-             console.warn('[DB] D1 database binding not found. Ensure "DB" binding is configured in wrangler.toml')
-             // We don't throw yet, as it might be lazy loaded or injected later in Nitro context
+            console.warn('[DB] D1 database binding not found. Ensure "DB" binding is configured in wrangler.toml')
+            // We don't throw yet, as it might be lazy loaded or injected later in Nitro context
         }
     }
 
@@ -199,30 +199,36 @@ class UniversalDatabase {
      * D1 query execution
      */
     private async queryD1<T>(text: string, params?: any[]): Promise<{ rows: T[]; rowCount: number }> {
-        // Try to get binding from storage if not set (Nitro runtime context)
+        // Try to get binding from Nitro runtime context
         if (!this.d1Db) {
-             // @ts-ignore
-             const event = useEvent()
-             // @ts-ignore
-             if (event && event.context && event.context.cloudflare && event.context.cloudflare.env) {
-                 // @ts-ignore
-                 this.d1Db = event.context.cloudflare.env.DB
-             }
+            try {
+                // @ts-ignore - useEvent is auto-imported in Nitro context
+                const event = useEvent()
+                // Cloudflare Pages bindings are at event.context.cloudflare.env
+                // @ts-ignore
+                if (event?.context?.cloudflare?.env?.DB) {
+                    // @ts-ignore
+                    this.d1Db = event.context.cloudflare.env.DB
+                }
+            } catch (e) {
+                // useEvent may fail outside of request context
+                console.warn('[DB] Could not access request context for D1 binding')
+            }
         }
 
         if (!this.d1Db) {
-            throw new Error('D1 database not connected or binding missing')
+            throw new Error('D1 database not connected. Ensure the "DB" binding is configured in wrangler.toml and you are running on Cloudflare Pages.')
         }
 
         // Convert PostgreSQL-style $1, $2 to SQLite-style ? (D1 uses SQLite syntax)
         const sqliteQuery = text.replace(/\$\d+/g, '?')
-        
+
         try {
             const stmt = this.d1Db.prepare(sqliteQuery)
-            
+
             // Bind parameters if they exist
             const finalStmt = params ? stmt.bind(...params) : stmt
-            
+
             if (text.trim().toUpperCase().startsWith('SELECT')) {
                 const { results } = await finalStmt.all<T>()
                 return { rows: results || [], rowCount: results?.length || 0 }
@@ -277,16 +283,16 @@ class UniversalDatabase {
                 client.release()
             }
         } else if (this.type === 'd1') {
-             // D1 batching/transaction support is limited but supports batch()
-             // For now, we execute sequentially as D1 is autocommit by default
-             // True transactions in D1 require .batch() but that doesn't map easily to this callback style
-             // warn about D1 transaction limitations
-             // console.warn('[DB] D1 transactions are experimental/limited')
-             
-             // Just execute callback directly for now
-              return await callback(async (query, params) => {
-                    return await this.query(query, params)
-              })
+            // D1 batching/transaction support is limited but supports batch()
+            // For now, we execute sequentially as D1 is autocommit by default
+            // True transactions in D1 require .batch() but that doesn't map easily to this callback style
+            // warn about D1 transaction limitations
+            // console.warn('[DB] D1 transactions are experimental/limited')
+
+            // Just execute callback directly for now
+            return await callback(async (query, params) => {
+                return await this.query(query, params)
+            })
         }
 
         throw new Error('Transaction not supported')
@@ -359,25 +365,29 @@ let db: UniversalDatabase | null = null
  * Parse DATABASE_URL and determine database type
  */
 function parseDatabaseConfig(url: string = ''): DbConfig {
-    // Check if running in Cloudflare Pages/Workers environment
-    // @ts-ignore
-    if (typeof process !== 'undefined' && process.env?.NODE_ENV === 'production' && !url) {
-         // Auto-detect D1 in production if no URL is provided
-         return { type: 'd1', url: 'd1://opends' }
+    // Explicit D1 URL takes precedence
+    if (url.startsWith('d1:')) {
+        return { type: 'd1', url }
     }
-    
-    // Also check for Cloudflare specific variable if available
+
+    // Check for Cloudflare Pages environment variables
     // @ts-ignore
-    if (import.meta.env?.SSR && process.env.CF_PAGES === '1') {
-         return { type: 'd1', url: 'd1://opends' }
+    const isCfPages = process.env.CF_PAGES === '1'
+
+    // Check if running in Cloudflare Workers/Pages-like environment without a URL
+    // The presence of certain env vars or lack of DATABASE_URL in production hints at D1
+    // @ts-ignore
+    const isProduction = process.env.NODE_ENV === 'production'
+
+    // Auto-detect D1 in Cloudflare Pages production if no standard DB URL is provided
+    if (isCfPages || (isProduction && !url)) {
+        return { type: 'd1', url: 'd1://opends' }
     }
 
     if (url.startsWith('postgresql://') || url.startsWith('postgres://')) {
         return { type: 'postgres', url }
     } else if (url.startsWith('sqlite:') || url.startsWith('file:')) {
         return { type: 'sqlite', url }
-    } else if (url.startsWith('d1:')) {
-        return { type: 'd1', url }
     } else {
         // Default to SQLite with the URL as path, or default path
         const defaultUrl = url || './data/opends.db'
