@@ -94,6 +94,7 @@ declare global {
   const isWebResponse: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').isWebResponse
   const lazyEventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').lazyEventHandler
   const migrations: typeof import('../../server/utils/migrations').default
+  const mockPgNative: typeof import('../../server/utils/mock-pg-native').default
   const nitroPlugin: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/plugin').nitroPlugin
   const paginationSchema: typeof import('../../server/utils/validation').paginationSchema
   const parseCookies: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').parseCookies
@@ -171,5 +172,6 @@ export { buildAssetsURL as __buildAssetsURL, publicAssetsURL as __publicAssetsUR
 export { defineAppConfig } from '/Users/sul/Dev/opends/node_modules/.pnpm/@nuxt+nitro-server@4.2.2_better-sqlite3@12.5.0_db0@0.3.4_better-sqlite3@12.5.0__ioredis_e8f08a6bc4cc871b9f27afd338bb9eba/node_modules/@nuxt/nitro-server/dist/runtime/utils/config';
 export { default as db, getDatabase, initializeDatabase, closeDatabase } from '/Users/sul/Dev/opends/server/utils/db';
 export { default as migrations, runMigrations } from '/Users/sul/Dev/opends/server/utils/migrations';
+export { default as mockPgNative } from '/Users/sul/Dev/opends/server/utils/mock-pg-native';
 export { createSuccessResponse, createErrorResponse, createPaginatedResponse, ErrorCodes } from '/Users/sul/Dev/opends/server/utils/response';
 export { paginationSchema, idParamSchema, searchQuerySchema, emailSchema, passwordSchema, userRoleSchema, dateRangeSchema, fileUploadSchema, componentCategorySchema, componentStatusSchema, tokenCategorySchema } from '/Users/sul/Dev/opends/server/utils/validation';

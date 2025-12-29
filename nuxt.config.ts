@@ -63,7 +63,7 @@ export default defineNuxtConfig({
       external: ['better-sqlite3']
     },
     alias: {
-      'pg-native': 'unenv/runtime/mock/proxy',
+      'pg-native': './server/utils/mock-pg-native',
     }
   }
 })
