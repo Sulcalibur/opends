@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   opends:
-    build: ./simplified
+    build: .
     ports:
       - "3000:3000"
     environment:
@@ -12,13 +12,4 @@ services:
       SECRET_KEY: ${SECRET_KEY:-change-this-to-a-random-string-in-production}
       ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin}
-    volumes:
-      - ./simplified/data:/app/data
-      - ./simplified/design-system-data:/app/design-system-data
-      - ./simplified/backups:/app/backups
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:3000"]
-      interval: 10s
-      timeout: 5s
-      retries: 10
 

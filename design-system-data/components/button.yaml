@@ -1,0 +1,33 @@
+name: Button
+description: A versatile button component for actions and links
+category: inputs
+status: stable
+design:
+  tool: penpot
+  fileId: '79c9c158-ad77-81e4-8007-51230d2779fa'
+  frameId: '79c9c158-ad77-81e4-8007-51230d2779fb'
+  timestamp: '2024-12-28T15:00:00Z'
+props:
+  - name: label
+    type: string
+    required: true
+    description: Button text
+  - name: severity
+    type: string
+    default: primary
+    description: Button style (primary, secondary, etc.)
+  - name: size
+    type: string
+    default: medium
+    description: Button size (small, medium, large)
+  - name: disabled
+    type: boolean
+    default: 'false'
+    description: Whether button is disabled
+examples:
+  - name: Primary Button
+    code: <Button label="Click me" severity="primary" />
+  - name: Disabled Button
+    code: <Button label="Disabled" severity="secondary" disabled />
+usage: Use for primary actions, form submissions, and navigation.
+notes: Supports icons and loading states.

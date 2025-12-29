@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import axios from 'axios'
 
 // Assuming the server runs on http://localhost:3000 as per simplified/server.js
-const API_BASE_URL = 'http://localhost:3000/api/admin'
+const API_BASE_URL = 'http://localhost:3002/api/admin'
 
 describe('Authentication API', () => {
   it('should return a token for valid admin credentials', async () => {
