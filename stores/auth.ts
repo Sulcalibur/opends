@@ -13,7 +13,8 @@ export const useAuthStore = defineStore('auth', () => {
 
   // Simple password authentication
   function login(password: string): boolean {
-    const adminPassword = import.meta.env.VITE_ADMIN_PASSWORD || 'admin'
+    const config = useRuntimeConfig()
+    const adminPassword = config.public.adminPassword || 'admin'
     
     try {
       // Simple password comparison for now

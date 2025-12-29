@@ -7,7 +7,7 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxt/eslint'
   ],
-  css: ['~/src/assets/css/main.css', '~/design-system-data/tokens.css'],
+  css: [],
   primevue: {
     usePrimeVue: true,
     options: {
@@ -27,7 +27,8 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      apiBase: process.env.API_BASE || '/api'
+      apiBase: process.env.API_BASE || '/api',
+      adminPassword: process.env.ADMIN_PASSWORD || 'admin'
     },
     private: {
       dbUrl: process.env.DATABASE_URL
