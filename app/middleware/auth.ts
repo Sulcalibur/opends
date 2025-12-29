@@ -1,11 +1,18 @@
+/**
+ * Auth Middleware
+ * Protects routes that require authentication
+ */
+
 export default defineNuxtRouteMiddleware((to, from) => {
-  const authStore = useAuthStore()
+    const authStore = useAuthStore()
 
-  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
-    return navigateTo('/login')
-  }
+    // Initialize auth state
+    if (process.client) {
+        authStore.initialize()
+    }
 
-  if (to.meta.public && authStore.isAuthenticated && to.path === '/login') {
-    return navigateTo('/admin')
-  }
+    // If user is not authenticated, redirect to login
+    if (!authStore.isAuthenticated) {
+        return navigateTo('/login')
+    }
 })

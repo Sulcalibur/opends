@@ -1,18 +1,21 @@
 import process from 'node:process';globalThis._importMeta_={url:import.meta.url,env:process.env};import { tmpdir } from 'node:os';
-import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, getResponseStatus, createError, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getRouterParam, getHeader, getResponseStatusText } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/h3@1.15.4/node_modules/h3/dist/index.mjs';
+import { defineEventHandler, handleCacheHeaders, splitCookiesString, createEvent, fetchWithEvent, isEvent, eventHandler, setHeaders, sendRedirect, proxyRequest, getRequestHeader, setResponseHeaders, setResponseStatus, send, getRequestHeaders, setResponseHeader, appendResponseHeader, getRequestURL, getResponseHeader, getResponseStatus, createError, removeResponseHeader, getQuery as getQuery$1, readBody, createApp, createRouter as createRouter$1, toNodeListener, lazyEventHandler, getRouterParam, getHeader, getValidatedQuery, getResponseStatusText } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/h3@1.15.4/node_modules/h3/dist/index.mjs';
 import { Server } from 'node:http';
 import { resolve, dirname, join } from 'node:path';
 import nodeCrypto from 'node:crypto';
 import { parentPort, threadId } from 'node:worker_threads';
 import { escapeHtml } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/@vue+shared@3.5.26/node_modules/@vue/shared/dist/shared.cjs.js';
+import { z, ZodError } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/zod@4.2.1/node_modules/zod/index.js';
+import bcrypt from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/bcryptjs@3.0.3/node_modules/bcryptjs/index.js';
+import jwt from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/jsonwebtoken@9.0.3/node_modules/jsonwebtoken/index.js';
 import { createRenderer, getRequestDependencies, getPreloadLinks, getPrefetchLinks } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/vue-bundle-renderer@2.2.0/node_modules/vue-bundle-renderer/dist/runtime.mjs';
 import { parseURL, withoutBase, joinURL, getQuery, withQuery, withTrailingSlash, joinRelativeURL, decodePath, withLeadingSlash, withoutTrailingSlash } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/ufo@1.6.1/node_modules/ufo/dist/index.mjs';
 import destr, { destr as destr$1 } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/destr@2.0.5/node_modules/destr/dist/index.mjs';
 import { createHooks } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/hookable@5.5.3/node_modules/hookable/dist/index.mjs';
 import { createFetch, Headers as Headers$1 } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/ofetch@1.5.1/node_modules/ofetch/dist/node.mjs';
 import { fetchNodeRequestHandler, callNodeRequestHandler } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/node-mock-http@1.0.4/node_modules/node-mock-http/dist/index.mjs';
-import { createStorage, prefixStorage } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/unstorage@1.17.3_db0@0.3.4_ioredis@5.8.2/node_modules/unstorage/dist/index.mjs';
-import unstorage_47drivers_47fs from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/unstorage@1.17.3_db0@0.3.4_ioredis@5.8.2/node_modules/unstorage/drivers/fs.mjs';
+import { createStorage, prefixStorage } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/unstorage@1.17.3_db0@0.3.4_better-sqlite3@12.5.0__ioredis@5.8.2/node_modules/unstorage/dist/index.mjs';
+import unstorage_47drivers_47fs from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/unstorage@1.17.3_db0@0.3.4_better-sqlite3@12.5.0__ioredis@5.8.2/node_modules/unstorage/drivers/fs.mjs';
 import { digest } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/ohash@2.0.11/node_modules/ohash/dist/index.mjs';
 import { klona } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/klona@2.0.6/node_modules/klona/dist/index.mjs';
 import defu, { defuFn, defu as defu$1 } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/defu@6.1.4/node_modules/defu/dist/defu.mjs';
@@ -125,7 +128,9 @@ import FormFieldStyle from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/@pri
 import { style as style$1p } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/@primeuix+styles@2.0.2/node_modules/@primeuix/styles/dist/tooltip/index.mjs';
 import { style as style$1q } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/@primeuix+styles@2.0.2/node_modules/@primeuix/styles/dist/ripple/index.mjs';
 import { Theme } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/@primeuix+styled@0.7.4/node_modules/@primeuix/styled/dist/index.mjs';
-import { promises } from 'node:fs';
+import Database from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/better-sqlite3@12.5.0/node_modules/better-sqlite3/lib/index.js';
+import { Pool } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/pg@8.16.3/node_modules/pg/esm/index.mjs';
+import { existsSync, readFileSync, promises } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname as dirname$1, resolve as resolve$1 } from 'file:///Users/sul/Dev/node_modules/pathe/dist/index.mjs';
 import { createHead as createHead$1, propsToString, renderSSRHead } from 'file:///Users/sul/Dev/opends/node_modules/.pnpm/unhead@2.1.1/node_modules/unhead/dist/server.mjs';
@@ -761,7 +766,6 @@ const _inlineRuntimeConfig = {
   },
   "public": {
     "apiBase": "/api",
-    "adminPassword": "admin",
     "primevue": {
       "usePrimeVue": true,
       "autoImport": true,
@@ -2617,9 +2621,11 @@ const _inlineRuntimeConfig = {
       ]
     }
   },
-  "private": {
-    "dbUrl": ""
-  }
+  "dbUrl": "postgresql://localhost/opends_dev",
+  "jwtSecret": "dev-secret-change-in-production",
+  "jwtAccessExpire": "15m",
+  "jwtRefreshExpire": "7d",
+  "allowRegistration": true
 };
 const envOptions = {
   prefix: "NITRO_",
@@ -3357,7 +3363,7 @@ const devReducers = {
   URL: (data) => data instanceof URL ? data.toString() : void 0
 };
 const asyncContext = getContext("nuxt-dev", { asyncContext: true, AsyncLocalStorage });
-const _DT6ZKpuMltkq0DlmHzXCQkw_WpW0eP5lyhp8HzAcp4 = (nitroApp) => {
+const _dL2N5Rzb9IfVnmkpXap9_XyPGN0HgHCTwqlMdGZ0hc = (nitroApp) => {
   const handler = nitroApp.h3App.handler;
   nitroApp.h3App.handler = (event) => {
     return asyncContext.callAsync({ logs: [], event }, () => handler(event));
@@ -3424,6 +3430,10 @@ function onConsoleLog(callback) {
     }
   });
   consola$1.wrapConsole();
+}
+
+function defineNitroPlugin$1(def) {
+  return def;
 }
 
 function defineRenderHandler(render) {
@@ -3513,6 +3523,428 @@ function publicAssetsURL(...path) {
   const publicBase = app.cdnURL || app.baseURL;
   return path.length ? joinRelativeURL(publicBase, ...path) : publicBase;
 }
+
+var __defProp = Object.defineProperty;
+var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
+class UniversalDatabase {
+  constructor(config) {
+    __publicField(this, "_type");
+    __publicField(this, "sqliteDb", null);
+    __publicField(this, "pgPool", null);
+    __publicField(this, "config");
+    this._type = config.type;
+    this.config = config;
+  }
+  /**
+   * Get database type
+   */
+  get type() {
+    return this._type;
+  }
+  /**
+   * Initialize database connection
+   */
+  async connect() {
+    console.log(`[DB] Connecting to ${this.type} database...`);
+    try {
+      if (this.type === "sqlite") {
+        await this.connectSQLite();
+      } else {
+        await this.connectPostgres();
+      }
+      console.log("[DB] Connection successful");
+    } catch (error) {
+      console.error("[DB] Failed to connect:", error);
+      throw new Error("Database connection failed");
+    }
+  }
+  /**
+   * Connect to SQLite
+   */
+  async connectSQLite() {
+    const url = this.config.url.replace("sqlite:", "");
+    const path = url.startsWith("file:") ? url.substring(5) : url || "./data/opends.db";
+    const dir = path.substring(0, path.lastIndexOf("/"));
+    if (dir) {
+      const fs = await import('node:fs');
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    this.sqliteDb = new Database(path);
+    this.sqliteDb.pragma("journal_mode = WAL");
+    this.sqliteDb.pragma("foreign_keys = ON");
+    console.log(`[DB] SQLite database: ${path}`);
+  }
+  /**
+   * Connect to PostgreSQL
+   */
+  async connectPostgres() {
+    this.pgPool = new Pool({
+      connectionString: this.config.url,
+      max: this.config.maxConnections || 10,
+      min: 2,
+      idleTimeoutMillis: 3e4,
+      connectionTimeoutMillis: 2e3
+    });
+    const client = await this.pgPool.connect();
+    client.release();
+    this.pgPool.on("error", (err) => {
+      console.error("[DB] Unexpected pool error:", err);
+    });
+  }
+  /**
+   * Execute a query (works for both SQLite and PostgreSQL)
+   */
+  async query(text, params) {
+    const start = Date.now();
+    try {
+      let result;
+      if (this.type === "sqlite") {
+        result = await this.querySQLite(text, params);
+      } else {
+        result = await this.queryPostgres(text, params);
+      }
+      const duration = Date.now() - start;
+      if (duration > 1e3) {
+        console.warn(`[DB] Slow query (${duration}ms):`, text.substring(0, 100));
+      }
+      return result;
+    } catch (error) {
+      console.error("[DB] Query error:", error);
+      console.error("[DB] Query:", text);
+      console.error("[DB] Params:", params);
+      throw error;
+    }
+  }
+  /**
+   * SQLite query execution
+   */
+  async querySQLite(text, params) {
+    if (!this.sqliteDb) {
+      throw new Error("SQLite not connected");
+    }
+    const sqliteQuery = text.replace(/\$\d+/g, "?");
+    if (text.trim().toUpperCase().startsWith("SELECT")) {
+      const stmt = this.sqliteDb.prepare(sqliteQuery);
+      const rows = params ? stmt.all(...params) : stmt.all();
+      return { rows, rowCount: rows.length };
+    } else {
+      const stmt = this.sqliteDb.prepare(sqliteQuery);
+      const result = params ? stmt.run(...params) : stmt.run();
+      return { rows: [], rowCount: result.changes };
+    }
+  }
+  /**
+   * PostgreSQL query execution
+   */
+  async queryPostgres(text, params) {
+    if (!this.pgPool) {
+      throw new Error("PostgreSQL not connected");
+    }
+    const result = await this.pgPool.query(text, params);
+    return { rows: result.rows, rowCount: result.rowCount || 0 };
+  }
+  /**
+   * Get client for transactions (PostgreSQL only)
+   */
+  async getClient() {
+    if (this.type === "postgres" && this.pgPool) {
+      return await this.pgPool.connect();
+    }
+    return null;
+  }
+  /**
+   * Execute transaction
+   */
+  async transaction(callback) {
+    if (this.type === "sqlite" && this.sqliteDb) {
+      return this.sqliteDb.transaction(async () => {
+        return await callback(async (query, params) => {
+          return await this.query(query, params);
+        });
+      })();
+    } else if (this.type === "postgres") {
+      const client = await this.getClient();
+      if (!client) throw new Error("No client available");
+      try {
+        await client.query("BEGIN");
+        const result = await callback(async (query, params) => {
+          return await client.query(query, params);
+        });
+        await client.query("COMMIT");
+        return result;
+      } catch (error) {
+        await client.query("ROLLBACK");
+        throw error;
+      } finally {
+        client.release();
+      }
+    }
+    throw new Error("Transaction not supported");
+  }
+  /**
+   * Health check
+   */
+  async healthCheck() {
+    const start = Date.now();
+    try {
+      await this.query("SELECT 1");
+      const latency = Date.now() - start;
+      return { connected: true, latency };
+    } catch (error) {
+      return {
+        connected: false,
+        error: error instanceof Error ? error.message : "Unknown error"
+      };
+    }
+  }
+  /**
+   * Get stats
+   */
+  getStats() {
+    if (this.type === "sqlite" && this.sqliteDb) {
+      return {
+        type: "sqlite",
+        inTransaction: this.sqliteDb.inTransaction,
+        readonly: this.sqliteDb.readonly
+      };
+    } else if (this.type === "postgres" && this.pgPool) {
+      return {
+        type: "postgres",
+        totalCount: this.pgPool.totalCount,
+        idleCount: this.pgPool.idleCount,
+        waitingCount: this.pgPool.waitingCount
+      };
+    }
+    return null;
+  }
+  /**
+   * Close connections
+   */
+  async close() {
+    if (this.type === "sqlite" && this.sqliteDb) {
+      this.sqliteDb.close();
+      this.sqliteDb = null;
+    } else if (this.type === "postgres" && this.pgPool) {
+      await this.pgPool.end();
+      this.pgPool = null;
+    }
+    console.log("[DB] Connection closed");
+  }
+}
+let db = null;
+function parseDatabaseConfig(url) {
+  if (url.startsWith("postgresql://") || url.startsWith("postgres://")) {
+    return { type: "postgres", url };
+  } else if (url.startsWith("sqlite:") || url.startsWith("file:")) {
+    return { type: "sqlite", url };
+  } else {
+    return { type: "sqlite", url: `sqlite:${url}` };
+  }
+}
+function getDatabase() {
+  if (!db) {
+    const url = process.env.DATABASE_URL || "sqlite:./data/opends.db";
+    const config = parseDatabaseConfig(url);
+    db = new UniversalDatabase(config);
+  }
+  return db;
+}
+async function initializeDatabase() {
+  const database = getDatabase();
+  await database.connect();
+}
+async function closeDatabase() {
+  if (db) {
+    await db.close();
+    db = null;
+  }
+}
+
+async function runMigrations() {
+  const db = getDatabase();
+  console.log("[Migrations] Starting database migrations...");
+  try {
+    const isPostgres = db.type === "postgres";
+    const migrationName = isPostgres ? "001_initial_schema_postgresql" : "001_initial_schema_sqlite";
+    console.log(`[Migrations] Detected ${isPostgres ? "PostgreSQL" : "SQLite"} database`);
+    if (isPostgres) {
+      await db.query(`
+        CREATE TABLE IF NOT EXISTS migrations (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255) NOT NULL UNIQUE,
+          executed_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+    } else {
+      await db.query(`
+        CREATE TABLE IF NOT EXISTS migrations (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          name TEXT NOT NULL UNIQUE,
+          executed_at TEXT NOT NULL DEFAULT (datetime('now'))
+        )
+      `);
+    }
+    const executedResult = await db.query(
+      "SELECT name FROM migrations ORDER BY id"
+    );
+    const executedMigrations = new Set(executedResult.rows.map((r) => r.name));
+    if (!executedMigrations.has(migrationName)) {
+      console.log(`[Migrations] Running ${migrationName}...`);
+      const migrationPath = join(process.cwd(), "migrations", `${migrationName}.sql`);
+      if (existsSync(migrationPath)) {
+        const sql = readFileSync(migrationPath, "utf-8");
+        if (isPostgres) {
+          await db.query(sql);
+        } else {
+          const statements = sql.split(";").map((s) => s.trim()).filter((s) => s.length > 0 && !s.startsWith("--"));
+          for (const statement of statements) {
+            await db.query(statement);
+          }
+        }
+        await db.query(
+          "INSERT INTO migrations (name) VALUES ($1)",
+          [migrationName]
+        );
+        console.log(`[Migrations] \u2705 ${migrationName} completed`);
+      } else {
+        console.warn(`[Migrations] \u26A0\uFE0F  Migration file not found: ${migrationPath}`);
+      }
+    } else {
+      console.log(`[Migrations] \u23ED\uFE0F  ${migrationName} already executed`);
+    }
+    console.log("[Migrations] All migrations completed successfully");
+  } catch (error) {
+    console.error("[Migrations] Failed to run migrations:", error);
+    throw error;
+  }
+}
+
+function createSuccessResponse(data, meta) {
+  return {
+    success: true,
+    data,
+    meta: {
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      ...meta
+    }
+  };
+}
+function createErrorResponse(code, message, details, field) {
+  return {
+    success: false,
+    error: {
+      code,
+      message,
+      details,
+      field
+    },
+    meta: {
+      timestamp: (/* @__PURE__ */ new Date()).toISOString()
+    }
+  };
+}
+function createPaginatedResponse(items, page, limit, total) {
+  const totalPages = Math.ceil(total / limit);
+  return {
+    success: true,
+    data: items,
+    meta: {
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages,
+        hasNext: page < totalPages,
+        hasPrev: page > 1
+      }
+    }
+  };
+}
+const ErrorCodes = {
+  // Validation errors (400)
+  VALIDATION_ERROR: "VALIDATION_ERROR",
+  INVALID_INPUT: "INVALID_INPUT",
+  MISSING_FIELD: "MISSING_FIELD",
+  // Authentication errors (401)
+  UNAUTHORIZED: "UNAUTHORIZED",
+  INVALID_TOKEN: "INVALID_TOKEN",
+  TOKEN_EXPIRED: "TOKEN_EXPIRED",
+  INVALID_CREDENTIALS: "INVALID_CREDENTIALS",
+  // Authorization errors (403)
+  FORBIDDEN: "FORBIDDEN",
+  INSUFFICIENT_PERMISSIONS: "INSUFFICIENT_PERMISSIONS",
+  // Not found errors (404)
+  NOT_FOUND: "NOT_FOUND",
+  RESOURCE_NOT_FOUND: "RESOURCE_NOT_FOUND",
+  // Conflict errors (409)
+  CONFLICT: "CONFLICT",
+  DUPLICATE_ENTRY: "DUPLICATE_ENTRY",
+  ALREADY_EXISTS: "ALREADY_EXISTS",
+  // Server errors (500)
+  INTERNAL_ERROR: "INTERNAL_ERROR",
+  DATABASE_ERROR: "DATABASE_ERROR",
+  EXTERNAL_SERVICE_ERROR: "EXTERNAL_SERVICE_ERROR",
+  // Rate limiting (429)
+  RATE_LIMIT_EXCEEDED: "RATE_LIMIT_EXCEEDED"
+};
+
+const paginationSchema = z.object({
+  page: z.coerce.number().int().positive().default(1),
+  limit: z.coerce.number().int().positive().max(100).default(20),
+  sort: z.string().optional(),
+  order: z.enum(["asc", "desc"]).default("desc")
+});
+z.object({
+  id: z.string().uuid("Invalid ID format")
+});
+z.object({
+  q: z.string().min(1).max(200),
+  ...paginationSchema.shape
+});
+const emailSchema = z.string().email("Invalid email format").toLowerCase();
+const passwordSchema = z.string().min(8, "Password must be at least 8 characters").max(128, "Password must not exceed 128 characters").regex(/[a-z]/, "Password must contain at least one lowercase letter").regex(/[A-Z]/, "Password must contain at least one uppercase letter").regex(/[0-9]/, "Password must contain at least one number");
+z.enum(["admin", "editor", "viewer"]);
+z.object({
+  from: z.coerce.date(),
+  to: z.coerce.date()
+}).refine((data) => data.from <= data.to, {
+  message: "Start date must be before end date"
+});
+z.object({
+  filename: z.string().min(1).max(255),
+  mimetype: z.string(),
+  size: z.number().positive().max(10 * 1024 * 1024)
+  // 10MB max
+});
+z.enum([
+  "button",
+  "input",
+  "card",
+  "modal",
+  "navigation",
+  "layout",
+  "data-display",
+  "feedback",
+  "other"
+]);
+z.enum([
+  "draft",
+  "review",
+  "approved",
+  "deprecated"
+]);
+z.enum([
+  "color",
+  "typography",
+  "spacing",
+  "sizing",
+  "border",
+  "shadow",
+  "animation",
+  "breakpoint"
+]);
 
 var inlineStyles$i = {
   root: {
@@ -6593,13 +7025,45 @@ const _Nzj5DUM5UIdwlrZ7bP1QoC7nKXUgo5gjg3gw4Xgr39c = defineNitroPlugin(async (ni
   });
 });
 
+const _9tFYlCNN1IjDUyACW2zDzhyHqQ2bJmWPZHBj9KxSbk = defineNitroPlugin$1(async (nitroApp) => {
+  console.log("[Server] Initializing database connection...");
+  try {
+    await initializeDatabase();
+    console.log("[Server] Database connected successfully");
+    await runMigrations();
+  } catch (error) {
+    console.error("[Server] Failed to initialize database:", error);
+    console.warn("[Server] Starting in degraded mode without database");
+  }
+  nitroApp.hooks.hook("close", async () => {
+    console.log("[Server] Closing database connection...");
+    await closeDatabase();
+  });
+});
+
 const plugins = [
   _mLolkE_eHxjcoqVT7tgqR0jzZOqHruqfEm5TYUupRs,
-_DT6ZKpuMltkq0DlmHzXCQkw_WpW0eP5lyhp8HzAcp4,
-_Nzj5DUM5UIdwlrZ7bP1QoC7nKXUgo5gjg3gw4Xgr39c
+_dL2N5Rzb9IfVnmkpXap9_XyPGN0HgHCTwqlMdGZ0hc,
+_Nzj5DUM5UIdwlrZ7bP1QoC7nKXUgo5gjg3gw4Xgr39c,
+_9tFYlCNN1IjDUyACW2zDzhyHqQ2bJmWPZHBj9KxSbk
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"550dd-gGVkcRJ9cfrbJCD6nMOaldb82xE\"",
+    "mtime": "2025-12-29T21:04:45.258Z",
+    "size": 348381,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"13121d-scoWaMpckfoOcbpOrrGoLcLu4AA\"",
+    "mtime": "2025-12-29T21:04:45.259Z",
+    "size": 1249821,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -6624,7 +7088,7 @@ function getAsset (id) {
 
 const METHODS = /* @__PURE__ */ new Set(["HEAD", "GET"]);
 const EncodingMap = { gzip: ".gz", br: ".br" };
-const _fyjCRg = eventHandler((event) => {
+const _AOdF6u = eventHandler((event) => {
   if (event.method && !METHODS.has(event.method)) {
     return;
   }
@@ -6686,6 +7150,139 @@ const _fyjCRg = eventHandler((event) => {
     setResponseHeader(event, "Content-Length", asset.size);
   }
   return readAsset(id);
+});
+
+const _JW4525 = defineEventHandler((event) => {
+  const allowedOrigins = (process.env.CORS_ORIGIN || "http://localhost:3000").split(",").map((origin2) => origin2.trim());
+  const origin = getRequestHeader(event, "origin");
+  if (origin && (allowedOrigins.includes("*") || allowedOrigins.includes(origin))) {
+    setResponseHeaders(event, {
+      "Access-Control-Allow-Origin": origin,
+      "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With",
+      "Access-Control-Allow-Credentials": "true",
+      "Access-Control-Max-Age": "86400"
+      // 24 hours
+    });
+  }
+  if (event.method === "OPTIONS") {
+    setResponseStatus(event, 204);
+    return "";
+  }
+});
+
+const _GCRh5V = defineEventHandler((event) => {
+  event.context.handleError = (error) => {
+    return handleApiError(event, error);
+  };
+});
+function handleApiError(event, error) {
+  console.error("[API Error]", error);
+  if (error instanceof ZodError) {
+    const firstError = error.errors[0];
+    setResponseStatus(event, 400);
+    return createErrorResponse(
+      ErrorCodes.VALIDATION_ERROR,
+      firstError.message,
+      error.errors,
+      firstError.path.join(".")
+    );
+  }
+  if (error instanceof Error) {
+    if (error.message.includes("not found")) {
+      setResponseStatus(event, 404);
+      return createErrorResponse(
+        ErrorCodes.NOT_FOUND,
+        error.message
+      );
+    }
+    if (error.message.includes("unauthorized") || error.message.includes("authentication")) {
+      setResponseStatus(event, 401);
+      return createErrorResponse(
+        ErrorCodes.UNAUTHORIZED,
+        error.message
+      );
+    }
+    if (error.message.includes("forbidden") || error.message.includes("permission")) {
+      setResponseStatus(event, 403);
+      return createErrorResponse(
+        ErrorCodes.FORBIDDEN,
+        error.message
+      );
+    }
+    if (error.message.includes("already exists") || error.message.includes("duplicate")) {
+      setResponseStatus(event, 409);
+      return createErrorResponse(
+        ErrorCodes.DUPLICATE_ENTRY,
+        error.message
+      );
+    }
+    setResponseStatus(event, 500);
+    return createErrorResponse(
+      ErrorCodes.INTERNAL_ERROR,
+      error.message,
+      error.stack 
+    );
+  }
+  setResponseStatus(event, 500);
+  return createErrorResponse(
+    ErrorCodes.INTERNAL_ERROR,
+    "An unexpected error occurred"
+  );
+}
+function asyncHandler(handler) {
+  return defineEventHandler(async (event) => {
+    try {
+      return await handler(event);
+    } catch (error) {
+      return handleApiError(event, error);
+    }
+  });
+}
+
+const _USpOY7 = defineEventHandler((event) => {
+  const startTime = Date.now();
+  const method = event.method;
+  const url = event.path;
+  if (process.env.LOG_LEVEL === "debug") {
+    console.log(`[${(/* @__PURE__ */ new Date()).toISOString()}] ${method} ${url}`);
+  }
+  event.node.res.on("finish", () => {
+    const duration = Date.now() - startTime;
+    const status = event.node.res.statusCode;
+    const statusColor = status >= 500 ? "\u{1F534}" : status >= 400 ? "\u{1F7E1}" : "\u{1F7E2}";
+    console.log(
+      `${statusColor} ${method} ${url} - ${status} (${duration}ms)`
+    );
+    if (duration > 1e3) {
+      console.warn(`\u26A0\uFE0F Slow request: ${method} ${url} took ${duration}ms`);
+    }
+  });
+});
+
+const _AF3L4X = defineEventHandler((event) => {
+  setResponseHeaders(event, {
+    // Prevent MIME type sniffing
+    "X-Content-Type-Options": "nosniff",
+    // Enable XSS protection
+    "X-XSS-Protection": "1; mode=block",
+    // Control iframe embedding
+    "X-Frame-Options": "SAMEORIGIN",
+    // Referrer policy
+    "Referrer-Policy": "strict-origin-when-cross-origin",
+    // Content Security Policy (basic)
+    "Content-Security-Policy": [
+      "default-src 'self'",
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval'",
+      // Needed for Nuxt dev
+      "style-src 'self' 'unsafe-inline'",
+      "img-src 'self' data: https:",
+      "font-src 'self' data:",
+      "connect-src 'self' ws: wss:"
+    ].join("; "),
+    // Strict Transport Security (HTTPS only - enable in production)
+    ...{}
+  });
 });
 
 const VueResolver = (_, value) => {
@@ -6997,31 +7594,91 @@ async function getIslandContext(event) {
   return ctx;
 }
 
+const _JW4525Meta = null;
+
+const _GCRh5VMeta = null;
+
+const _USpOY7Meta = null;
+
+const _AF3L4XMeta = null;
+
 const _kxFkvVMeta = null;
 
 const _RF70g1Meta = null;
 
-const _sCwMrVMeta = null;
+const _IwV8RIMeta = null;
+
+const _ovhSjVMeta = null;
+
+const __BdOyzMeta = null;
+
+const _iPa9rDMeta = null;
+
+const _hS9JguMeta = null;
+
+const _xOh_FgMeta = null;
+
+const _kRB0tXMeta = null;
+
+const _DqXYjIMeta = null;
+
+const _EvFYXFMeta = null;
+
+const _Dww1iKMeta = null;
+
+const _eqPxtXMeta = null;
+
+const __uikNJMeta = null;
+
+const _rHmE4oMeta = null;
+
+const _VlxER6Meta = null;
+
+const _Twc1NRMeta = null;
+
+const _GQNyUaMeta = null;
+
+const _QkKKb5Meta = null;
 
 const _SxA8c9Meta = null;
 
-const _5ap26HMeta = null;
+const _ineOqPMeta = null;
 
-const _Z8b42wMeta = null;
+const _1UCTtLMeta = null;
 
-const _tV6EF6Meta = null;
+const _dLnlIoMeta = null;
 
 const handlersMeta = [
-  { route: "/api/admin/login", method: "post", meta: _kxFkvVMeta },
+  { route: undefined, method: undefined, meta: _JW4525Meta },
+{ route: undefined, method: undefined, meta: _GCRh5VMeta },
+{ route: undefined, method: undefined, meta: _USpOY7Meta },
+{ route: undefined, method: undefined, meta: _AF3L4XMeta },
+{ route: "/api/admin/login", method: "post", meta: _kxFkvVMeta },
 { route: "/api/admin/me", method: "get", meta: _RF70g1Meta },
-{ route: "/__nuxt_error", method: undefined, meta: _sCwMrVMeta },
+{ route: "/api/auth/login", method: "post", meta: _IwV8RIMeta },
+{ route: "/api/auth/me", method: "get", meta: _ovhSjVMeta },
+{ route: "/api/auth/register", method: "post", meta: __BdOyzMeta },
+{ route: "/api/components/:id", method: "delete", meta: _iPa9rDMeta },
+{ route: "/api/components/:id", method: "get", meta: _hS9JguMeta },
+{ route: "/api/components/:id", method: "put", meta: _xOh_FgMeta },
+{ route: "/api/components", method: "get", meta: _kRB0tXMeta },
+{ route: "/api/components", method: "post", meta: _DqXYjIMeta },
+{ route: "/api/health", method: "get", meta: _EvFYXFMeta },
+{ route: "/api/tokens/:id", method: "delete", meta: _Dww1iKMeta },
+{ route: "/api/tokens/:id", method: "put", meta: _eqPxtXMeta },
+{ route: "/api/tokens/export", method: "get", meta: __uikNJMeta },
+{ route: "/api/tokens/import", method: "post", meta: _rHmE4oMeta },
+{ route: "/api/tokens", method: "get", meta: _VlxER6Meta },
+{ route: "/api/tokens", method: "post", meta: _Twc1NRMeta },
+{ route: "/api/users", method: "get", meta: _GQNyUaMeta },
+{ route: "/__nuxt_error", method: undefined, meta: _QkKKb5Meta },
 { route: "/__nuxt_island/**", method: undefined, meta: _SxA8c9Meta },
-{ route: "/_openapi.json", method: undefined, meta: _5ap26HMeta },
-{ route: "/_scalar", method: undefined, meta: _Z8b42wMeta },
-{ route: "/_swagger", method: undefined, meta: _tV6EF6Meta }
+{ route: "/_openapi.json", method: undefined, meta: _ineOqPMeta },
+{ route: "/_scalar", method: undefined, meta: _1UCTtLMeta },
+{ route: "/_swagger", method: undefined, meta: _dLnlIoMeta }
   ];
 
-const _5ap26H = eventHandler((event) => {
+const _ineOqP = eventHandler((event) => {
   const runtimeConfig = useRuntimeConfig(event);
   const base = runtimeConfig.app?.baseURL;
   const url = joinURL(getRequestURL(event).origin, base);
@@ -7117,7 +7774,7 @@ function defaultTags(route) {
   return tags;
 }
 
-const _Z8b42w = eventHandler((event) => {
+const _1UCTtL = eventHandler((event) => {
   const runtimeConfig = useRuntimeConfig(event);
   const title = runtimeConfig.nitro.openAPI?.meta?.title || "API Reference";
   const description = runtimeConfig.nitro.openAPI?.meta?.description || "";
@@ -7309,7 +7966,7 @@ const customTheme = (
   }`
 );
 
-const _tV6EF6 = eventHandler((event) => {
+const _dLnlIo = eventHandler((event) => {
   const runtimeConfig = useRuntimeConfig(event);
   const title = runtimeConfig.nitro.openAPI?.meta?.title || "API Reference";
   const description = runtimeConfig.nitro.openAPI?.meta?.description || "";
@@ -7351,20 +8008,56 @@ const _tV6EF6 = eventHandler((event) => {
   );
 });
 
-const _lazy_kxFkvV = () => Promise.resolve().then(function () { return login_post$1; });
-const _lazy_RF70g1 = () => Promise.resolve().then(function () { return me_get$1; });
-const _lazy_sCwMrV = () => Promise.resolve().then(function () { return renderer$1; });
+const _lazy_kxFkvV = () => Promise.resolve().then(function () { return login_post$3; });
+const _lazy_RF70g1 = () => Promise.resolve().then(function () { return me_get$3; });
+const _lazy_IwV8RI = () => Promise.resolve().then(function () { return login_post$1; });
+const _lazy_ovhSjV = () => Promise.resolve().then(function () { return me_get$1; });
+const _lazy__BdOyz = () => Promise.resolve().then(function () { return register_post$1; });
+const _lazy_iPa9rD = () => Promise.resolve().then(function () { return _id__delete$3; });
+const _lazy_hS9Jgu = () => Promise.resolve().then(function () { return _id__get$1; });
+const _lazy_xOh_Fg = () => Promise.resolve().then(function () { return _id__put$3; });
+const _lazy_kRB0tX = () => Promise.resolve().then(function () { return index_get$5; });
+const _lazy_DqXYjI = () => Promise.resolve().then(function () { return index_post$3; });
+const _lazy_EvFYXF = () => Promise.resolve().then(function () { return health_get$1; });
+const _lazy_Dww1iK = () => Promise.resolve().then(function () { return _id__delete$1; });
+const _lazy_eqPxtX = () => Promise.resolve().then(function () { return _id__put$1; });
+const _lazy__uikNJ = () => Promise.resolve().then(function () { return export_get$1; });
+const _lazy_rHmE4o = () => Promise.resolve().then(function () { return import_post$1; });
+const _lazy_VlxER6 = () => Promise.resolve().then(function () { return index_get$3; });
+const _lazy_Twc1NR = () => Promise.resolve().then(function () { return index_post$1; });
+const _lazy_GQNyUa = () => Promise.resolve().then(function () { return index_get$1; });
+const _lazy_QkKKb5 = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
-  { route: '', handler: _fyjCRg, lazy: false, middleware: true, method: undefined },
+  { route: '', handler: _AOdF6u, lazy: false, middleware: true, method: undefined },
+  { route: '', handler: _JW4525, lazy: false, middleware: true, method: undefined },
+  { route: '', handler: _GCRh5V, lazy: false, middleware: true, method: undefined },
+  { route: '', handler: _USpOY7, lazy: false, middleware: true, method: undefined },
+  { route: '', handler: _AF3L4X, lazy: false, middleware: true, method: undefined },
   { route: '/api/admin/login', handler: _lazy_kxFkvV, lazy: true, middleware: false, method: "post" },
   { route: '/api/admin/me', handler: _lazy_RF70g1, lazy: true, middleware: false, method: "get" },
-  { route: '/__nuxt_error', handler: _lazy_sCwMrV, lazy: true, middleware: false, method: undefined },
+  { route: '/api/auth/login', handler: _lazy_IwV8RI, lazy: true, middleware: false, method: "post" },
+  { route: '/api/auth/me', handler: _lazy_ovhSjV, lazy: true, middleware: false, method: "get" },
+  { route: '/api/auth/register', handler: _lazy__BdOyz, lazy: true, middleware: false, method: "post" },
+  { route: '/api/components/:id', handler: _lazy_iPa9rD, lazy: true, middleware: false, method: "delete" },
+  { route: '/api/components/:id', handler: _lazy_hS9Jgu, lazy: true, middleware: false, method: "get" },
+  { route: '/api/components/:id', handler: _lazy_xOh_Fg, lazy: true, middleware: false, method: "put" },
+  { route: '/api/components', handler: _lazy_kRB0tX, lazy: true, middleware: false, method: "get" },
+  { route: '/api/components', handler: _lazy_DqXYjI, lazy: true, middleware: false, method: "post" },
+  { route: '/api/health', handler: _lazy_EvFYXF, lazy: true, middleware: false, method: "get" },
+  { route: '/api/tokens/:id', handler: _lazy_Dww1iK, lazy: true, middleware: false, method: "delete" },
+  { route: '/api/tokens/:id', handler: _lazy_eqPxtX, lazy: true, middleware: false, method: "put" },
+  { route: '/api/tokens/export', handler: _lazy__uikNJ, lazy: true, middleware: false, method: "get" },
+  { route: '/api/tokens/import', handler: _lazy_rHmE4o, lazy: true, middleware: false, method: "post" },
+  { route: '/api/tokens', handler: _lazy_VlxER6, lazy: true, middleware: false, method: "get" },
+  { route: '/api/tokens', handler: _lazy_Twc1NR, lazy: true, middleware: false, method: "post" },
+  { route: '/api/users', handler: _lazy_GQNyUa, lazy: true, middleware: false, method: "get" },
+  { route: '/__nuxt_error', handler: _lazy_QkKKb5, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
-  { route: '/_openapi.json', handler: _5ap26H, lazy: false, middleware: false, method: undefined },
-  { route: '/_scalar', handler: _Z8b42w, lazy: false, middleware: false, method: undefined },
-  { route: '/_swagger', handler: _tV6EF6, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_sCwMrV, lazy: true, middleware: false, method: undefined }
+  { route: '/_openapi.json', handler: _ineOqP, lazy: false, middleware: false, method: undefined },
+  { route: '/_scalar', handler: _1UCTtL, lazy: false, middleware: false, method: undefined },
+  { route: '/_swagger', handler: _dLnlIo, lazy: false, middleware: false, method: undefined },
+  { route: '/**', handler: _lazy_QkKKb5, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
@@ -7619,7 +8312,7 @@ const styles$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: styles
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const login_post = defineEventHandler(async (event) => {
+const login_post$2 = defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { username, password } = body;
   if (username === "admin" && password === "admin") {
@@ -7636,12 +8329,12 @@ const login_post = defineEventHandler(async (event) => {
   }
 });
 
-const login_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const login_post$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: login_post
+  default: login_post$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const me_get = defineEventHandler(async (event) => {
+const me_get$2 = defineEventHandler(async (event) => {
   const authHeader = getHeader(event, "authorization");
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
     throw createError({
@@ -7662,9 +8355,1211 @@ const me_get = defineEventHandler(async (event) => {
   }
 });
 
+const me_get$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: me_get$2
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const SALT_ROUNDS = 12;
+class PasswordService {
+  /**
+   * Hash a password using bcrypt
+   */
+  static async hash(password) {
+    return await bcrypt.hash(password, SALT_ROUNDS);
+  }
+  /**
+   * Verify a password against a hash
+   */
+  static async verify(password, hash) {
+    return await bcrypt.compare(password, hash);
+  }
+  /**
+   * Validate password requirements
+   */
+  static validate(password) {
+    const errors = [];
+    if (password.length < 8) {
+      errors.push("Password must be at least 8 characters long");
+    }
+    if (password.length > 128) {
+      errors.push("Password must not exceed 128 characters");
+    }
+    if (!/[a-z]/.test(password)) {
+      errors.push("Password must contain at least one lowercase letter");
+    }
+    if (!/[A-Z]/.test(password)) {
+      errors.push("Password must contain at least one uppercase letter");
+    }
+    if (!/[0-9]/.test(password)) {
+      errors.push("Password must contain at least one number");
+    }
+    const requireSpecial = process.env.PASSWORD_REQUIRE_SPECIAL === "true";
+    if (requireSpecial && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+      errors.push("Password must contain at least one special character");
+    }
+    return {
+      valid: errors.length === 0,
+      errors
+    };
+  }
+}
+
+class JwtService {
+  static getSecret() {
+    const secret = process.env.JWT_SECRET;
+    if (!secret || secret === "dev-secret-change-in-production") {
+      console.warn("[JWT] Using default secret - CHANGE THIS IN PRODUCTION!");
+    }
+    return secret || "dev-secret-change-in-production";
+  }
+  /**
+   * Generate access token (short-lived)
+   */
+  static generateAccessToken(payload) {
+    return jwt.sign(payload, this.getSecret(), {
+      expiresIn: process.env.JWT_ACCESS_EXPIRE || "15m",
+      issuer: "opends",
+      audience: "opends-api"
+    });
+  }
+  /**
+   * Generate refresh token (long-lived)
+   */
+  static generateRefreshToken(payload) {
+    return jwt.sign(payload, this.getSecret(), {
+      expiresIn: process.env.JWT_REFRESH_EXPIRE || "7d",
+      issuer: "opends",
+      audience: "opends-api"
+    });
+  }
+  /**
+   * Generate both access and refresh tokens
+   */
+  static generateTokenPair(payload) {
+    return {
+      accessToken: this.generateAccessToken(payload),
+      refreshToken: this.generateRefreshToken(payload)
+    };
+  }
+  /**
+   * Verify and decode a token
+   */
+  static verify(token) {
+    try {
+      const decoded = jwt.verify(token, this.getSecret(), {
+        issuer: "opends",
+        audience: "opends-api"
+      });
+      return decoded;
+    } catch (error) {
+      if (error instanceof jwt.TokenExpiredError) {
+        throw new Error("Token has expired");
+      }
+      if (error instanceof jwt.JsonWebTokenError) {
+        throw new Error("Invalid token");
+      }
+      throw new Error("Token verification failed");
+    }
+  }
+  /**
+   * Decode token without verification (for debugging)
+   */
+  static decode(token) {
+    try {
+      return jwt.decode(token);
+    } catch {
+      return null;
+    }
+  }
+  /**
+   * Check if token is expired
+   */
+  static isExpired(token) {
+    try {
+      this.verify(token);
+      return false;
+    } catch (error) {
+      if (error instanceof Error && error.message === "Token has expired") {
+        return true;
+      }
+      return false;
+    }
+  }
+}
+
+class UserRepository {
+  /**
+   * Find user by ID
+   */
+  static async findById(id) {
+    const db = getDatabase();
+    const result = await db.query(
+      `SELECT * FROM users WHERE id = $1 AND deleted_at IS NULL`,
+      [id]
+    );
+    return result.rows[0] || null;
+  }
+  /**
+   * Find user by email
+   */
+  static async findByEmail(email) {
+    const db = getDatabase();
+    const result = await db.query(
+      `SELECT * FROM users WHERE email = $1 AND deleted_at IS NULL`,
+      [email.toLowerCase()]
+    );
+    return result.rows[0] || null;
+  }
+  /**
+   * Create a new user
+   */
+  static async create(data) {
+    const db = getDatabase();
+    const existing = await this.findByEmail(data.email);
+    if (existing) {
+      throw new Error("Email already exists");
+    }
+    const result = await db.query(
+      `INSERT INTO users (email, password_hash, name, role, is_active, is_verified)
+       VALUES ($1, $2, $3, $4, true, false)
+       RETURNING *`,
+      [
+        data.email.toLowerCase(),
+        data.password_hash,
+        data.name,
+        data.role || "viewer"
+      ]
+    );
+    return result.rows[0];
+  }
+  /**
+   * Update user
+   */
+  static async update(id, data) {
+    const db = getDatabase();
+    const updates = [];
+    const values = [];
+    let paramIndex = 1;
+    Object.entries(data).forEach(([key, value]) => {
+      if (value !== void 0) {
+        updates.push(`${key} = $${paramIndex}`);
+        values.push(value);
+        paramIndex++;
+      }
+    });
+    if (updates.length === 0) {
+      throw new Error("No fields to update");
+    }
+    values.push(id);
+    const result = await db.query(
+      `UPDATE users 
+       SET ${updates.join(", ")}, updated_at = CURRENT_TIMESTAMP
+       WHERE id = $${paramIndex} AND deleted_at IS NULL
+       RETURNING *`,
+      values
+    );
+    if (result.rows.length === 0) {
+      throw new Error("User not found");
+    }
+    return result.rows[0];
+  }
+  /**
+   * Check if this is the first user (for auto-admin)
+   */
+  static async isFirstUser() {
+    var _a;
+    const db = getDatabase();
+    const result = await db.query(
+      `SELECT COUNT(*) as count FROM users WHERE deleted_at IS NULL`
+    );
+    return (((_a = result.rows[0]) == null ? void 0 : _a.count) || 0) === 0;
+  }
+  /**
+   * Update last login timestamp
+   */
+  static async updateLastLogin(id) {
+    const db = getDatabase();
+    await db.query(
+      `UPDATE users 
+       SET last_login_at = CURRENT_TIMESTAMP,
+           failed_login_attempts = 0
+       WHERE id = $1`,
+      [id]
+    );
+  }
+  /**
+   * Increment failed login attempts
+   */
+  static async incrementFailedLogins(id) {
+    const db = getDatabase();
+    await db.query(
+      `UPDATE users 
+       SET failed_login_attempts = failed_login_attempts + 1
+       WHERE id = $1`,
+      [id]
+    );
+  }
+  /**
+   * Lock user account
+   */
+  static async lockAccount(id, duration = 30) {
+    const db = getDatabase();
+    await db.query(
+      `UPDATE users 
+       SET locked_until = datetime('now', '+${duration} minutes')
+       WHERE id = $1`,
+      [id]
+    );
+  }
+  /**
+   * Check if user is locked
+   */
+  static async isLocked(id) {
+    var _a;
+    const db = getDatabase();
+    const result = await db.query(
+      `SELECT COUNT(*) as count 
+       FROM users 
+       WHERE id = $1 
+         AND locked_until IS NOT NULL 
+         AND locked_until > CURRENT_TIMESTAMP`,
+      [id]
+    );
+    return (((_a = result.rows[0]) == null ? void 0 : _a.count) || 0) > 0;
+  }
+  /**
+   * List all users (for admin)
+   */
+  static async list(page = 1, limit = 20, role) {
+    var _a;
+    const db = getDatabase();
+    const offset = (page - 1) * limit;
+    let whereClause = "WHERE deleted_at IS NULL";
+    const params = [];
+    let paramIndex = 1;
+    if (role) {
+      whereClause += ` AND role = $${paramIndex}`;
+      params.push(role);
+      paramIndex++;
+    }
+    const countResult = await db.query(
+      `SELECT COUNT(*) as count FROM users ${whereClause}`,
+      params
+    );
+    const total = ((_a = countResult.rows[0]) == null ? void 0 : _a.count) || 0;
+    const usersResult = await db.query(
+      `SELECT * FROM users 
+       ${whereClause}
+       ORDER BY created_at DESC
+       LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+      [...params, limit, offset]
+    );
+    return {
+      users: usersResult.rows,
+      total
+    };
+  }
+  /**
+   * Soft delete user
+   */
+  static async delete(id) {
+    const db = getDatabase();
+    await db.query(
+      `UPDATE users SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1`,
+      [id]
+    );
+  }
+}
+
+const loginSchema = z.object({
+  email: emailSchema,
+  password: z.string().min(1, "Password is required")
+});
+const MAX_LOGIN_ATTEMPTS = 5;
+const LOCK_DURATION_MINUTES = 30;
+const login_post = asyncHandler(async (event) => {
+  const body = await readBody(event);
+  const { email, password } = loginSchema.parse(body);
+  const user = await UserRepository.findByEmail(email);
+  if (!user) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(
+      ErrorCodes.INVALID_CREDENTIALS,
+      "Invalid email or password"
+    );
+  }
+  const isLocked = await UserRepository.isLocked(user.id);
+  if (isLocked) {
+    setResponseStatus(event, 403);
+    return createErrorResponse(
+      ErrorCodes.FORBIDDEN,
+      "Account is temporarily locked due to too many failed login attempts. Please try again later."
+    );
+  }
+  if (!user.is_active) {
+    setResponseStatus(event, 403);
+    return createErrorResponse(
+      ErrorCodes.FORBIDDEN,
+      "Account has been deactivated. Please contact an administrator."
+    );
+  }
+  if (!user.password_hash) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(
+      ErrorCodes.INVALID_CREDENTIALS,
+      "Invalid email or password"
+    );
+  }
+  const isValidPassword = await PasswordService.verify(password, user.password_hash);
+  if (!isValidPassword) {
+    await UserRepository.incrementFailedLogins(user.id);
+    if (user.failed_login_attempts + 1 >= MAX_LOGIN_ATTEMPTS) {
+      await UserRepository.lockAccount(user.id, LOCK_DURATION_MINUTES);
+      setResponseStatus(event, 403);
+      return createErrorResponse(
+        ErrorCodes.FORBIDDEN,
+        `Account locked due to ${MAX_LOGIN_ATTEMPTS} failed login attempts. Please try again in ${LOCK_DURATION_MINUTES} minutes.`
+      );
+    }
+    setResponseStatus(event, 401);
+    return createErrorResponse(
+      ErrorCodes.INVALID_CREDENTIALS,
+      "Invalid email or password"
+    );
+  }
+  const tokens = JwtService.generateTokenPair({
+    userId: user.id,
+    email: user.email,
+    role: user.role
+  });
+  await UserRepository.updateLastLogin(user.id);
+  return createSuccessResponse({
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      avatarUrl: user.avatar_url,
+      isActive: user.is_active,
+      lastLoginAt: user.last_login_at,
+      createdAt: user.created_at
+    },
+    tokens
+  });
+});
+
+const login_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: login_post
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const me_get = asyncHandler(async (event) => {
+  const authHeader = getRequestHeader(event, "authorization");
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(
+      ErrorCodes.UNAUTHORIZED,
+      "Missing or invalid authorization header"
+    );
+  }
+  const token = authHeader.substring(7);
+  let payload;
+  try {
+    payload = JwtService.verify(token);
+  } catch (error) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(
+      ErrorCodes.INVALID_TOKEN,
+      error instanceof Error ? error.message : "Invalid token"
+    );
+  }
+  const user = await UserRepository.findById(payload.userId);
+  if (!user) {
+    setResponseStatus(event, 404);
+    return createErrorResponse(
+      ErrorCodes.NOT_FOUND,
+      "User not found"
+    );
+  }
+  if (!user.is_active) {
+    setResponseStatus(event, 403);
+    return createErrorResponse(
+      ErrorCodes.FORBIDDEN,
+      "Account has been deactivated"
+    );
+  }
+  return createSuccessResponse({
+    id: user.id,
+    email: user.email,
+    name: user.name,
+    role: user.role,
+    avatarUrl: user.avatar_url,
+    isActive: user.is_active,
+    isVerified: user.is_verified,
+    lastLoginAt: user.last_login_at,
+    createdAt: user.created_at
+  });
+});
+
 const me_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: me_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const registerSchema = z.object({
+  email: emailSchema,
+  password: passwordSchema,
+  name: z.string().min(1).max(255).trim()
+});
+const register_post = asyncHandler(async (event) => {
+  const body = await readBody(event);
+  const { email, password, name } = registerSchema.parse(body);
+  const passwordValidation = PasswordService.validate(password);
+  if (!passwordValidation.valid) {
+    setResponseStatus(event, 400);
+    return createErrorResponse(
+      ErrorCodes.VALIDATION_ERROR,
+      passwordValidation.errors[0],
+      passwordValidation.errors
+    );
+  }
+  const isFirstUser = await UserRepository.isFirstUser();
+  const allowRegistration = process.env.ALLOW_REGISTRATION === "true";
+  if (!isFirstUser && !allowRegistration) {
+    setResponseStatus(event, 403);
+    return createErrorResponse(
+      ErrorCodes.FORBIDDEN,
+      "Registration is disabled. Please contact an administrator for an invitation."
+    );
+  }
+  const passwordHash = await PasswordService.hash(password);
+  const user = await UserRepository.create({
+    email,
+    password_hash: passwordHash,
+    name,
+    role: isFirstUser ? "admin" : "viewer"
+  });
+  const tokens = JwtService.generateTokenPair({
+    userId: user.id,
+    email: user.email,
+    role: user.role
+  });
+  await UserRepository.updateLastLogin(user.id);
+  setResponseStatus(event, 201);
+  return createSuccessResponse({
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+      isActive: user.is_active,
+      createdAt: user.created_at
+    },
+    tokens
+  });
+});
+
+const register_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: register_post
+}, Symbol.toStringTag, { value: 'Module' }));
+
+let ComponentRepository$1 = class ComponentRepository {
+  /**
+   * Get all components (excluding deleted)
+   */
+  async findAll(filters) {
+    const db = getDatabase();
+    let query = `
+      SELECT * FROM components 
+      WHERE deleted_at IS NULL
+    `;
+    const params = [];
+    let paramIndex = 1;
+    if (filters == null ? void 0 : filters.category) {
+      query += ` AND category = $${paramIndex++}`;
+      params.push(filters.category);
+    }
+    if (filters == null ? void 0 : filters.status) {
+      query += ` AND status = $${paramIndex++}`;
+      params.push(filters.status);
+    }
+    if (filters == null ? void 0 : filters.search) {
+      query += ` AND (name ILIKE $${paramIndex++} OR display_name ILIKE $${paramIndex++})`;
+      params.push(`%${filters.search}%`, `%${filters.search}%`);
+    }
+    query += ` ORDER BY created_at DESC`;
+    const result = await db.query(query, params);
+    return result.rows;
+  }
+  /**
+   * Get component by ID
+   */
+  async findById(id) {
+    const db = getDatabase();
+    const result = await db.query(
+      "SELECT * FROM components WHERE id = $1 AND deleted_at IS NULL",
+      [id]
+    );
+    return result.rows[0] || null;
+  }
+  /**
+   * Get component by name
+   */
+  async findByName(name) {
+    const db = getDatabase();
+    const result = await db.query(
+      "SELECT * FROM components WHERE name = $1 AND deleted_at IS NULL",
+      [name]
+    );
+    return result.rows[0] || null;
+  }
+  /**
+   * Create new component
+   */
+  async create(data) {
+    const db = getDatabase();
+    const result = await db.query(
+      `INSERT INTO components (
+        name, display_name, description, category, status, 
+        spec, preview_url, created_by, updated_by
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $8)
+      RETURNING *`,
+      [
+        data.name,
+        data.display_name || null,
+        data.description || null,
+        data.category || null,
+        data.status || "draft",
+        JSON.stringify(data.spec),
+        data.preview_url || null,
+        data.created_by
+      ]
+    );
+    return result.rows[0];
+  }
+  /**
+   * Update component
+   */
+  async update(id, data, updated_by) {
+    const db = getDatabase();
+    const updateFields = [];
+    const params = [];
+    let paramIndex = 1;
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === "spec" && value !== void 0) {
+        updateFields.push(`${key} = $${paramIndex++}`);
+        params.push(JSON.stringify(value));
+      } else if (value !== void 0) {
+        updateFields.push(`${key} = $${paramIndex++}`);
+        params.push(value);
+      }
+    });
+    updateFields.push(`updated_by = $${paramIndex++}`);
+    params.push(updated_by);
+    updateFields.push(`updated_at = CURRENT_TIMESTAMP`);
+    params.push(id);
+    const result = await db.query(
+      `UPDATE components 
+       SET ${updateFields.join(", ")}
+       WHERE id = $${paramIndex} AND deleted_at IS NULL
+       RETURNING *`,
+      params
+    );
+    return result.rows[0] || null;
+  }
+  /**
+   * Soft delete component
+   */
+  async delete(id) {
+    const db = getDatabase();
+    const result = await db.query(
+      "UPDATE components SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1 AND deleted_at IS NULL",
+      [id]
+    );
+    return result.rowCount > 0;
+  }
+  /**
+   * Get component count by status
+   */
+  async getStats() {
+    const db = getDatabase();
+    const result = await db.query(
+      `SELECT status, COUNT(*)::int as count 
+       FROM components 
+       WHERE deleted_at IS NULL 
+       GROUP BY status`
+    );
+    const stats = {
+      total: 0,
+      draft: 0,
+      review: 0,
+      approved: 0,
+      deprecated: 0
+    };
+    result.rows.forEach((row) => {
+      stats[row.status] = row.count;
+      stats.total += row.count;
+    });
+    return stats;
+  }
+};
+const ComponentRepository = new ComponentRepository$1();
+
+const _id__delete$2 = asyncHandler(async (event) => {
+  const id = getRouterParam(event, "id");
+  if (!id) {
+    setResponseStatus(event, 400);
+    return createErrorResponse(ErrorCodes.VALIDATION_ERROR, "Component ID is required");
+  }
+  const authHeader = getRequestHeader(event, "authorization");
+  if (!(authHeader == null ? void 0 : authHeader.startsWith("Bearer "))) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Missing authentication token");
+  }
+  const token = authHeader.substring(7);
+  const payload = JwtService.verify(token);
+  if (!payload) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
+  }
+  const deleted = await ComponentRepository.delete(id);
+  if (!deleted) {
+    setResponseStatus(event, 404);
+    return createErrorResponse(ErrorCodes.NOT_FOUND, "Component not found");
+  }
+  return createSuccessResponse({ message: "Component deleted successfully" });
+});
+
+const _id__delete$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__delete$2
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const _id__get = asyncHandler(async (event) => {
+  const id = getRouterParam(event, "id");
+  if (!id) {
+    setResponseStatus(event, 400);
+    return createErrorResponse(ErrorCodes.VALIDATION_ERROR, "Component ID is required");
+  }
+  const component = await ComponentRepository.findById(id);
+  if (!component) {
+    setResponseStatus(event, 404);
+    return createErrorResponse(ErrorCodes.NOT_FOUND, "Component not found");
+  }
+  return createSuccessResponse({ component });
+});
+
+const _id__get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__get
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const updateSchema$1 = z.object({
+  name: z.string().min(1).max(255).optional(),
+  display_name: z.string().max(255).optional(),
+  description: z.string().optional(),
+  category: z.string().max(100).optional(),
+  status: z.enum(["draft", "review", "approved", "deprecated"]).optional(),
+  spec: z.any().optional(),
+  preview_url: z.string().url().optional().or(z.literal(""))
+});
+const _id__put$2 = asyncHandler(async (event) => {
+  const id = getRouterParam(event, "id");
+  if (!id) {
+    setResponseStatus(event, 400);
+    return createErrorResponse(ErrorCodes.VALIDATION_ERROR, "Component ID is required");
+  }
+  const authHeader = getRequestHeader(event, "authorization");
+  if (!(authHeader == null ? void 0 : authHeader.startsWith("Bearer "))) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Missing authentication token");
+  }
+  const token = authHeader.substring(7);
+  const payload = JwtService.verify(token);
+  if (!payload) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
+  }
+  const body = await readBody(event);
+  const data = updateSchema$1.parse(body);
+  const component = await ComponentRepository.update(id, data, payload.userId);
+  if (!component) {
+    setResponseStatus(event, 404);
+    return createErrorResponse(ErrorCodes.NOT_FOUND, "Component not found");
+  }
+  return createSuccessResponse({ component });
+});
+
+const _id__put$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__put$2
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const index_get$4 = asyncHandler(async (event) => {
+  const query = getQuery$1(event);
+  const filters = {
+    category: query.category,
+    status: query.status,
+    search: query.search
+  };
+  const components = await ComponentRepository.findAll(filters);
+  const stats = await ComponentRepository.getStats();
+  return createSuccessResponse({
+    components,
+    stats
+  });
+});
+
+const index_get$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_get$4
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const componentSchema = z.object({
+  name: z.string().min(1).max(255),
+  display_name: z.string().max(255).optional(),
+  description: z.string().optional(),
+  category: z.string().max(100).optional(),
+  status: z.enum(["draft", "review", "approved", "deprecated"]).optional(),
+  spec: z.any(),
+  preview_url: z.string().url().optional().or(z.literal(""))
+});
+const index_post$2 = asyncHandler(async (event) => {
+  const authHeader = getRequestHeader(event, "authorization");
+  if (!(authHeader == null ? void 0 : authHeader.startsWith("Bearer "))) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Missing authentication token");
+  }
+  const token = authHeader.substring(7);
+  const payload = JwtService.verify(token);
+  if (!payload) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
+  }
+  const body = await readBody(event);
+  const data = componentSchema.parse(body);
+  const existing = await ComponentRepository.findByName(data.name);
+  if (existing) {
+    setResponseStatus(event, 409);
+    return createErrorResponse(
+      ErrorCodes.CONFLICT,
+      `Component with name "${data.name}" already exists`
+    );
+  }
+  const component = await ComponentRepository.create({
+    ...data,
+    created_by: payload.userId
+  });
+  setResponseStatus(event, 201);
+  return createSuccessResponse({ component });
+});
+
+const index_post$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_post$2
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const health_get = defineEventHandler(async (event) => {
+  const startTime = Date.now();
+  try {
+    const db = getDatabase();
+    const dbHealth = await db.healthCheck();
+    const dbStats = db.getStats();
+    const responseTime = Date.now() - startTime;
+    const status = dbHealth.connected ? "healthy" : "unhealthy";
+    return {
+      status,
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      uptime: process.uptime(),
+      responseTime,
+      environment: "development",
+      version: "0.2.0",
+      services: {
+        api: {
+          status: "healthy",
+          responseTime
+        },
+        database: {
+          status: dbHealth.connected ? "healthy" : "unhealthy",
+          latency: dbHealth.latency,
+          error: dbHealth.error,
+          pool: dbStats
+        }
+      }
+    };
+  } catch (error) {
+    setResponseStatus(event, 503);
+    return {
+      status: "unhealthy",
+      timestamp: (/* @__PURE__ */ new Date()).toISOString(),
+      error: error instanceof Error ? error.message : "Unknown error",
+      services: {
+        api: {
+          status: "healthy"
+        },
+        database: {
+          status: "unhealthy",
+          error: error instanceof Error ? error.message : "Unknown error"
+        }
+      }
+    };
+  }
+});
+
+const health_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: health_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
+class DesignTokenRepository {
+  /**
+   * Get all tokens (excluding deleted)
+   */
+  async findAll(filters) {
+    const db = getDatabase();
+    let query = `
+      SELECT * FROM design_tokens 
+      WHERE deleted_at IS NULL
+    `;
+    const params = [];
+    let paramIndex = 1;
+    if (filters == null ? void 0 : filters.category) {
+      query += ` AND category = $${paramIndex++}`;
+      params.push(filters.category);
+    }
+    if (filters == null ? void 0 : filters.search) {
+      query += ` AND name ILIKE $${paramIndex++}`;
+      params.push(`%${filters.search}%`);
+    }
+    query += ` ORDER BY category, name`;
+    const result = await db.query(query, params);
+    return result.rows;
+  }
+  /**
+   * Get token by ID
+   */
+  async findById(id) {
+    const db = getDatabase();
+    const result = await db.query(
+      "SELECT * FROM design_tokens WHERE id = $1 AND deleted_at IS NULL",
+      [id]
+    );
+    return result.rows[0] || null;
+  }
+  /**
+   * Get token by name
+   */
+  async findByName(name) {
+    const db = getDatabase();
+    const result = await db.query(
+      "SELECT * FROM design_tokens WHERE name = $1 AND deleted_at IS NULL",
+      [name]
+    );
+    return result.rows[0] || null;
+  }
+  /**
+   * Create new token
+   */
+  async create(data) {
+    var _a;
+    const db = getDatabase();
+    const result = await db.query(
+      `INSERT INTO design_tokens (
+        name, category, value, description, created_by, updated_by
+      ) VALUES ($1, $2, $3, $4, $5, $5)
+      RETURNING *`,
+      [
+        data.name,
+        data.category,
+        JSON.stringify((_a = data.value) != null ? _a : null),
+        data.description || null,
+        data.created_by
+      ]
+    );
+    return result.rows[0];
+  }
+  /**
+   * Update token
+   */
+  async update(id, data, updated_by) {
+    const db = getDatabase();
+    const updateFields = [];
+    const params = [];
+    let paramIndex = 1;
+    Object.entries(data).forEach(([key, value]) => {
+      if (key === "value") {
+        updateFields.push(`${key} = $${paramIndex++}`);
+        params.push(JSON.stringify(value != null ? value : null));
+      } else if (value !== void 0) {
+        updateFields.push(`${key} = $${paramIndex++}`);
+        params.push(value);
+      }
+    });
+    updateFields.push(`updated_by = $${paramIndex++}`);
+    params.push(updated_by);
+    updateFields.push(`updated_at = CURRENT_TIMESTAMP`);
+    params.push(id);
+    const result = await db.query(
+      `UPDATE design_tokens 
+       SET ${updateFields.join(", ")}
+       WHERE id = $${paramIndex} AND deleted_at IS NULL
+       RETURNING *`,
+      params
+    );
+    return result.rows[0] || null;
+  }
+  // ... (rest of the file)
+  /**
+   * Import tokens from JSON
+   */
+  async importTokens(tokensData, created_by) {
+    var _a;
+    let imported = 0;
+    let skipped = 0;
+    const errors = [];
+    for (const [name, data] of Object.entries(tokensData)) {
+      try {
+        const existing = await this.findByName(name);
+        if (existing) {
+          skipped++;
+          continue;
+        }
+        if (!data || typeof data !== "object") {
+          errors.push(`${name}: Invalid data format`);
+          continue;
+        }
+        await this.create({
+          name,
+          category: data.category || "misc",
+          value: (_a = data.value) != null ? _a : null,
+          description: data.description,
+          created_by
+        });
+        imported++;
+      } catch (error) {
+        errors.push(`${name}: ${error.message}`);
+      }
+    }
+    return { imported, skipped, errors };
+  }
+}
+const DesignTokenRepository$1 = new DesignTokenRepository();
+
+const _id__delete = asyncHandler(async (event) => {
+  const id = getRouterParam(event, "id");
+  if (!id) {
+    setResponseStatus(event, 400);
+    return createErrorResponse(ErrorCodes.VALIDATION_ERROR, "Token ID is required");
+  }
+  const authHeader = getRequestHeader(event, "authorization");
+  if (!(authHeader == null ? void 0 : authHeader.startsWith("Bearer "))) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Missing authentication token");
+  }
+  const token = authHeader.substring(7);
+  const payload = JwtService.verify(token);
+  if (!payload) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
+  }
+  const deleted = await DesignTokenRepository$1.delete(id);
+  if (!deleted) {
+    setResponseStatus(event, 404);
+    return createErrorResponse(ErrorCodes.NOT_FOUND, "Token not found");
+  }
+  return createSuccessResponse({ message: "Token deleted successfully" });
+});
+
+const _id__delete$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__delete
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const updateSchema = z.object({
+  name: z.string().min(1).max(255).optional(),
+  category: z.string().min(1).max(100).optional(),
+  value: z.any().optional(),
+  description: z.string().optional()
+});
+const _id__put = asyncHandler(async (event) => {
+  const id = getRouterParam(event, "id");
+  if (!id) {
+    setResponseStatus(event, 400);
+    return createErrorResponse(ErrorCodes.VALIDATION_ERROR, "Token ID is required");
+  }
+  const authHeader = getRequestHeader(event, "authorization");
+  if (!(authHeader == null ? void 0 : authHeader.startsWith("Bearer "))) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Missing authentication token");
+  }
+  const tokenStr = authHeader.substring(7);
+  const payload = JwtService.verify(tokenStr);
+  if (!payload) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
+  }
+  const body = await readBody(event);
+  const data = updateSchema.parse(body);
+  const token = await DesignTokenRepository$1.update(id, data, payload.userId);
+  if (!token) {
+    setResponseStatus(event, 404);
+    return createErrorResponse(ErrorCodes.NOT_FOUND, "Token not found");
+  }
+  return createSuccessResponse({ token });
+});
+
+const _id__put$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _id__put
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const export_get = asyncHandler(async (event) => {
+  const tokens = await DesignTokenRepository$1.exportTokens();
+  return createSuccessResponse({ tokens });
+});
+
+const export_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: export_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const importSchema = z.object({
+  tokens: z.record(z.any())
+});
+const import_post = asyncHandler(async (event) => {
+  const authHeader = getRequestHeader(event, "authorization");
+  if (!(authHeader == null ? void 0 : authHeader.startsWith("Bearer "))) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Missing authentication token");
+  }
+  const token = authHeader.substring(7);
+  const payload = JwtService.verify(token);
+  if (!payload) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
+  }
+  const body = await readBody(event);
+  const data = importSchema.parse(body);
+  const result = await DesignTokenRepository$1.importTokens(data.tokens, payload.userId);
+  return createSuccessResponse(result);
+});
+
+const import_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: import_post
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const index_get$2 = asyncHandler(async (event) => {
+  const query = getQuery$1(event);
+  const filters = {
+    category: query.category,
+    search: query.search
+  };
+  const tokens = await DesignTokenRepository$1.findAll(filters);
+  const stats = await DesignTokenRepository$1.getStats();
+  return createSuccessResponse({
+    tokens,
+    stats
+  });
+});
+
+const index_get$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_get$2
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const tokenSchema = z.object({
+  name: z.string().min(1).max(255),
+  category: z.string().min(1).max(100),
+  value: z.any(),
+  description: z.string().optional()
+});
+const index_post = asyncHandler(async (event) => {
+  const authHeader = getRequestHeader(event, "authorization");
+  if (!(authHeader == null ? void 0 : authHeader.startsWith("Bearer "))) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Missing authentication token");
+  }
+  const tokenStr = authHeader.substring(7);
+  const payload = JwtService.verify(tokenStr);
+  if (!payload) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
+  }
+  const body = await readBody(event);
+  const data = tokenSchema.parse(body);
+  const existing = await DesignTokenRepository$1.findByName(data.name);
+  if (existing) {
+    setResponseStatus(event, 409);
+    return createErrorResponse(
+      ErrorCodes.CONFLICT,
+      `Token with name "${data.name}" already exists`
+    );
+  }
+  const token = await DesignTokenRepository$1.create({
+    ...data,
+    created_by: payload.userId
+  });
+  setResponseStatus(event, 201);
+  return createSuccessResponse({ token });
+});
+
+const index_post$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_post
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const querySchema = z.object({
+  ...paginationSchema.shape,
+  role: z.enum(["admin", "editor", "viewer"]).optional(),
+  search: z.string().min(1).max(100).optional()
+});
+const index_get = asyncHandler(async (event) => {
+  var _a;
+  const query = await getValidatedQuery(event, querySchema.parse);
+  const { page, limit, role, search } = query;
+  const offset = (page - 1) * limit;
+  const db = getDatabase();
+  let whereClause = "WHERE deleted_at IS NULL";
+  const params = [];
+  let paramIndex = 1;
+  if (role) {
+    whereClause += ` AND role = $${paramIndex}`;
+    params.push(role);
+    paramIndex++;
+  }
+  if (search) {
+    whereClause += ` AND (email LIKE $${paramIndex} OR name LIKE $${paramIndex})`;
+    params.push(`%${search}%`);
+    paramIndex++;
+  }
+  const countResult = await db.query(
+    `SELECT COUNT(*) as count FROM users ${whereClause}`,
+    params
+  );
+  const total = ((_a = countResult.rows[0]) == null ? void 0 : _a.count) || 0;
+  const usersResult = await db.query(
+    `SELECT 
+      id, email, name, role, avatar_url, is_active, created_at, last_login_at
+     FROM users 
+     ${whereClause}
+     ORDER BY created_at DESC
+     LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+    [...params, limit, offset]
+  );
+  return createPaginatedResponse(
+    usersResult.rows,
+    page,
+    limit,
+    total
+  );
+});
+
+const index_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_get
 }, Symbol.toStringTag, { value: 'Module' }));
 
 function renderPayloadResponse(ssrContext) {

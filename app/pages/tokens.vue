@@ -92,8 +92,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import designSystemStorage from '@/design-system/storage'
-import ViewerSidebar from '@/app/components/ViewerSidebar.vue'
+import designSystemStorage from '../../src/design-system/storage'
+import ViewerSidebar from '../components/ViewerSidebar.vue'
 
 const tokens = designSystemStorage.getTokens()
 

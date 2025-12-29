@@ -36,6 +36,9 @@
     "@storybook/addon-links": "^8.6.15",
     "@storybook/addon-onboarding": "^8.6.15",
     "@storybook/vue3-vite": "^8.6.15",
+    "@types/bcryptjs": "^3.0.0",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.19.27",
     "@types/react": "^18.3.27",
     "@types/react-dom": "^18.3.7",
@@ -77,5 +80,15 @@
   "bugs": {
     "url": "https://github.com/opends/opends/issues"
   },
-  "homepage": "https://opends.dev"
+  "homepage": "https://opends.dev",
+  "dependencies": {
+    "@types/pg": "^8.16.0",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.5.0",
+    "h3": "^1.15.0",
+    "h3-zod": "^0.5.3",
+    "jsonwebtoken": "^9.0.3",
+    "pg": "^8.16.3",
+    "zod": "^4.2.1"
+  }
 }

@@ -10,9 +10,15 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
       cdnURL: string,
    },
 
-   private: {
-      dbUrl: string,
-   },
+   dbUrl: string,
+
+   jwtSecret: string,
+
+   jwtAccessExpire: string,
+
+   jwtRefreshExpire: string,
+
+   allowRegistration: boolean,
 
    nitro: {
       envPrefix: string,
@@ -20,8 +26,6 @@ import { RuntimeConfig as UserRuntimeConfig, PublicRuntimeConfig as UserPublicRu
   }
   interface SharedPublicRuntimeConfig {
    apiBase: string,
-
-   adminPassword: string,
 
    primevue: {
       usePrimeVue: boolean,

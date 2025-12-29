@@ -128,7 +128,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import DocsSidebar from '@/app/components/DocsSidebar.vue'
+import DocsSidebar from '../../components/DocsSidebar.vue'
 
 interface Token {
   key: string

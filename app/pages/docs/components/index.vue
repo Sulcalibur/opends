@@ -117,9 +117,9 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import designSystemStorage from '@/design-system/storage'
-import type { ComponentSpec } from '@/design-system/storage'
-import ViewerSidebar from '@/app/components/ViewerSidebar.vue'
+import designSystemStorage from '../../../../src/design-system/storage'
+import type { ComponentSpec } from '../../../../src/design-system/storage'
+import ViewerSidebar from '../../../components/ViewerSidebar.vue'
 
 const searchQuery = ref('')
 const selectedCategory = ref<string | null>(null)

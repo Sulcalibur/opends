@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import DocsSidebar from '@/app/components/DocsSidebar.vue'
+import DocsSidebar from '../../components/DocsSidebar.vue'
 
 const route = useRoute()
 const router = useRouter()

@@ -9,20 +9,58 @@ declare module "nitropack/types" {
     '/api/admin/me': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/admin/me.get').default>>>>
     }
+    '/api/auth/login': {
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/login.post').default>>>>
+    }
+    '/api/auth/me': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/me.get').default>>>>
+    }
+    '/api/auth/register': {
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/auth/register.post').default>>>>
+    }
+    '/api/components/:id': {
+      'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/components/[id].delete').default>>>>
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/components/[id].get').default>>>>
+      'put': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/components/[id].put').default>>>>
+    }
+    '/api/components': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/components/index.get').default>>>>
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/components/index.post').default>>>>
+    }
+    '/api/health': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/health.get').default>>>>
+    }
+    '/api/tokens/:id': {
+      'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/tokens/[id].delete').default>>>>
+      'put': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/tokens/[id].put').default>>>>
+    }
+    '/api/tokens/export': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/tokens/export.get').default>>>>
+    }
+    '/api/tokens/import': {
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/tokens/import.post').default>>>>
+    }
+    '/api/tokens': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/tokens/index.get').default>>>>
+      'post': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/tokens/index.post').default>>>>
+    }
+    '/api/users': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/index.get').default>>>>
+    }
     '/__nuxt_error': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.2.2_db0@0.3.4_ioredis@5.8.2_magicast@0.5.1_nuxt@4.2.2_@parcel+watc_ddd996e43fc9f1c18ad3415bbbc97592/node_modules/@nuxt/nitro-server/dist/runtime/handlers/renderer').default>>>>
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.2.2_better-sqlite3@12.5.0_db0@0.3.4_better-sqlite3@12.5.0__ioredis_e8f08a6bc4cc871b9f27afd338bb9eba/node_modules/@nuxt/nitro-server/dist/runtime/handlers/renderer').default>>>>
     }
     '/__nuxt_island/**': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/#internal/nuxt/island-renderer').default>>>>
     }
     '/_openapi.json': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/routes/openapi').default>>>>
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/routes/openapi').default>>>>
     }
     '/_scalar': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/routes/scalar').default>>>>
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/routes/scalar').default>>>>
     }
     '/_swagger': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/routes/swagger').default>>>>
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/routes/swagger').default>>>>
     }
   }
 }

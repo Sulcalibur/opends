@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-50">
     <div class="hero-section py-32 bg-gradient-to-br from-blue-50 to-blue-100">
-      <div class="container text-center">
+      <div class="container mx-auto max-w-7xl px-4 text-center">
         <h1 class="text-4xl font-bold text-gray-900 mb-4">OpenDS</h1>
         <p class="text-xl text-gray-700 mb-8">Simple, self-hosted design system documentation</p>
         <div class="flex justify-center gap-4">
@@ -16,7 +16,7 @@
     </div>
 
     <div class="features-section py-20 bg-white">
-      <div class="container">
+      <div class="container mx-auto max-w-7xl px-4">
         <h2 class="text-2xl font-bold text-center mb-12">Features</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div class="bg-white p-6 rounded-lg border shadow-sm">
@@ -36,7 +36,7 @@
     </div>
 
     <div class="cta-section py-32 bg-blue-600">
-      <div class="container text-center">
+      <div class="container mx-auto max-w-7xl px-4 text-center">
         <h2 class="text-3xl font-bold text-white mb-4">Ready to get started?</h2>
         <p class="text-xl text-blue-100 mb-8">Nuxt 4 is now running!</p>
         <p class="text-blue-100">Visit <NuxtLink to="/docs" class="text-white underline">docs</NuxtLink> or <NuxtLink to="/components" class="text-white underline">components</NuxtLink></p>

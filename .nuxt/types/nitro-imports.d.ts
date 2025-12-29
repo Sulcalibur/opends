@@ -1,6 +1,7 @@
 declare global {
-  const __buildAssetsURL: typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.2.2_db0@0.3.4_ioredis@5.8.2_magicast@0.5.1_nuxt@4.2.2_@parcel+watc_ddd996e43fc9f1c18ad3415bbbc97592/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths').buildAssetsURL
-  const __publicAssetsURL: typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.2.2_db0@0.3.4_ioredis@5.8.2_magicast@0.5.1_nuxt@4.2.2_@parcel+watc_ddd996e43fc9f1c18ad3415bbbc97592/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths').publicAssetsURL
+  const ErrorCodes: typeof import('../../server/utils/response').ErrorCodes
+  const __buildAssetsURL: typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.2.2_better-sqlite3@12.5.0_db0@0.3.4_better-sqlite3@12.5.0__ioredis_e8f08a6bc4cc871b9f27afd338bb9eba/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths').buildAssetsURL
+  const __publicAssetsURL: typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.2.2_better-sqlite3@12.5.0_db0@0.3.4_better-sqlite3@12.5.0__ioredis_e8f08a6bc4cc871b9f27afd338bb9eba/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths').publicAssetsURL
   const appendCorsHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').appendCorsHeaders
   const appendCorsPreflightHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').appendCorsPreflightHeaders
   const appendHeader: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').appendHeader
@@ -8,42 +9,53 @@ declare global {
   const appendResponseHeader: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').appendResponseHeader
   const appendResponseHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').appendResponseHeaders
   const assertMethod: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').assertMethod
-  const cachedEventHandler: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/cache').cachedEventHandler
-  const cachedFunction: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/cache').cachedFunction
+  const cachedEventHandler: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/cache').cachedEventHandler
+  const cachedFunction: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/cache').cachedFunction
   const callNodeListener: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').callNodeListener
   const clearResponseHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').clearResponseHeaders
   const clearSession: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').clearSession
+  const closeDatabase: typeof import('../../server/utils/db').closeDatabase
+  const componentCategorySchema: typeof import('../../server/utils/validation').componentCategorySchema
+  const componentStatusSchema: typeof import('../../server/utils/validation').componentStatusSchema
   const createApp: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').createApp
   const createAppEventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').createAppEventHandler
   const createError: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').createError
+  const createErrorResponse: typeof import('../../server/utils/response').createErrorResponse
   const createEvent: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').createEvent
   const createEventStream: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').createEventStream
+  const createPaginatedResponse: typeof import('../../server/utils/response').createPaginatedResponse
   const createRouter: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').createRouter
+  const createSuccessResponse: typeof import('../../server/utils/response').createSuccessResponse
+  const dateRangeSchema: typeof import('../../server/utils/validation').dateRangeSchema
+  const db: typeof import('../../server/utils/db').default
   const defaultContentType: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').defaultContentType
-  const defineAppConfig: typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.2.2_db0@0.3.4_ioredis@5.8.2_magicast@0.5.1_nuxt@4.2.2_@parcel+watc_ddd996e43fc9f1c18ad3415bbbc97592/node_modules/@nuxt/nitro-server/dist/runtime/utils/config').defineAppConfig
-  const defineCachedEventHandler: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/cache').defineCachedEventHandler
-  const defineCachedFunction: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/cache').defineCachedFunction
+  const defineAppConfig: typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.2.2_better-sqlite3@12.5.0_db0@0.3.4_better-sqlite3@12.5.0__ioredis_e8f08a6bc4cc871b9f27afd338bb9eba/node_modules/@nuxt/nitro-server/dist/runtime/utils/config').defineAppConfig
+  const defineCachedEventHandler: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/cache').defineCachedEventHandler
+  const defineCachedFunction: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/cache').defineCachedFunction
   const defineEventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').defineEventHandler
   const defineLazyEventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').defineLazyEventHandler
-  const defineNitroErrorHandler: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/error/utils').defineNitroErrorHandler
-  const defineNitroPlugin: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/plugin').defineNitroPlugin
+  const defineNitroErrorHandler: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/error/utils').defineNitroErrorHandler
+  const defineNitroPlugin: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/plugin').defineNitroPlugin
   const defineNodeListener: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').defineNodeListener
   const defineNodeMiddleware: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').defineNodeMiddleware
-  const defineRenderHandler: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/renderer').defineRenderHandler
+  const defineRenderHandler: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/renderer').defineRenderHandler
   const defineRequestMiddleware: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').defineRequestMiddleware
   const defineResponseMiddleware: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').defineResponseMiddleware
-  const defineRouteMeta: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/meta').defineRouteMeta
-  const defineTask: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/task').defineTask
+  const defineRouteMeta: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/meta').defineRouteMeta
+  const defineTask: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/task').defineTask
   const defineWebSocket: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').defineWebSocket
   const defineWebSocketHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').defineWebSocketHandler
   const deleteCookie: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').deleteCookie
   const dynamicEventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').dynamicEventHandler
+  const emailSchema: typeof import('../../server/utils/validation').emailSchema
   const eventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').eventHandler
   const fetchWithEvent: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').fetchWithEvent
+  const fileUploadSchema: typeof import('../../server/utils/validation').fileUploadSchema
   const fromNodeMiddleware: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').fromNodeMiddleware
   const fromPlainHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').fromPlainHandler
   const fromWebHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').fromWebHandler
   const getCookie: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').getCookie
+  const getDatabase: typeof import('../../server/utils/db').getDatabase
   const getHeader: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').getHeader
   const getHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').getHeaders
   const getMethod: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').getMethod
@@ -62,7 +74,7 @@ declare global {
   const getResponseHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').getResponseHeaders
   const getResponseStatus: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').getResponseStatus
   const getResponseStatusText: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').getResponseStatusText
-  const getRouteRules: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/route-rules').getRouteRules
+  const getRouteRules: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/route-rules').getRouteRules
   const getRouterParam: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').getRouterParam
   const getRouterParams: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').getRouterParams
   const getSession: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').getSession
@@ -70,6 +82,8 @@ declare global {
   const getValidatedRouterParams: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').getValidatedRouterParams
   const handleCacheHeaders: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').handleCacheHeaders
   const handleCors: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').handleCors
+  const idParamSchema: typeof import('../../server/utils/validation').idParamSchema
+  const initializeDatabase: typeof import('../../server/utils/db').initializeDatabase
   const isCorsOriginAllowed: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').isCorsOriginAllowed
   const isError: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').isError
   const isEvent: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').isEvent
@@ -79,8 +93,11 @@ declare global {
   const isStream: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').isStream
   const isWebResponse: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').isWebResponse
   const lazyEventHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').lazyEventHandler
-  const nitroPlugin: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/plugin').nitroPlugin
+  const migrations: typeof import('../../server/utils/migrations').default
+  const nitroPlugin: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/plugin').nitroPlugin
+  const paginationSchema: typeof import('../../server/utils/validation').paginationSchema
   const parseCookies: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').parseCookies
+  const passwordSchema: typeof import('../../server/utils/validation').passwordSchema
   const promisifyNodeListener: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').promisifyNodeListener
   const proxyRequest: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').proxyRequest
   const readBody: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').readBody
@@ -89,10 +106,12 @@ declare global {
   const readRawBody: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').readRawBody
   const readValidatedBody: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').readValidatedBody
   const removeResponseHeader: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').removeResponseHeader
-  const runTask: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/task').runTask
+  const runMigrations: typeof import('../../server/utils/migrations').runMigrations
+  const runTask: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/task').runTask
   const sanitizeStatusCode: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').sanitizeStatusCode
   const sanitizeStatusMessage: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').sanitizeStatusMessage
   const sealSession: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').sealSession
+  const searchQuerySchema: typeof import('../../server/utils/validation').searchQuerySchema
   const send: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').send
   const sendError: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').sendError
   const sendIterable: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').sendIterable
@@ -114,16 +133,27 @@ declare global {
   const toPlainHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').toPlainHandler
   const toWebHandler: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').toWebHandler
   const toWebRequest: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').toWebRequest
+  const tokenCategorySchema: typeof import('../../server/utils/validation').tokenCategorySchema
   const unsealSession: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').unsealSession
   const updateSession: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').updateSession
-  const useAppConfig: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/config').useAppConfig
+  const useAppConfig: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/config').useAppConfig
   const useBase: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').useBase
-  const useEvent: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/context').useEvent
-  const useNitroApp: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/app').useNitroApp
-  const useRuntimeConfig: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/config').useRuntimeConfig
+  const useEvent: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/context').useEvent
+  const useNitroApp: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/app').useNitroApp
+  const useRuntimeConfig: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/config').useRuntimeConfig
   const useSession: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').useSession
-  const useStorage: typeof import('../../node_modules/.pnpm/nitropack@2.12.9/node_modules/nitropack/dist/runtime/internal/storage').useStorage
+  const useStorage: typeof import('../../node_modules/.pnpm/nitropack@2.12.9_better-sqlite3@12.5.0/node_modules/nitropack/dist/runtime/internal/storage').useStorage
+  const userRoleSchema: typeof import('../../server/utils/validation').userRoleSchema
   const writeEarlyHints: typeof import('../../node_modules/.pnpm/h3@1.15.4/node_modules/h3').writeEarlyHints
+}
+// for type re-export
+declare global {
+  // @ts-ignore
+  export type { ApiResponse, ApiError, ResponseMeta, PaginationMeta, ErrorCode } from '../../server/utils/response'
+  import('../../server/utils/response')
+  // @ts-ignore
+  export type { PaginationQuery, UserRole, ComponentCategory, ComponentStatus, TokenCategory } from '../../server/utils/validation'
+  import('../../server/utils/validation')
 }
 export { useNitroApp } from 'nitropack/runtime/internal/app';
 export { useRuntimeConfig, useAppConfig } from 'nitropack/runtime/internal/config';
@@ -137,5 +167,9 @@ export { useEvent } from 'nitropack/runtime/internal/context';
 export { defineTask, runTask } from 'nitropack/runtime/internal/task';
 export { defineNitroErrorHandler } from 'nitropack/runtime/internal/error/utils';
 export { appendCorsHeaders, appendCorsPreflightHeaders, appendHeader, appendHeaders, appendResponseHeader, appendResponseHeaders, assertMethod, callNodeListener, clearResponseHeaders, clearSession, createApp, createAppEventHandler, createError, createEvent, createEventStream, createRouter, defaultContentType, defineEventHandler, defineLazyEventHandler, defineNodeListener, defineNodeMiddleware, defineRequestMiddleware, defineResponseMiddleware, defineWebSocket, defineWebSocketHandler, deleteCookie, dynamicEventHandler, eventHandler, fetchWithEvent, fromNodeMiddleware, fromPlainHandler, fromWebHandler, getCookie, getHeader, getHeaders, getMethod, getProxyRequestHeaders, getQuery, getRequestFingerprint, getRequestHeader, getRequestHeaders, getRequestHost, getRequestIP, getRequestPath, getRequestProtocol, getRequestURL, getRequestWebStream, getResponseHeader, getResponseHeaders, getResponseStatus, getResponseStatusText, getRouterParam, getRouterParams, getSession, getValidatedQuery, getValidatedRouterParams, handleCacheHeaders, handleCors, isCorsOriginAllowed, isError, isEvent, isEventHandler, isMethod, isPreflightRequest, isStream, isWebResponse, lazyEventHandler, parseCookies, promisifyNodeListener, proxyRequest, readBody, readFormData, readMultipartFormData, readRawBody, readValidatedBody, removeResponseHeader, sanitizeStatusCode, sanitizeStatusMessage, sealSession, send, sendError, sendIterable, sendNoContent, sendProxy, sendRedirect, sendStream, sendWebResponse, serveStatic, setCookie, setHeader, setHeaders, setResponseHeader, setResponseHeaders, setResponseStatus, splitCookiesString, toEventHandler, toNodeListener, toPlainHandler, toWebHandler, toWebRequest, unsealSession, updateSession, useBase, useSession, writeEarlyHints } from 'h3';
-export { buildAssetsURL as __buildAssetsURL, publicAssetsURL as __publicAssetsURL } from '/Users/sul/Dev/opends/node_modules/.pnpm/@nuxt+nitro-server@4.2.2_db0@0.3.4_ioredis@5.8.2_magicast@0.5.1_nuxt@4.2.2_@parcel+watc_ddd996e43fc9f1c18ad3415bbbc97592/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths';
-export { defineAppConfig } from '/Users/sul/Dev/opends/node_modules/.pnpm/@nuxt+nitro-server@4.2.2_db0@0.3.4_ioredis@5.8.2_magicast@0.5.1_nuxt@4.2.2_@parcel+watc_ddd996e43fc9f1c18ad3415bbbc97592/node_modules/@nuxt/nitro-server/dist/runtime/utils/config';
+export { buildAssetsURL as __buildAssetsURL, publicAssetsURL as __publicAssetsURL } from '/Users/sul/Dev/opends/node_modules/.pnpm/@nuxt+nitro-server@4.2.2_better-sqlite3@12.5.0_db0@0.3.4_better-sqlite3@12.5.0__ioredis_e8f08a6bc4cc871b9f27afd338bb9eba/node_modules/@nuxt/nitro-server/dist/runtime/utils/paths';
+export { defineAppConfig } from '/Users/sul/Dev/opends/node_modules/.pnpm/@nuxt+nitro-server@4.2.2_better-sqlite3@12.5.0_db0@0.3.4_better-sqlite3@12.5.0__ioredis_e8f08a6bc4cc871b9f27afd338bb9eba/node_modules/@nuxt/nitro-server/dist/runtime/utils/config';
+export { default as db, getDatabase, initializeDatabase, closeDatabase } from '/Users/sul/Dev/opends/server/utils/db';
+export { default as migrations, runMigrations } from '/Users/sul/Dev/opends/server/utils/migrations';
+export { createSuccessResponse, createErrorResponse, createPaginatedResponse, ErrorCodes } from '/Users/sul/Dev/opends/server/utils/response';
+export { paginationSchema, idParamSchema, searchQuerySchema, emailSchema, passwordSchema, userRoleSchema, dateRangeSchema, fileUploadSchema, componentCategorySchema, componentStatusSchema, tokenCategorySchema } from '/Users/sul/Dev/opends/server/utils/validation';

@@ -1,7 +1,7 @@
 
 /// <reference path="app.config.d.ts" />
 /// <reference path="runtime-config.d.ts" />
-/// <reference types="/Users/sul/Dev/opends/node_modules/.pnpm/@nuxt+nitro-server@4.2.2_db0@0.3.4_ioredis@5.8.2_magicast@0.5.1_nuxt@4.2.2_@parcel+watc_ddd996e43fc9f1c18ad3415bbbc97592/node_modules/@nuxt/nitro-server/dist/index.mjs" />
+/// <reference types="/Users/sul/Dev/opends/node_modules/.pnpm/@nuxt+nitro-server@4.2.2_better-sqlite3@12.5.0_db0@0.3.4_better-sqlite3@12.5.0__ioredis_e8f08a6bc4cc871b9f27afd338bb9eba/node_modules/@nuxt/nitro-server/dist/index.mjs" />
 /// <reference path="nitro-middleware.d.ts" />
 
 import type { RuntimeConfig } from 'nuxt/schema'

@@ -28,11 +28,13 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.API_BASE || '/api',
-      adminPassword: process.env.ADMIN_PASSWORD || 'admin'
     },
-    private: {
-      dbUrl: process.env.DATABASE_URL
-    }
+    // Server-only runtime config (private)
+    dbUrl: process.env.DATABASE_URL || 'postgresql://localhost/opends_dev',
+    jwtSecret: process.env.JWT_SECRET || 'dev-secret-change-in-production',
+    jwtAccessExpire: process.env.JWT_ACCESS_EXPIRE || '15m',
+    jwtRefreshExpire: process.env.JWT_REFRESH_EXPIRE || '7d',
+    allowRegistration: process.env.ALLOW_REGISTRATION === 'true',
   },
   routeRules: {
     '/': { prerender: true },
@@ -55,6 +57,10 @@ export default defineNuxtConfig({
       openAPI: {
         enabled: true
       }
+    },
+    // Externalize native modules - don't bundle them
+    externals: {
+      external: ['better-sqlite3']
     }
   }
 })
