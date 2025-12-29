@@ -11,8 +11,8 @@ binding = "DB"
 database_name = "opends-db"
 database_id = "e2cb6f64-c737-464c-be19-85e6ee4ee894"
 
-[env.staging]
+[env.preview]
 compatibility_flags = ["nodejs_compat"]
-[env.staging.vars]
-ENVIRONMENT = "staging"
+[env.preview.vars]
+ENVIRONMENT = "preview"
 
