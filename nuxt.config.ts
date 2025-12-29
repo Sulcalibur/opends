@@ -45,7 +45,6 @@ export default defineNuxtConfig({
     resolve: {
       alias: {
         '@': './src',
-        '@app': './src/app',
         '@design-system': './src/design-system',
         '@api': './src/api'
       }

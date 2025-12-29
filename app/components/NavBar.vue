@@ -1,3 +1,17 @@
+<script setup lang="ts">
+const router = useRouter()
+
+const links = [
+  { name: 'Docs', path: '/docs' },
+  { name: 'Components', path: '/components' },
+  { name: 'Tokens', path: '/tokens' }
+]
+
+function handleLogout() {
+  router.push('/login')
+}
+</script>
+
 <template>
   <nav class="navbar bg-white/80 backdrop-blur-md border-b border-slate-100 sticky top-0 z-50">
     <div class="container mx-auto px-6 h-20 flex items-center justify-between">
@@ -24,13 +38,13 @@
 
       <!-- Actions -->
       <div class="flex items-center gap-4">
-        <div v-if="authStore.isAuthenticated" class="flex items-center gap-4">
-           <NuxtLink to="/admin">
-             <Button label="Dashboard" severity="secondary" size="small" class="font-bold" />
-           </NuxtLink>
-           <Button icon="pi pi-sign-out" text rounded severity="secondary" size="small" @click="handleLogout" />
+        <div class="flex items-center gap-4">
+          <NuxtLink to="/admin">
+            <Button label="Dashboard" severity="secondary" size="small" class="font-bold" />
+          </NuxtLink>
+          <Button icon="pi pi-sign-out" text rounded severity="secondary" size="small" @click="handleLogout" />
         </div>
-        <div v-else>
+        <div>
           <NuxtLink to="/login">
             <Button label="Sign In" severity="primary" size="small" class="font-bold px-6" rounded />
           </NuxtLink>
@@ -40,28 +54,8 @@
   </nav>
 </template>
 
-<script setup lang="ts">
-import { useAuthStore } from '@/app/stores/auth'
-import { useRouter } from 'vue-router'
-
-const authStore = useAuthStore()
-const router = useRouter()
-
-const links = [
-  { name: 'Docs', path: '/docs' },
-  { name: 'Components', path: '/components' },
-  { name: 'Tokens', path: '/tokens' }
-]
-
-function handleLogout() {
-  authStore.logout()
-  router.push('/login')
-}
-</script>
-
 <style scoped>
 .navbar {
-  /* Ensure it sits on top */
   position: sticky;
   top: 0;
 }

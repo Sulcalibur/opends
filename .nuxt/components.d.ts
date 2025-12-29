@@ -14,7 +14,11 @@ type HydrationStrategies = {
 type LazyComponent<T> = DefineComponent<HydrationStrategies, {}, {}, {}, {}, {}, {}, { hydrated: () => void }> & T
 
 
+export const DocsSidebar: typeof import("../app/components/DocsSidebar.vue").default
+export const NavBar: typeof import("../app/components/NavBar.vue").default
 export const TokenEditor: typeof import("../app/components/TokenEditor.vue").default
+export const ViewerSidebar: typeof import("../app/components/ViewerSidebar.vue").default
+export const AdminSidebar: typeof import("../app/components/admin/AdminSidebar.vue").default
 export const NuxtWelcome: typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_cac@6.7._6aed3504147eb07a9adbdad0dc09d247/node_modules/nuxt/dist/app/components/welcome.vue").default
 export const NuxtLayout: typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_cac@6.7._6aed3504147eb07a9adbdad0dc09d247/node_modules/nuxt/dist/app/components/nuxt-layout").default
 export const NuxtErrorBoundary: typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_cac@6.7._6aed3504147eb07a9adbdad0dc09d247/node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue").default
@@ -159,7 +163,11 @@ export const Head: typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watch
 export const Html: typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_cac@6.7._6aed3504147eb07a9adbdad0dc09d247/node_modules/nuxt/dist/head/runtime/components").Html
 export const Body: typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_cac@6.7._6aed3504147eb07a9adbdad0dc09d247/node_modules/nuxt/dist/head/runtime/components").Body
 export const NuxtIsland: typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_cac@6.7._6aed3504147eb07a9adbdad0dc09d247/node_modules/nuxt/dist/app/components/nuxt-island").default
+export const LazyDocsSidebar: LazyComponent<typeof import("../app/components/DocsSidebar.vue").default>
+export const LazyNavBar: LazyComponent<typeof import("../app/components/NavBar.vue").default>
 export const LazyTokenEditor: LazyComponent<typeof import("../app/components/TokenEditor.vue").default>
+export const LazyViewerSidebar: LazyComponent<typeof import("../app/components/ViewerSidebar.vue").default>
+export const LazyAdminSidebar: LazyComponent<typeof import("../app/components/admin/AdminSidebar.vue").default>
 export const LazyNuxtWelcome: LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_cac@6.7._6aed3504147eb07a9adbdad0dc09d247/node_modules/nuxt/dist/app/components/welcome.vue").default>
 export const LazyNuxtLayout: LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_cac@6.7._6aed3504147eb07a9adbdad0dc09d247/node_modules/nuxt/dist/app/components/nuxt-layout").default>
 export const LazyNuxtErrorBoundary: LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_cac@6.7._6aed3504147eb07a9adbdad0dc09d247/node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue").default>

@@ -8,13 +8,6 @@
     "strict": false,
     "noImplicitAny": false,
     "skipLibCheck": true,
-    "paths": {
-      "@/*": ["./src/*"],
-      "@app/*": ["./src/app/*"],
-      "@design-system/*": ["./src/design-system/*"],
-      "@api/*": ["./src/api/*"],
-      "@storybook/*": ["./.storybook/*"]
-    },
     "lib": ["ES2020", "DOM", "DOM.Iterable"]
   }
 }
