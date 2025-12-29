@@ -171,10 +171,6 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import InputText from 'primevue/inputtext'
-import Textarea from 'primevue/textarea'
-import Dropdown from 'primevue/dropdown'
-import Button from 'primevue/button'
 import type { DesignToken } from '@/utils/tokenUtils'
 
 interface Props {

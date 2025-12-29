@@ -92,9 +92,6 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import TabView from 'primevue/tabview'
-import TabPanel from 'primevue/tabpanel'
-import Button from 'primevue/button'
 import designSystemStorage from '@/design-system/storage'
 import ViewerSidebar from '@/app/components/ViewerSidebar.vue'
 

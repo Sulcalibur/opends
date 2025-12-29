@@ -10,32 +10,32 @@
         </div>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <router-link to="/docs/components" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:border-indigo-300 transition-colors cursor-pointer group block">
+          <NuxtLink to="/docs/components" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:border-indigo-300 transition-colors cursor-pointer group block">
             <div class="w-10 h-10 bg-indigo-50 rounded-lg flex items-center justify-center mb-4 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                <i class="pi pi-box text-xl"></i>
-            </div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Components</h3>
-            <p class="text-gray-500 text-sm mb-4">Browse our library of reusable, accessible UI components with interactive playgrounds.</p>
-            <span class="text-indigo-600 font-medium text-sm group-hover:underline">Explore Components &rarr;</span>
-          </router-link>
+             </div>
+             <h3 class="text-lg font-bold text-gray-900 mb-2">Components</h3>
+             <p class="text-gray-500 text-sm mb-4">Browse our library of reusable, accessible UI components with interactive playgrounds.</p>
+             <span class="text-indigo-600 font-medium text-sm group-hover:underline">Explore Components &rarr;</span>
+           </NuxtLink>
 
-          <router-link to="/docs/tokens" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:border-pink-300 transition-colors cursor-pointer group block">
+          <NuxtLink to="/docs/tokens" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:border-pink-300 transition-colors cursor-pointer group block">
             <div class="w-10 h-10 bg-pink-50 rounded-lg flex items-center justify-center mb-4 text-pink-600 group-hover:bg-pink-600 group-hover:text-white transition-colors">
                <i class="pi pi-palette text-xl"></i>
-            </div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Design Tokens</h3>
-            <p class="text-gray-500 text-sm mb-4">Explore colors, typography, spacing, and other core design decisions.</p>
-             <span class="text-pink-600 font-medium text-sm group-hover:underline">View Tokens &rarr;</span>
-          </router-link>
+             </div>
+             <h3 class="text-lg font-bold text-gray-900 mb-2">Design Tokens</h3>
+             <p class="text-gray-500 text-sm mb-4">Explore colors, typography, spacing, and other core design decisions.</p>
+              <span class="text-pink-600 font-medium text-sm group-hover:underline">View Tokens &rarr;</span>
+           </NuxtLink>
 
-          <router-link to="/admin" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:border-green-300 transition-colors cursor-pointer group block">
+          <NuxtLink to="/admin" class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 hover:border-green-300 transition-colors cursor-pointer group block">
             <div class="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center mb-4 text-green-600 group-hover:bg-green-600 group-hover:text-white transition-colors">
                <i class="pi pi-cog text-xl"></i>
-            </div>
-            <h3 class="text-lg font-bold text-gray-900 mb-2">Administration</h3>
-            <p class="text-gray-500 text-sm mb-4">Manage components, tokens, and documentation settings.</p>
-             <span class="text-green-600 font-medium text-sm group-hover:underline">Open Admin &rarr;</span>
-          </router-link>
+             </div>
+             <h3 class="text-lg font-bold text-gray-900 mb-2">Administration</h3>
+             <p class="text-gray-500 text-sm mb-4">Manage components, tokens, and documentation settings.</p>
+              <span class="text-green-600 font-medium text-sm group-hover:underline">Open Admin &rarr;</span>
+           </NuxtLink>
         </div>
 
         <h2 class="text-2xl font-bold text-gray-900 mb-6">Guides</h2>
@@ -66,5 +66,4 @@
 </template>
 
 <script setup lang="ts">
-import Button from 'primevue/button'
 </script>

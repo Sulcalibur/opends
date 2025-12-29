@@ -69,10 +69,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import InputText from 'primevue/inputtext'
-import ProgressSpinner from 'primevue/progressspinner'
-import Badge from 'primevue/badge'
 import DocsSidebar from '@/app/components/DocsSidebar.vue'
 
 interface Component {
@@ -177,6 +173,6 @@ function filterComponents() {
 }
 
 function viewComponent(component: Component) {
-  router.push(`/docs/components/${component.id}`)
+  navigateTo(`/docs/components/${component.id}`)
 }
 </script>

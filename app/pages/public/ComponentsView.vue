@@ -117,11 +117,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import Button from 'primevue/button'
-import InputText from 'primevue/inputtext'
-import Dropdown from 'primevue/dropdown'
-import ProgressSpinner from 'primevue/progressspinner'
-import Dialog from 'primevue/dialog'
 import designSystemStorage from '@/design-system/storage'
 import type { ComponentSpec } from '@/design-system/storage'
 import ViewerSidebar from '@/app/components/ViewerSidebar.vue'

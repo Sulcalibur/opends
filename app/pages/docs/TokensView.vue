@@ -65,7 +65,7 @@
             </div>
 
             <div v-else class="text-center py-8 text-gray-500">
-              No color tokens found. <router-link to="/admin/tokens" class="text-indigo-600 hover:underline">Add some in the admin panel</router-link>.
+              No color tokens found. <NuxtLink to="/admin/tokens" class="text-indigo-600 hover:underline">Add some in the admin panel</NuxtLink>.
             </div>
           </div>
 
@@ -128,8 +128,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import ProgressSpinner from 'primevue/progressspinner'
-import Badge from 'primevue/badge'
 import DocsSidebar from '@/app/components/DocsSidebar.vue'
 
 interface Token {
