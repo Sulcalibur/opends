@@ -1,3 +1,5 @@
+import { fileURLToPath } from 'url'
+
 export default defineNuxtConfig({
   compatibilityDate: '2024-04-03',
   devtools: { enabled: true },
@@ -63,7 +65,7 @@ export default defineNuxtConfig({
       external: ['better-sqlite3']
     },
     alias: {
-      'pg-native': './server/utils/mock-pg-native',
+      'pg-native': fileURLToPath(new URL('./server/utils/mock-pg-native.ts', import.meta.url)),
     }
   }
 })
