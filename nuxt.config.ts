@@ -60,7 +60,7 @@ export default defineNuxtConfig({
     },
     // Externalize native modules - don't bundle them
     externals: {
-      external: ['better-sqlite3']
+      external: ['better-sqlite3', 'pg-native']
     }
   }
 })
