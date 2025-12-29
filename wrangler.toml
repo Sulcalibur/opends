@@ -4,6 +4,11 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 ENVIRONMENT = "production"
 
+[[d1_databases]]
+binding = "DB"
+database_name = "opends-db"
+database_id = "e2cb6f64-c737-464c-be19-85e6ee4ee894"
+
 [env.staging]
 compatibility_flags = ["nodejs_compat"]
 [env.staging.vars]
