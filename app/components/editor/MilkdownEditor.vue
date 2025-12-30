@@ -4,7 +4,7 @@
  * A WYSIWYG markdown editor for documentation pages
  * Uses Crepe for batteries-included experience
  */
-import { ref, onMounted, onUnmounted, watch } from 'vue'
+import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { Crepe } from '@milkdown/crepe'
 import '@milkdown/crepe/theme/common/style.css'
 import '@milkdown/crepe/theme/frame.css'
@@ -29,14 +29,24 @@ const editorRef = ref<HTMLDivElement | null>(null)
 const error = ref<string | null>(null)
 const loading = ref(true)
 let crepe: Crepe | null = null
+let isReady = false
 
 onMounted(async () => {
-  if (!editorRef.value) return
+  if (!editorRef.value) {
+    error.value = 'Editor container not found'
+    loading.value = false
+    return
+  }
+
+  await nextTick()
 
   try {
+    // Ensure defaultValue is always a string
+    const initialValue = props.modelValue || ''
+    
     crepe = new Crepe({
       root: editorRef.value,
-      defaultValue: props.modelValue,
+      defaultValue: initialValue,
       featureConfigs: {
         [Crepe.Feature.Placeholder]: {
           text: props.placeholder
@@ -44,32 +54,43 @@ onMounted(async () => {
       }
     })
 
-    // Listen for changes
-    crepe.on((listener) => {
-      const content = crepe?.getMarkdown() || ''
-      emit('update:modelValue', content)
-    })
-
+    // Create the editor first
     await crepe.create()
+    
+    // Mark as ready AFTER creation completes
+    isReady = true
     loading.value = false
+
+    // NOW attach the listener after editor is ready
+    crepe.on(() => {
+      if (isReady && crepe) {
+        try {
+          const content = crepe.getMarkdown()
+          emit('update:modelValue', content)
+        } catch (e) {
+          console.warn('Error getting markdown:', e)
+        }
+      }
+    })
   } catch (e: any) {
     console.error('Failed to initialize Milkdown editor:', e)
     error.value = `Failed to load editor: ${e.message}`
     loading.value = false
+    isReady = false
   }
 })
 
 // Watch for external modelValue changes
 watch(() => props.modelValue, (newValue) => {
-  if (!crepe || loading.value || error.value) return
+  if (!crepe || !isReady || loading.value || error.value) return
   
   try {
     const current = crepe.getMarkdown()
     if (newValue !== current) {
-      // @ts-ignore - setMarkdown exists in implementation but typescript might miss it in some versions
+      // @ts-ignore - setMarkdown exists but typescript might not recognize it
       if (typeof crepe.setMarkdown === 'function') {
-         // @ts-ignore
-        crepe.setMarkdown(newValue)
+        // @ts-ignore
+        crepe.setMarkdown(newValue || '')
       }
     }
   } catch (e) {
@@ -78,11 +99,12 @@ watch(() => props.modelValue, (newValue) => {
 })
 
 onUnmounted(() => {
+  isReady = false
   crepe?.destroy()
 })
 
 defineExpose({
-  getMarkdown: () => crepe?.getMarkdown() || ''
+  getMarkdown: () => (isReady && crepe) ? crepe.getMarkdown() : ''
 })
 </script>
 
