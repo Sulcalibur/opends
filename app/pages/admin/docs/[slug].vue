@@ -1,6 +1,7 @@
 <script setup lang="ts">
 /**
  * Edit Documentation Page
+ * Uses PrimeVue components for polished UI
  */
 definePageMeta({
   layout: 'admin'
@@ -8,11 +9,12 @@ definePageMeta({
 
 const route = useRoute()
 const router = useRouter()
+const toast = useToast()
 const slug = route.params.slug as string
 
 // Fetch existing page data
 const { data: pageData, error: fetchError } = await useFetch<{ success: boolean; data: any }>(`/api/docs/${slug}`, {
-  query: { published: 'false' } // Allow access to unpublished pages for editing
+  query: { published: 'false' }
 })
 
 if (fetchError.value || !pageData.value?.data) {
@@ -32,16 +34,25 @@ const form = ref({
 })
 
 const saving = ref(false)
-const error = ref('')
+const hasChanges = ref(false)
+
+// Track changes
+watch(form, () => {
+  hasChanges.value = true
+}, { deep: true })
 
 async function savePage() {
   if (!form.value.title || !form.value.slug) {
-    error.value = 'Title and slug are required'
+    toast.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Title and slug are required',
+      life: 3000
+    })
     return
   }
 
   saving.value = true
-  error.value = ''
 
   try {
     await $fetch(`/api/docs/${slug}`, {
@@ -56,12 +67,26 @@ async function savePage() {
       }
     })
 
+    hasChanges.value = false
+    
+    toast.add({
+      severity: 'success',
+      summary: 'Saved',
+      detail: 'Page updated successfully',
+      life: 3000
+    })
+
     // If slug changed, redirect to new URL
     if (form.value.slug !== slug) {
       router.push(`/admin/docs/${form.value.slug}`)
     }
   } catch (err: any) {
-    error.value = err.data?.message || 'Failed to save page'
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: err.data?.message || 'Failed to save page',
+      life: 5000
+    })
   } finally {
     saving.value = false
   }
@@ -80,105 +105,140 @@ const categories = [
 
 <template>
   <div class="docs-editor">
-    <header class="editor-header">
+    <!-- Toast for notifications -->
+    <Toast />
+
+    <!-- Header -->
+    <div class="editor-header">
       <div class="header-left">
         <NuxtLink to="/admin/docs" class="back-link">
           <i class="pi pi-arrow-left" />
-          Back to Docs
+          <span>Back to Docs</span>
         </NuxtLink>
-        <h1>Edit: {{ form.title }}</h1>
+        <h1 class="editor-title">
+          <i class="pi pi-file-edit" />
+          Edit: {{ form.title || 'Untitled' }}
+        </h1>
       </div>
       <div class="header-actions">
-        <NuxtLink :to="`/docs/${slug}`" target="_blank" class="btn-secondary">
-          <i class="pi pi-external-link" />
-          Preview
+        <NuxtLink :to="`/docs/${slug}`" target="_blank">
+          <Button label="Preview" icon="pi pi-external-link" severity="secondary" outlined />
         </NuxtLink>
-        <label class="publish-toggle">
-          <input v-model="form.isPublished" type="checkbox" />
-          <span>Published</span>
-        </label>
-        <button 
-          class="btn-primary" 
+        <div class="publish-toggle">
+          <Checkbox v-model="form.isPublished" :binary="true" inputId="published" />
+          <label for="published" class="publish-label">
+            {{ form.isPublished ? 'Published' : 'Draft' }}
+          </label>
+        </div>
+        <Button 
+          label="Save Changes" 
+          icon="pi pi-save" 
+          :loading="saving"
           :disabled="saving"
           @click="savePage"
-        >
-          <i v-if="saving" class="pi pi-spin pi-spinner" />
-          <i v-else class="pi pi-save" />
-          {{ saving ? 'Saving...' : 'Save Changes' }}
-        </button>
+        />
       </div>
-    </header>
-
-    <div v-if="error" class="error-banner">
-      <i class="pi pi-exclamation-circle" />
-      {{ error }}
     </div>
 
+    <!-- Unsaved changes indicator -->
+    <Message v-if="hasChanges && !saving" severity="warn" :closable="false" class="changes-message">
+      You have unsaved changes
+    </Message>
+
+    <!-- Editor Layout -->
     <div class="editor-layout">
+      <!-- Main Content -->
       <div class="editor-main">
-        <div class="form-group">
-          <label for="title">Title</label>
-          <input 
-            id="title"
-            v-model="form.title"
-            type="text"
-            placeholder="Page title"
-            class="input-field"
-          />
-        </div>
+        <Card class="form-card">
+          <template #content>
+            <div class="form-group">
+              <label for="title" class="form-label">Title</label>
+              <InputText 
+                id="title"
+                v-model="form.title"
+                placeholder="Page title"
+                class="w-full"
+              />
+            </div>
 
-        <div class="form-group">
-          <label for="slug">Slug</label>
-          <div class="slug-input">
-            <span class="slug-prefix">/docs/</span>
-            <input 
-              id="slug"
-              v-model="form.slug"
-              type="text"
-              placeholder="page-slug"
-              class="input-field"
-            />
-          </div>
-        </div>
+            <div class="form-group">
+              <label for="slug" class="form-label">Slug</label>
+              <InputGroup>
+                <InputGroupAddon>/docs/</InputGroupAddon>
+                <InputText 
+                  id="slug"
+                  v-model="form.slug"
+                  placeholder="page-slug"
+                />
+              </InputGroup>
+              <small class="form-hint">URL-friendly identifier (lowercase, dashes only)</small>
+            </div>
 
-        <div class="form-group">
-          <label>Content</label>
-          <ClientOnly>
-            <MilkdownEditor v-model="form.content" />
-            <template #fallback>
-              <div class="editor-loading">
-                <i class="pi pi-spin pi-spinner" />
-                Loading editor...
-              </div>
-            </template>
-          </ClientOnly>
-        </div>
+            <div class="form-group">
+              <label class="form-label">Content</label>
+              <ClientOnly>
+                <MilkdownEditor v-model="form.content" />
+                <template #fallback>
+                  <div class="editor-loading">
+                    <ProgressSpinner style="width: 30px; height: 30px" strokeWidth="4" />
+                    <span>Loading editor...</span>
+                  </div>
+                </template>
+              </ClientOnly>
+            </div>
+          </template>
+        </Card>
       </div>
 
+      <!-- Sidebar -->
       <aside class="editor-sidebar">
-        <div class="sidebar-section">
-          <h3>Page Settings</h3>
-          
-          <div class="form-group">
-            <label for="category">Category</label>
-            <select id="category" v-model="form.category" class="input-field">
-              <option v-for="cat in categories" :key="cat.value" :value="cat.value">
-                {{ cat.label }}
-              </option>
-            </select>
-          </div>
+        <Card class="sidebar-card">
+          <template #title>
+            <div class="sidebar-title">
+              <i class="pi pi-cog" />
+              Page Settings
+            </div>
+          </template>
+          <template #content>
+            <div class="form-group">
+              <label for="category" class="form-label">Category</label>
+              <Select 
+                id="category"
+                v-model="form.category" 
+                :options="categories"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select category"
+                class="w-full"
+              />
+            </div>
 
-          <div class="form-group">
-            <label for="excerpt">Excerpt</label>
-            <textarea 
-              id="excerpt"
-              v-model="form.excerpt"
-              placeholder="Brief description for listings"
-              rows="3"
-              class="input-field"
-            />
-          </div>
-        </div>
+            <div class="form-group">
+              <label for="excerpt" class="form-label">Excerpt</label>
+              <Textarea 
+                id="excerpt"
+                v-model="form.excerpt"
+                placeholder="Brief description for listings"
+                :rows="4"
+                class="w-full"
+              />
+              <small class="form-hint">Used in page listings and SEO</small>
+            </div>
+
+            <Divider />
+
+            <div class="sidebar-info">
+              <div class="info-item">
+                <i class="pi pi-clock" />
+                <span>Last updated: {{ new Date(pageData?.data?.updatedAt).toLocaleDateString() }}</span>
+              </div>
+              <div class="info-item">
+                <i class="pi pi-calendar" />
+                <span>Created: {{ new Date(pageData?.data?.createdAt).toLocaleDateString() }}</span>
+              </div>
+            </div>
+          </template>
+        </Card>
       </aside>
     </div>
   </div>
@@ -194,10 +254,10 @@ const categories = [
 .editor-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--surface-border);
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .header-left {
@@ -213,145 +273,95 @@ const categories = [
   color: var(--text-color-secondary);
   text-decoration: none;
   font-size: 0.875rem;
+  transition: color 0.2s;
 }
 
 .back-link:hover {
   color: var(--primary-color);
 }
 
-.editor-header h1 {
+.editor-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-color);
   margin: 0;
 }
 
+.editor-title i {
+  color: var(--primary-color);
+}
+
 .header-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .publish-toggle {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  cursor: pointer;
-  color: var(--text-color);
-}
-
-.publish-toggle input {
-  width: 18px;
-  height: 18px;
-}
-
-.btn-primary, .btn-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
-}
-
-.btn-primary {
-  background: var(--primary-color);
-  color: white;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: var(--primary-600);
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-secondary {
-  background: transparent;
-  border: 1px solid var(--surface-border);
-  color: var(--text-color);
-}
-
-.btn-secondary:hover {
+  padding: 0.5rem 1rem;
   background: var(--surface-100);
+  border-radius: 8px;
 }
 
-.error-banner {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(239, 68, 68, 0.1);
-  color: rgb(239, 68, 68);
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
+.publish-label {
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
+.changes-message {
+  margin-bottom: 1rem;
 }
 
 .editor-layout {
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 2rem;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+  align-items: start;
 }
 
 @media (max-width: 1024px) {
   .editor-layout {
     grid-template-columns: 1fr;
   }
+  
+  .editor-sidebar {
+    order: -1;
+  }
+}
+
+.form-card, .sidebar-card {
+  border-radius: 12px;
 }
 
 .form-group {
   margin-bottom: 1.5rem;
 }
 
-.form-group label {
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
   display: block;
   font-weight: 500;
   color: var(--text-color);
   margin-bottom: 0.5rem;
+  font-size: 0.875rem;
 }
 
-.input-field {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--surface-border);
-  border-radius: 8px;
-  background: var(--surface-card);
-  color: var(--text-color);
-  font-size: 1rem;
-  transition: border-color 0.2s;
-}
-
-.input-field:focus {
-  outline: none;
-  border-color: var(--primary-color);
-}
-
-.slug-input {
-  display: flex;
-  align-items: stretch;
-}
-
-.slug-prefix {
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  background: var(--surface-100);
-  border: 1px solid var(--surface-border);
-  border-right: none;
-  border-radius: 8px 0 0 8px;
+.form-hint {
+  display: block;
+  margin-top: 0.25rem;
   color: var(--text-color-secondary);
-  font-family: monospace;
-}
-
-.slug-input .input-field {
-  border-radius: 0 8px 8px 0;
-  font-family: monospace;
+  font-size: 0.75rem;
 }
 
 .editor-loading {
@@ -359,32 +369,44 @@ const categories = [
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  background: var(--surface-card);
+  background: var(--surface-100);
   border: 1px solid var(--surface-border);
   border-radius: 8px;
+  gap: 0.75rem;
   color: var(--text-color-secondary);
+}
+
+.sidebar-title {
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
-}
-
-.editor-sidebar {
-  background: var(--surface-card);
-  border: 1px solid var(--surface-border);
-  border-radius: 12px;
-  padding: 1.5rem;
-  height: fit-content;
-}
-
-.sidebar-section h3 {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-color);
-  margin: 0 0 1rem 0;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--surface-border);
 }
 
-textarea.input-field {
-  resize: vertical;
-  min-height: 80px;
+.sidebar-title i {
+  color: var(--primary-color);
+}
+
+.sidebar-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--text-color-secondary);
+}
+
+.info-item i {
+  font-size: 0.875rem;
+}
+
+.w-full {
+  width: 100%;
 }
 </style>

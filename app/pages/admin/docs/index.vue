@@ -1,7 +1,10 @@
 <script setup lang="ts">
 /**
  * Admin Documentation Pages List
+ * Uses PrimeVue components for polished UI
  */
+import { FilterMatchMode } from '@primevue/core/api'
+
 definePageMeta({
   layout: 'admin'
 })
@@ -23,29 +26,39 @@ const { data, pending, refresh } = await useFetch<{ success: boolean; data: { pa
 
 const pages = computed(() => data.value?.data?.pages || [])
 
-const categories = computed(() => {
-  const cats = new Set(pages.value.map(p => p.category))
-  return Array.from(cats).sort()
+// DataTable filters
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  category: { value: null, matchMode: FilterMatchMode.EQUALS }
 })
 
-const showDeleteModal = ref(false)
+const categories = computed(() => {
+  const cats = new Set(pages.value.map(p => p.category))
+  return Array.from(cats).sort().map(c => ({ label: c, value: c }))
+})
+
+const showDeleteDialog = ref(false)
 const pageToDelete = ref<DocPage | null>(null)
+const deleting = ref(false)
 
 function confirmDelete(page: DocPage) {
   pageToDelete.value = page
-  showDeleteModal.value = true
+  showDeleteDialog.value = true
 }
 
 async function deletePage() {
   if (!pageToDelete.value) return
   
+  deleting.value = true
   try {
     await $fetch(`/api/docs/${pageToDelete.value.slug}`, { method: 'DELETE' })
-    showDeleteModal.value = false
+    showDeleteDialog.value = false
     pageToDelete.value = null
     refresh()
   } catch (error) {
     console.error('Failed to delete page:', error)
+  } finally {
+    deleting.value = false
   }
 }
 
@@ -56,80 +69,174 @@ function formatDate(dateStr: string) {
     day: 'numeric'
   })
 }
+
+function getSeverity(isPublished: boolean) {
+  return isPublished ? 'success' : 'warn'
+}
 </script>
 
 <template>
   <div class="docs-admin">
-    <header class="docs-header">
+    <!-- Header -->
+    <div class="docs-header">
       <div>
-        <h1>Documentation Pages</h1>
-        <p class="subtitle">Manage your design system documentation</p>
+        <h1 class="docs-title">
+          <i class="pi pi-file-edit" />
+          Documentation Pages
+        </h1>
+        <p class="docs-subtitle">Create and manage your design system documentation</p>
       </div>
-      <NuxtLink to="/admin/docs/new" class="btn-primary">
-        <i class="pi pi-plus" />
-        New Page
-      </NuxtLink>
-    </header>
-
-    <div v-if="pending" class="loading">
-      <i class="pi pi-spin pi-spinner" />
-      Loading pages...
-    </div>
-
-    <div v-else-if="pages.length === 0" class="empty-state">
-      <i class="pi pi-file-edit" />
-      <h3>No documentation pages yet</h3>
-      <p>Create your first documentation page to get started.</p>
-      <NuxtLink to="/admin/docs/new" class="btn-primary">
-        Create First Page
+      <NuxtLink to="/admin/docs/new">
+        <Button label="New Page" icon="pi pi-plus" />
       </NuxtLink>
     </div>
 
-    <div v-else class="pages-grid">
-      <div v-for="page in pages" :key="page.id" class="page-card">
-        <div class="page-header">
-          <span class="category-badge">{{ page.category }}</span>
-          <span :class="['status-badge', page.isPublished ? 'published' : 'draft']">
-            {{ page.isPublished ? 'Published' : 'Draft' }}
-          </span>
-        </div>
-        
-        <h3 class="page-title">{{ page.title }}</h3>
-        <p v-if="page.excerpt" class="page-excerpt">{{ page.excerpt }}</p>
-        <p class="page-slug">/docs/{{ page.slug }}</p>
-        
-        <div class="page-meta">
-          <span>Updated {{ formatDate(page.updatedAt) }}</span>
-        </div>
-
-        <div class="page-actions">
-          <NuxtLink :to="`/admin/docs/${page.slug}`" class="btn-icon" title="Edit">
-            <i class="pi pi-pencil" />
-          </NuxtLink>
-          <NuxtLink :to="`/docs/${page.slug}`" target="_blank" class="btn-icon" title="View">
-            <i class="pi pi-external-link" />
-          </NuxtLink>
-          <button class="btn-icon btn-danger" title="Delete" @click="confirmDelete(page)">
-            <i class="pi pi-trash" />
-          </button>
-        </div>
-      </div>
+    <!-- Loading State -->
+    <div v-if="pending" class="loading-state">
+      <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="4" />
+      <p>Loading documentation pages...</p>
     </div>
 
-    <!-- Delete Confirmation Modal -->
-    <Teleport to="body">
-      <div v-if="showDeleteModal" class="modal-overlay" @click.self="showDeleteModal = false">
-        <div class="modal">
-          <h3>Delete Page</h3>
-          <p>Are you sure you want to delete "<strong>{{ pageToDelete?.title }}</strong>"?</p>
-          <p class="warning">This action cannot be undone.</p>
-          <div class="modal-actions">
-            <button class="btn-secondary" @click="showDeleteModal = false">Cancel</button>
-            <button class="btn-danger" @click="deletePage">Delete</button>
-          </div>
+    <!-- Empty State -->
+    <Card v-else-if="pages.length === 0" class="empty-card">
+      <template #content>
+        <div class="empty-state">
+          <i class="pi pi-file-edit empty-icon" />
+          <h3>No documentation pages yet</h3>
+          <p>Create your first documentation page to get started with your design system docs.</p>
+          <NuxtLink to="/admin/docs/new">
+            <Button label="Create First Page" icon="pi pi-plus" class="mt-4" />
+          </NuxtLink>
+        </div>
+      </template>
+    </Card>
+
+    <!-- Data Table -->
+    <Card v-else class="data-card">
+      <template #content>
+        <DataTable 
+          :value="pages" 
+          :paginator="pages.length > 10" 
+          :rows="10"
+          v-model:filters="filters"
+          filterDisplay="row"
+          :globalFilterFields="['title', 'slug', 'category']"
+          removableSort
+          stripedRows
+          class="docs-table"
+        >
+          <template #header>
+            <div class="table-header">
+              <IconField>
+                <InputIcon class="pi pi-search" />
+                <InputText v-model="filters['global'].value" placeholder="Search pages..." />
+              </IconField>
+            </div>
+          </template>
+
+          <template #empty>
+            <div class="empty-table">No documentation pages found.</div>
+          </template>
+
+          <Column field="title" header="Title" sortable style="min-width: 250px">
+            <template #body="{ data }">
+              <div class="title-cell">
+                <span class="page-title">{{ data.title }}</span>
+                <code class="page-slug">/docs/{{ data.slug }}</code>
+              </div>
+            </template>
+          </Column>
+
+          <Column field="category" header="Category" sortable :showFilterMenu="false" style="min-width: 150px">
+            <template #body="{ data }">
+              <Tag :value="data.category" severity="secondary" />
+            </template>
+            <template #filter="{ filterModel, filterCallback }">
+              <Select 
+                v-model="filterModel.value" 
+                @change="filterCallback()" 
+                :options="categories" 
+                optionLabel="label"
+                optionValue="value"
+                placeholder="All"
+                showClear
+                class="w-full"
+              />
+            </template>
+          </Column>
+
+          <Column field="isPublished" header="Status" sortable style="min-width: 120px">
+            <template #body="{ data }">
+              <Tag 
+                :value="data.isPublished ? 'Published' : 'Draft'" 
+                :severity="getSeverity(data.isPublished)"
+                :icon="data.isPublished ? 'pi pi-check-circle' : 'pi pi-clock'"
+              />
+            </template>
+          </Column>
+
+          <Column field="updatedAt" header="Last Updated" sortable style="min-width: 150px">
+            <template #body="{ data }">
+              <span class="date-text">{{ formatDate(data.updatedAt) }}</span>
+            </template>
+          </Column>
+
+          <Column header="Actions" style="min-width: 150px">
+            <template #body="{ data }">
+              <div class="action-buttons">
+                <NuxtLink :to="`/admin/docs/${data.slug}`">
+                  <Button 
+                    icon="pi pi-pencil" 
+                    severity="secondary" 
+                    text 
+                    rounded 
+                    v-tooltip.top="'Edit'"
+                  />
+                </NuxtLink>
+                <NuxtLink :to="`/docs/${data.slug}`" target="_blank">
+                  <Button 
+                    icon="pi pi-external-link" 
+                    severity="secondary" 
+                    text 
+                    rounded 
+                    v-tooltip.top="'Preview'"
+                  />
+                </NuxtLink>
+                <Button 
+                  icon="pi pi-trash" 
+                  severity="danger" 
+                  text 
+                  rounded 
+                  v-tooltip.top="'Delete'"
+                  @click="confirmDelete(data)"
+                />
+              </div>
+            </template>
+          </Column>
+        </DataTable>
+      </template>
+    </Card>
+
+    <!-- Delete Confirmation Dialog -->
+    <Dialog 
+      v-model:visible="showDeleteDialog" 
+      :style="{ width: '450px' }" 
+      header="Delete Page" 
+      :modal="true"
+      :closable="!deleting"
+    >
+      <div class="delete-dialog-content">
+        <i class="pi pi-exclamation-triangle delete-warning-icon" />
+        <div>
+          <p>Are you sure you want to delete <strong>{{ pageToDelete?.title }}</strong>?</p>
+          <p class="text-secondary">This action cannot be undone.</p>
         </div>
       </div>
-    </Teleport>
+      <template #footer>
+        <Button label="Cancel" severity="secondary" @click="showDeleteDialog = false" :disabled="deleting" />
+        <Button label="Delete" severity="danger" icon="pi pi-trash" @click="deletePage" :loading="deleting" />
+      </template>
+    </Dialog>
   </div>
 </template>
 
@@ -143,219 +250,141 @@ function formatDate(dateStr: string) {
 .docs-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
-.docs-header h1 {
+.docs-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   font-size: 1.75rem;
   font-weight: 600;
   color: var(--text-color);
   margin: 0;
 }
 
-.subtitle {
-  color: var(--text-color-secondary);
-  margin-top: 0.25rem;
+.docs-title i {
+  color: var(--primary-color);
 }
 
-.btn-primary {
-  display: inline-flex;
+.docs-subtitle {
+  color: var(--text-color-secondary);
+  margin: 0.5rem 0 0 0;
+}
+
+.loading-state {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  background: var(--primary-color);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background 0.2s;
-}
-
-.btn-primary:hover {
-  background: var(--primary-600);
-}
-
-.loading, .empty-state {
-  text-align: center;
+  justify-content: center;
   padding: 4rem 2rem;
+  gap: 1rem;
   color: var(--text-color-secondary);
 }
 
-.empty-state i {
+.empty-card, .data-card {
+  border-radius: 12px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.empty-icon {
   font-size: 4rem;
-  opacity: 0.3;
-  margin-bottom: 1rem;
+  color: var(--surface-400);
+  margin-bottom: 1.5rem;
 }
 
 .empty-state h3 {
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-}
-
-.pages-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-}
-
-.page-card {
-  background: var(--surface-card);
-  border: 1px solid var(--surface-border);
-  border-radius: 12px;
-  padding: 1.5rem;
-  transition: box-shadow 0.2s;
-}
-
-.page-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.page-header {
-  display: flex;
-  gap: 0.5rem;
-  margin-bottom: 1rem;
-}
-
-.category-badge {
-  background: var(--surface-100);
-  color: var(--text-color);
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.status-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
-.status-badge.published {
-  background: rgba(34, 197, 94, 0.1);
-  color: rgb(34, 197, 94);
-}
-
-.status-badge.draft {
-  background: rgba(234, 179, 8, 0.1);
-  color: rgb(234, 179, 8);
-}
-
-.page-title {
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--text-color);
   margin: 0 0 0.5rem 0;
 }
 
-.page-excerpt {
+.empty-state p {
   color: var(--text-color-secondary);
-  font-size: 0.875rem;
-  margin: 0 0 0.5rem 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  margin: 0;
+  max-width: 400px;
+  margin-inline: auto;
+}
+
+.table-header {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.title-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.page-title {
+  font-weight: 500;
+  color: var(--text-color);
 }
 
 .page-slug {
-  font-family: monospace;
   font-size: 0.75rem;
   color: var(--primary-color);
-  margin: 0 0 1rem 0;
-}
-
-.page-meta {
-  font-size: 0.75rem;
-  color: var(--text-color-secondary);
-  margin-bottom: 1rem;
-}
-
-.page-actions {
-  display: flex;
-  gap: 0.5rem;
-  padding-top: 1rem;
-  border-top: 1px solid var(--surface-border);
-}
-
-.btn-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 8px;
-  border: 1px solid var(--surface-border);
-  background: transparent;
-  color: var(--text-color);
-  cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
-}
-
-.btn-icon:hover {
   background: var(--surface-100);
+  padding: 0.125rem 0.5rem;
+  border-radius: 4px;
+  width: fit-content;
 }
 
-.btn-icon.btn-danger:hover {
-  background: rgba(239, 68, 68, 0.1);
-  border-color: rgb(239, 68, 68);
-  color: rgb(239, 68, 68);
-}
-
-/* Modal styles */
-.modal-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal {
-  background: var(--surface-card);
-  border-radius: 12px;
-  padding: 2rem;
-  max-width: 400px;
-  width: 90%;
-}
-
-.modal h3 {
-  margin: 0 0 1rem 0;
-  color: var(--text-color);
-}
-
-.modal .warning {
-  color: rgb(239, 68, 68);
+.date-text {
+  color: var(--text-color-secondary);
   font-size: 0.875rem;
 }
 
-.modal-actions {
+.action-buttons {
   display: flex;
+  gap: 0.25rem;
+}
+
+.empty-table {
+  text-align: center;
+  padding: 2rem;
+  color: var(--text-color-secondary);
+}
+
+.delete-dialog-content {
+  display: flex;
+  align-items: flex-start;
   gap: 1rem;
-  justify-content: flex-end;
-  margin-top: 1.5rem;
 }
 
-.btn-secondary {
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  border: 1px solid var(--surface-border);
-  background: transparent;
-  color: var(--text-color);
-  cursor: pointer;
+.delete-warning-icon {
+  font-size: 2rem;
+  color: var(--red-500);
+  flex-shrink: 0;
 }
 
-.btn-danger {
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  border: none;
-  background: rgb(239, 68, 68);
-  color: white;
-  cursor: pointer;
+.delete-dialog-content p {
+  margin: 0 0 0.5rem 0;
+}
+
+.text-secondary {
+  color: var(--text-color-secondary);
+  font-size: 0.875rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .docs-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  .docs-header > a {
+    align-self: flex-start;
+  }
 }
 </style>

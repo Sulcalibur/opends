@@ -1,12 +1,14 @@
 <script setup lang="ts">
 /**
  * Create New Documentation Page
+ * Uses PrimeVue components for polished UI
  */
 definePageMeta({
   layout: 'admin'
 })
 
 const router = useRouter()
+const toast = useToast()
 
 const form = ref({
   title: '',
@@ -18,7 +20,6 @@ const form = ref({
 })
 
 const saving = ref(false)
-const error = ref('')
 
 // Auto-generate slug from title
 watch(() => form.value.title, (title) => {
@@ -38,12 +39,16 @@ function generateSlug(text: string): string {
 
 async function savePage() {
   if (!form.value.title || !form.value.slug) {
-    error.value = 'Title and slug are required'
+    toast.add({
+      severity: 'error',
+      summary: 'Validation Error',
+      detail: 'Title and slug are required',
+      life: 3000
+    })
     return
   }
 
   saving.value = true
-  error.value = ''
 
   try {
     await $fetch('/api/docs', {
@@ -58,9 +63,21 @@ async function savePage() {
       }
     })
 
+    toast.add({
+      severity: 'success',
+      summary: 'Created',
+      detail: 'Page created successfully',
+      life: 3000
+    })
+
     router.push('/admin/docs')
   } catch (err: any) {
-    error.value = err.data?.message || 'Failed to create page'
+    toast.add({
+      severity: 'error',
+      summary: 'Error',
+      detail: err.data?.message || 'Failed to create page',
+      life: 5000
+    })
   } finally {
     saving.value = false
   }
@@ -79,101 +96,131 @@ const categories = [
 
 <template>
   <div class="docs-editor">
-    <header class="editor-header">
+    <!-- Toast for notifications -->
+    <Toast />
+
+    <!-- Header -->
+    <div class="editor-header">
       <div class="header-left">
         <NuxtLink to="/admin/docs" class="back-link">
           <i class="pi pi-arrow-left" />
-          Back to Docs
+          <span>Back to Docs</span>
         </NuxtLink>
-        <h1>Create Documentation Page</h1>
+        <h1 class="editor-title">
+          <i class="pi pi-plus-circle" />
+          Create Documentation Page
+        </h1>
       </div>
       <div class="header-actions">
-        <label class="publish-toggle">
-          <input v-model="form.isPublished" type="checkbox" />
-          <span>Publish</span>
-        </label>
-        <button 
-          class="btn-primary" 
-          :disabled="saving"
+        <div class="publish-toggle">
+          <Checkbox v-model="form.isPublished" :binary="true" inputId="published" />
+          <label for="published" class="publish-label">
+            {{ form.isPublished ? 'Publish immediately' : 'Save as draft' }}
+          </label>
+        </div>
+        <Button 
+          label="Create Page" 
+          icon="pi pi-check" 
+          :loading="saving"
+          :disabled="saving || !form.title || !form.slug"
           @click="savePage"
-        >
-          <i v-if="saving" class="pi pi-spin pi-spinner" />
-          <i v-else class="pi pi-save" />
-          {{ saving ? 'Saving...' : 'Save Page' }}
-        </button>
+        />
       </div>
-    </header>
-
-    <div v-if="error" class="error-banner">
-      <i class="pi pi-exclamation-circle" />
-      {{ error }}
     </div>
 
+    <!-- Editor Layout -->
     <div class="editor-layout">
+      <!-- Main Content -->
       <div class="editor-main">
-        <div class="form-group">
-          <label for="title">Title</label>
-          <input 
-            id="title"
-            v-model="form.title"
-            type="text"
-            placeholder="Page title"
-            class="input-field"
-          />
-        </div>
+        <Card class="form-card">
+          <template #content>
+            <div class="form-group">
+              <label for="title" class="form-label">Title <span class="required">*</span></label>
+              <InputText 
+                id="title"
+                v-model="form.title"
+                placeholder="Enter page title"
+                class="w-full"
+                autofocus
+              />
+            </div>
 
-        <div class="form-group">
-          <label for="slug">Slug</label>
-          <div class="slug-input">
-            <span class="slug-prefix">/docs/</span>
-            <input 
-              id="slug"
-              v-model="form.slug"
-              type="text"
-              placeholder="page-slug"
-              class="input-field"
-            />
-          </div>
-        </div>
+            <div class="form-group">
+              <label for="slug" class="form-label">Slug <span class="required">*</span></label>
+              <InputGroup>
+                <InputGroupAddon>/docs/</InputGroupAddon>
+                <InputText 
+                  id="slug"
+                  v-model="form.slug"
+                  placeholder="page-slug"
+                />
+              </InputGroup>
+              <small class="form-hint">Auto-generated from title. URL-friendly identifier (lowercase, dashes only)</small>
+            </div>
 
-        <div class="form-group">
-          <label>Content</label>
-          <ClientOnly>
-            <MilkdownEditor v-model="form.content" />
-            <template #fallback>
-              <div class="editor-loading">
-                <i class="pi pi-spin pi-spinner" />
-                Loading editor...
-              </div>
-            </template>
-          </ClientOnly>
-        </div>
+            <div class="form-group">
+              <label class="form-label">Content</label>
+              <ClientOnly>
+                <MilkdownEditor v-model="form.content" />
+                <template #fallback>
+                  <div class="editor-loading">
+                    <ProgressSpinner style="width: 30px; height: 30px" strokeWidth="4" />
+                    <span>Loading editor...</span>
+                  </div>
+                </template>
+              </ClientOnly>
+            </div>
+          </template>
+        </Card>
       </div>
 
+      <!-- Sidebar -->
       <aside class="editor-sidebar">
-        <div class="sidebar-section">
-          <h3>Page Settings</h3>
-          
-          <div class="form-group">
-            <label for="category">Category</label>
-            <select id="category" v-model="form.category" class="input-field">
-              <option v-for="cat in categories" :key="cat.value" :value="cat.value">
-                {{ cat.label }}
-              </option>
-            </select>
-          </div>
+        <Card class="sidebar-card">
+          <template #title>
+            <div class="sidebar-title">
+              <i class="pi pi-cog" />
+              Page Settings
+            </div>
+          </template>
+          <template #content>
+            <div class="form-group">
+              <label for="category" class="form-label">Category</label>
+              <Select 
+                id="category"
+                v-model="form.category" 
+                :options="categories"
+                optionLabel="label"
+                optionValue="value"
+                placeholder="Select category"
+                class="w-full"
+              />
+            </div>
 
-          <div class="form-group">
-            <label for="excerpt">Excerpt</label>
-            <textarea 
-              id="excerpt"
-              v-model="form.excerpt"
-              placeholder="Brief description for listings"
-              rows="3"
-              class="input-field"
-            />
-          </div>
-        </div>
+            <div class="form-group">
+              <label for="excerpt" class="form-label">Excerpt</label>
+              <Textarea 
+                id="excerpt"
+                v-model="form.excerpt"
+                placeholder="Brief description for listings"
+                :rows="4"
+                class="w-full"
+              />
+              <small class="form-hint">Used in page listings and SEO</small>
+            </div>
+
+            <Divider />
+
+            <div class="tips-section">
+              <h4><i class="pi pi-lightbulb" /> Tips</h4>
+              <ul>
+                <li>Use headings (# ## ###) to structure your content</li>
+                <li>Add code blocks with ``` for code examples</li>
+                <li>Use / for slash commands in the editor</li>
+              </ul>
+            </div>
+          </template>
+        </Card>
       </aside>
     </div>
   </div>
@@ -189,10 +236,10 @@ const categories = [
 .editor-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
   margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid var(--surface-border);
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .header-left {
@@ -208,131 +255,95 @@ const categories = [
   color: var(--text-color-secondary);
   text-decoration: none;
   font-size: 0.875rem;
+  transition: color 0.2s;
 }
 
 .back-link:hover {
   color: var(--primary-color);
 }
 
-.editor-header h1 {
+.editor-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   font-size: 1.5rem;
   font-weight: 600;
   color: var(--text-color);
   margin: 0;
 }
 
+.editor-title i {
+  color: var(--primary-color);
+}
+
 .header-actions {
   display: flex;
   align-items: center;
   gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .publish-toggle {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: var(--surface-100);
+  border-radius: 8px;
+}
+
+.publish-label {
   cursor: pointer;
+  font-size: 0.875rem;
   color: var(--text-color);
-}
-
-.publish-toggle input {
-  width: 18px;
-  height: 18px;
-}
-
-.btn-primary {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: var(--primary-color);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 8px;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.btn-primary:hover:not(:disabled) {
-  background: var(--primary-600);
-}
-
-.btn-primary:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.error-banner {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(239, 68, 68, 0.1);
-  color: rgb(239, 68, 68);
-  padding: 1rem;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
 }
 
 .editor-layout {
   display: grid;
-  grid-template-columns: 1fr 300px;
-  gap: 2rem;
+  grid-template-columns: 1fr 320px;
+  gap: 1.5rem;
+  align-items: start;
 }
 
 @media (max-width: 1024px) {
   .editor-layout {
     grid-template-columns: 1fr;
   }
+  
+  .editor-sidebar {
+    order: -1;
+  }
+}
+
+.form-card, .sidebar-card {
+  border-radius: 12px;
 }
 
 .form-group {
   margin-bottom: 1.5rem;
 }
 
-.form-group label {
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-label {
   display: block;
   font-weight: 500;
   color: var(--text-color);
   margin-bottom: 0.5rem;
+  font-size: 0.875rem;
 }
 
-.input-field {
-  width: 100%;
-  padding: 0.75rem 1rem;
-  border: 1px solid var(--surface-border);
-  border-radius: 8px;
-  background: var(--surface-card);
-  color: var(--text-color);
-  font-size: 1rem;
-  transition: border-color 0.2s;
+.required {
+  color: var(--red-500);
 }
 
-.input-field:focus {
-  outline: none;
-  border-color: var(--primary-color);
-}
-
-.slug-input {
-  display: flex;
-  align-items: stretch;
-}
-
-.slug-prefix {
-  display: flex;
-  align-items: center;
-  padding: 0 1rem;
-  background: var(--surface-100);
-  border: 1px solid var(--surface-border);
-  border-right: none;
-  border-radius: 8px 0 0 8px;
+.form-hint {
+  display: block;
+  margin-top: 0.25rem;
   color: var(--text-color-secondary);
-  font-family: monospace;
-}
-
-.slug-input .input-field {
-  border-radius: 0 8px 8px 0;
-  font-family: monospace;
+  font-size: 0.75rem;
 }
 
 .editor-loading {
@@ -340,32 +351,60 @@ const categories = [
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  background: var(--surface-card);
+  background: var(--surface-100);
   border: 1px solid var(--surface-border);
   border-radius: 8px;
+  gap: 0.75rem;
   color: var(--text-color-secondary);
+}
+
+.sidebar-title {
+  display: flex;
+  align-items: center;
   gap: 0.5rem;
-}
-
-.editor-sidebar {
-  background: var(--surface-card);
-  border: 1px solid var(--surface-border);
-  border-radius: 12px;
-  padding: 1.5rem;
-  height: fit-content;
-}
-
-.sidebar-section h3 {
   font-size: 1rem;
   font-weight: 600;
-  color: var(--text-color);
-  margin: 0 0 1rem 0;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--surface-border);
 }
 
-textarea.input-field {
-  resize: vertical;
-  min-height: 80px;
+.sidebar-title i {
+  color: var(--primary-color);
+}
+
+.tips-section {
+  background: var(--surface-100);
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.tips-section h4 {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0 0.75rem 0;
+  font-size: 0.875rem;
+  color: var(--text-color);
+}
+
+.tips-section h4 i {
+  color: var(--yellow-500);
+}
+
+.tips-section ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.75rem;
+  color: var(--text-color-secondary);
+}
+
+.tips-section li {
+  margin-bottom: 0.5rem;
+}
+
+.tips-section li:last-child {
+  margin-bottom: 0;
+}
+
+.w-full {
+  width: 100%;
 }
 </style>
