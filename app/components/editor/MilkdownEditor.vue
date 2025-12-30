@@ -30,6 +30,7 @@ const error = ref<string | null>(null)
 const loading = ref(true)
 let crepe: Crepe | null = null
 let isReady = false
+let updateTimeout: ReturnType<typeof setTimeout> | null = null
 
 onMounted(async () => {
   if (!editorRef.value) {
@@ -54,24 +55,39 @@ onMounted(async () => {
       }
     })
 
-    // Create the editor first
+    // Create the editor
     await crepe.create()
     
-    // Mark as ready AFTER creation completes
+    // Wait a bit more to ensure full initialization
+    await new Promise(resolve => setTimeout(resolve, 100))
+    
+    // Mark as ready
     isReady = true
     loading.value = false
 
-    // NOW attach the listener after editor is ready
-    crepe.on(() => {
-      if (isReady && crepe) {
-        try {
-          const content = crepe.getMarkdown()
-          emit('update:modelValue', content)
-        } catch (e) {
-          console.warn('Error getting markdown:', e)
+    // Set up a polling mechanism to detect content changes
+    // This is safer than relying on the listener which may fire too early
+    const checkForChanges = () => {
+      if (!isReady || !crepe) return
+      
+      try {
+        const currentContent = crepe.getMarkdown()
+        if (currentContent !== props.modelValue) {
+          emit('update:modelValue', currentContent)
         }
+      } catch (e) {
+        // Silently ignore - editor might not be fully ready yet
       }
-    })
+      
+      // Continue polling
+      if (isReady) {
+        updateTimeout = setTimeout(checkForChanges, 500)
+      }
+    }
+    
+    // Start polling after a short delay
+    setTimeout(checkForChanges, 500)
+    
   } catch (e: any) {
     console.error('Failed to initialize Milkdown editor:', e)
     error.value = `Failed to load editor: ${e.message}`
@@ -87,7 +103,7 @@ watch(() => props.modelValue, (newValue) => {
   try {
     const current = crepe.getMarkdown()
     if (newValue !== current) {
-      // @ts-ignore - setMarkdown exists but typescript might not recognize it
+      // @ts-ignore
       if (typeof crepe.setMarkdown === 'function') {
         // @ts-ignore
         crepe.setMarkdown(newValue || '')
@@ -100,11 +116,21 @@ watch(() => props.modelValue, (newValue) => {
 
 onUnmounted(() => {
   isReady = false
+  if (updateTimeout) {
+    clearTimeout(updateTimeout)
+  }
   crepe?.destroy()
 })
 
 defineExpose({
-  getMarkdown: () => (isReady && crepe) ? crepe.getMarkdown() : ''
+  getMarkdown: () => {
+    if (!isReady || !crepe) return ''
+    try {
+      return crepe.getMarkdown()
+    } catch {
+      return ''
+    }
+  }
 })
 </script>
 
