@@ -2,11 +2,21 @@
   <div class="flex h-screen w-full bg-gray-50 overflow-hidden">
     <!-- Sidebar -->
     <aside 
-      class="hidden lg:flex flex-col flex-shrink-0 border-r border-white/10 text-white admin-sidebar-bg transition-all duration-300 relative"
+      class="hidden lg:flex flex-col flex-shrink-0 border-r border-white/10 text-white admin-sidebar-bg transition-all duration-300 relative group z-30"
       :class="isCollapsed ? 'w-20' : 'w-[280px]'"
     >
-      <div class="sidebar-header" :class="{ 'px-3 justify-center': isCollapsed }">
-        <h2 class="sidebar-logo" :class="{ 'text-2xl': isCollapsed }">
+      <!-- Edge Toggle Button -->
+      <button 
+        class="absolute -right-3 top-8 w-6 h-6 rounded-full bg-[#1e293b] border border-gray-600 text-gray-400 flex items-center justify-center hover:text-white hover:bg-slate-700 hover:border-gray-400 transition-all z-50 focus:outline-none shadow-lg opacity-0 group-hover:opacity-100"
+        :class="{ 'opacity-100': isCollapsed }"
+        @click="isCollapsed = !isCollapsed"
+        :title="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
+      >
+        <i class="pi" :class="isCollapsed ? 'pi-angle-right' : 'pi-angle-left'" style="font-size: 0.75rem"></i>
+      </button>
+
+      <div class="sidebar-header" :class="{ 'px-2 items-center': isCollapsed }">
+        <h2 class="sidebar-logo" :class="{ 'text-xl': isCollapsed }">
           {{ isCollapsed ? 'ODS' : 'OpenDS' }}
         </h2>
         <p v-if="!isCollapsed" class="sidebar-subtitle">Admin Panel</p>
@@ -82,16 +92,6 @@
       </nav>
 
       <div class="sidebar-footer" :class="{ 'px-2': isCollapsed }">
-        <!-- Collapse Toggle -->
-        <button 
-          class="collapse-btn mb-4" 
-          @click="isCollapsed = !isCollapsed"
-          :class="{ 'mx-auto': isCollapsed, 'ml-auto': !isCollapsed }"
-          v-tooltip.top="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
-        >
-          <i :class="['pi', isCollapsed ? 'pi-angle-double-right' : 'pi-angle-double-left']"></i>
-        </button>
-
         <div class="user-profile" :class="{ 'justify-center': isCollapsed }">
           <div class="user-avatar">
             {{ userInitials }}

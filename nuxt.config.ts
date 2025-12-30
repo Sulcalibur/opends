@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@nuxt/eslint'
   ],
   css: [
+    'primeicons/primeicons.css',
     '@milkdown/crepe/theme/common/style.css',
     '@milkdown/crepe/theme/frame.css'
   ],
