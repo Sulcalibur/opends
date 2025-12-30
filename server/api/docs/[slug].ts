@@ -56,7 +56,9 @@ export default asyncHandler(async (event) => {
     // PUT - Update documentation page
     if (method === 'PUT') {
         // TODO: Add proper auth middleware check
+        console.log('[PUT] Attempting to find page with slug:', slug)
         const existingPage = await DocumentationRepository.findBySlug(slug)
+        console.log('[PUT] Found page:', existingPage ? 'YES' : 'NO', existingPage)
 
         if (!existingPage) {
             setResponseStatus(event, 404)
