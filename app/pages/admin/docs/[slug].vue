@@ -142,7 +142,7 @@ const categories = [
               <label class="section-label">Content</label>
               <div class="editor-wrapper">
                 <ClientOnly>
-                  <MilkdownEditor v-model="form.content" />
+                  <EditorMilkdownEditor v-model="form.content" />
                   <template #fallback>
                     <div class="loading-editor">Loading editor...</div>
                   </template>
