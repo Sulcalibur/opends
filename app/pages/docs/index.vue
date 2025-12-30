@@ -6,7 +6,7 @@
 
 // Fetch all published documentation
 const { data: docs, error } = await useFetch('/api/docs', {
-  query: { published: true }
+  query: { isPublished: 1 }
 })
 
 const pages = computed(() => docs.value?.data || [])
