@@ -7131,22 +7131,7 @@ _Nzj5DUM5UIdwlrZ7bP1QoC7nKXUgo5gjg3gw4Xgr39c,
 _9tFYlCNN1IjDUyACW2zDzhyHqQ2bJmWPZHBj9KxSbk
 ];
 
-const assets = {
-  "/index.mjs": {
-    "type": "text/javascript; charset=utf-8",
-    "etag": "\"59725-oKOpwk0LfgvmOUHEkMNeMdbdHsM\"",
-    "mtime": "2025-12-30T12:20:20.658Z",
-    "size": 366373,
-    "path": "index.mjs"
-  },
-  "/index.mjs.map": {
-    "type": "application/json",
-    "etag": "\"13ee93-Xxb+sT5mtR0p5RZnmxaN5V2IQiU\"",
-    "mtime": "2025-12-30T12:20:20.664Z",
-    "size": 1306259,
-    "path": "index.mjs.map"
-  }
-};
+const assets = {};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -9342,12 +9327,15 @@ class DocumentationRepository {
       updates.push(`published_at = datetime('now')`);
     }
     values.push(id);
-    const result = await db.query(
+    await db.query(
       `UPDATE documentation_pages 
              SET ${updates.join(", ")}
-             WHERE id = $${paramIndex} AND deleted_at IS NULL
-             RETURNING *`,
+             WHERE id = $${paramIndex} AND deleted_at IS NULL`,
       values
+    );
+    const result = await db.query(
+      `SELECT * FROM documentation_pages WHERE id = $1 AND deleted_at IS NULL`,
+      [id]
     );
     if (result.rows.length === 0) {
       throw new Error("Page not found");
