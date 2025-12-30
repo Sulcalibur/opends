@@ -353,3 +353,28 @@ watch(isCollapsed, (val) => {
   background: rgba(255, 255, 255, 0.2);
 }
 </style>
+
+<!-- Global Tooltip Overrides for Premium Look -->
+<style>
+.p-tooltip {
+  z-index: 9999 !important;
+}
+
+.p-tooltip-text {
+  background: #1e293b !important;
+  color: #fff !important;
+  padding: 0.5rem 0.75rem !important;
+  border-radius: 6px !important;
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+.p-tooltip-arrow {
+  border-right-color: #1e293b !important;
+  border-left-color: #1e293b !important;
+  border-top-color: #1e293b !important;
+  border-bottom-color: #1e293b !important;
+}
+</style>
