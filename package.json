@@ -82,6 +82,9 @@
   },
   "homepage": "https://opends.dev",
   "dependencies": {
+    "@milkdown/crepe": "^7.17.3",
+    "@milkdown/kit": "^7.17.3",
+    "@milkdown/vue": "^7.17.3",
     "@types/pg": "^8.16.0",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.5.0",
