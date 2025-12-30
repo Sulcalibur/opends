@@ -1,0 +1,73 @@
+/* Global PrimeVue Dialog Styling */
+/* Ensures all modals/dialogs have proper backgrounds and styling */
+
+.p-dialog-mask {
+  background: rgba(0, 0, 0, 0.4) !important;
+}
+
+.p-dialog {
+  background: white !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.p-dialog .p-dialog-header {
+  background: white !important;
+  border-bottom: 1px solid #e2e8f0 !important;
+  padding: 1.5rem !important;
+  border-radius: 0.75rem 0.75rem 0 0 !important;
+}
+
+.p-dialog .p-dialog-content {
+  background: white !important;
+  padding: 1.5rem !important;
+}
+
+.p-dialog .p-dialog-footer {
+  background: white !important;
+  border-top: 1px solid #e2e8f0 !important;
+  padding: 1rem 1.5rem !important;
+  border-radius: 0 0 0.75rem 0.75rem !important;
+}
+
+.p-dialog .p-dialog-header-icon {
+  color: #64748b !important;
+}
+
+.p-dialog .p-dialog-header-icon:hover {
+  background: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+.p-dialog .p-dialog-title {
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  font-size: 1.125rem !important;
+}
+
+/* Dark mode support */
+:root.dark .p-dialog {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+:root.dark .p-dialog .p-dialog-header,
+:root.dark .p-dialog .p-dialog-content,
+:root.dark .p-dialog .p-dialog-footer {
+  background: #1e293b !important;
+  border-color: #334155 !important;
+}
+
+:root.dark .p-dialog .p-dialog-title {
+  color: #f1f5f9 !important;
+}
+
+:root.dark .p-dialog .p-dialog-header-icon {
+  color: #94a3b8 !important;
+}
+
+:root.dark .p-dialog .p-dialog-header-icon:hover {
+  background: #334155 !important;
+  color: #f1f5f9 !important;
+}

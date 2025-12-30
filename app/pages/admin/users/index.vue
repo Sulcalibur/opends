@@ -491,4 +491,27 @@ onMounted(async () => {
   border-top: 1px solid #e2e8f0;
   padding: 1rem 1.5rem;
 }
+
+/* Ensure dialog mask and background are visible */
+:deep(.p-dialog-mask) {
+  background: rgba(0, 0, 0, 0.4) !important;
+}
+
+:deep(.p-dialog) {
+  background: white !important;
+  border-radius: 0.75rem !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
+}
+
+:deep(.p-dialog .p-dialog-header) {
+  background: white !important;
+}
+
+:deep(.p-dialog .p-dialog-content) {
+  background: white !important;
+}
+
+:deep(.p-dialog .p-dialog-footer) {
+  background: white !important;
+}
 </style>

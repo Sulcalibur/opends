@@ -12,7 +12,8 @@ export default defineNuxtConfig({
   css: [
     'primeicons/primeicons.css',
     '@milkdown/crepe/theme/common/style.css',
-    '@milkdown/crepe/theme/frame.css'
+    '@milkdown/crepe/theme/frame.css',
+    '~/assets/css/dialogs.css'
   ],
   primevue: {
     usePrimeVue: true,
