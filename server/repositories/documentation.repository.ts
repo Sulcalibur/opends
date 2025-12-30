@@ -149,12 +149,18 @@ export class DocumentationRepository {
 
         values.push(id)
 
-        const result = await db.query<DocumentationPage>(
+        // Execute UPDATE without RETURNING (D1 doesn't handle RETURNING * reliably)
+        await db.query(
             `UPDATE documentation_pages 
              SET ${updates.join(', ')}
-             WHERE id = $${paramIndex} AND deleted_at IS NULL
-             RETURNING *`,
+             WHERE id = $${paramIndex} AND deleted_at IS NULL`,
             values
+        )
+
+        // Fetch the updated record separately
+        const result = await db.query<DocumentationPage>(
+            `SELECT * FROM documentation_pages WHERE id = $1 AND deleted_at IS NULL`,
+            [id]
         )
 
         if (result.rows.length === 0) {

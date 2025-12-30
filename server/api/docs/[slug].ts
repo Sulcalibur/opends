@@ -56,9 +56,7 @@ export default asyncHandler(async (event) => {
     // PUT - Update documentation page
     if (method === 'PUT') {
         // TODO: Add proper auth middleware check
-        console.log('[PUT] Attempting to find page with slug:', slug)
         const existingPage = await DocumentationRepository.findBySlug(slug)
-        console.log('[PUT] Found page:', existingPage ? 'YES' : 'NO', existingPage?.id)
 
         if (!existingPage) {
             setResponseStatus(event, 404)
@@ -68,7 +66,6 @@ export default asyncHandler(async (event) => {
         const body = await readBody(event)
         const data = updatePageSchema.parse(body)
 
-        console.log('[PUT] Calling update with data:', Object.keys(data))
         const page = await DocumentationRepository.update(existingPage.id, {
             slug: data.slug,
             title: data.title,
@@ -79,9 +76,8 @@ export default asyncHandler(async (event) => {
             sort_order: data.sortOrder,
             is_published: data.isPublished
         })
-        console.log('[PUT] Update succeeded, page:', page?.id)
 
-        const response = createSuccessResponse({
+        return createSuccessResponse({
             id: page.id,
             slug: page.slug,
             title: page.title,
@@ -90,8 +86,6 @@ export default asyncHandler(async (event) => {
             isPublished: Boolean(page.is_published),
             updatedAt: page.updated_at
         })
-        console.log('[PUT] Response created successfully')
-        return response
     }
 
     // DELETE - Soft delete documentation page
