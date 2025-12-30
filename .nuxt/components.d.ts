@@ -19,6 +19,7 @@ export const NavBar: typeof import("../app/components/NavBar.vue").default
 export const TokenEditor: typeof import("../app/components/TokenEditor.vue").default
 export const ViewerSidebar: typeof import("../app/components/ViewerSidebar.vue").default
 export const AdminSidebar: typeof import("../app/components/admin/AdminSidebar.vue").default
+export const EditorMilkdownEditor: typeof import("../app/components/editor/MilkdownEditor.vue").default
 export const NuxtWelcome: typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_better-s_f2d6e8bae824b573c9948b8d5301f04c/node_modules/nuxt/dist/app/components/welcome.vue").default
 export const NuxtLayout: typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_better-s_f2d6e8bae824b573c9948b8d5301f04c/node_modules/nuxt/dist/app/components/nuxt-layout").default
 export const NuxtErrorBoundary: typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_better-s_f2d6e8bae824b573c9948b8d5301f04c/node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue").default
@@ -168,6 +169,7 @@ export const LazyNavBar: LazyComponent<typeof import("../app/components/NavBar.v
 export const LazyTokenEditor: LazyComponent<typeof import("../app/components/TokenEditor.vue").default>
 export const LazyViewerSidebar: LazyComponent<typeof import("../app/components/ViewerSidebar.vue").default>
 export const LazyAdminSidebar: LazyComponent<typeof import("../app/components/admin/AdminSidebar.vue").default>
+export const LazyEditorMilkdownEditor: LazyComponent<typeof import("../app/components/editor/MilkdownEditor.vue").default>
 export const LazyNuxtWelcome: LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_better-s_f2d6e8bae824b573c9948b8d5301f04c/node_modules/nuxt/dist/app/components/welcome.vue").default>
 export const LazyNuxtLayout: LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_better-s_f2d6e8bae824b573c9948b8d5301f04c/node_modules/nuxt/dist/app/components/nuxt-layout").default>
 export const LazyNuxtErrorBoundary: LazyComponent<typeof import("../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_better-s_f2d6e8bae824b573c9948b8d5301f04c/node_modules/nuxt/dist/app/components/nuxt-error-boundary.vue").default>

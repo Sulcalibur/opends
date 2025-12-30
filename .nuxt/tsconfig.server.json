@@ -105,7 +105,7 @@
         "../node_modules/.pnpm/nuxt@4.2.2_@parcel+watcher@2.5.1_@types+node@20.19.27_@vue+compiler-sfc@3.5.26_better-s_f2d6e8bae824b573c9948b8d5301f04c/node_modules/nuxt/dist/head/runtime/composables"
       ],
       "pg-native": [
-        "./server/utils/mock-pg-native"
+        "../server/utils/mock-pg-native"
       ]
     },
     "lib": [

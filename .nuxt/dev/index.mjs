@@ -3679,14 +3679,19 @@ class UniversalDatabase {
    * D1 query execution
    */
   async queryD1(text, params) {
+    var _a, _b, _c;
     if (!this.d1Db) {
-      const event = useEvent();
-      if (event && event.context && event.context.cloudflare && event.context.cloudflare.env) {
-        this.d1Db = event.context.cloudflare.env.DB;
+      try {
+        const event = useEvent();
+        if ((_c = (_b = (_a = event == null ? void 0 : event.context) == null ? void 0 : _a.cloudflare) == null ? void 0 : _b.env) == null ? void 0 : _c.DB) {
+          this.d1Db = event.context.cloudflare.env.DB;
+        }
+      } catch (e) {
+        console.warn("[DB] Could not access request context for D1 binding");
       }
     }
     if (!this.d1Db) {
-      throw new Error("D1 database not connected or binding missing");
+      throw new Error('D1 database not connected. Ensure the "DB" binding is configured in wrangler.toml and you are running on Cloudflare Pages.');
     }
     const sqliteQuery = text.replace(/\$\d+/g, "?");
     try {
@@ -3803,19 +3808,18 @@ class UniversalDatabase {
 }
 let db = null;
 function parseDatabaseConfig(url = "") {
-  var _a, _b;
-  if (typeof process !== "undefined" && ((_a = process.env) == null ? void 0 : _a.NODE_ENV) === "production" && !url) {
-    return { type: "d1", url: "d1://opends" };
+  if (url.startsWith("d1:")) {
+    return { type: "d1", url };
   }
-  if (((_b = globalThis._importMeta_.env) == null ? void 0 : _b.SSR) && process.env.CF_PAGES === "1") {
+  const isCfPages = process.env.CF_PAGES === "1";
+  const isProduction = false;
+  if (isCfPages || isProduction) {
     return { type: "d1", url: "d1://opends" };
   }
   if (url.startsWith("postgresql://") || url.startsWith("postgres://")) {
     return { type: "postgres", url };
   } else if (url.startsWith("sqlite:") || url.startsWith("file:")) {
     return { type: "sqlite", url };
-  } else if (url.startsWith("d1:")) {
-    return { type: "d1", url };
   } else {
     const defaultUrl = url || "./data/opends.db";
     return { type: "sqlite", url: `sqlite:${defaultUrl}` };
@@ -7127,7 +7131,22 @@ _Nzj5DUM5UIdwlrZ7bP1QoC7nKXUgo5gjg3gw4Xgr39c,
 _9tFYlCNN1IjDUyACW2zDzhyHqQ2bJmWPZHBj9KxSbk
 ];
 
-const assets = {};
+const assets = {
+  "/index.mjs": {
+    "type": "text/javascript; charset=utf-8",
+    "etag": "\"59725-oKOpwk0LfgvmOUHEkMNeMdbdHsM\"",
+    "mtime": "2025-12-30T12:20:20.658Z",
+    "size": 366373,
+    "path": "index.mjs"
+  },
+  "/index.mjs.map": {
+    "type": "application/json",
+    "etag": "\"13ee93-Xxb+sT5mtR0p5RZnmxaN5V2IQiU\"",
+    "mtime": "2025-12-30T12:20:20.664Z",
+    "size": 1306259,
+    "path": "index.mjs.map"
+  }
+};
 
 function readAsset (id) {
   const serverDir = dirname$1(fileURLToPath(globalThis._importMeta_.url));
@@ -7686,6 +7705,12 @@ const _kRB0tXMeta = null;
 
 const _DqXYjIMeta = null;
 
+const _XP0TSgMeta = null;
+
+const _luWtDPMeta = null;
+
+const _zTmH22Meta = null;
+
 const _EvFYXFMeta = null;
 
 const _Dww1iKMeta = null;
@@ -7727,6 +7752,9 @@ const handlersMeta = [
 { route: "/api/components/:id", method: "put", meta: _xOh_FgMeta },
 { route: "/api/components", method: "get", meta: _kRB0tXMeta },
 { route: "/api/components", method: "post", meta: _DqXYjIMeta },
+{ route: "/api/docs/:slug", method: undefined, meta: _XP0TSgMeta },
+{ route: "/api/docs", method: "get", meta: _luWtDPMeta },
+{ route: "/api/docs", method: "post", meta: _zTmH22Meta },
 { route: "/api/health", method: "get", meta: _EvFYXFMeta },
 { route: "/api/tokens/:id", method: "delete", meta: _Dww1iKMeta },
 { route: "/api/tokens/:id", method: "put", meta: _eqPxtXMeta },
@@ -8080,8 +8108,11 @@ const _lazy__BdOyz = () => Promise.resolve().then(function () { return register_
 const _lazy_iPa9rD = () => Promise.resolve().then(function () { return _id__delete$3; });
 const _lazy_hS9Jgu = () => Promise.resolve().then(function () { return _id__get$1; });
 const _lazy_xOh_Fg = () => Promise.resolve().then(function () { return _id__put$3; });
-const _lazy_kRB0tX = () => Promise.resolve().then(function () { return index_get$5; });
-const _lazy_DqXYjI = () => Promise.resolve().then(function () { return index_post$3; });
+const _lazy_kRB0tX = () => Promise.resolve().then(function () { return index_get$7; });
+const _lazy_DqXYjI = () => Promise.resolve().then(function () { return index_post$5; });
+const _lazy_XP0TSg = () => Promise.resolve().then(function () { return _slug_$1; });
+const _lazy_luWtDP = () => Promise.resolve().then(function () { return index_get$5; });
+const _lazy_zTmH22 = () => Promise.resolve().then(function () { return index_post$3; });
 const _lazy_EvFYXF = () => Promise.resolve().then(function () { return health_get$1; });
 const _lazy_Dww1iK = () => Promise.resolve().then(function () { return _id__delete$1; });
 const _lazy_eqPxtX = () => Promise.resolve().then(function () { return _id__put$1; });
@@ -8108,6 +8139,9 @@ const handlers = [
   { route: '/api/components/:id', handler: _lazy_xOh_Fg, lazy: true, middleware: false, method: "put" },
   { route: '/api/components', handler: _lazy_kRB0tX, lazy: true, middleware: false, method: "get" },
   { route: '/api/components', handler: _lazy_DqXYjI, lazy: true, middleware: false, method: "post" },
+  { route: '/api/docs/:slug', handler: _lazy_XP0TSg, lazy: true, middleware: false, method: undefined },
+  { route: '/api/docs', handler: _lazy_luWtDP, lazy: true, middleware: false, method: "get" },
+  { route: '/api/docs', handler: _lazy_zTmH22, lazy: true, middleware: false, method: "post" },
   { route: '/api/health', handler: _lazy_EvFYXF, lazy: true, middleware: false, method: "get" },
   { route: '/api/tokens/:id', handler: _lazy_Dww1iK, lazy: true, middleware: false, method: "delete" },
   { route: '/api/tokens/:id', handler: _lazy_eqPxtX, lazy: true, middleware: false, method: "put" },
@@ -9161,7 +9195,7 @@ const _id__put$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty
   default: _id__put$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const index_get$4 = asyncHandler(async (event) => {
+const index_get$6 = asyncHandler(async (event) => {
   const query = getQuery$1(event);
   const filters = {
     category: query.category,
@@ -9176,9 +9210,9 @@ const index_get$4 = asyncHandler(async (event) => {
   });
 });
 
-const index_get$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const index_get$7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: index_get$4
+  default: index_get$6
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const componentSchema = z.object({
@@ -9190,7 +9224,7 @@ const componentSchema = z.object({
   spec: z.any(),
   preview_url: z.string().url().optional().or(z.literal(""))
 });
-const index_post$2 = asyncHandler(async (event) => {
+const index_post$4 = asyncHandler(async (event) => {
   const authHeader = getRequestHeader(event, "authorization");
   if (!(authHeader == null ? void 0 : authHeader.startsWith("Bearer "))) {
     setResponseStatus(event, 401);
@@ -9218,6 +9252,338 @@ const index_post$2 = asyncHandler(async (event) => {
   });
   setResponseStatus(event, 201);
   return createSuccessResponse({ component });
+});
+
+const index_post$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_post$4
+}, Symbol.toStringTag, { value: 'Module' }));
+
+class DocumentationRepository {
+  /**
+   * Find page by ID
+   */
+  static async findById(id) {
+    const db = getDatabase();
+    const result = await db.query(
+      `SELECT * FROM documentation_pages WHERE id = $1 AND deleted_at IS NULL`,
+      [id]
+    );
+    return result.rows[0] || null;
+  }
+  /**
+   * Find page by slug
+   */
+  static async findBySlug(slug) {
+    const db = getDatabase();
+    const result = await db.query(
+      `SELECT * FROM documentation_pages WHERE slug = $1 AND deleted_at IS NULL`,
+      [slug]
+    );
+    return result.rows[0] || null;
+  }
+  /**
+   * Create a new documentation page
+   */
+  static async create(data) {
+    const db = getDatabase();
+    const existing = await this.findBySlug(data.slug);
+    if (existing) {
+      throw new Error("Slug already exists");
+    }
+    const result = await db.query(
+      `INSERT INTO documentation_pages (slug, title, content, excerpt, category, parent_id, sort_order, is_published, created_by)
+             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+             RETURNING *`,
+      [
+        data.slug,
+        data.title,
+        data.content,
+        data.excerpt || null,
+        data.category || "general",
+        data.parent_id || null,
+        data.sort_order || 0,
+        data.is_published ? 1 : 0,
+        data.created_by || null
+      ]
+    );
+    return result.rows[0];
+  }
+  /**
+   * Update documentation page
+   */
+  static async update(id, data) {
+    const db = getDatabase();
+    const updates = [];
+    const values = [];
+    let paramIndex = 1;
+    const fieldMap = {
+      slug: data.slug,
+      title: data.title,
+      content: data.content,
+      excerpt: data.excerpt,
+      category: data.category,
+      parent_id: data.parent_id,
+      sort_order: data.sort_order,
+      is_published: data.is_published !== void 0 ? data.is_published ? 1 : 0 : void 0,
+      updated_by: data.updated_by
+    };
+    Object.entries(fieldMap).forEach(([key, value]) => {
+      if (value !== void 0) {
+        updates.push(`${key} = $${paramIndex}`);
+        values.push(value);
+        paramIndex++;
+      }
+    });
+    if (updates.length === 0) {
+      throw new Error("No fields to update");
+    }
+    if (data.is_published !== void 0 && data.is_published) {
+      updates.push(`published_at = datetime('now')`);
+    }
+    values.push(id);
+    const result = await db.query(
+      `UPDATE documentation_pages 
+             SET ${updates.join(", ")}
+             WHERE id = $${paramIndex} AND deleted_at IS NULL
+             RETURNING *`,
+      values
+    );
+    if (result.rows.length === 0) {
+      throw new Error("Page not found");
+    }
+    return result.rows[0];
+  }
+  /**
+   * List all pages (with optional filters)
+   */
+  static async list(options = {}) {
+    var _a;
+    const db = getDatabase();
+    const page = options.page || 1;
+    const limit = options.limit || 50;
+    const offset = (page - 1) * limit;
+    let whereClause = "WHERE deleted_at IS NULL";
+    const params = [];
+    let paramIndex = 1;
+    if (options.publishedOnly) {
+      whereClause += ` AND is_published = 1`;
+    }
+    if (options.category) {
+      whereClause += ` AND category = $${paramIndex}`;
+      params.push(options.category);
+      paramIndex++;
+    }
+    if (options.parentId !== void 0) {
+      if (options.parentId === null) {
+        whereClause += ` AND parent_id IS NULL`;
+      } else {
+        whereClause += ` AND parent_id = $${paramIndex}`;
+        params.push(options.parentId);
+        paramIndex++;
+      }
+    }
+    const countResult = await db.query(
+      `SELECT COUNT(*) as count FROM documentation_pages ${whereClause}`,
+      params
+    );
+    const total = ((_a = countResult.rows[0]) == null ? void 0 : _a.count) || 0;
+    const pagesResult = await db.query(
+      `SELECT * FROM documentation_pages 
+             ${whereClause}
+             ORDER BY category, sort_order, title
+             LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+      [...params, limit, offset]
+    );
+    return {
+      pages: pagesResult.rows,
+      total
+    };
+  }
+  /**
+   * Get all categories
+   */
+  static async getCategories() {
+    const db = getDatabase();
+    const result = await db.query(
+      `SELECT DISTINCT category FROM documentation_pages 
+             WHERE deleted_at IS NULL AND is_published = 1
+             ORDER BY category`
+    );
+    return result.rows.map((r) => r.category);
+  }
+  /**
+   * Soft delete page
+   */
+  static async delete(id) {
+    const db = getDatabase();
+    await db.query(
+      `UPDATE documentation_pages SET deleted_at = datetime('now') WHERE id = $1`,
+      [id]
+    );
+  }
+}
+
+const updatePageSchema = z.object({
+  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with dashes").optional(),
+  title: z.string().min(1).max(200).optional(),
+  content: z.string().optional(),
+  excerpt: z.string().max(500).optional(),
+  category: z.string().max(50).optional(),
+  parentId: z.string().nullable().optional(),
+  sortOrder: z.number().int().min(0).optional(),
+  isPublished: z.boolean().optional()
+});
+const _slug_ = asyncHandler(async (event) => {
+  const method = event.method;
+  const slug = getRouterParam(event, "slug");
+  if (!slug) {
+    setResponseStatus(event, 400);
+    return createErrorResponse(ErrorCodes.VALIDATION_ERROR, "Slug is required");
+  }
+  if (method === "GET") {
+    const page = await DocumentationRepository.findBySlug(slug);
+    if (!page) {
+      setResponseStatus(event, 404);
+      return createErrorResponse(ErrorCodes.NOT_FOUND, "Page not found");
+    }
+    return createSuccessResponse({
+      id: page.id,
+      slug: page.slug,
+      title: page.title,
+      content: page.content,
+      excerpt: page.excerpt,
+      category: page.category,
+      parentId: page.parent_id,
+      sortOrder: page.sort_order,
+      isPublished: Boolean(page.is_published),
+      publishedAt: page.published_at,
+      createdAt: page.created_at,
+      updatedAt: page.updated_at
+    });
+  }
+  if (method === "PUT") {
+    const existingPage = await DocumentationRepository.findBySlug(slug);
+    if (!existingPage) {
+      setResponseStatus(event, 404);
+      return createErrorResponse(ErrorCodes.NOT_FOUND, "Page not found");
+    }
+    const body = await readBody(event);
+    const data = updatePageSchema.parse(body);
+    const page = await DocumentationRepository.update(existingPage.id, {
+      slug: data.slug,
+      title: data.title,
+      content: data.content,
+      excerpt: data.excerpt,
+      category: data.category,
+      parent_id: data.parentId === null ? void 0 : data.parentId,
+      sort_order: data.sortOrder,
+      is_published: data.isPublished
+    });
+    return createSuccessResponse({
+      id: page.id,
+      slug: page.slug,
+      title: page.title,
+      content: page.content,
+      category: page.category,
+      isPublished: Boolean(page.is_published),
+      updatedAt: page.updated_at
+    });
+  }
+  if (method === "DELETE") {
+    const page = await DocumentationRepository.findBySlug(slug);
+    if (!page) {
+      setResponseStatus(event, 404);
+      return createErrorResponse(ErrorCodes.NOT_FOUND, "Page not found");
+    }
+    await DocumentationRepository.delete(page.id);
+    return createSuccessResponse({ message: "Page deleted successfully" });
+  }
+  setResponseStatus(event, 405);
+  return createErrorResponse(ErrorCodes.VALIDATION_ERROR, "Method not allowed");
+});
+
+const _slug_$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: _slug_
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const index_get$4 = asyncHandler(async (event) => {
+  const query = getQuery$1(event);
+  const options = {
+    page: query.page ? parseInt(query.page) : 1,
+    limit: query.limit ? parseInt(query.limit) : 50,
+    category: query.category,
+    publishedOnly: query.published !== "false",
+    // Default to published only for public
+    parentId: query.parent_id
+  };
+  const { pages, total } = await DocumentationRepository.list(options);
+  return createSuccessResponse({
+    pages: pages.map((page) => ({
+      id: page.id,
+      slug: page.slug,
+      title: page.title,
+      excerpt: page.excerpt,
+      category: page.category,
+      parentId: page.parent_id,
+      sortOrder: page.sort_order,
+      isPublished: Boolean(page.is_published),
+      publishedAt: page.published_at,
+      createdAt: page.created_at,
+      updatedAt: page.updated_at
+    })),
+    total,
+    page: options.page,
+    limit: options.limit
+  });
+});
+
+const index_get$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_get$4
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const createPageSchema = z.object({
+  slug: z.string().min(1).max(100).regex(/^[a-z0-9-]+$/, "Slug must be lowercase alphanumeric with dashes"),
+  title: z.string().min(1).max(200),
+  content: z.string().default(""),
+  excerpt: z.string().max(500).optional(),
+  category: z.string().max(50).optional(),
+  parentId: z.string().optional(),
+  sortOrder: z.number().int().min(0).optional(),
+  isPublished: z.boolean().optional()
+});
+const index_post$2 = asyncHandler(async (event) => {
+  const body = await readBody(event);
+  const data = createPageSchema.parse(body);
+  try {
+    const page = await DocumentationRepository.create({
+      slug: data.slug,
+      title: data.title,
+      content: data.content,
+      excerpt: data.excerpt,
+      category: data.category,
+      parent_id: data.parentId,
+      sort_order: data.sortOrder,
+      is_published: data.isPublished
+    });
+    setResponseStatus(event, 201);
+    return createSuccessResponse({
+      id: page.id,
+      slug: page.slug,
+      title: page.title,
+      category: page.category,
+      isPublished: Boolean(page.is_published),
+      createdAt: page.created_at
+    });
+  } catch (error) {
+    if (error instanceof Error && error.message === "Slug already exists") {
+      setResponseStatus(event, 409);
+      return createErrorResponse(ErrorCodes.CONFLICT, "A page with this slug already exists");
+    }
+    throw error;
+  }
 });
 
 const index_post$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
