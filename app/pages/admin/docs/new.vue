@@ -276,7 +276,7 @@ const categories = [
 }
 
 .editor-wrapper {
-  overflow: hidden;
+  overflow: visible;
 }
 
 .settings-card {
