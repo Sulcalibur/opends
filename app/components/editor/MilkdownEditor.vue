@@ -68,7 +68,7 @@ defineExpose({
 </script>
 
 <template>
-  <div class="milkdown-editor-wrapper">
+  <div class="milkdown-editor-wrapper" style="min-height: 500px; display: block;">
     <div ref="editorRef" class="milkdown-editor" />
   </div>
 </template>
@@ -76,11 +76,11 @@ defineExpose({
 <style scoped>
 .milkdown-editor-wrapper {
   width: 100%;
-  min-height: 400px;
-  border: 1px solid var(--surface-border, #e5e7eb);
+  /* Fallback border if theme doesn't load */
+  border: 1px solid #e2e8f0; 
   border-radius: 8px;
   overflow: hidden;
-  background: var(--surface-card, #fff);
+  background: white;
 }
 
 .milkdown-editor {
