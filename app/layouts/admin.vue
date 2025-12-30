@@ -23,6 +23,11 @@
           <span>Design Tokens</span>
         </NuxtLink>
         
+        <NuxtLink to="/admin/docs" class="nav-item" active-class="active">
+          <i class="pi pi-file-edit"></i>
+          <span>Documentation</span>
+        </NuxtLink>
+        
         <NuxtLink to="/admin/users" class="nav-item" active-class="active">
           <i class="pi pi-users"></i>
           <span>Users</span>
@@ -101,6 +106,7 @@ const pageTitle = computed(() => {
   if (path === '/admin') return 'Dashboard'
   if (path.includes('components')) return 'Components'
   if (path.includes('tokens')) return 'Design Tokens'
+  if (path.includes('/admin/docs')) return 'Documentation'
   if (path.includes('users')) return 'Users'
   if (path.includes('settings')) return 'Settings'
   return 'Admin'
