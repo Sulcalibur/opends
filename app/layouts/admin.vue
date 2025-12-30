@@ -147,6 +147,7 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
+import 'primeicons/primeicons.css'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -256,6 +257,8 @@ watch(isCollapsed, (val) => {
 .nav-item i {
   font-size: 1.125rem;
   flex-shrink: 0;
+  width: 1.5rem;
+  text-align: center;
 }
 
 .sidebar-footer {
