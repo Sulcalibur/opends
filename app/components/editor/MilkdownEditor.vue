@@ -26,34 +26,54 @@ const emit = defineEmits<{
 }>()
 
 const editorRef = ref<HTMLDivElement | null>(null)
+const error = ref<string | null>(null)
+const loading = ref(true)
 let crepe: Crepe | null = null
 
 onMounted(async () => {
   if (!editorRef.value) return
 
-  crepe = new Crepe({
-    root: editorRef.value,
-    defaultValue: props.modelValue,
-    featureConfigs: {
-      [Crepe.Feature.Placeholder]: {
-        text: props.placeholder
+  try {
+    crepe = new Crepe({
+      root: editorRef.value,
+      defaultValue: props.modelValue,
+      featureConfigs: {
+        [Crepe.Feature.Placeholder]: {
+          text: props.placeholder
+        }
       }
-    }
-  })
+    })
 
-  // Listen for changes and emit
-  crepe.on((ctx) => {
-    const content = crepe?.getMarkdown() || ''
-    emit('update:modelValue', content)
-  })
+    // Listen for changes
+    crepe.on((listener) => {
+      const content = crepe?.getMarkdown() || ''
+      emit('update:modelValue', content)
+    })
 
-  await crepe.create()
+    await crepe.create()
+    loading.value = false
+  } catch (e: any) {
+    console.error('Failed to initialize Milkdown editor:', e)
+    error.value = `Failed to load editor: ${e.message}`
+    loading.value = false
+  }
 })
 
 // Watch for external modelValue changes
 watch(() => props.modelValue, (newValue) => {
-  if (crepe && newValue !== crepe.getMarkdown()) {
-    crepe.setMarkdown(newValue)
+  if (!crepe || loading.value || error.value) return
+  
+  try {
+    const current = crepe.getMarkdown()
+    if (newValue !== current) {
+      // @ts-ignore - setMarkdown exists in implementation but typescript might miss it in some versions
+      if (typeof crepe.setMarkdown === 'function') {
+         // @ts-ignore
+        crepe.setMarkdown(newValue)
+      }
+    }
+  } catch (e) {
+    console.warn('Error updating editor content:', e)
   }
 })
 
@@ -61,14 +81,19 @@ onUnmounted(() => {
   crepe?.destroy()
 })
 
-// Expose method to get markdown content
 defineExpose({
   getMarkdown: () => crepe?.getMarkdown() || ''
 })
 </script>
 
 <template>
-  <div class="milkdown-editor-wrapper" style="min-height: 500px; display: block;">
+  <div class="milkdown-editor-wrapper relative">
+    <div v-if="error" class="absolute inset-0 flex items-center justify-center text-red-500 bg-red-50 p-4 border border-red-200 rounded z-10">
+      <i class="pi pi-exclamation-triangle mr-2"></i> {{ error }}
+    </div>
+    <div v-if="loading" class="absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-50 z-10">
+      <i class="pi pi-spin pi-spinner mr-2"></i> Loading editor...
+    </div>
     <div ref="editorRef" class="milkdown-editor" />
   </div>
 </template>
@@ -76,16 +101,17 @@ defineExpose({
 <style scoped>
 .milkdown-editor-wrapper {
   width: 100%;
-  /* Fallback border if theme doesn't load */
+  min-height: 500px;
+  /* Fallback border */
   border: 1px solid #e2e8f0; 
   border-radius: 8px;
-  overflow: hidden;
   background: white;
+  position: relative;
 }
 
 .milkdown-editor {
-  min-height: 400px;
-  padding: 1rem;
+  min-height: 500px;
+  height: 100%;
 }
 
 /* Dark mode support */
