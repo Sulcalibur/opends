@@ -345,7 +345,7 @@ const categories = [
 }
 
 :deep(.p-card-content) {
-  padding: 0;
+  padding: 2rem;
 }
 
 :deep(.p-card-title) {
