@@ -1,7 +1,7 @@
 <script setup lang="ts">
 /**
- * Create New Documentation Page
- * Uses PrimeVue components for polished UI
+ * Create Documentation Page
+ * Consistent Admin UI
  */
 definePageMeta({
   layout: 'admin'
@@ -39,12 +39,7 @@ function generateSlug(text: string): string {
 
 async function savePage() {
   if (!form.value.title || !form.value.slug) {
-    toast.add({
-      severity: 'error',
-      summary: 'Validation Error',
-      detail: 'Title and slug are required',
-      life: 3000
-    })
+    toast.add({ severity: 'error', summary: 'Error', detail: 'Title and slug are required', life: 3000 })
     return
   }
 
@@ -63,21 +58,10 @@ async function savePage() {
       }
     })
 
-    toast.add({
-      severity: 'success',
-      summary: 'Created',
-      detail: 'Page created successfully',
-      life: 3000
-    })
-
+    toast.add({ severity: 'success', summary: 'Created', detail: 'Page created successfully', life: 3000 })
     router.push('/admin/docs')
   } catch (err: any) {
-    toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: err.data?.message || 'Failed to create page',
-      life: 5000
-    })
+    toast.add({ severity: 'error', summary: 'Error', detail: err.data?.message || 'Failed to create page', life: 5000 })
   } finally {
     saving.value = false
   }
@@ -95,28 +79,25 @@ const categories = [
 </script>
 
 <template>
-  <div class="docs-editor">
-    <!-- Toast for notifications -->
+  <div class="editor-page">
     <Toast />
 
     <!-- Header -->
-    <div class="editor-header">
-      <div class="header-left">
-        <NuxtLink to="/admin/docs" class="back-link">
-          <i class="pi pi-arrow-left" />
-          <span>Back to Docs</span>
-        </NuxtLink>
-        <h1 class="editor-title">
-          <i class="pi pi-plus-circle" />
-          Create Documentation Page
-        </h1>
+    <div class="page-header">
+      <div>
+        <div class="breadcrumb">
+          <NuxtLink to="/admin/docs" class="back-link">
+            <i class="pi pi-arrow-left" />
+            Back to Docs
+          </NuxtLink>
+        </div>
+        <h1 class="page-title">New Documentation Page</h1>
+        <p class="page-subtitle">Create a new guide or documentation entry</p>
       </div>
       <div class="header-actions">
-        <div class="publish-toggle">
-          <Checkbox v-model="form.isPublished" :binary="true" inputId="published" />
-          <label for="published" class="publish-label">
-            {{ form.isPublished ? 'Publish immediately' : 'Save as draft' }}
-          </label>
+        <div class="status-toggle">
+          <label class="toggle-label">{{ form.isPublished ? 'Publish Immediately' : 'Save as Draft' }}</label>
+          <InputSwitch v-model="form.isPublished" />
         </div>
         <Button 
           label="Create Page" 
@@ -128,95 +109,67 @@ const categories = [
       </div>
     </div>
 
-    <!-- Editor Layout -->
     <div class="editor-layout">
       <!-- Main Content -->
-      <div class="editor-main">
-        <Card class="form-card">
+      <div class="main-column">
+        <Card class="editor-card">
           <template #content>
-            <div class="form-group">
-              <label for="title" class="form-label">Title <span class="required">*</span></label>
-              <InputText 
-                id="title"
-                v-model="form.title"
-                placeholder="Enter page title"
-                class="w-full"
-                autofocus
-              />
+            <div class="form-section">
+              <label class="section-label">Page Title <span class="required">*</span></label>
+              <InputText v-model="form.title" class="title-input" placeholder="Page Title" autofocus />
             </div>
 
-            <div class="form-group">
-              <label for="slug" class="form-label">Slug <span class="required">*</span></label>
-              <InputGroup>
-                <InputGroupAddon>/docs/</InputGroupAddon>
-                <InputText 
-                  id="slug"
-                  v-model="form.slug"
-                  placeholder="page-slug"
-                />
-              </InputGroup>
-              <small class="form-hint">Auto-generated from title. URL-friendly identifier (lowercase, dashes only)</small>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Content</label>
-              <ClientOnly>
-                <MilkdownEditor v-model="form.content" />
-                <template #fallback>
-                  <div class="editor-loading">
-                    <ProgressSpinner style="width: 30px; height: 30px" strokeWidth="4" />
-                    <span>Loading editor...</span>
-                  </div>
-                </template>
-              </ClientOnly>
+            <div class="form-section">
+              <label class="section-label">Content</label>
+              <div class="editor-wrapper">
+                <ClientOnly>
+                  <MilkdownEditor v-model="form.content" />
+                  <template #fallback>
+                    <div class="loading-editor">Loading editor...</div>
+                  </template>
+                </ClientOnly>
+              </div>
             </div>
           </template>
         </Card>
       </div>
 
       <!-- Sidebar -->
-      <aside class="editor-sidebar">
-        <Card class="sidebar-card">
-          <template #title>
-            <div class="sidebar-title">
-              <i class="pi pi-cog" />
-              Page Settings
-            </div>
-          </template>
+      <aside class="sidebar-column">
+        <Card class="settings-card">
+          <template #title>Page Settings</template>
           <template #content>
-            <div class="form-group">
-              <label for="category" class="form-label">Category</label>
+            <div class="setting-item">
+              <label>Slug <span class="required">*</span></label>
+              <InputText v-model="form.slug" class="w-full" placeholder="url-slug" />
+              <small class="help-text">Auto-generated from title</small>
+            </div>
+
+            <div class="setting-item">
+              <label>Category</label>
               <Select 
-                id="category"
                 v-model="form.category" 
-                :options="categories"
-                optionLabel="label"
-                optionValue="value"
-                placeholder="Select category"
+                :options="categories" 
+                optionLabel="label" 
+                optionValue="value" 
                 class="w-full"
               />
             </div>
 
-            <div class="form-group">
-              <label for="excerpt" class="form-label">Excerpt</label>
-              <Textarea 
-                id="excerpt"
-                v-model="form.excerpt"
-                placeholder="Brief description for listings"
-                :rows="4"
-                class="w-full"
-              />
-              <small class="form-hint">Used in page listings and SEO</small>
+            <div class="setting-item">
+              <label>Excerpt</label>
+              <Textarea v-model="form.excerpt" rows="4" class="w-full" placeholder="Brief description..." />
+              <small class="help-text">Used for SEO and list previews</small>
             </div>
 
             <Divider />
-
-            <div class="tips-section">
-              <h4><i class="pi pi-lightbulb" /> Tips</h4>
-              <ul>
-                <li>Use headings (# ## ###) to structure your content</li>
-                <li>Add code blocks with ``` for code examples</li>
-                <li>Use / for slash commands in the editor</li>
+            
+            <div class="tips-box">
+              <p class="tips-title"><i class="pi pi-lightbulb" /> Pro Tips</p>
+              <ul class="tips-list">
+                <li>Use headers to structure content</li>
+                <li>`Code blocks` are supported</li>
+                <li>Type / to open the command menu</li>
               </ul>
             </div>
           </template>
@@ -227,184 +180,179 @@ const categories = [
 </template>
 
 <style scoped>
-.docs-editor {
-  padding: 1.5rem;
+.editor-page {
   max-width: 1600px;
   margin: 0 auto;
 }
 
-.editor-header {
+.page-header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1.5rem;
-  gap: 1rem;
-  flex-wrap: wrap;
+  align-items: flex-end;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #e2e8f0;
 }
 
-.header-left {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.breadcrumb {
+  margin-bottom: 0.5rem;
 }
 
 .back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: var(--text-color-secondary);
+  color: #64748b;
   text-decoration: none;
   font-size: 0.875rem;
-  transition: color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .back-link:hover {
-  color: var(--primary-color);
+  color: #3b82f6;
 }
 
-.editor-title {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--text-color);
+.page-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0f172a;
   margin: 0;
+  line-height: 1.2;
 }
 
-.editor-title i {
-  color: var(--primary-color);
+.page-subtitle {
+  color: #64748b;
+  margin: 0.25rem 0 0 0;
 }
 
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  gap: 1.5rem;
 }
 
-.publish-toggle {
+.status-toggle {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  background: var(--surface-100);
-  border-radius: 8px;
+  gap: 0.75rem;
 }
 
-.publish-label {
-  cursor: pointer;
+.toggle-label {
+  font-weight: 600;
+  color: #475569;
   font-size: 0.875rem;
-  color: var(--text-color);
 }
 
 .editor-layout {
   display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 1.5rem;
-  align-items: start;
+  grid-template-columns: 1fr 350px;
+  gap: 2rem;
+}
+
+.editor-card {
+  border-radius: 1rem;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.form-section {
+  margin-bottom: 2rem;
+}
+
+.section-label {
+  display: block;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+}
+
+.required {
+  color: #ef4444;
+}
+
+.title-input {
+  width: 100%;
+  font-size: 1.5rem;
+  padding: 0.75rem;
+}
+
+.editor-wrapper {
+  overflow: hidden;
+}
+
+.settings-card {
+  border-radius: 1rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  position: sticky;
+  top: 2rem;
+}
+
+.setting-item {
+  margin-bottom: 1.5rem;
+}
+
+.setting-item label {
+  display: block;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+}
+
+.help-text {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+.w-full {
+  width: 100%;
+}
+
+.tips-box {
+  background: #f8fafc;
+  padding: 1rem;
+  border-radius: 0.5rem;
+}
+
+.tips-title {
+  font-weight: 600;
+  color: #475569;
+  margin: 0 0 0.5rem 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.tips-title i {
+  color: #eab308;
+}
+
+.tips-list {
+  margin: 0;
+  padding-left: 1.25rem;
+  font-size: 0.875rem;
+  color: #64748b;
+}
+
+.tips-list li {
+  margin-bottom: 0.25rem;
+}
+
+:deep(.p-card-content) {
+  padding: 0;
+}
+
+:deep(.p-card-title) {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #0f172a;
+  margin-bottom: 1rem;
 }
 
 @media (max-width: 1024px) {
   .editor-layout {
     grid-template-columns: 1fr;
   }
-  
-  .editor-sidebar {
-    order: -1;
-  }
-}
-
-.form-card, .sidebar-card {
-  border-radius: 12px;
-}
-
-.form-group {
-  margin-bottom: 1.5rem;
-}
-
-.form-group:last-child {
-  margin-bottom: 0;
-}
-
-.form-label {
-  display: block;
-  font-weight: 500;
-  color: var(--text-color);
-  margin-bottom: 0.5rem;
-  font-size: 0.875rem;
-}
-
-.required {
-  color: var(--red-500);
-}
-
-.form-hint {
-  display: block;
-  margin-top: 0.25rem;
-  color: var(--text-color-secondary);
-  font-size: 0.75rem;
-}
-
-.editor-loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  min-height: 400px;
-  background: var(--surface-100);
-  border: 1px solid var(--surface-border);
-  border-radius: 8px;
-  gap: 0.75rem;
-  color: var(--text-color-secondary);
-}
-
-.sidebar-title {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-}
-
-.sidebar-title i {
-  color: var(--primary-color);
-}
-
-.tips-section {
-  background: var(--surface-100);
-  border-radius: 8px;
-  padding: 1rem;
-}
-
-.tips-section h4 {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin: 0 0 0.75rem 0;
-  font-size: 0.875rem;
-  color: var(--text-color);
-}
-
-.tips-section h4 i {
-  color: var(--yellow-500);
-}
-
-.tips-section ul {
-  margin: 0;
-  padding-left: 1.25rem;
-  font-size: 0.75rem;
-  color: var(--text-color-secondary);
-}
-
-.tips-section li {
-  margin-bottom: 0.5rem;
-}
-
-.tips-section li:last-child {
-  margin-bottom: 0;
-}
-
-.w-full {
-  width: 100%;
 }
 </style>
