@@ -9,7 +9,10 @@ export default defineNuxtConfig({
     '@nuxtjs/tailwindcss',
     '@nuxt/eslint'
   ],
-  css: [],
+  css: [
+    '@milkdown/crepe/theme/common/style.css',
+    '@milkdown/crepe/theme/frame.css'
+  ],
   primevue: {
     usePrimeVue: true,
     options: {

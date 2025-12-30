@@ -1,61 +1,115 @@
 <template>
   <div class="flex h-screen w-full bg-gray-50 overflow-hidden">
     <!-- Sidebar -->
-    <aside class="hidden lg:flex flex-col w-[280px] flex-shrink-0 border-r border-white/10 text-white admin-sidebar-bg transition-all duration-300">
-      <div class="sidebar-header">
-        <h2 class="sidebar-logo">OpenDS</h2>
-        <p class="sidebar-subtitle">Admin Panel</p>
+    <aside 
+      class="hidden lg:flex flex-col flex-shrink-0 border-r border-white/10 text-white admin-sidebar-bg transition-all duration-300 relative"
+      :class="isCollapsed ? 'w-20' : 'w-[280px]'"
+    >
+      <div class="sidebar-header" :class="{ 'px-3 justify-center': isCollapsed }">
+        <h2 class="sidebar-logo" :class="{ 'text-2xl': isCollapsed }">
+          {{ isCollapsed ? 'ODS' : 'OpenDS' }}
+        </h2>
+        <p v-if="!isCollapsed" class="sidebar-subtitle">Admin Panel</p>
       </div>
 
-      <nav class="sidebar-nav flex-1 overflow-y-auto custom-scrollbar">
-        <NuxtLink to="/admin" class="nav-item" active-class="active" exact>
+      <nav class="sidebar-nav flex-1 overflow-y-auto custom-scrollbar" :class="{ 'px-2': isCollapsed }">
+        <NuxtLink 
+          to="/admin" 
+          class="nav-item" 
+          active-class="active" 
+          exact
+          :class="{ 'justify-center': isCollapsed }"
+          v-tooltip.right="isCollapsed ? 'Dashboard' : ''"
+        >
           <i class="pi pi-home"></i>
-          <span>Dashboard</span>
+          <span v-if="!isCollapsed">Dashboard</span>
         </NuxtLink>
         
-        <NuxtLink to="/admin/components" class="nav-item" active-class="active">
+        <NuxtLink 
+          to="/admin/components" 
+          class="nav-item" 
+          active-class="active"
+          :class="{ 'justify-center': isCollapsed }"
+          v-tooltip.right="isCollapsed ? 'Components' : ''"
+        >
           <i class="pi pi-box"></i>
-          <span>Components</span>
+          <span v-if="!isCollapsed">Components</span>
         </NuxtLink>
         
-        <NuxtLink to="/admin/tokens" class="nav-item" active-class="active">
+        <NuxtLink 
+          to="/admin/tokens" 
+          class="nav-item" 
+          active-class="active"
+          :class="{ 'justify-center': isCollapsed }"
+          v-tooltip.right="isCollapsed ? 'Design Tokens' : ''"
+        >
           <i class="pi pi-palette"></i>
-          <span>Design Tokens</span>
+          <span v-if="!isCollapsed">Design Tokens</span>
         </NuxtLink>
         
-        <NuxtLink to="/admin/docs" class="nav-item" active-class="active">
+        <NuxtLink 
+          to="/admin/docs" 
+          class="nav-item" 
+          active-class="active"
+          :class="{ 'justify-center': isCollapsed }"
+          v-tooltip.right="isCollapsed ? 'Documentation' : ''"
+        >
           <i class="pi pi-file-edit"></i>
-          <span>Documentation</span>
+          <span v-if="!isCollapsed">Documentation</span>
         </NuxtLink>
         
-        <NuxtLink to="/admin/users" class="nav-item" active-class="active">
+        <NuxtLink 
+          to="/admin/users" 
+          class="nav-item" 
+          active-class="active"
+          :class="{ 'justify-center': isCollapsed }"
+          v-tooltip.right="isCollapsed ? 'Users' : ''"
+        >
           <i class="pi pi-users"></i>
-          <span>Users</span>
+          <span v-if="!isCollapsed">Users</span>
         </NuxtLink>
         
-        <NuxtLink to="/admin/settings" class="nav-item" active-class="active">
+        <NuxtLink 
+          to="/admin/settings" 
+          class="nav-item" 
+          active-class="active"
+          :class="{ 'justify-center': isCollapsed }"
+          v-tooltip.right="isCollapsed ? 'Settings' : ''"
+        >
           <i class="pi pi-cog"></i>
-          <span>Settings</span>
+          <span v-if="!isCollapsed">Settings</span>
         </NuxtLink>
       </nav>
 
-      <div class="sidebar-footer">
-        <div class="user-profile">
+      <div class="sidebar-footer" :class="{ 'px-2': isCollapsed }">
+        <!-- Collapse Toggle -->
+        <button 
+          class="collapse-btn mb-4" 
+          @click="isCollapsed = !isCollapsed"
+          :class="{ 'mx-auto': isCollapsed, 'ml-auto': !isCollapsed }"
+          v-tooltip.top="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
+        >
+          <i :class="['pi', isCollapsed ? 'pi-angle-double-right' : 'pi-angle-double-left']"></i>
+        </button>
+
+        <div class="user-profile" :class="{ 'justify-center': isCollapsed }">
           <div class="user-avatar">
             {{ userInitials }}
           </div>
-          <div class="user-info">
+          <div v-if="!isCollapsed" class="user-info">
             <p class="user-name truncate">{{ authStore.user?.name }}</p>
             <p class="user-role">{{ authStore.user?.role }}</p>
           </div>
         </div>
         <Button 
           icon="pi pi-sign-out" 
-          label="Logout" 
+          :label="isCollapsed ? '' : 'Logout'" 
           text 
           severity="secondary"
           class="logout-btn"
+          :class="{ 'justify-center': isCollapsed }"
           @click="handleLogout"
+          v-tooltip.right="isCollapsed ? 'Logout' : ''"
         />
       </div>
     </aside>
@@ -63,7 +117,7 @@
     <!-- Main Content -->
     <main class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
       <!-- Top Bar -->
-      <header class="bg-white border-b border-gray-200 px-8 py-6 sticky top-0 z-10">
+      <header class="bg-white border-b border-gray-200 px-8 py-6 sticky top-0 z-10 transition-all">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-4">
             <!-- Mobile Menu Toggle (Visible on small screens) -->
@@ -92,9 +146,14 @@
 </template>
 
 <script setup lang="ts">
+import { ref, computed, onMounted } from 'vue'
+
 const authStore = useAuthStore()
 const router = useRouter()
 const route = useRoute()
+
+// Initialize state from local storage preference if possible, default false
+const isCollapsed = ref(false)
 
 const userInitials = computed(() => {
   const name = authStore.user?.name || 'U'
@@ -119,6 +178,18 @@ async function handleLogout() {
 // Initialize auth on mount
 onMounted(() => {
   authStore.initialize()
+  // Recover collapsed state preference
+  const savedState = localStorage.getItem('sidebarCollapsed')
+  if (savedState) {
+    isCollapsed.value = savedState === 'true'
+  }
+})
+
+// Persist state
+watch(isCollapsed, (val) => {
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('sidebarCollapsed', String(val))
+  }
 })
 </script>
 
@@ -129,7 +200,10 @@ onMounted(() => {
 
 .sidebar-header {
   padding: 2rem 1.5rem;
+  min-height: 100px;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
 }
 
 .sidebar-logo {
@@ -140,12 +214,14 @@ onMounted(() => {
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
+  white-space: nowrap;
 }
 
 .sidebar-subtitle {
   color: #94a3b8;
   font-size: 0.875rem;
   margin: 0.25rem 0 0 0;
+  white-space: nowrap;
 }
 
 .sidebar-nav {
@@ -163,6 +239,7 @@ onMounted(() => {
   transition: all 0.2s;
   margin-bottom: 0.5rem;
   font-weight: 500;
+  overflow: hidden;
 }
 
 .nav-item:hover {
@@ -178,6 +255,7 @@ onMounted(() => {
 
 .nav-item i {
   font-size: 1.125rem;
+  flex-shrink: 0;
 }
 
 .sidebar-footer {
@@ -185,11 +263,32 @@ onMounted(() => {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.collapse-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.collapse-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
 .user-profile {
   display: flex;
   align-items: center;
   gap: 0.75rem;
   margin-bottom: 1rem;
+  overflow: hidden;
 }
 
 .user-avatar {
@@ -236,22 +335,18 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.1) !important;
 }
 
-/* Custom Scrollbar for Webkit */
+/* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 4px;
 }
-
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }
-
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(156, 163, 175, 0.5);
-  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
 }
-
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(156, 163, 175, 0.7);
+  background: rgba(255, 255, 255, 0.2);
 }
 </style>
