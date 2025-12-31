@@ -2,7 +2,7 @@
   <div class="flex h-screen w-full bg-gray-50 overflow-hidden">
     <!-- Sidebar -->
     <aside 
-      class="hidden lg:flex flex-col flex-shrink-0 border-r border-white/10 text-white admin-sidebar-bg transition-all duration-300 relative group z-30"
+      class="hidden lg:flex flex-col flex-shrink-0 border-r border-white/10 text-white admin-sidebar-bg transition-all duration-300 relative group z-30 fixed left-0 top-0 h-full"
       :class="isCollapsed ? 'w-20' : 'w-[280px]'"
     >
       <!-- Edge Toggle Button -->
@@ -115,7 +115,10 @@
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0 overflow-hidden relative">
+    <main 
+      class="flex-1 flex flex-col min-w-0 overflow-hidden relative transition-all duration-300"
+      :class="isCollapsed ? 'ml-20' : 'ml-[280px]'"
+    >
       <!-- Top Bar -->
       <header class="bg-white border-b border-gray-200 px-8 py-6 sticky top-0 z-10 transition-all">
         <div class="flex items-center justify-between">

@@ -37,6 +37,13 @@ declare module "nitropack/types" {
     '/api/health': {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/health.get').default>>>>
     }
+    '/api/settings': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/settings/index.get').default>>>>
+      'put': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/settings/index.put').default>>>>
+    }
+    '/api/settings/public': {
+      'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/settings/public.get').default>>>>
+    }
     '/api/tokens/:id': {
       'delete': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/tokens/[id].delete').default>>>>
       'put': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/tokens/[id].put').default>>>>
@@ -55,7 +62,7 @@ declare module "nitropack/types" {
       'get': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/api/users/index.get').default>>>>
     }
     '/__nuxt_error': {
-      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.2.2_better-sqlite3@12.5.0_db0@0.3.4_better-sqlite3@12.5.0__ioredis_e8f08a6bc4cc871b9f27afd338bb9eba/node_modules/@nuxt/nitro-server/dist/runtime/handlers/renderer').default>>>>
+      'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../node_modules/.pnpm/@nuxt+nitro-server@4.2.2_better-sqlite3@12.5.0_db0@0.3.4_better-sqlite3@12.5.0__ioredis_63f8d6737ba42b66c2082cf29529a3f7/node_modules/@nuxt/nitro-server/dist/runtime/handlers/renderer').default>>>>
     }
     '/__nuxt_island/**': {
       'default': Simplify<Serialize<Awaited<ReturnType<typeof import('../../server/#internal/nuxt/island-renderer').default>>>>

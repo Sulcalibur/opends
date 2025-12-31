@@ -1,8 +1,7 @@
+```vue
 <script setup lang="ts">
-/**
- * Edit Documentation Page
- * Consistent Admin UI
- */
+import { ref, watch } from 'vue'
+
 definePageMeta({
   layout: 'admin'
 })

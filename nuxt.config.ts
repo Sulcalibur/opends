@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     'primeicons/primeicons.css',
     '@milkdown/crepe/theme/common/style.css',
     '@milkdown/crepe/theme/frame.css',
+    '~/assets/css/global.css',
     '~/assets/css/dialogs.css'
   ],
   primevue: {

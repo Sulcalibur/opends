@@ -3,8 +3,8 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import typegen from '../node_modules/.pnpm/eslint-typegen@2.3.0_eslint@9.39.2_jiti@1.21.7_/node_modules/eslint-typegen/dist/index.mjs';
-import { createConfigForNuxt, defineFlatConfigs, resolveOptions } from '../node_modules/.pnpm/@nuxt+eslint-config@1.12.1_@typescript-eslint+utils@8.50.1_eslint@9.39.2_jiti@1.21.7__t_e6be5443f8fb0762a6d6bea050d0cfe1/node_modules/@nuxt/eslint-config/dist/flat.mjs';
+import typegen from '../node_modules/.pnpm/eslint-typegen@2.3.0_eslint@9.39.2_jiti@2.6.1_/node_modules/eslint-typegen/dist/index.mjs';
+import { createConfigForNuxt, defineFlatConfigs, resolveOptions } from '../node_modules/.pnpm/@nuxt+eslint-config@1.12.1_@typescript-eslint+utils@8.50.1_eslint@9.39.2_jiti@2.6.1__ty_75925bac3e12487fa0b798bf1d787871/node_modules/@nuxt/eslint-config/dist/flat.mjs';
 import { fileURLToPath } from 'node:url';
 
 const r = (...args) => fileURLToPath(new URL(...args, import.meta.url))

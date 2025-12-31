@@ -3344,7 +3344,7 @@ if (!window.__NUXT_DEVTOOLS_TIME_METRIC__) {
 window.__NUXT_DEVTOOLS_TIME_METRIC__.appInit = Date.now()
 `;
 
-const _mLolkE_eHxjcoqVT7tgqR0jzZOqHruqfEm5TYUupRs = (function(nitro) {
+const _vk99LiuI53uob8c08uBHhghl7AG68fhu6b4rgrD3M = (function(nitro) {
   nitro.hooks.hook("render:html", (htmlContext) => {
     htmlContext.head.push(`<script>${script}<\/script>`);
   });
@@ -3373,7 +3373,7 @@ const devReducers = {
   URL: (data) => data instanceof URL ? data.toString() : void 0
 };
 const asyncContext = getContext("nuxt-dev", { asyncContext: true, AsyncLocalStorage });
-const _dL2N5Rzb9IfVnmkpXap9_XyPGN0HgHCTwqlMdGZ0hc = (nitroApp) => {
+const _ZhU2R50FoIsZtXnrS74tYSndX4PygMtwiYzbGN8tgro = (nitroApp) => {
   const handler = nitroApp.h3App.handler;
   nitroApp.h3App.handler = (event) => {
     return asyncContext.callAsync({ logs: [], event }, () => handler(event));
@@ -7125,8 +7125,8 @@ const _9tFYlCNN1IjDUyACW2zDzhyHqQ2bJmWPZHBj9KxSbk = defineNitroPlugin$1(async (n
 });
 
 const plugins = [
-  _mLolkE_eHxjcoqVT7tgqR0jzZOqHruqfEm5TYUupRs,
-_dL2N5Rzb9IfVnmkpXap9_XyPGN0HgHCTwqlMdGZ0hc,
+  _vk99LiuI53uob8c08uBHhghl7AG68fhu6b4rgrD3M,
+_ZhU2R50FoIsZtXnrS74tYSndX4PygMtwiYzbGN8tgro,
 _Nzj5DUM5UIdwlrZ7bP1QoC7nKXUgo5gjg3gw4Xgr39c,
 _9tFYlCNN1IjDUyACW2zDzhyHqQ2bJmWPZHBj9KxSbk
 ];
@@ -7698,6 +7698,12 @@ const _zTmH22Meta = null;
 
 const _EvFYXFMeta = null;
 
+const _kk7XgVMeta = null;
+
+const _6mHz3vMeta = null;
+
+const _6o21IRMeta = null;
+
 const _Dww1iKMeta = null;
 
 const _eqPxtXMeta = null;
@@ -7712,7 +7718,7 @@ const _Twc1NRMeta = null;
 
 const _GQNyUaMeta = null;
 
-const _QkKKb5Meta = null;
+const _BN3LujMeta = null;
 
 const _SxA8c9Meta = null;
 
@@ -7741,6 +7747,9 @@ const handlersMeta = [
 { route: "/api/docs", method: "get", meta: _luWtDPMeta },
 { route: "/api/docs", method: "post", meta: _zTmH22Meta },
 { route: "/api/health", method: "get", meta: _EvFYXFMeta },
+{ route: "/api/settings", method: "get", meta: _kk7XgVMeta },
+{ route: "/api/settings", method: "put", meta: _6mHz3vMeta },
+{ route: "/api/settings/public", method: "get", meta: _6o21IRMeta },
 { route: "/api/tokens/:id", method: "delete", meta: _Dww1iKMeta },
 { route: "/api/tokens/:id", method: "put", meta: _eqPxtXMeta },
 { route: "/api/tokens/export", method: "get", meta: __uikNJMeta },
@@ -7748,7 +7757,7 @@ const handlersMeta = [
 { route: "/api/tokens", method: "get", meta: _VlxER6Meta },
 { route: "/api/tokens", method: "post", meta: _Twc1NRMeta },
 { route: "/api/users", method: "get", meta: _GQNyUaMeta },
-{ route: "/__nuxt_error", method: undefined, meta: _QkKKb5Meta },
+{ route: "/__nuxt_error", method: undefined, meta: _BN3LujMeta },
 { route: "/__nuxt_island/**", method: undefined, meta: _SxA8c9Meta },
 { route: "/_openapi.json", method: undefined, meta: _ineOqPMeta },
 { route: "/_scalar", method: undefined, meta: _1UCTtLMeta },
@@ -8093,12 +8102,15 @@ const _lazy__BdOyz = () => Promise.resolve().then(function () { return register_
 const _lazy_iPa9rD = () => Promise.resolve().then(function () { return _id__delete$3; });
 const _lazy_hS9Jgu = () => Promise.resolve().then(function () { return _id__get$1; });
 const _lazy_xOh_Fg = () => Promise.resolve().then(function () { return _id__put$3; });
-const _lazy_kRB0tX = () => Promise.resolve().then(function () { return index_get$7; });
+const _lazy_kRB0tX = () => Promise.resolve().then(function () { return index_get$9; });
 const _lazy_DqXYjI = () => Promise.resolve().then(function () { return index_post$5; });
 const _lazy_XP0TSg = () => Promise.resolve().then(function () { return _slug_$1; });
-const _lazy_luWtDP = () => Promise.resolve().then(function () { return index_get$5; });
+const _lazy_luWtDP = () => Promise.resolve().then(function () { return index_get$7; });
 const _lazy_zTmH22 = () => Promise.resolve().then(function () { return index_post$3; });
 const _lazy_EvFYXF = () => Promise.resolve().then(function () { return health_get$1; });
+const _lazy_kk7XgV = () => Promise.resolve().then(function () { return index_get$5; });
+const _lazy_6mHz3v = () => Promise.resolve().then(function () { return index_put$1; });
+const _lazy_6o21IR = () => Promise.resolve().then(function () { return public_get$1; });
 const _lazy_Dww1iK = () => Promise.resolve().then(function () { return _id__delete$1; });
 const _lazy_eqPxtX = () => Promise.resolve().then(function () { return _id__put$1; });
 const _lazy__uikNJ = () => Promise.resolve().then(function () { return export_get$1; });
@@ -8106,7 +8118,7 @@ const _lazy_rHmE4o = () => Promise.resolve().then(function () { return import_po
 const _lazy_VlxER6 = () => Promise.resolve().then(function () { return index_get$3; });
 const _lazy_Twc1NR = () => Promise.resolve().then(function () { return index_post$1; });
 const _lazy_GQNyUa = () => Promise.resolve().then(function () { return index_get$1; });
-const _lazy_QkKKb5 = () => Promise.resolve().then(function () { return renderer$1; });
+const _lazy_BN3Luj = () => Promise.resolve().then(function () { return renderer$1; });
 
 const handlers = [
   { route: '', handler: _AOdF6u, lazy: false, middleware: true, method: undefined },
@@ -8128,6 +8140,9 @@ const handlers = [
   { route: '/api/docs', handler: _lazy_luWtDP, lazy: true, middleware: false, method: "get" },
   { route: '/api/docs', handler: _lazy_zTmH22, lazy: true, middleware: false, method: "post" },
   { route: '/api/health', handler: _lazy_EvFYXF, lazy: true, middleware: false, method: "get" },
+  { route: '/api/settings', handler: _lazy_kk7XgV, lazy: true, middleware: false, method: "get" },
+  { route: '/api/settings', handler: _lazy_6mHz3v, lazy: true, middleware: false, method: "put" },
+  { route: '/api/settings/public', handler: _lazy_6o21IR, lazy: true, middleware: false, method: "get" },
   { route: '/api/tokens/:id', handler: _lazy_Dww1iK, lazy: true, middleware: false, method: "delete" },
   { route: '/api/tokens/:id', handler: _lazy_eqPxtX, lazy: true, middleware: false, method: "put" },
   { route: '/api/tokens/export', handler: _lazy__uikNJ, lazy: true, middleware: false, method: "get" },
@@ -8135,12 +8150,12 @@ const handlers = [
   { route: '/api/tokens', handler: _lazy_VlxER6, lazy: true, middleware: false, method: "get" },
   { route: '/api/tokens', handler: _lazy_Twc1NR, lazy: true, middleware: false, method: "post" },
   { route: '/api/users', handler: _lazy_GQNyUa, lazy: true, middleware: false, method: "get" },
-  { route: '/__nuxt_error', handler: _lazy_QkKKb5, lazy: true, middleware: false, method: undefined },
+  { route: '/__nuxt_error', handler: _lazy_BN3Luj, lazy: true, middleware: false, method: undefined },
   { route: '/__nuxt_island/**', handler: _SxA8c9, lazy: false, middleware: false, method: undefined },
   { route: '/_openapi.json', handler: _ineOqP, lazy: false, middleware: false, method: undefined },
   { route: '/_scalar', handler: _1UCTtL, lazy: false, middleware: false, method: undefined },
   { route: '/_swagger', handler: _dLnlIo, lazy: false, middleware: false, method: undefined },
-  { route: '/**', handler: _lazy_QkKKb5, lazy: true, middleware: false, method: undefined }
+  { route: '/**', handler: _lazy_BN3Luj, lazy: true, middleware: false, method: undefined }
 ];
 
 function createNitroApp() {
@@ -9180,7 +9195,7 @@ const _id__put$3 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty
   default: _id__put$2
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const index_get$6 = asyncHandler(async (event) => {
+const index_get$8 = asyncHandler(async (event) => {
   const query = getQuery$1(event);
   const filters = {
     category: query.category,
@@ -9195,9 +9210,9 @@ const index_get$6 = asyncHandler(async (event) => {
   });
 });
 
-const index_get$7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const index_get$9 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: index_get$6
+  default: index_get$8
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const componentSchema = z.object({
@@ -9496,7 +9511,7 @@ const _slug_$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   default: _slug_
 }, Symbol.toStringTag, { value: 'Module' }));
 
-const index_get$4 = asyncHandler(async (event) => {
+const index_get$6 = asyncHandler(async (event) => {
   const query = getQuery$1(event);
   const options = {
     page: query.page ? parseInt(query.page) : 1,
@@ -9527,9 +9542,9 @@ const index_get$4 = asyncHandler(async (event) => {
   });
 });
 
-const index_get$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+const index_get$7 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
-  default: index_get$4
+  default: index_get$6
 }, Symbol.toStringTag, { value: 'Module' }));
 
 const createPageSchema = z.object({
@@ -9629,6 +9644,86 @@ const health_get = defineEventHandler(async (event) => {
 const health_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: health_get
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const index_get$4 = defineEventHandler(async (event) => {
+  var _a, _b;
+  const db = (_b = (_a = event.context.cloudflare) == null ? void 0 : _a.env) == null ? void 0 : _b.DB;
+  if (!db) {
+    throw createError({
+      statusCode: 500,
+      message: "Database connection not available"
+    });
+  }
+  const { SettingsRepository } = await Promise.resolve().then(function () { return settings_repository; });
+  const repo = new SettingsRepository(db);
+  const settings = await repo.getAll();
+  const settingsMap = {};
+  settings.forEach((s) => {
+    settingsMap[s.key] = s.value;
+  });
+  return {
+    success: true,
+    settings: settingsMap
+  };
+});
+
+const index_get$5 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_get$4
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const index_put = defineEventHandler(async (event) => {
+  var _a, _b;
+  const db = (_b = (_a = event.context.cloudflare) == null ? void 0 : _a.env) == null ? void 0 : _b.DB;
+  if (!db) {
+    throw createError({
+      statusCode: 500,
+      message: "Database connection not available"
+    });
+  }
+  const body = await readBody(event);
+  if (!body || typeof body !== "object") {
+    throw createError({
+      statusCode: 400,
+      message: "Invalid settings data"
+    });
+  }
+  const { SettingsRepository } = await Promise.resolve().then(function () { return settings_repository; });
+  const repo = new SettingsRepository(db);
+  await repo.updateMultiple(body);
+  return {
+    success: true,
+    message: "Settings updated successfully"
+  };
+});
+
+const index_put$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: index_put
+}, Symbol.toStringTag, { value: 'Module' }));
+
+const public_get = defineEventHandler(async (event) => {
+  var _a, _b;
+  const db = (_b = (_a = event.context.cloudflare) == null ? void 0 : _a.env) == null ? void 0 : _b.DB;
+  if (!db) {
+    throw createError({
+      statusCode: 500,
+      message: "Database connection not available"
+    });
+  }
+  const { SettingsRepository } = await Promise.resolve().then(function () { return settings_repository; });
+  const repo = new SettingsRepository(db);
+  const publicSettings = await repo.getPublic();
+  return {
+    success: true,
+    settings: publicSettings
+  };
+});
+
+const public_get$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  default: public_get
 }, Symbol.toStringTag, { value: 'Module' }));
 
 class DesignTokenRepository {
@@ -10183,5 +10278,73 @@ function renderHTMLDocument(html) {
 const renderer$1 = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
   __proto__: null,
   default: renderer
+}, Symbol.toStringTag, { value: 'Module' }));
+
+class SettingsRepository {
+  constructor(db) {
+    this.db = db;
+  }
+  async getAll() {
+    const { results } = await this.db.prepare(
+      "SELECT * FROM settings ORDER BY key ASC"
+    ).all();
+    return results.map((row) => ({
+      ...row,
+      value: row.value ? JSON.parse(row.value) : null
+    }));
+  }
+  async getPublic() {
+    const { results } = await this.db.prepare(
+      "SELECT key, value FROM settings WHERE is_public = 1"
+    ).all();
+    const publicSettings = {};
+    results.forEach((row) => {
+      publicSettings[row.key] = row.value ? JSON.parse(row.value) : null;
+    });
+    return publicSettings;
+  }
+  async getByKey(key) {
+    const result = await this.db.prepare(
+      "SELECT * FROM settings WHERE key = ?"
+    ).bind(key).first();
+    if (!result) return null;
+    return {
+      ...result,
+      value: result.value ? JSON.parse(result.value) : null
+    };
+  }
+  async update(key, value) {
+    const jsonValue = JSON.stringify(value);
+    const existing = await this.getByKey(key);
+    if (existing) {
+      await this.db.prepare(
+        'UPDATE settings SET value = ?, updated_at = datetime("now") WHERE key = ?'
+      ).bind(jsonValue, key).run();
+    } else {
+      await this.db.prepare(
+        "INSERT INTO settings (key, value, is_public) VALUES (?, ?, ?)"
+      ).bind(key, jsonValue, 1).run();
+    }
+  }
+  async updateMultiple(settings) {
+    const batch = Object.entries(settings).map(([key, value]) => {
+      const jsonValue = JSON.stringify(value);
+      return this.db.prepare(
+        `INSERT INTO settings (key, value, is_public, updated_at) 
+                 VALUES (?, ?, 1, datetime('now'))
+                 ON CONFLICT(key) DO UPDATE SET 
+                 value = excluded.value, 
+                 updated_at = excluded.updated_at`
+      ).bind(key, jsonValue);
+    });
+    if (batch.length > 0) {
+      await this.db.batch(batch);
+    }
+  }
+}
+
+const settings_repository = /*#__PURE__*/Object.freeze(/*#__PURE__*/Object.defineProperty({
+  __proto__: null,
+  SettingsRepository: SettingsRepository
 }, Symbol.toStringTag, { value: 'Module' }));
 //# sourceMappingURL=index.mjs.map

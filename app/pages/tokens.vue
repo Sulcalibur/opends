@@ -1,99 +1,143 @@
 <template>
-  <div class="min-h-screen bg-gray-50 flex">
-    <ViewerSidebar />
+  <div class="tokens-page">
+    <div class="container mx-auto max-w-7xl px-6 py-12">
+      <!-- Page Header -->
+      <div class="mb-8">
+        <h1 class="text-4xl font-bold text-slate-900 mb-4">Design Tokens</h1>
+        <p class="text-xl text-slate-600 max-w-3xl">
+          Design tokens are the visual design atoms of the design system. They store design decisions like colors, typography, and spacing.
+        </p>
+      </div>
 
-    <main class="flex-1 ml-64 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8 flex justify-between items-start">
-          <div>
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">Design Tokens</h1>
-            <p class="text-gray-600">The core visual atoms of the system. <span class="font-semibold text-gray-900">{{ tokens.length }} tokens</span> available.</p>
+      <!-- Empty State -->
+      <div v-if="tokens.length === 0" class="bg-white rounded-xl border border-slate-200 p-12 text-center">
+        <div class="max-w-md mx-auto">
+          <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <i class="pi pi-palette text-3xl text-slate-400"></i>
+          </div>
+          <h3 class="text-2xl font-bold text-slate-900 mb-2">No Tokens Yet</h3>
+          <p class="text-slate-600 mb-6">
+            Get started by creating your first design token in the admin panel.
+          </p>
+          <NuxtLink to="/admin/tokens" class="theme-btn-primary inline-flex items-center">
+            <i class="pi pi-plus mr-2"></i>
+            Create Your First Token
+          </NuxtLink>
+        </div>
+      </div>
+
+      <!-- Token Content -->
+      <div v-else class="bg-white rounded-xl border border-slate-200 overflow-hidden">
+        <!-- Stats Bar -->
+        <div class="px-6 py-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
+          <div class="flex gap-6">
+            <div>
+              <div class="text-sm text-slate-500">Total Tokens</div>
+              <div class="text-2xl font-bold text-slate-900">{{ tokens.length }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-slate-500">Colors</div>
+              <div class="text-2xl font-bold text-slate-900">{{ colorTokens.length }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-slate-500">Typography</div>
+              <div class="text-2xl font-bold text-slate-900">{{ typographyTokens.length }}</div>
+            </div>
+            <div>
+              <div class="text-sm text-slate-500">Spacing</div>
+              <div class="text-2xl font-bold text-slate-900">{{ spacingTokens.length }}</div>
+            </div>
           </div>
           <Button
             @click="downloadTokens"
             icon="pi pi-download"
-            :label="`Download JSON (${tokens.length} tokens)`"
-            class="p-button-outlined p-button-secondary"
-            :disabled="tokens.length === 0"
+            label="Export JSON"
+            class="p-button-outlined"
           />
         </div>
-        
-          <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <TabView class="p-tabview-clean">
-            <!-- Colors -->
-            <TabPanel header="Colors" value="colors">
-              <div class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div 
-                  v-for="token in colorTokens" 
-                  :key="token.name"
-                  class="group"
-                >
-                  <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-200">
-                    <div 
-                      class="w-10 h-10 rounded-full shadow-inner border border-black/5" 
-                      :style="{ backgroundColor: token.value }"
-                    ></div>
-                    <div class="overflow-hidden">
-                      <div class="font-bold text-sm text-gray-900 truncate" :title="token.name">{{ token.name }}</div>
-                      <div class="text-xs font-mono text-gray-500 uppercase">{{ token.value }}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </TabPanel>
-            
-            <!-- Typography -->
-            <TabPanel header="Typography" value="typography">
-              <div class="p-6 space-y-8">
-                <div v-for="token in typographyTokens" :key="token.name" class="border-b border-gray-100 last:border-0 pb-6 last:pb-0">
-                  <div class="flex flex-col md:flex-row gap-6">
-                     <div class="w-48 pt-1">
-                       <span class="text-sm font-bold text-gray-900">{{ token.name }}</span>
-                       <div class="text-xs text-gray-500 mt-1 space-y-0.5 font-mono">
-                         <div>{{ token.value.fontFamily }}</div>
-                         <div>{{ token.value.fontSize }} / {{ token.value.lineHeight }}</div>
-                         <div>{{ token.value.fontWeight }}</div>
-                       </div>
-                     </div>
-                     <div class="flex-1">
-                       <div :style="getTypographyStyle(token.value)" class="text-gray-900">
-                         The quick brown fox jumps over the lazy dog.
-                       </div>
-                     </div>
-                  </div>
-                </div>
-              </div>
-            </TabPanel>
-            
-            <!-- Spacing -->
-            <TabPanel header="Spacing" value="spacing">
-              <div class="p-6">
-                <div class="space-y-4 max-w-2xl">
+
+        <!-- Tabs -->
+        <TabView>
+          <!-- Colors Tab -->
+          <TabPanel header="Colors">
+            <div v-if="colorTokens.length === 0" class="p-12 text-center">
+              <p class="text-slate-500">No color tokens defined yet.</p>
+            </div>
+            <div v-else class="p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+              <div 
+                v-for="token in colorTokens" 
+                :key="token.name"
+                class="group relative"
+              >
+                <div class="bg-white rounded-lg border border-slate-200 p-4 hover:shadow-md transition-shadow">
                   <div 
-                    v-for="token in spacingTokens" 
-                    :key="token.name"
-                    class="flex items-center gap-4"
-                  >
-                    <div class="w-24 text-sm font-mono text-gray-500 text-right">{{ token.name }}</div>
-                    <div class="flex-1 flex items-center gap-3">
-                      <div class="h-6 bg-indigo-500 rounded" :style="{ width: token.value }"></div>
-                      <span class="text-xs font-mono text-indigo-700">{{ token.value }}</span>
+                    class="w-full h-20 rounded-lg shadow-inner mb-3" 
+                    :style="{ backgroundColor: token.value }"
+                  ></div>
+                  <div class="font-semibold text-sm text-slate-900 mb-1" :title="token.name">{{ token.name }}</div>
+                  <div class="text-xs font-mono text-slate-500 uppercase">{{ token.value }}</div>
+                </div>
+              </div>
+            </div>
+          </TabPanel>
+          
+          <!-- Typography Tab -->
+          <TabPanel header="Typography">
+            <div v-if="typographyTokens.length === 0" class="p-12 text-center">
+              <p class="text-slate-500">No typography tokens defined yet.</p>
+            </div>
+            <div v-else class="p-6 space-y-6">
+              <div v-for="token in typographyTokens" :key="token.name" class="border-b border-slate-100 last:border-0 pb-6 last:pb-0">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div>
+                    <div class="text-sm font-bold text-slate-900 mb-2">{{ token.name }}</div>
+                    <div class="text-xs text-slate-500 space-y-1 font-mono">
+                      <div>Family: {{ token.value.fontFamily }}</div>
+                      <div>Size: {{ token.value.fontSize }}</div>
+                      <div>Weight: {{ token.value.fontWeight }}</div>
+                      <div>Line: {{ token.value.lineHeight }}</div>
+                    </div>
+                  </div>
+                  <div class="md:col-span-2">
+                    <div :style="getTypographyStyle(token.value)" class="text-slate-900">
+                      The quick brown fox jumps over the lazy dog
                     </div>
                   </div>
                 </div>
               </div>
-            </TabPanel>
-          </TabView>
-        </div>
+            </div>
+          </TabPanel>
+          
+          <!-- Spacing Tab -->
+          <TabPanel header="Spacing">
+            <div v-if="spacingTokens.length === 0" class="p-12 text-center">
+              <p class="text-slate-500">No spacing tokens defined yet.</p>
+            </div>
+            <div v-else class="p-6">
+              <div class="space-y-4 max-w-3xl mx-auto">
+                <div 
+                  v-for="token in spacingTokens" 
+                  :key="token.name"
+                  class="flex items-center gap-4"
+                >
+                  <div class="w-32 text-sm font-mono text-slate-500 text-right">{{ token.name }}</div>
+                  <div class="flex-1 flex items-center gap-3">
+                    <div class="h-8 rounded" :style="{ width: token.value, backgroundColor: 'var(--primary-color)' }"></div>
+                    <span class="text-sm font-mono text-slate-700">{{ token.value }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </TabPanel>
+        </TabView>
       </div>
-    </main>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue'
 import designSystemStorage from '../../src/design-system/storage'
-import ViewerSidebar from '../components/ViewerSidebar.vue'
 
 const tokens = designSystemStorage.getTokens()
 
@@ -111,7 +155,6 @@ function getTypographyStyle(value: any) {
 }
 
 function downloadTokens() {
-  // Create export data in Figma/Penpot compatible format
   const exportData: any = {
     "$themes": [],
     "$metadata": {
@@ -121,56 +164,40 @@ function downloadTokens() {
     }
   }
 
-  // Group tokens by category for export
   const tokenSets: any = {
     "OpenDS Tokens": {}
   }
 
   tokens.forEach(token => {
-    let tokenValue = token.value
-    let tokenType = token.type
-
-    // Convert back to Figma/Penpot format
-    if (token.category === 'typography' && typeof token.value === 'object') {
-      tokenType = 'typography'
-    }
-
-    // Clean token name for Penpot compatibility
-    // Replace slashes and spaces with dots, remove special characters
     let cleanName = token.name
-      .replace(/\//g, '.')  // Replace slashes with dots
-      .replace(/\s+/g, '.') // Replace spaces with dots
-      .replace(/[^a-zA-Z0-9.]/g, '') // Remove special characters except dots
-      .replace(/\.+/g, '.') // Replace multiple dots with single dot
-      .replace(/^\.+|\.+$/g, '') // Remove leading/trailing dots
+      .replace(/\//g, '.')
+      .replace(/\s+/g, '.')
+      .replace(/[^a-zA-Z0-9.]/g, '')
+      .replace(/\.+/g, '.')
+      .replace(/^\.+|\.+$/g, '')
 
-    // Ensure name doesn't start with $ and contains only valid characters
     if (cleanName.startsWith('$')) {
       cleanName = cleanName.substring(1)
     }
 
-    // If name became empty, create a generic one
     if (!cleanName) {
       cleanName = `token_${Math.random().toString(36).substr(2, 9)}`
     }
 
     tokenSets["OpenDS Tokens"][cleanName] = {
-      "$value": tokenValue,
-      "$type": tokenType,
+      "$value": token.value,
+      "$type": token.type,
       "$description": token.description || ""
     }
   })
 
-  // Combine token sets with metadata
   const finalExport = {
     ...tokenSets,
     ...exportData
   }
 
-  // Create and download JSON file
   const dataStr = JSON.stringify(finalExport, null, 2)
   const dataUri = 'data:application/json;charset=utf-8,'+ encodeURIComponent(dataStr)
-
   const exportFileDefaultName = `opends-tokens-${new Date().toISOString().split('T')[0]}.json`
 
   const linkElement = document.createElement('a')
@@ -178,49 +205,18 @@ function downloadTokens() {
   linkElement.setAttribute('download', exportFileDefaultName)
   linkElement.click()
 }
+
+useHead({
+  title: 'Design Tokens',
+  meta: [
+    { name: 'description', content: 'Browse design tokens for OpenDS Design System' }
+  ]
+})
 </script>
 
 <style scoped>
-:deep(.p-tabview-clean .p-tabview-nav) {
-  border-bottom: 1px solid #e5e7eb;
-  background: white !important;
-}
-
-:deep(.p-tabview-clean .p-tabview-nav li .p-tabview-nav-link) {
-  border: none !important;
-  background: transparent !important;
-  color: #6b7280 !important;
-  font-weight: 500;
-  padding: 1rem 1.5rem;
-  border-bottom: 2px solid transparent !important;
-}
-
-:deep(.p-tabview-clean .p-tabview-nav li.p-highlight .p-tabview-nav-link) {
-  color: #4f46e5 !important;
-  border-bottom-color: #4f46e5 !important;
-  background: transparent !important;
-}
-
-:deep(.p-tabview-clean .p-tabview-nav li .p-tabview-nav-link:hover) {
-  background: #f9fafb !important;
-  color: #374151 !important;
-}
-
-:deep(.p-tabview-clean .p-tabview-panels) {
-  padding: 0;
-  background: white !important;
-}
-
-/* Override any PrimeVue dark theme defaults */
-:deep(.p-tabview) {
-  background: white !important;
-}
-
-:deep(.p-tabview-nav) {
-  background: white !important;
-}
-
-:deep(.p-tabview-nav li) {
-  background: transparent !important;
+.tokens-page {
+  min-height: 100vh;
+  background-color: #f8fafc;
 }
 </style>

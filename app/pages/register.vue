@@ -74,10 +74,19 @@
             </Message>
 
             <!-- Info Message for First User -->
-            <Message v-if="isFirstUser === null" severity="info" :closable="false">
-              <p class="font-semibold">First User Setup</p>
-              <p class="text-sm mt-1">The first registered user will become the administrator</p>
-            </Message>
+            <div v-if="isFirstUser === null" class="first-user-notice">
+              <div class="flex items-start gap-3">
+                <div class="flex-shrink-0">
+                  <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                    <i class="pi pi-info-circle text-blue-600"></i>
+                  </div>
+                </div>
+                <div>
+                  <p class="font-semibold text-gray-900 mb-1">First User Setup</p>
+                  <p class="text-sm text-gray-600">The first registered user will become the administrator with full access to the system.</p>
+                </div>
+              </div>
+            </div>
 
             <!-- Submit Button -->
             <Button
@@ -199,5 +208,12 @@ async function handleRegister() {
 
 :deep(.p-password) {
   width: 100%;
+}
+
+.first-user-notice {
+  padding: 1rem;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 0.5rem;
 }
 </style>

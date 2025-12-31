@@ -2,10 +2,7 @@
   <aside class="w-64 bg-white border-r border-gray-200 h-screen fixed left-0 top-0 flex flex-col z-50">
     <!-- Logo Area -->
     <div class="h-16 flex items-center px-6 border-b border-gray-100">
-      <div class="flex items-center gap-2 text-indigo-600">
-        <i class="pi pi-box text-xl"></i>
-        <span class="font-bold text-lg tracking-tight text-gray-900">OpenDS</span>
-      </div>
+      <Logo text="OpenDS" size="sm" />
     </div>
 
     <!-- Navigation -->

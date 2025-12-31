@@ -56,15 +56,25 @@ useHead({
     <!-- Documentation Grid -->
     <div class="docs-grid">
       <div class="container">
-        <div v-if="pages.length === 0" class="empty-state">
-          <i class="pi pi-book"></i>
-          <h3>No documentation available yet</h3>
-          <p>Check back soon for guides and resources.</p>
+        <!-- Empty State -->
+        <div v-if="pages.length === 0" class="empty-state-card">
+          <div class="empty-state-content">
+            <div class="empty-icon">
+              <i class="pi pi-book"></i>
+            </div>
+            <h3>No Documentation Available Yet</h3>
+            <p>Get started by creating your first documentation page in the admin panel.</p>
+            <NuxtLink to="/admin/docs" class="theme-btn-primary mt-4 inline-flex items-center">
+              <i class="pi pi-plus mr-2"></i>
+              Create First Doc
+            </NuxtLink>
+          </div>
         </div>
 
+        <!-- Documentation Categories -->
         <div v-else class="categories">
           <section v-for="category in categories" :key="category" class="category-section">
-            <h2 class="category-title">{{ category.charAt(0).toUpperCase() + category.slice(1) }}</h2>
+            <h2 class="category-title">{{ category.charAt(0).toUpperCase() + category.slice(1).replace(/-/g, ' ') }}</h2>
             
             <div class="docs-cards">
               <NuxtLink
@@ -136,28 +146,51 @@ useHead({
   padding: 4rem 0;
 }
 
-.empty-state {
+/* Empty State */
+.empty-state-card {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  padding: 3rem 2rem;
   text-align: center;
-  padding: 4rem 2rem;
+}
+
+.empty-state-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.empty-icon {
+  width: 80px;
+  height: 80px;
+  background: #f1f5f9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.empty-icon i {
+  font-size: 2.5rem;
   color: #64748b;
 }
 
-.empty-state i {
-  font-size: 4rem;
-  margin-bottom: 1.5rem;
-  opacity: 0.5;
-}
-
-.empty-state h3 {
+.empty-state-card h3 {
   font-size: 1.5rem;
-  font-weight: 600;
-  color: #475569;
-  margin: 0 0 0.5rem 0;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 0.75rem 0;
 }
 
-.empty-state p {
+.empty-state-card p {
   font-size: 1rem;
+  color: #64748b;
   margin: 0;
+  line-height: 1.6;
 }
 
 /* Categories */

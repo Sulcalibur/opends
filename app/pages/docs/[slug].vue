@@ -1,8 +1,6 @@
 <script setup lang="ts">
-/**
- * Public Documentation Page
- * Displays published documentation with rendered markdown
- */
+import { computed } from 'vue'
+import { useRoute, useFetch, useHead, createError } from '#app'
 
 const route = useRoute()
 const slug = route.params.slug as string
@@ -60,9 +58,14 @@ const htmlContent = computed(() => renderMarkdown(page.content))
 
 <template>
   <div class="docs-page">
+    <div class="ds-phase-banner ds-container">
+      <span class="ds-phase-tag">ALPHA</span>
+      <p class="text-sm">This is a new service – your <a href="#">feedback</a> will help us to improve it.</p>
+    </div>
+
     <!-- Header -->
     <div class="docs-header">
-      <div class="container">
+      <div class="ds-container">
         <nav class="breadcrumb">
           <NuxtLink to="/" class="breadcrumb-item">Home</NuxtLink>
           <i class="pi pi-angle-right"></i>
@@ -89,7 +92,7 @@ const htmlContent = computed(() => renderMarkdown(page.content))
 
     <!-- Content -->
     <div class="docs-content">
-      <div class="container">
+      <div class="ds-container">
         <article class="prose" v-html="htmlContent"></article>
         
         <!-- Footer navigation -->
@@ -107,20 +110,20 @@ const htmlContent = computed(() => renderMarkdown(page.content))
 <style scoped>
 .docs-page {
   min-height: 100vh;
-  background: linear-gradient(to bottom, #f8fafc 0%, #ffffff 100%);
+  background: white;
 }
 
-.container {
-  max-width: 900px;
+.ds-container {
+  max-width: 960px;
   margin: 0 auto;
-  padding: 0 2rem;
+  padding: 0 1rem;
 }
 
 /* Header */
 .docs-header {
   background: white;
-  border-bottom: 1px solid #e2e8f0;
-  padding: 3rem 0 2rem;
+  border-bottom: 2px solid #b1b4b6;
+  padding: 2rem 0;
 }
 
 .breadcrumb {
@@ -139,7 +142,7 @@ const htmlContent = computed(() => renderMarkdown(page.content))
 }
 
 .breadcrumb-item:hover {
-  color: #3b82f6;
+  color: var(--primary-color, #3b82f6);
 }
 
 .breadcrumb-item.active {
@@ -226,15 +229,16 @@ const htmlContent = computed(() => renderMarkdown(page.content))
 }
 
 .prose :deep(a) {
-  color: #3b82f6;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
+  color: var(--primary-color, #1d70b8);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.1em;
 }
 
 .prose :deep(a:hover) {
-  color: #2563eb;
-  text-decoration: underline;
+  color: var(--primary-color-hover, #003078);
+  text-decoration-thickness: 3px;
 }
 
 .prose :deep(strong) {
@@ -283,7 +287,7 @@ const htmlContent = computed(() => renderMarkdown(page.content))
 }
 
 .prose :deep(blockquote) {
-  border-left: 4px solid #3b82f6;
+  border-left: 4px solid var(--primary-color, #3b82f6);
   padding-left: 1.5rem;
   margin: 1.5rem 0;
   color: #475569;
@@ -301,7 +305,7 @@ const htmlContent = computed(() => renderMarkdown(page.content))
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  color: #3b82f6;
+  color: var(--primary-color, #3b82f6);
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s;
