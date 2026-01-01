@@ -53,6 +53,9 @@ eslint.config.js
 playwright.config.ts
 vitest.shims.d.ts
 pnpm-workspace.yaml
+netlify/
+wrangler.toml
+functions/
 .nuxt/
 
 # Logs
