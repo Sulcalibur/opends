@@ -4,9 +4,24 @@
 .env.development
 .env.staging
 .env.production
+*.local
 
 # OpenSpec
-openspec/changes/*/tasks.md
+openspec/
+AGENTS.md
+project.md
+
+# Security
+.secrets.allowlist
+
+# AI Development Tools
+.opencode/
+.conductor/
+.augment/
+.trae/
+
+# Local Development Docs
+local-docs/
 
 # Node.js
 node_modules/
@@ -39,5 +54,17 @@ temp/docs/.vitepress/cache/
 frontend/test-results/
 backend/opends.db
 
+# Test artifacts
+test-results/
+playwright-report/
+
 # TypeScript build info
 *.tsbuildinfo
+
+# Documentation & Development (optional)
+docs/.vitepress/
+.storybook/
+UX_IMPROVEMENTS.md
+STATUS_LOG.md
+QA_AUDIT_REPORT.md
+.git.bfg-report/
