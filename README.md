@@ -20,13 +20,7 @@ A self-hosted platform for managing design system documentation, design tokens, 
 
 ## Contributing
 
-Contributions are welcome! This is an early-stage project where help is needed with:
-
-- Frontend (Vue 3, Nuxt, PrimeVue)
-- Backend (Node.js, Fastify/Node.js)
-- Database (PostgreSQL, SQLite)
-- Design tool integrations
-- Documentation
+Contributions are welcome! This is an early-stage project where any is appreciated.
 
 See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) for details.
 
