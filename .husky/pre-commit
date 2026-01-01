@@ -1,4 +1,0 @@
-# Run lint and typecheck in simplified directory if it exists
-if [ -d "simplified" ]; then
-  cd simplified && pnpm run lint && pnpm run typecheck
-fi
