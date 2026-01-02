@@ -1,32 +1,39 @@
 <template>
   <div class="flex h-screen w-full bg-gray-50 overflow-hidden">
     <!-- Sidebar -->
-    <aside 
-      class="hidden lg:flex flex-col flex-shrink-0 border-r border-white/10 text-white admin-sidebar-bg transition-all duration-300 relative group z-30 fixed left-0 top-0 h-full"
+    <aside
+      class="flex flex-col flex-shrink-0 border-r border-white/10 text-white admin-sidebar-bg transition-all duration-300 relative group z-30"
       :class="isCollapsed ? 'w-20' : 'w-[280px]'"
     >
       <!-- Edge Toggle Button -->
-      <button 
+      <button
         class="absolute -right-3 top-8 w-6 h-6 rounded-full bg-[#1e293b] border border-gray-600 text-gray-400 flex items-center justify-center hover:text-white hover:bg-slate-700 hover:border-gray-400 transition-all z-50 focus:outline-none shadow-lg opacity-0 group-hover:opacity-100"
         :class="{ 'opacity-100': isCollapsed }"
         @click="isCollapsed = !isCollapsed"
         :title="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
       >
-        <i class="pi" :class="isCollapsed ? 'pi-angle-right' : 'pi-angle-left'" style="font-size: 0.75rem"></i>
+        <i
+          class="pi"
+          :class="isCollapsed ? 'pi-angle-right' : 'pi-angle-left'"
+          style="font-size: 0.75rem"
+        ></i>
       </button>
 
       <div class="sidebar-header" :class="{ 'px-2 items-center': isCollapsed }">
         <h2 class="sidebar-logo" :class="{ 'text-xl': isCollapsed }">
-          {{ isCollapsed ? 'ODS' : 'OpenDS' }}
+          {{ isCollapsed ? "ODS" : "OpenDS" }}
         </h2>
         <p v-if="!isCollapsed" class="sidebar-subtitle">Admin Panel</p>
       </div>
 
-      <nav class="sidebar-nav flex-1 overflow-y-auto custom-scrollbar" :class="{ 'px-2': isCollapsed }">
-        <NuxtLink 
-          to="/admin" 
-          class="nav-item" 
-          active-class="active" 
+      <nav
+        class="sidebar-nav flex-1 overflow-y-auto custom-scrollbar"
+        :class="{ 'px-2': isCollapsed }"
+      >
+        <NuxtLink
+          to="/admin"
+          class="nav-item"
+          active-class="active"
           exact
           :class="{ 'justify-center': isCollapsed }"
           v-tooltip.right="isCollapsed ? 'Dashboard' : ''"
@@ -34,10 +41,10 @@
           <i class="pi pi-home"></i>
           <span v-if="!isCollapsed">Dashboard</span>
         </NuxtLink>
-        
-        <NuxtLink 
-          to="/admin/components" 
-          class="nav-item" 
+
+        <NuxtLink
+          to="/admin/components"
+          class="nav-item"
           active-class="active"
           :class="{ 'justify-center': isCollapsed }"
           v-tooltip.right="isCollapsed ? 'Components' : ''"
@@ -45,10 +52,10 @@
           <i class="pi pi-box"></i>
           <span v-if="!isCollapsed">Components</span>
         </NuxtLink>
-        
-        <NuxtLink 
-          to="/admin/tokens" 
-          class="nav-item" 
+
+        <NuxtLink
+          to="/admin/tokens"
+          class="nav-item"
           active-class="active"
           :class="{ 'justify-center': isCollapsed }"
           v-tooltip.right="isCollapsed ? 'Design Tokens' : ''"
@@ -56,10 +63,10 @@
           <i class="pi pi-palette"></i>
           <span v-if="!isCollapsed">Design Tokens</span>
         </NuxtLink>
-        
-        <NuxtLink 
-          to="/admin/docs" 
-          class="nav-item" 
+
+        <NuxtLink
+          to="/admin/docs"
+          class="nav-item"
           active-class="active"
           :class="{ 'justify-center': isCollapsed }"
           v-tooltip.right="isCollapsed ? 'Documentation' : ''"
@@ -67,10 +74,10 @@
           <i class="pi pi-file-edit"></i>
           <span v-if="!isCollapsed">Documentation</span>
         </NuxtLink>
-        
-        <NuxtLink 
-          to="/admin/users" 
-          class="nav-item" 
+
+        <NuxtLink
+          to="/admin/users"
+          class="nav-item"
           active-class="active"
           :class="{ 'justify-center': isCollapsed }"
           v-tooltip.right="isCollapsed ? 'Users' : ''"
@@ -78,16 +85,27 @@
           <i class="pi pi-users"></i>
           <span v-if="!isCollapsed">Users</span>
         </NuxtLink>
-        
-        <NuxtLink 
-          to="/admin/settings" 
-          class="nav-item" 
+
+        <NuxtLink
+          to="/admin/settings"
+          class="nav-item"
           active-class="active"
           :class="{ 'justify-center': isCollapsed }"
           v-tooltip.right="isCollapsed ? 'Settings' : ''"
         >
           <i class="pi pi-cog"></i>
           <span v-if="!isCollapsed">Settings</span>
+        </NuxtLink>
+
+        <NuxtLink
+          to="/admin/api-keys"
+          class="nav-item"
+          active-class="active"
+          :class="{ 'justify-center': isCollapsed }"
+          v-tooltip.right="isCollapsed ? 'API Keys' : ''"
+        >
+          <i class="pi pi-key"></i>
+          <span v-if="!isCollapsed">API Keys</span>
         </NuxtLink>
       </nav>
 
@@ -101,10 +119,10 @@
             <p class="user-role">{{ authStore.user?.role }}</p>
           </div>
         </div>
-        <Button 
-          icon="pi pi-sign-out" 
-          :label="isCollapsed ? '' : 'Logout'" 
-          text 
+        <Button
+          icon="pi pi-sign-out"
+          :label="isCollapsed ? '' : 'Logout'"
+          text
           severity="secondary"
           class="logout-btn"
           :class="{ 'justify-center': isCollapsed }"
@@ -115,27 +133,32 @@
     </aside>
 
     <!-- Main Content -->
-    <main 
-      class="flex-1 flex flex-col min-w-0 overflow-hidden relative transition-all duration-300"
-      :class="isCollapsed ? 'ml-20' : 'ml-[280px]'"
-    >
+    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
       <!-- Top Bar -->
-      <header class="bg-white border-b border-gray-200 px-8 py-6 sticky top-0 z-10 transition-all">
+      <header
+        class="bg-white border-b border-gray-200 px-8 py-6 sticky top-0 z-10"
+      >
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-4">
-            <!-- Mobile Menu Toggle (Visible on small screens) -->
-            <Button 
-              icon="pi pi-bars" 
-              text 
-              rounded 
-              class="lg:hidden" 
-              aria-label="Menu" 
+            <Button
+              icon="pi pi-bars"
+              text
+              rounded
+              class="lg:hidden"
+              aria-label="Menu"
             />
-            <h1 class="text-2xl font-bold text-gray-900 m-0">{{ pageTitle }}</h1>
+            <h1 class="text-2xl font-bold text-gray-900 m-0">
+              {{ pageTitle }}
+            </h1>
           </div>
           <div class="flex gap-2">
             <Button icon="pi pi-bell" text rounded aria-label="Notifications" />
-            <Button icon="pi pi-question-circle" text rounded aria-label="Help" />
+            <Button
+              icon="pi pi-question-circle"
+              text
+              rounded
+              aria-label="Help"
+            />
           </div>
         </div>
       </header>
@@ -149,52 +172,59 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import 'primeicons/primeicons.css'
+import { ref, computed, onMounted } from "vue";
+import "primeicons/primeicons.css";
 
-const authStore = useAuthStore()
-const router = useRouter()
-const route = useRoute()
+const authStore = useAuthStore();
+const router = useRouter();
+const route = useRoute();
 
 // Initialize state from local storage preference if possible, default false
-const isCollapsed = ref(false)
+const isCollapsed = ref(false);
 
 const userInitials = computed(() => {
-  const name = authStore.user?.name || 'U'
-  return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
-})
+  const name = authStore.user?.name || "U";
+  return name
+    .split(" ")
+    .map((n) => n[0])
+    .join("")
+    .toUpperCase()
+    .slice(0, 2);
+});
 
 const pageTitle = computed(() => {
-  const path = route.path
-  if (path === '/admin') return 'Dashboard'
-  if (path.includes('components')) return 'Components'
-  if (path.includes('tokens')) return 'Design Tokens'
-  if (path.includes('/admin/docs')) return 'Documentation'
-  if (path.includes('users')) return 'Users'
-  if (path.includes('settings')) return 'Settings'
-  return 'Admin'
-})
+  const path = route.path;
+  if (path === "/admin") return "Dashboard";
+  if (path.includes("components")) return "Components";
+  if (path.includes("tokens")) return "Design Tokens";
+  if (path.includes("/admin/docs")) return "Documentation";
+  if (path.includes("users")) return "Users";
+  if (path.includes("settings")) return "Settings";
+  if (path.includes("api-keys")) return "API Keys";
+  if (path.includes("codegen")) return "Code Generator";
+  return "Admin";
+});
 
 async function handleLogout() {
-  authStore.logout()
+  authStore.logout();
 }
 
 // Initialize auth on mount
 onMounted(() => {
-  authStore.initialize()
+  authStore.initialize();
   // Recover collapsed state preference
-  const savedState = localStorage.getItem('sidebarCollapsed')
+  const savedState = localStorage.getItem("sidebarCollapsed");
   if (savedState) {
-    isCollapsed.value = savedState === 'true'
+    isCollapsed.value = savedState === "true";
   }
-})
+});
 
 // Persist state
 watch(isCollapsed, (val) => {
-  if (typeof window !== 'undefined') {
-    localStorage.setItem('sidebarCollapsed', String(val))
+  if (typeof window !== "undefined") {
+    localStorage.setItem("sidebarCollapsed", String(val));
   }
-})
+});
 </script>
 
 <style scoped>
@@ -370,7 +400,9 @@ watch(isCollapsed, (val) => {
   border-radius: 6px !important;
   font-size: 0.8rem !important;
   font-weight: 500 !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
   border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
