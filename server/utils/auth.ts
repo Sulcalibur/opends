@@ -5,6 +5,7 @@ const API_KEYS = new Set([
   "test-api-key",
   "opends-simple-key",
   "opends_5ceaa06f48417a197ba30c9d4fe4788658f38422887441115dda1e546bd7dec8",
+  "opends_fc13318bb89b627e477281ca6cda7ab3dbf64fa3d0d0ab71f00c945448358b2c",
 ]);
 
 export async function validateApiKey(apiKey: string): Promise<boolean> {
