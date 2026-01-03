@@ -9,7 +9,7 @@ const { data: docs, error } = await useFetch('/api/docs', {
   query: { isPublished: 1 }
 })
 
-const pages = computed(() => docs.value?.data || [])
+const pages = computed(() => docs.value?.data?.pages || [])
 
 // Group pages by category
 const pagesByCategory = computed(() => {
