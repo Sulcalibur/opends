@@ -51,28 +51,38 @@ export class DocumentationRepository {
      * Find page by ID
      */
     static async findById(id: string): Promise<DocumentationPage | null> {
-        const db = getDatabase()
+        try {
+            const db = getDatabase()
 
-        const result = await db.query<DocumentationPage>(
-            `SELECT * FROM documentation_pages WHERE id = $1 AND deleted_at IS NULL`,
-            [id]
-        )
+            const result = await db.query<DocumentationPage>(
+                `SELECT * FROM documentation_pages WHERE id = $1 AND deleted_at IS NULL`,
+                [id]
+            )
 
-        return result.rows[0] || null
+            return result.rows[0] || null
+        } catch (error) {
+            console.error('[DocumentationRepository] findById error:', error)
+            return null
+        }
     }
 
     /**
      * Find page by slug
      */
     static async findBySlug(slug: string): Promise<DocumentationPage | null> {
-        const db = getDatabase()
+        try {
+            const db = getDatabase()
 
-        const result = await db.query<DocumentationPage>(
-            `SELECT * FROM documentation_pages WHERE slug = $1 AND deleted_at IS NULL`,
-            [slug]
-        )
+            const result = await db.query<DocumentationPage>(
+                `SELECT * FROM documentation_pages WHERE slug = $1 AND deleted_at IS NULL`,
+                [slug]
+            )
 
-        return result.rows[0] || null
+            return result.rows[0] || null
+        } catch (error) {
+            console.error('[DocumentationRepository] findBySlug error:', error)
+            return null
+        }
     }
 
     /**
@@ -180,54 +190,63 @@ export class DocumentationRepository {
         publishedOnly?: boolean
         parentId?: string | null
     } = {}): Promise<{ pages: DocumentationPage[]; total: number }> {
-        const db = getDatabase()
-        const page = options.page || 1
-        const limit = options.limit || 50
-        const offset = (page - 1) * limit
+        try {
+            const db = getDatabase()
+            const page = options.page || 1
+            const limit = options.limit || 50
+            const offset = (page - 1) * limit
 
-        let whereClause = 'WHERE deleted_at IS NULL'
-        const params: any[] = []
-        let paramIndex = 1
+            let whereClause = 'WHERE deleted_at IS NULL'
+            const params: any[] = []
+            let paramIndex = 1
 
-        if (options.publishedOnly) {
-            whereClause += ` AND is_published = 1`
-        }
+            if (options.publishedOnly) {
+                whereClause += ` AND is_published = 1`
+            }
 
-        if (options.category) {
-            whereClause += ` AND category = $${paramIndex}`
-            params.push(options.category)
-            paramIndex++
-        }
-
-        if (options.parentId !== undefined) {
-            if (options.parentId === null) {
-                whereClause += ` AND parent_id IS NULL`
-            } else {
-                whereClause += ` AND parent_id = $${paramIndex}`
-                params.push(options.parentId)
+            if (options.category) {
+                whereClause += ` AND category = $${paramIndex}`
+                params.push(options.category)
                 paramIndex++
             }
-        }
 
-        // Get total count
-        const countResult = await db.query<{ count: number }>(
-            `SELECT COUNT(*) as count FROM documentation_pages ${whereClause}`,
-            params
-        )
-        const total = countResult.rows[0]?.count || 0
+            if (options.parentId !== undefined) {
+                if (options.parentId === null) {
+                    whereClause += ` AND parent_id IS NULL`
+                } else {
+                    whereClause += ` AND parent_id = $${paramIndex}`
+                    params.push(options.parentId)
+                    paramIndex++
+                }
+            }
 
-        // Get pages
-        const pagesResult = await db.query<DocumentationPage>(
-            `SELECT * FROM documentation_pages 
-             ${whereClause}
-             ORDER BY category, sort_order, title
-             LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
-            [...params, limit, offset]
-        )
+            // Get total count
+            const countResult = await db.query<{ count: number }>(
+                `SELECT COUNT(*) as count FROM documentation_pages ${whereClause}`,
+                params
+            )
+            const total = countResult.rows[0]?.count || 0
 
-        return {
-            pages: pagesResult.rows,
-            total
+            // Get pages
+            const pagesResult = await db.query<DocumentationPage>(
+                `SELECT * FROM documentation_pages 
+                 ${whereClause}
+                 ORDER BY category, sort_order, title
+                 LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
+                [...params, limit, offset]
+            )
+
+            return {
+                pages: pagesResult.rows,
+                total
+            }
+        } catch (error) {
+            console.error('[DocumentationRepository] list error:', error)
+            // Return empty result if table doesn't exist (during build)
+            return {
+                pages: [],
+                total: 0
+            }
         }
     }
 
@@ -235,15 +254,20 @@ export class DocumentationRepository {
      * Get all categories
      */
     static async getCategories(): Promise<string[]> {
-        const db = getDatabase()
+        try {
+            const db = getDatabase()
 
-        const result = await db.query<{ category: string }>(
-            `SELECT DISTINCT category FROM documentation_pages 
-             WHERE deleted_at IS NULL AND is_published = 1
-             ORDER BY category`
-        )
+            const result = await db.query<{ category: string }>(
+                `SELECT DISTINCT category FROM documentation_pages 
+                 WHERE deleted_at IS NULL AND is_published = 1
+                 ORDER BY category`
+            )
 
-        return result.rows.map(r => r.category)
+            return result.rows.map(r => r.category)
+        } catch (error) {
+            console.error('[DocumentationRepository] getCategories error:', error)
+            return []
+        }
     }
 
     /**
