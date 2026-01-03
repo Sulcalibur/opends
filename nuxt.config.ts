@@ -45,7 +45,7 @@ export default defineNuxtConfig({
     allowRegistration: process.env.ALLOW_REGISTRATION === 'true',
   },
   routeRules: {
-    '/': { prerender: true },
+    '/': { ssr: false },
     '/docs/**': { isr: 3600 },
     '/components/**': { isr: 3600 },
     '/tokens/**': { isr: 3600 },
