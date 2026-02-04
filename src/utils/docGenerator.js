@@ -25,7 +25,7 @@ async function loadDocTemplate(type) {
     const template = await fs.readFile(templatePath, 'utf8')
     docTemplates.set(cacheKey, template)
     return template
-  } catch (error) {
+  } catch {
     throw new Error(`Documentation template not found: docs/${type}`)
   }
 }
@@ -90,7 +90,7 @@ export async function generateComponentDocs(component, options = {}) {
 }
 
 // Generate index page for all components
-export async function generateIndexPage(components, options = {}) {
+export async function generateIndexPage(components, _options = {}) {
   const template = await loadDocTemplate('index')
 
   // Group components by category

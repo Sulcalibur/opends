@@ -11,7 +11,7 @@
         <div
           class="w-16 h-16 rounded-lg border-2 border-gray-300"
           :style="{ backgroundColor: colorValue }"
-        ></div>
+        />
         <div>
           <InputText
             v-model="colorValue"
@@ -34,7 +34,7 @@
           :class="colorValue === preset ? 'border-blue-500' : 'border-gray-300'"
           :style="{ backgroundColor: preset }"
           @click="colorValue = preset"
-        ></button>
+        />
       </div>
     </div>
 
@@ -57,8 +57,8 @@
             <Dropdown
               v-model="fontFamily"
               :options="fontOptions"
-              optionLabel="label"
-              optionValue="value"
+              option-label="label"
+              option-value="value"
               class="w-full"
             />
           </div>
@@ -75,8 +75,8 @@
             <Dropdown
               v-model="fontWeight"
               :options="weightOptions"
-              optionLabel="label"
-              optionValue="value"
+              option-label="label"
+              option-value="value"
               class="w-full"
             />
           </div>
@@ -99,14 +99,14 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Visual Preview</label>
           <div class="flex items-center gap-4">
-            <div class="w-4 h-16 bg-blue-500 rounded"></div>
+            <div class="w-4 h-16 bg-blue-500 rounded"/>
             <div
               class="h-16 bg-blue-100 border-2 border-blue-200 rounded flex items-center justify-center"
               :style="{ width: spacingValue }"
             >
               <span class="text-xs text-blue-800 font-mono">{{ spacingValue }}</span>
             </div>
-            <div class="w-4 h-16 bg-blue-500 rounded"></div>
+            <div class="w-4 h-16 bg-blue-500 rounded"/>
           </div>
         </div>
 
@@ -156,7 +156,7 @@
               :key="refId"
               class="flex items-center gap-2 p-2 bg-gray-50 rounded"
             >
-              <i class="pi pi-link text-gray-500"></i>
+              <i class="pi pi-link text-gray-500"/>
               <code class="text-sm">{{ refId }}</code>
             </div>
           </div>

@@ -7,14 +7,14 @@ export interface DesignToken {
   id: string
   name: string
   category: string
-  value: any
+  value: unknown
   description?: string
   path: string
   type: 'value' | 'reference' | 'alias'
   references?: string[]
-  metadata?: Record<string, any>
+  metadata?: Record<string, unknown>
   parent_id?: string
-  resolved_value?: any
+  resolved_value?: unknown
 }
 
 /**
@@ -28,7 +28,7 @@ export function resolveTokenValue(
   token: DesignToken,
   allTokens: DesignToken[],
   visited = new Set<string>()
-): any {
+): unknown {
   // Prevent circular references
   if (visited.has(token.id)) {
     console.warn(`Circular reference detected for token: ${token.path}`)

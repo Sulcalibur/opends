@@ -1,79 +1,71 @@
 /**
- * API Keys Management
- * GET /api/admin/api-keys - List all API keys
- * POST /api/admin/api-keys - Create new API key
- * DELETE /api/admin/api-keys/:id - Revoke API key
+ * MCP API Keys Management
+ * GET /api/admin/api-keys - List all API keys with database persistence
+ * POST /api/admin/api-keys - Create new MCP API key with database storage
+ * DELETE /api/admin/api-keys/:id - Revoke MCP API key
  */
 
 import type { H3Event } from "h3";
-import crypto from "crypto";
+import McpApiKeyRepository from "../../../repositories/mcp-key.repository";
+import { createHash } from "node:crypto";
 
-interface ApiKey {
+interface ApiKeyDisplay {
   id: string;
   name: string;
-  key: string;
+  key: string; // Partial display for security
   createdAt: string;
   lastUsed?: string;
-}
-
-// In-memory storage for API keys
-// TODO: Persist to database for production
-const apiKeys: Map<string, ApiKey> = new Map();
-
-function generateApiKey(): string {
-  return `opends_${crypto.randomBytes(32).toString("hex")}`;
+  expiresAt?: string;
+  scope: string[];
 }
 
 export default defineEventHandler(async (event: H3Event) => {
+  const userId = requireAuth(event); // Use existing auth middleware
+  requireRole(event, "admin"); // Only admins can manage MCP keys
+
   const method = getMethod(event);
 
   if (method === "GET") {
-    const keys = Array.from(apiKeys.values()).map((key) => ({
-      id: key.id,
-      name: key.name,
-      key:
-        key.key.substring(0, 12) +
-        "..." +
-        key.key.substring(key.key.length - 4),
-      createdAt: key.createdAt,
-      lastUsed: key.lastUsed,
-    }));
+    const keysResult = await McpApiKeyRepository.listByUser(userId);
 
     return {
       success: true,
       data: {
-        keys,
-        count: keys.length,
-      },
-      meta: {
-        timestamp: new Date().toISOString(),
+        keys: keysResult.keys.map((key) => ({
+          id: key.id,
+          name: key.name,
+          scope: Array.isArray(key.scope) ? key.scope : JSON.parse(key.scope),
+          createdAt: key.created_at,
+          lastUsedAt: key.last_used_at,
+          expiresAt: key.expires_at,
+          keyPreview: `${key.id.substring(0, 8)}...${key.id.substring(key.id.length - 4)}`,
+        })),
+        count: keysResult.total,
       },
     };
   }
 
   if (method === "POST") {
     const body = await readBody(event);
-    const name = body.name || `API Key ${apiKeys.size + 1}`;
+    const { name, scope, expiresAt } = body;
 
-    const key = generateApiKey();
-    const id = crypto.randomUUID();
+    // Generate secure API key
+    const key = McpApiKeyRepository.generateKey();
+    const keyHash = createHash("sha256").update(key).digest("hex");
 
-    const apiKeyEntry: ApiKey = {
-      id,
-      name,
-      key,
-      createdAt: new Date().toISOString(),
-    };
-
-    apiKeys.set(id, apiKeyEntry);
+    const keyData = await McpApiKeyRepository.create({
+      user_id: userId,
+      name: name || `MCP Key ${new Date().toISOString()}`,
+      scope: Array.isArray(scope) ? scope : ["read:tokens", "read:components"], // Default read-only scope
+      expires_at: expiresAt ? new Date(expiresAt) : null,
+    });
 
     return {
       success: true,
       data: {
-        key: apiKeyEntry,
-      },
-      meta: {
-        timestamp: new Date().toISOString(),
+        key, // Full key only shown once on creation
+        keyId: keyData.id,
+        message: "Save this key securely - it will not be shown again",
       },
     };
   }
@@ -88,15 +80,12 @@ export default defineEventHandler(async (event: H3Event) => {
       });
     }
 
-    apiKeys.delete(id);
+    await McpApiKeyRepository.delete(id);
 
     return {
       success: true,
       data: {
-        message: "API key revoked successfully",
-      },
-      meta: {
-        timestamp: new Date().toISOString(),
+        message: "MCP API key revoked successfully",
       },
     };
   }

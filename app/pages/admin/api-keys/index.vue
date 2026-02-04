@@ -15,11 +15,11 @@
         />
       </div>
 
-      <DataTable :value="apiKeys" :loading="loading" responsiveLayout="scroll">
+      <DataTable :value="apiKeys" :loading="loading" responsive-layout="scroll">
         <Column field="name" header="Name">
           <template #body="slotProps">
             <div class="key-name">
-              <i class="pi pi-key"></i>
+              <i class="pi pi-key"/>
               <span>{{ slotProps.data.name }}</span>
             </div>
           </template>
@@ -55,7 +55,7 @@
       </DataTable>
 
       <div v-if="apiKeys.length === 0 && !loading" class="empty-state">
-        <i class="pi pi-key empty-icon"></i>
+        <i class="pi pi-key empty-icon"/>
         <h3>No API keys yet</h3>
         <p>Create your first API key to integrate with design tools</p>
         <Button
@@ -107,7 +107,7 @@
       :style="{ width: '500px' }"
     >
       <div class="success-content">
-        <i class="pi pi-check-circle success-icon"></i>
+        <i class="pi pi-check-circle success-icon"/>
         <p>
           Your new API key has been created. Copy it now - you won't be able to
           see it again!

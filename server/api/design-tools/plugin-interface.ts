@@ -31,8 +31,8 @@ export interface ImportOptions {
 
 export interface ImportResult {
   success: boolean;
-  tokens?: any[];
-  components?: any[];
+  tokens?: unknown[];
+  components?: unknown[];
   imported: number;
   updated: number;
   errors: number;
@@ -60,16 +60,16 @@ export interface DesignToolPlugin {
   importComponents(options: ImportOptions): Promise<ImportResult>;
 
   exportTokens(
-    tokens: any[],
-  ): Promise<{ success: boolean; data?: any; error?: string }>;
+    tokens: unknown[],
+  ): Promise<{ success: boolean; data?: unknown; error?: string }>;
 
   exportComponents(
-    components: any[],
-  ): Promise<{ success: boolean; data?: any; error?: string }>;
+    components: unknown[],
+  ): Promise<{ success: boolean; data?: unknown; error?: string }>;
 
   getMetadata(): Promise<ToolMetadata>;
 
-  validateWebhook(payload: any, signature: string): boolean;
+  validateWebhook(payload: unknown, signature: string): boolean;
 
-  parseWebhookEvent(payload: any): { eventType: string; data: any };
+  parseWebhookEvent(payload: unknown): { eventType: string; data: unknown };
 }

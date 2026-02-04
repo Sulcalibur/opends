@@ -20,7 +20,7 @@
           <!-- Main Content: Styleguides/Projects -->
           <div class="col-span-12 lg:col-span-8">
             <h2 class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              <i class="pi pi-book text-gray-400"></i> Your Styleguides
+              <i class="pi pi-book text-gray-400"/> Your Styleguides
             </h2>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
@@ -29,7 +29,7 @@
                  <div class="h-32 bg-gradient-to-r from-indigo-500 to-purple-500 relative">
                    <div class="absolute bottom-4 left-4">
                      <div class="w-10 h-10 bg-white rounded-md flex items-center justify-center shadow-sm">
-                       <i class="pi pi-box text-indigo-600 text-xl"></i>
+                       <i class="pi pi-box text-indigo-600 text-xl"/>
                      </div>
                    </div>
                 </div>
@@ -52,7 +52,7 @@
               <!-- Create New Placeholder -->
               <div class="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 hover:border-indigo-400 hover:bg-gray-100 transition-all cursor-pointer flex flex-col items-center justify-center p-8 text-center h-full min-h-[240px] group">
                 <div class="w-12 h-12 rounded-full bg-white border border-gray-200 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
-                  <i class="pi pi-plus text-gray-400 group-hover:text-indigo-600"></i>
+                  <i class="pi pi-plus text-gray-400 group-hover:text-indigo-600"/>
                 </div>
                 <h3 class="font-medium text-gray-900 mb-1">Create new styleguide</h3>
                 <p class="text-xs text-gray-500">Start a new documentation project</p>
@@ -66,7 +66,7 @@
                 <div class="flex items-center justify-between p-4 bg-blue-50 rounded-md border border-blue-100">
                   <div class="flex items-center gap-4">
                     <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
-                      <i class="pi pi-check"></i>
+                      <i class="pi pi-check"/>
                     </div>
                     <div>
                       <h4 class="text-sm font-semibold text-gray-900">Import Design Tokens</h4>
@@ -79,7 +79,7 @@
                 <div class="flex items-center justify-between p-4 bg-gray-50 rounded-md border border-gray-100 opacity-60">
                    <div class="flex items-center gap-4">
                     <div class="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-500">
-                      <i class="pi pi-lock"></i>
+                      <i class="pi pi-lock"/>
                     </div>
                     <div>
                       <h4 class="text-sm font-semibold text-gray-900">Document Components</h4>
@@ -119,11 +119,11 @@
               <div class="bg-white rounded-lg border border-gray-200 shadow-sm p-4">
                  <div class="relative pl-4 space-y-6 before:absolute before:left-[19px] before:top-2 before:bottom-2 before:w-[2px] before:bg-gray-100">
                     <div 
-                      v-for="(activity, index) in recentActivity" 
-                      :key="activity.id" 
+                      v-for="activity in recentActivity" 
+                      :key="activity.id as string" 
                       class="relative flex gap-3"
                     >
-                      <div class="w-2.5 h-2.5 rounded-full bg-white border-2 border-indigo-500 absolute -left-[21px] top-1.5 z-10"></div>
+                      <div class="w-2.5 h-2.5 rounded-full bg-white border-2 border-indigo-500 absolute -left-[21px] top-1.5 z-10"/>
                       <div>
                         <p class="text-sm text-gray-900 font-medium">{{ activity.description }}</p>
                         <p class="text-xs text-gray-500 mt-0.5">{{ activity.time }}</p>
@@ -152,7 +152,7 @@
     >
       <div class="space-y-6 pt-2">
         <div class="bg-blue-50 border border-blue-100 rounded-md p-4 flex gap-3">
-          <i class="pi pi-info-circle text-blue-600 mt-0.5"></i>
+          <i class="pi pi-info-circle text-blue-600 mt-0.5"/>
           <p class="text-sm text-blue-800">
             Upload your Penpot export file (`.json`) to sync tokens and structure.
           </p>
@@ -166,7 +166,7 @@
           @dragleave="dragOver = false"
           @drop.prevent="handleDrop"
         >
-          <i class="pi pi-cloud-upload text-3xl text-gray-400 mb-3"></i>
+          <i class="pi pi-cloud-upload text-3xl text-gray-400 mb-3"/>
           <p class="font-medium text-gray-900">Click to upload or drag and drop</p>
           <p class="text-sm text-gray-500 mt-1">JSON files only</p>
           <input 
@@ -175,11 +175,11 @@
             accept=".json,application/json"
             class="hidden"
             @change="handleFileSelect"
-          />
+          >
         </div>
 
         <div v-if="importSuccess" class="flex items-center gap-2 text-green-600 text-sm font-medium">
-          <i class="pi pi-check-circle"></i>
+          <i class="pi pi-check-circle"/>
           Imported {{ importedTokens }} tokens and {{ importedComponents }} components.
         </div>
       </div>
@@ -194,7 +194,7 @@
             @click="confirmClearData"
           />
           <div class="flex gap-2">
-            <Button label="Cancel" severity="secondary" @click="showImportModal = false" text />
+            <Button label="Cancel" severity="secondary" text @click="showImportModal = false" />
             <Button label="Import" @click="triggerFileInput" />
           </div>
         </div>
@@ -220,6 +220,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
+import { useAuthStore } from '@/app/stores/auth'
 import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Dialog from 'primevue/dialog'
@@ -229,12 +230,13 @@ import designSystemStorage from '@/design-system/storage'
 import AdminSidebar from '@/app/components/admin/AdminSidebar.vue'
 
 // Logic remains largely the same, just visual layout changes
+const authStore = useAuthStore()
 const router = useRouter()
 const componentsCount = ref(0)
 const tokensCount = ref(0)
 const docsCount = ref(3) // Mocked for now
 const storageSize = ref('0 KB')
-const recentActivity = ref<any[]>([])
+const recentActivity = ref<Record<string, unknown>[]>([])
 
 const showImportModal = ref(false)
 const showClearConfirm = ref(false)

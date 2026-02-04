@@ -6,7 +6,7 @@
 import type { DesignToken } from '../types/token'
 
 // In-memory token storage
-let mockTokens: DesignToken[] = [
+const mockTokens: DesignToken[] = [
   {
     id: '1',
     name: 'primary',

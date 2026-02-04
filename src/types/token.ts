@@ -27,9 +27,9 @@ export interface DesignToken {
     path: string;
     type: 'value' | 'reference' | 'alias';
     references?: string[];
-    metadata?: Record<string, any>;
+    metadata?: Record<string, unknown>;
     parent_id?: string;
-    resolved_value?: any;
+    resolved_value?: unknown;
 }
 
 export type TokenValue =

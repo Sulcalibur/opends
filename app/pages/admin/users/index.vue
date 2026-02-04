@@ -14,7 +14,7 @@
       <Card class="stat-card">
         <template #content>
           <div class="stat-item">
-            <i class="pi pi-users stat-icon"></i>
+            <i class="pi pi-users stat-icon"/>
             <div>
               <p class="stat-value">{{ users.length }}</p>
               <p class="stat-label">Total Users</p>
@@ -26,7 +26,7 @@
       <Card class="stat-card">
         <template #content>
           <div class="stat-item">
-            <i class="pi pi-check-circle stat-icon" style="color: #10b981"></i>
+            <i class="pi pi-check-circle stat-icon" style="color: #10b981"/>
             <div>
               <p class="stat-value">{{ users.filter(u => u.is_active).length }}</p>
               <p class="stat-label">Active</p>
@@ -38,7 +38,7 @@
       <Card class="stat-card">
         <template #content>
           <div class="stat-item">
-            <i class="pi pi-shield stat-icon" style="color: #f59e0b"></i>
+            <i class="pi pi-shield stat-icon" style="color: #f59e0b"/>
             <div>
               <p class="stat-value">{{ users.filter(u => u.role === 'admin').length }}</p>
               <p class="stat-label">Admins</p>
@@ -78,8 +78,8 @@
                 v-model="data.role" 
                 :options="roles"
                 :disabled="data.id === authStore.user?.id"
-                @change="updateUserRole(data)"
                 class="role-select"
+                @change="updateUserRole(data)"
               />
             </template>
           </Column>
@@ -109,7 +109,7 @@
 
           <Column header="Actions" :style="{ width: '160px' }">
             <template #body="{ data }">
-              <div class="table-actions" v-if="data.id !== authStore.user?.id">
+              <div v-if="data.id !== authStore.user?.id" class="table-actions">
                 <Button 
                   :icon="data.is_active ? 'pi pi-ban' : 'pi pi-check'" 
                   :label="data.is_active ? 'Deactivate' : 'Activate'"

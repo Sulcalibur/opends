@@ -12,14 +12,14 @@ export class AppError extends Error {
     public readonly statusCode: number;
     public readonly code: ApiErrorCode;
     public readonly isOperational: boolean;
-    public readonly details?: Record<string, any>;
+    public readonly details?: Record<string, unknown>;
 
     constructor(
         message: string,
         statusCode: number = 500,
         code: ApiErrorCode = 'INTERNAL_ERROR',
         isOperational: boolean = true,
-        details?: Record<string, any>
+        details?: Record<string, unknown>
     ) {
         super(message);
 
@@ -41,7 +41,7 @@ export class AppError extends Error {
  * Used when request data fails validation
  */
 export class ValidationError extends AppError {
-    constructor(message: string, details?: Record<string, any>) {
+    constructor(message: string, details?: Record<string, unknown>) {
         super(message, 400, 'VALIDATION_ERROR', true, details);
         Object.setPrototypeOf(this, ValidationError.prototype);
     }
@@ -85,7 +85,7 @@ export class NotFoundError extends AppError {
  * Used when request conflicts with existing data
  */
 export class ConflictError extends AppError {
-    constructor(message: string, details?: Record<string, any>) {
+    constructor(message: string, details?: Record<string, unknown>) {
         super(message, 409, 'CONFLICT', true, details);
         Object.setPrototypeOf(this, ConflictError.prototype);
     }
@@ -107,7 +107,7 @@ export class RateLimitError extends AppError {
  * Used for unexpected server errors
  */
 export class InternalError extends AppError {
-    constructor(message: string = 'Internal server error', details?: Record<string, any>) {
+    constructor(message: string = 'Internal server error', details?: Record<string, unknown>) {
         super(message, 500, 'INTERNAL_ERROR', false, details);
         Object.setPrototypeOf(this, InternalError.prototype);
     }
@@ -118,7 +118,7 @@ export class InternalError extends AppError {
  * Used for malformed requests
  */
 export class BadRequestError extends AppError {
-    constructor(message: string, details?: Record<string, any>) {
+    constructor(message: string, details?: Record<string, unknown>) {
         super(message, 400, 'BAD_REQUEST', true, details);
         Object.setPrototypeOf(this, BadRequestError.prototype);
     }

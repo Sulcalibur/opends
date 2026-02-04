@@ -5,8 +5,9 @@
  */
 
 import Database from 'better-sqlite3'
-import { Pool, PoolClient, QueryResult } from 'pg'
-// @ts-ignore
+import type { PoolClient, QueryResult } from 'pg';
+import { Pool } from 'pg'
+// @ts-expect-error - D1 types conflict
 import type { D1Database } from '@cloudflare/workers-types'
 
 type DatabaseType = 'sqlite' | 'postgres' | 'd1'
@@ -118,9 +119,7 @@ class UniversalDatabase {
         if (this.d1Db) return
 
         // Try to find D1 binding in global scope (common in some CF setups)
-        // @ts-ignore
         if (typeof process !== 'undefined' && process.env?.DB) {
-            // @ts-ignore
             this.d1Db = process.env.DB as D1Database
         }
 
@@ -133,7 +132,7 @@ class UniversalDatabase {
     /**
      * Execute a query (works for SQLite, PostgreSQL, and D1)
      */
-    async query<T = any>(text: string, params?: any[]): Promise<{ rows: T[]; rowCount: number }> {
+    async query<T = unknown>(text: string, params?: unknown[]): Promise<{ rows: T[]; rowCount: number }> {
         const start = Date.now()
 
         try {
@@ -164,7 +163,7 @@ class UniversalDatabase {
     /**
      * SQLite query execution
      */
-    private async querySQLite<T>(text: string, params?: any[]): Promise<{ rows: T[]; rowCount: number }> {
+    private async querySQLite<T>(text: string, params?: unknown[]): Promise<{ rows: T[]; rowCount: number }> {
         if (!this.sqliteDb) {
             throw new Error('SQLite not connected')
         }
@@ -186,11 +185,12 @@ class UniversalDatabase {
     /**
      * PostgreSQL query execution
      */
-    private async queryPostgres<T>(text: string, params?: any[]): Promise<{ rows: T[]; rowCount: number }> {
+    private async queryPostgres<T>(text: string, params?: unknown[]): Promise<{ rows: T[]; rowCount: number }> {
         if (!this.pgPool) {
             throw new Error('PostgreSQL not connected')
         }
 
+        // @ts-expect-error - QueryResult<T> compatibility
         const result: QueryResult<T> = await this.pgPool.query(text, params)
         return { rows: result.rows, rowCount: result.rowCount || 0 }
     }
@@ -198,19 +198,17 @@ class UniversalDatabase {
     /**
      * D1 query execution
      */
-    private async queryD1<T>(text: string, params?: any[]): Promise<{ rows: T[]; rowCount: number }> {
+    private async queryD1<T>(text: string, params?: unknown[]): Promise<{ rows: T[]; rowCount: number }> {
         // Try to get binding from Nitro runtime context
         if (!this.d1Db) {
             try {
-                // @ts-ignore - useEvent is auto-imported in Nitro context
+                // @ts-expect-error - useEvent is auto-imported in Nitro context
                 const event = useEvent()
                 // Cloudflare Pages bindings are at event.context.cloudflare.env
-                // @ts-ignore
                 if (event?.context?.cloudflare?.env?.DB) {
-                    // @ts-ignore
                     this.d1Db = event.context.cloudflare.env.DB
                 }
-            } catch (e) {
+            } catch {
                 // useEvent may fail outside of request context
                 console.warn('[DB] Could not access request context for D1 binding')
             }
@@ -256,7 +254,7 @@ class UniversalDatabase {
     /**
      * Execute transaction
      */
-    async transaction<T>(callback: (execute: (query: string, params?: any[]) => Promise<any>) => Promise<T>): Promise<T> {
+    async transaction<T>(callback: (execute: (query: string, params?: unknown[]) => Promise<unknown>) => Promise<T>): Promise<T> {
         if (this.type === 'sqlite' && this.sqliteDb) {
             // SQLite transaction handling
             return this.sqliteDb.transaction<() => Promise<T>>(async () => {
@@ -371,12 +369,10 @@ function parseDatabaseConfig(url: string = ''): DbConfig {
     }
 
     // Check for Cloudflare Pages environment variables
-    // @ts-ignore
     const isCfPages = process.env.CF_PAGES === '1'
 
     // Check if running in Cloudflare Workers/Pages-like environment without a URL
     // The presence of certain env vars or lack of DATABASE_URL in production hints at D1
-    // @ts-ignore
     const isProduction = process.env.NODE_ENV === 'production'
 
     // Auto-detect D1 in Cloudflare Pages production if no standard DB URL is provided

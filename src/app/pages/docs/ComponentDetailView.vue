@@ -160,7 +160,7 @@
 
         <!-- Not found -->
         <div v-else class="text-center py-12">
-          <i class="pi pi-exclamation-triangle text-4xl text-red-300 mb-4"></i>
+          <i class="pi pi-exclamation-triangle text-4xl text-red-300 mb-4"/>
           <h3 class="text-lg font-medium text-gray-900 mb-2">Component not found</h3>
           <p class="text-gray-600">The requested component could not be found.</p>
           <Button
@@ -193,7 +193,7 @@ import ComponentPlayground from '@/design-system/components/ComponentPlayground.
 const route = useRoute()
 const router = useRouter()
 
-const component = ref<any>(null)
+const component = ref<Record<string, unknown> | null>(null)
 const loading = ref(true)
 
 // Computed properties for code examples
@@ -207,7 +207,7 @@ const vueExample = computed(() => {
 
 <script setup>
 // import Button from '@/components/Button.vue'
-</script>`
+<` + `/script>`
 })
 
 const reactExample = computed(() => {
@@ -230,7 +230,7 @@ const svelteExample = computed(() => {
   return `// Svelte Example
 <script>
   // import Button from '@/components/Button.svelte'
-</script>
+<` + `/script>
 
 <button>
   Click me
@@ -246,7 +246,7 @@ async function loadComponent() {
     const componentId = route.params.id as string
 
     // Mock component data based on ID
-    const mockComponents: Record<string, any> = {
+    const mockComponents: Record<string, unknown> = {
       '1': {
         id: '1',
         name: 'Button',
@@ -312,7 +312,7 @@ async function loadComponent() {
         component.value = data.component
         return
       }
-    } catch (apiError) {
+    } catch {
       console.log('API not available, using mock data')
     }
 

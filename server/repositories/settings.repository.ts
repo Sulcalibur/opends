@@ -1,9 +1,9 @@
-import { D1Database } from '@cloudflare/workers-types'
+import type { D1Database } from '@cloudflare/workers-types'
 
 export interface Setting {
     id: string
     key: string
-    value: any
+    value: unknown
     description?: string
     is_public: boolean
     created_at: string
@@ -24,12 +24,12 @@ export class SettingsRepository {
         }))
     }
 
-    async getPublic(): Promise<Record<string, any>> {
+    async getPublic(): Promise<Record<string, unknown>> {
         const { results } = await this.db.prepare(
             'SELECT key, value FROM settings WHERE is_public = 1'
         ).all<Setting>()
 
-        const publicSettings: Record<string, any> = {}
+        const publicSettings: Record<string, unknown> = {}
         results.forEach(row => {
             publicSettings[row.key] = row.value ? JSON.parse(row.value as string) : null
         })
@@ -50,7 +50,7 @@ export class SettingsRepository {
         }
     }
 
-    async update(key: string, value: any): Promise<void> {
+    async update(key: string, value: unknown): Promise<void> {
         const jsonValue = JSON.stringify(value)
 
         // Check if key exists
@@ -67,7 +67,7 @@ export class SettingsRepository {
         }
     }
 
-    async updateMultiple(settings: Record<string, any>): Promise<void> {
+    async updateMultiple(settings: Record<string, unknown>): Promise<void> {
         const batch = Object.entries(settings).map(([key, value]) => {
             const jsonValue = JSON.stringify(value)
             return this.db.prepare(

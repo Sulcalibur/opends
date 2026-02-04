@@ -36,7 +36,7 @@
           >
             <div class="p-6">
               <div class="w-12 h-12 bg-indigo-50 rounded-lg flex items-center justify-center mb-4 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
-                <i class="pi pi-box text-xl"></i>
+                <i class="pi pi-box text-xl"/>
               </div>
 
               <h3 class="text-lg font-bold text-gray-900 mb-2">{{ component.name }}</h3>
@@ -58,7 +58,7 @@
 
         <!-- No results -->
         <div v-else class="text-center py-12">
-          <i class="pi pi-search text-4xl text-gray-300 mb-4"></i>
+          <i class="pi pi-search text-4xl text-gray-300 mb-4"/>
           <h3 class="text-lg font-medium text-gray-900 mb-2">No components found</h3>
           <p class="text-gray-600">Try adjusting your search query.</p>
         </div>

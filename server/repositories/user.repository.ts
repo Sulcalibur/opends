@@ -42,6 +42,7 @@ export interface UpdateUserData {
     locked_until?: Date
 }
 
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 export class UserRepository {
     /**
      * Find user by ID
@@ -106,7 +107,7 @@ export class UserRepository {
 
         // Build update query dynamically
         const updates: string[] = []
-        const values: any[] = []
+        const values: (string | number | boolean | Date)[] = []
         let paramIndex = 1
 
         Object.entries(data).forEach(([key, value]) => {
@@ -224,7 +225,7 @@ export class UserRepository {
         const offset = (page - 1) * limit
 
         let whereClause = 'WHERE deleted_at IS NULL'
-        const params: any[] = []
+        const params: (string | number | boolean | Date)[] = []
         let paramIndex = 1
 
         if (role) {

@@ -46,6 +46,7 @@ export interface UpdateDocPageData {
     updated_by?: string
 }
 
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 export class DocumentationRepository {
     /**
      * Find page by ID
@@ -125,10 +126,10 @@ export class DocumentationRepository {
 
         // Build update query dynamically
         const updates: string[] = []
-        const values: any[] = []
+        const values: (string | number | boolean | null)[] = []
         let paramIndex = 1
 
-        const fieldMap: Record<string, any> = {
+        const fieldMap: Record<string, unknown> = {
             slug: data.slug,
             title: data.title,
             content: data.content,
@@ -197,7 +198,7 @@ export class DocumentationRepository {
             const offset = (page - 1) * limit
 
             let whereClause = 'WHERE deleted_at IS NULL'
-            const params: any[] = []
+            const params: (string | number | null)[] = []
             let paramIndex = 1
 
             if (options.publishedOnly) {

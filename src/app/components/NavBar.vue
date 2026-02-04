@@ -4,9 +4,9 @@
       <!-- Logo -->
       <router-link to="/" class="flex items-center gap-3 no-underline group">
         <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform duration-200">
-          <span class="text-xl font-bold text-white">DS</span>
+          <span class="text-xl font-bold text-white">{{ orgInitial }}</span>
         </div>
-        <span class="text-xl font-bold text-slate-900 tracking-tight">OpenDS</span>
+        <span class="text-xl font-bold text-slate-900 tracking-tight">{{ orgName }}</span>
       </router-link>
 
       <!-- Navigation Links -->
@@ -41,12 +41,20 @@
 </template>
 
 <script setup lang="ts">
+import { computed, ref } from 'vue'
 import { useAuthStore } from '@/app/stores/auth'
 import { useRouter } from 'vue-router'
+import { useFetch } from '#imports'
 import Button from 'primevue/button'
 
 const authStore = useAuthStore()
 const router = useRouter()
+
+const { data: settingsData } = await useFetch("/api/settings/public").catch(() => ({ data: ref(null) }));
+const settings = computed(() => settingsData.value?.settings || {});
+
+const orgName = computed(() => settings.value?.organization_name || "OpenDS");
+const orgInitial = computed(() => (orgName.value || "O").substring(0, 2).toUpperCase());
 
 const links = [
   { name: 'Docs', path: '/docs' },

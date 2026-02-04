@@ -16,10 +16,12 @@ export default defineEventHandler((event) => {
     }
 })
 
+import type { H3Event } from 'h3'
+
 /**
  * Handle API errors with proper formatting
  */
-export function handleApiError(event: any, error: unknown) {
+export function handleApiError(event: H3Event, error: unknown) {
     console.error('[API Error]', error)
 
     // Zod validation errors
@@ -93,7 +95,7 @@ export function handleApiError(event: any, error: unknown) {
  * Use this to wrap async handlers and automatically catch errors
  */
 export function asyncHandler(
-    handler: (event: any) => Promise<any>
+    handler: (event: H3Event) => Promise<unknown>
 ) {
     return defineEventHandler(async (event) => {
         try {

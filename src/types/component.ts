@@ -27,7 +27,7 @@ export interface ComponentSpec {
     type: string;
     props?: ComponentProp[];
     variants?: ComponentVariant[];
-    styles?: Record<string, any>;
+    styles?: Record<string, unknown>;
     examples?: ComponentExample[];
     framework?: 'vue' | 'react' | 'svelte' | 'angular' | 'web-component';
 }
@@ -37,13 +37,13 @@ export interface ComponentProp {
     type: string;
     description?: string;
     required?: boolean;
-    default?: any;
+    default?: unknown;
     options?: string[];
 }
 
 export interface ComponentVariant {
     name: string;
-    props: Record<string, any>;
+    props: Record<string, unknown>;
     description?: string;
 }
 

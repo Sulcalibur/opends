@@ -10,9 +10,9 @@ const TokensView = () => import('@/app/pages/public/TokensView.vue')
 // Admin routes
 const LoginView = () => import('@/app/pages/admin/LoginView.vue')
 const DashboardView = () => import('@/app/pages/admin/DashboardView.vue')
-const AdminTokensView = () => import('@/app/pages/admin/AdminTokensView.vue')
-const AdminComponentsView = () => import('@/app/pages/admin/AdminComponentsView.vue')
-const AdminCodeGenView = () => import('@/app/pages/admin/AdminCodeGenView.vue')
+// const AdminTokensView = () => import('@/app/pages/admin/AdminTokensView.vue')
+// const AdminComponentsView = () => import('@/app/pages/admin/AdminComponentsView.vue')
+// const AdminCodeGenView = () => import('@/app/pages/admin/AdminCodeGenView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

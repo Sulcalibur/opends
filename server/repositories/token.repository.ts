@@ -9,7 +9,7 @@ export interface DesignToken {
     id: string
     name: string
     category: string
-    value: any
+    value: unknown
     description: string | null
     created_by: string | null
     updated_by: string | null
@@ -32,7 +32,7 @@ class DesignTokenRepository {
       SELECT * FROM design_tokens 
       WHERE deleted_at IS NULL
     `
-        const params: any[] = []
+        const params: (string | number)[] = []
         let paramIndex = 1
 
         if (filters?.category) {
@@ -81,7 +81,7 @@ class DesignTokenRepository {
     async create(data: {
         name: string
         category: string
-        value: any
+        value: unknown
         description?: string
         created_by: string
     }): Promise<DesignToken> {
@@ -115,7 +115,7 @@ class DesignTokenRepository {
         const db = getDatabase()
 
         const updateFields: string[] = []
-        const params: any[] = []
+        const params: unknown[] = []
         let paramIndex = 1
 
         Object.entries(data).forEach(([key, value]) => {
@@ -152,7 +152,7 @@ class DesignTokenRepository {
      * Import tokens from JSON
      */
     async importTokens(
-        tokensData: Record<string, any>,
+        tokensData: Record<string, any>, // eslint-disable-line @typescript-eslint/no-explicit-any
         created_by: string
     ): Promise<{ imported: number; skipped: number; errors: string[] }> {
         let imported = 0
@@ -183,7 +183,7 @@ class DesignTokenRepository {
                 })
 
                 imported++
-            } catch (error: any) {
+            } catch (error: any) { // eslint-disable-line @typescript-eslint/no-explicit-any
                 errors.push(`${name}: ${error.message}`)
             }
         }

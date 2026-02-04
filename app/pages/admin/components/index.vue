@@ -19,7 +19,7 @@
             class="search-input"
           >
             <template #prefix>
-              <i class="pi pi-search"></i>
+              <i class="pi pi-search"/>
             </template>
           </InputText>
           
@@ -51,9 +51,9 @@
       >
         <template #header>
           <div class="card-image">
-            <img v-if="component.preview_url" :src="component.preview_url" alt="Preview" />
+            <img v-if="component.preview_url" :src="component.preview_url" alt="Preview" >
             <div v-else class="placeholder-image">
-              <i class="pi pi-image"></i>
+              <i class="pi pi-image"/>
             </div>
           </div>
         </template>
@@ -83,7 +83,7 @@
 
     <!-- Empty State -->
     <div v-else class="empty-state">
-      <i class="pi pi-box empty-icon"></i>
+      <i class="pi pi-box empty-icon"/>
       <h3 class="empty-title">No components yet</h3>
       <p class="empty-text">Create your first component to get started</p>
       <Button icon="pi pi-plus" label="Create Component" @click="showCreateDialog = true" />

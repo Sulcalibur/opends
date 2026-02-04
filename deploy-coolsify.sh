@@ -1,52 +1,87 @@
 #!/bin/bash
 
 # OpenDS Coolify Deployment Helper
-# This script helps deploy OpenDS to Coolify
+# This script helps prepare OpenDS for Coolify deployment
 
 set -e
 
 echo "🚀 OpenDS Coolify Deployment Helper"
 echo "===================================="
+echo ""
 
-# Check if we have the necessary files
-if [ ! -f "deploy/coolify/stack.yml" ]; then
-    echo "❌ Error: stack.yml not found in deploy/coolify/"
+# Check if .env.example exists
+if [ ! -f ".env.example" ]; then
+    echo "❌ Error: .env.example not found"
     exit 1
 fi
 
-if [ ! -f "deploy/coolify/.env.production" ]; then
-    echo "❌ Error: .env.production not found in deploy/coolify/"
-    echo "Creating from template..."
-    cp deploy/coolify/.env.example deploy/coolify/.env.production
-    echo "✅ Created .env.production from template"
-    echo "⚠️  Please edit deploy/coolify/.env.production with your configuration"
+# Create .env if it doesn't exist
+if [ ! -f ".env" ]; then
+    echo "📝 Creating .env from template..."
+    cp .env.example .env
+    echo "✅ Created .env file"
+    echo "⚠️  IMPORTANT: Edit .env and update these values:"
+    echo "   - DATABASE_URL (PostgreSQL connection string)"
+    echo "   - JWT_SECRET (run: openssl rand -base64 32)"
+    echo ""
+else
+    echo "✅ .env file already exists"
 fi
 
 echo ""
-echo "📋 Deployment Checklist:"
-echo "1. ✅ Documentation deployed to Cloudflare Pages"
-echo "2. ⏳ Set up Coolify account at https://coolify.io"
-echo "3. ⏳ Create new project in Coolify"
-echo "4. ⏳ Add stack configuration from deploy/coolify/stack.yml"
-echo "5. ⏳ Configure environment variables from deploy/coolify/.env.production"
-echo "6. ⏳ Set up custom domains: app.opends.dev and api.opends.dev"
-echo "7. ⏳ Configure DNS records"
-echo "8. ⏳ Test deployment"
+echo "🐳 Testing Docker Build (Optional)"
+echo "=================================="
 echo ""
-echo "📁 Files ready for deployment:"
-echo "  • deploy/coolify/stack.yml - Docker Compose stack"
-echo "  • deploy/coolify/.env.production - Environment variables"
-echo "  • backend/Dockerfile - Backend Docker image"
-echo "  • frontend/Dockerfile - Frontend Docker image"
+echo "To test the Docker build locally:"
+echo "  docker build -t opends-test ."
 echo ""
-echo "🔧 Environment variables to set in Coolify:"
+echo "To test the full stack with Docker Compose:"
+echo "  docker-compose up -d"
+echo "  docker-compose ps"
+echo "  curl http://localhost:3000/api/health"
+echo "  docker-compose logs -f opends"
+echo "  docker-compose down"
 echo ""
-cat deploy/coolify/.env.production | grep -v "^#" | grep -v "^$"
+
+echo "📋 Coolify Deployment Checklist:"
+echo "================================="
 echo ""
-echo "📚 For detailed instructions, see:"
-echo "  • DEPLOYMENT_GUIDE.md"
-echo "  • https://cbe5d64a.opends-docs.pages.dev/guides/deployment"
+echo "1. ⏳ Log in to your Coolify instance"
+echo "2. ⏳ Create new Application from GitHub"
+echo "3. ⏳ Select repository: Sulcalibur/opends"
+echo "4. ⏳ Create PostgreSQL database (or use existing)"
+echo "5. ⏳ Configure environment variables (see .env.example)"
+echo "6. ⏳ Set build command: pnpm install && pnpm build"
+echo "7. ⏳ Set start command: node .output/server/index.mjs"
+echo "8. ⏳ Set port: 3000"
+echo "9. ⏳ Deploy and monitor logs"
 echo ""
-echo "🌐 Documentation URL: https://cbe5d64a.opends-docs.pages.dev"
+
+echo "🔧 Required Environment Variables:"
+echo "==================================="
 echo ""
-echo "🚀 Ready for Coolify deployment!"
+echo "DATABASE_URL=postgresql://user:pass@host:5432/opends"
+echo "JWT_SECRET=<generate-with-openssl-rand-base64-32>"
+echo "NODE_ENV=production"
+echo "ALLOW_REGISTRATION=true"
+echo ""
+echo "Optional:"
+echo "ADMIN_EMAIL=admin@opends.local"
+echo "ADMIN_PASSWORD=ChangeMe123!"
+echo ""
+
+echo "📚 Documentation:"
+echo "================="
+echo ""
+echo "For detailed Coolify deployment instructions:"
+echo "  • docs/COOLIFY.md"
+echo "  • https://github.com/Sulcalibur/opends"
+echo ""
+
+echo "✨ Ready for Coolify deployment!"
+echo ""
+
+# Generate a secure JWT secret suggestion
+echo "💡 Generate JWT_SECRET with:"
+echo "   openssl rand -base64 32"
+echo ""

@@ -7,7 +7,7 @@
         class="search-input"
         @input="performSearch"
       />
-      <i class="pi pi-search search-icon"></i>
+      <i class="pi pi-search search-icon"/>
     </div>
 
     <!-- Search Results -->
@@ -15,11 +15,11 @@
       <div class="results-header">
         <h4>Search Results ({{ searchResults.length }})</h4>
         <Button
-          @click="clearSearch"
           icon="pi pi-times"
           size="small"
           text
           class="clear-button"
+          @click="clearSearch"
         />
       </div>
 
@@ -31,7 +31,7 @@
           @click="navigateToResult(result)"
         >
           <div class="result-title">
-            <i :class="`pi pi-${getComponentIcon(result.category)}`"></i>
+            <i :class="`pi pi-${getComponentIcon(result.category)}`"/>
             {{ result.name }}
             <Badge :value="result.category" severity="info" class="category-badge" />
           </div>
@@ -45,13 +45,13 @@
 
     <!-- No Results -->
     <div v-else-if="searchQuery && !loading" class="no-results">
-      <i class="pi pi-search text-gray-400 text-2xl mb-2"></i>
+      <i class="pi pi-search text-gray-400 text-2xl mb-2"/>
       <p class="text-gray-600">No components found matching "{{ searchQuery }}"</p>
     </div>
 
     <!-- Loading -->
     <div v-if="loading" class="loading">
-      <i class="pi pi-spin pi-spinner text-gray-400"></i>
+      <i class="pi pi-spin pi-spinner text-gray-400"/>
       <p class="text-gray-600">Searching...</p>
     </div>
   </div>

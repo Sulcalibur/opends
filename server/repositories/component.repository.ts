@@ -3,7 +3,6 @@
  * Database operations for design system components
  */
 
-import { QueryResult } from 'pg'
 import getDatabase from '../utils/db'
 
 export interface Component {
@@ -13,7 +12,7 @@ export interface Component {
     description: string | null
     category: string | null
     status: 'draft' | 'review' | 'approved' | 'deprecated'
-    spec: any
+    spec: Record<string, unknown>
     preview_url: string | null
     created_by: string | null
     updated_by: string | null
@@ -39,7 +38,7 @@ class ComponentRepository {
       SELECT * FROM components 
       WHERE deleted_at IS NULL
     `
-        const params: any[] = []
+        const params: unknown[] = []
         let paramIndex = 1
 
         if (filters?.category) {
@@ -96,7 +95,7 @@ class ComponentRepository {
         description?: string
         category?: string
         status?: Component['status']
-        spec: any
+        spec: Record<string, unknown>
         preview_url?: string
         created_by: string
     }): Promise<Component> {
@@ -134,7 +133,7 @@ class ComponentRepository {
         const db = getDatabase()
 
         const updateFields: string[] = []
-        const params: any[] = []
+        const params: unknown[] = []
         let paramIndex = 1
 
         Object.entries(data).forEach(([key, value]) => {

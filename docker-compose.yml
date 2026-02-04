@@ -1,14 +1,66 @@
 version: '3.8'
+
 services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: opends-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: opends
+      POSTGRES_USER: opends
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-opends}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U opends']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # OpenDS Application
   opends:
     build: .
+    container_name: opends-app
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - '3000:3000'
     environment:
+      # Database
+      DATABASE_URL: postgresql://opends:${POSTGRES_PASSWORD:-opends}@postgres:5432/opends
+      
+      # Application
       NODE_ENV: ${NODE_ENV:-production}
       PORT: 3000
       HOST: 0.0.0.0
-      DATABASE_URL: file:./data/opends.db
-      SECRET_KEY: ${SECRET_KEY}
-      ADMIN_USERNAME: ${ADMIN_USERNAME}
-      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
+      
+      # Security
+      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production}
+      JWT_ACCESS_EXPIRE: ${JWT_ACCESS_EXPIRE:-15m}
+      JWT_REFRESH_EXPIRE: ${JWT_REFRESH_EXPIRE:-7d}
+      
+      # Registration
+      ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-true}
+      
+      # Optional: Default admin user
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
+    volumes:
+      - app_data:/app/data
+    healthcheck:
+      test: ['CMD', 'curl', '-f', 'http://localhost:3000/api/health']
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+volumes:
+  postgres_data:
+    driver: local
+  app_data:
+    driver: local

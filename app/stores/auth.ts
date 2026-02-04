@@ -44,7 +44,7 @@ export const useAuthStore = defineStore('auth', {
      * Initialize from localStorage
      */
     initialize() {
-      if (process.client) {
+      if (import.meta.client) {
         const accessToken = localStorage.getItem('accessToken')
         const refreshToken = localStorage.getItem('refreshToken')
         const userJson = localStorage.getItem('user')
@@ -65,7 +65,7 @@ export const useAuthStore = defineStore('auth', {
       this.refreshToken = refreshToken
       this.user = user
 
-      if (process.client) {
+      if (import.meta.client) {
         localStorage.setItem('accessToken', accessToken)
         localStorage.setItem('refreshToken', refreshToken)
         localStorage.setItem('user', JSON.stringify(user))
@@ -81,7 +81,7 @@ export const useAuthStore = defineStore('auth', {
       this.refreshToken = null
       this.error = null
 
-      if (process.client) {
+      if (import.meta.client) {
         localStorage.removeItem('accessToken')
         localStorage.removeItem('refreshToken')
         localStorage.removeItem('user')

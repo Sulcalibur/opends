@@ -25,7 +25,7 @@ async function loadTemplate(framework, type) {
     const template = await fs.readFile(templatePath, 'utf8')
     templates.set(cacheKey, template)
     return template
-  } catch (error) {
+  } catch {
     throw new Error(`Template not found: ${framework}/${type}`)
   }
 }
@@ -116,7 +116,7 @@ export async function generateComponentCode(component, framework = 'vue', option
 }
 
 // Generate component index file
-export async function generateIndexFile(components, framework = 'vue', options = {}) {
+export async function generateIndexFile(components, framework = 'vue') {
   const template = await loadTemplate(framework, 'index')
 
   const templateData = {

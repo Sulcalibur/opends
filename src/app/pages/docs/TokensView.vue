@@ -14,7 +14,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4 text-blue-600">
-              <i class="pi pi-palette text-xl"></i>
+              <i class="pi pi-palette text-xl"/>
             </div>
             <h3 class="text-lg font-bold text-gray-900 mb-2">Colors</h3>
             <p class="text-gray-500 text-sm">Primary, secondary, and semantic color tokens.</p>
@@ -22,7 +22,7 @@
 
           <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center mb-4 text-green-600">
-              <i class="pi pi-font text-xl"></i>
+              <i class="pi pi-font text-xl"/>
             </div>
             <h3 class="text-lg font-bold text-gray-900 mb-2">Typography</h3>
             <p class="text-gray-500 text-sm">Font families, sizes, weights, and line heights.</p>
@@ -30,7 +30,7 @@
 
           <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mb-4 text-purple-600">
-              <i class="pi pi-arrows-h text-xl"></i>
+              <i class="pi pi-arrows-h text-xl"/>
             </div>
             <h3 class="text-lg font-bold text-gray-900 mb-2">Spacing</h3>
             <p class="text-gray-500 text-sm">Consistent spacing scales and measurements.</p>
@@ -58,7 +58,7 @@
                 <div
                   class="w-16 h-16 rounded-lg border-2 border-gray-200 mx-auto mb-2"
                   :style="{ backgroundColor: token.value }"
-                ></div>
+                />
                 <div class="text-xs font-mono text-gray-600">{{ token.key }}</div>
                 <div class="text-xs text-gray-500">{{ token.value }}</div>
               </div>
@@ -111,7 +111,7 @@
                 <div
                   class="bg-indigo-100 border border-indigo-200 rounded"
                   :style="{ width: token.value, height: '24px' }"
-                ></div>
+                />
                 <span class="text-sm text-gray-600">{{ token.value }}</span>
               </div>
             </div>
@@ -169,7 +169,7 @@ async function loadTokens() {
         tokens.value = data.tokens || []
         return
       }
-    } catch (apiError) {
+    } catch {
       console.log('API not available, using mock data')
     }
 

@@ -11,7 +11,7 @@
         
         <div class="mb-6 flex flex-col md:flex-row gap-4">
           <span class="relative flex-1 max-w-md">
-            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
+            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"/>
             <InputText 
               v-model="searchQuery" 
               placeholder="Search components..." 
@@ -21,8 +21,8 @@
           <Dropdown 
             v-model="selectedCategory" 
             :options="categoryOptions" 
-            optionLabel="label"
-            optionValue="value"
+            option-label="label"
+            option-value="value"
             placeholder="Category"
             class="w-48"
           />
@@ -45,7 +45,7 @@
           >
             <div class="flex items-center gap-3 mb-3">
               <div class="w-8 h-8 rounded-md bg-indigo-50 flex items-center justify-center text-indigo-600">
-                <i class="pi pi-box"></i>
+                <i class="pi pi-box"/>
               </div>
               <h3 class="font-bold text-sm text-gray-900">{{ component.name }}</h3>
             </div>

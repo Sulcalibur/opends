@@ -16,6 +16,7 @@ export interface TokenPair {
     refreshToken: string
 }
 
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 export class JwtService {
     private static getSecret(): string {
         const secret = process.env.JWT_SECRET

@@ -106,7 +106,7 @@ const categories = [
         <NuxtLink :to="`/docs/${slug}`" target="_blank">
           <Button label="Preview" icon="pi pi-external-link" severity="secondary" outlined />
         </NuxtLink>
-        <span class="divider"></span>
+        <span class="divider"/>
         <div class="status-toggle">
           <label class="toggle-label">{{ form.isPublished ? 'Published' : 'Draft' }}</label>
           <InputSwitch v-model="form.isPublished" />
@@ -168,8 +168,8 @@ const categories = [
               <Select 
                 v-model="form.category" 
                 :options="categories" 
-                optionLabel="label" 
-                optionValue="value" 
+                option-label="label" 
+                option-value="value" 
                 class="w-full"
               />
             </div>

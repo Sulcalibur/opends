@@ -20,8 +20,8 @@
               <Dropdown
                 v-model="generationOptions.framework"
                 :options="frameworkOptions"
-                optionLabel="name"
-                optionValue="id"
+                option-label="name"
+                option-value="id"
                 class="w-full"
               />
             </div>
@@ -50,16 +50,16 @@
 
           <div class="mb-4 flex gap-4 items-center">
             <Button
-              @click="selectAllComponents"
               size="small"
               outlined
               label="Select All"
+              @click="selectAllComponents"
             />
             <Button
-              @click="clearSelection"
               size="small"
               outlined
               label="Clear"
+              @click="clearSelection"
             />
             <span class="text-sm text-gray-600">{{ selectedComponents.length }} of {{ components.length }} selected</span>
           </div>
@@ -74,9 +74,9 @@
             >
               <div class="flex items-center gap-3 mb-2">
                 <Checkbox
-                  :modelValue="selectedComponents.includes(component.id)"
-                  @update:modelValue="toggleComponentSelection(component.id)"
+                  :model-value="selectedComponents.includes(component.id)"
                   class="pointer-events-none"
+                  @update:model-value="toggleComponentSelection(component.id)"
                 />
                 <h3 class="font-semibold text-gray-900">{{ component.name }}</h3>
                 <Badge :value="component.category" class="text-xs" />
@@ -98,20 +98,20 @@
 
           <div class="flex gap-4 mb-6">
             <Button
-              @click="generateSelectedComponents"
               :loading="generating"
               :disabled="selectedComponents.length === 0"
               icon="pi pi-code"
               label="Generate Selected Components"
               class="p-button-primary"
+              @click="generateSelectedComponents"
             />
             <Button
-              @click="generateAllComponents"
               :loading="generating"
               :disabled="components.length === 0"
               icon="pi pi-download"
               label="Generate Full Library"
               class="p-button-secondary"
+              @click="generateAllComponents"
             />
           </div>
 
@@ -119,7 +119,7 @@
           <div v-if="generationResult" class="space-y-4">
             <div class="border border-green-200 bg-green-50 rounded-lg p-4">
               <div class="flex items-center gap-3 mb-3">
-                <i class="pi pi-check-circle text-green-600"></i>
+                <i class="pi pi-check-circle text-green-600"/>
                 <h3 class="font-semibold text-green-800">Generation Complete!</h3>
               </div>
               <p class="text-green-700 mb-3">
@@ -127,18 +127,18 @@
               </p>
               <div class="flex gap-2">
                 <Button
-                  @click="downloadZip"
                   icon="pi pi-download"
                   label="Download ZIP"
                   size="small"
                   class="p-button-success"
+                  @click="downloadZip"
                 />
                 <Button
-                  @click="copyToClipboard"
                   icon="pi pi-copy"
                   label="Copy Code"
                   size="small"
                   outlined
+                  @click="copyToClipboard"
                 />
               </div>
             </div>
@@ -160,10 +160,10 @@
                       <span class="text-xs text-gray-500 ml-2">{{ file.type }}</span>
                     </div>
                     <Button
-                      @click="viewFile(file)"
                       size="small"
                       outlined
                       label="View"
+                      @click="viewFile(file)"
                     />
                   </div>
                 </div>
@@ -184,15 +184,15 @@
           </div>
           <template #footer>
             <Button
-              @click="copyFileContent"
               icon="pi pi-copy"
               label="Copy to Clipboard"
               outlined
+              @click="copyFileContent"
             />
             <Button
-              @click="downloadFile"
               icon="pi pi-download"
               label="Download File"
+              @click="downloadFile"
             />
           </template>
         </Dialog>
@@ -202,7 +202,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import Button from 'primevue/button'
 import Dropdown from 'primevue/dropdown'
@@ -220,8 +220,8 @@ interface Component {
   name: string
   category: string
   description: string
-  props: any[]
-  events: any[]
+  props: unknown[]
+  events: unknown[]
 }
 
 interface GenerationResult {
@@ -269,7 +269,7 @@ const loadComponents = async () => {
   try {
     const response = await axios.get('/api/components')
     components.value = response.data
-  } catch (error) {
+  } catch {
     toast.add({
       severity: 'error',
       summary: 'Error',
@@ -398,7 +398,7 @@ const copyToClipboard = () => {
   }
 }
 
-const viewFile = (file: any) => {
+const viewFile = (file: { name: string; content: string; type: string }) => {
   currentFile.value = file
   showFileViewer.value = true
 }

@@ -1,0 +1,460 @@
+/* ============================================
+   OpenDS Design Token System
+   Custom Color Palette + Modern Design Tokens
+   ============================================ */
+
+:root {
+  /* ========================================
+     CUSTOM COLOR PALETTE
+     ======================================== */
+
+  /* Sweet Salmon - Primary Accent */
+  --color-sweet-salmon-50: #fbece9;
+  --color-sweet-salmon-100: #f8d8d3;
+  --color-sweet-salmon-200: #f1b1a7;
+  --color-sweet-salmon-300: #ea8a7b;
+  --color-sweet-salmon-400: #e26350;
+  --color-sweet-salmon-500: #db3c24;
+  --color-sweet-salmon-600: #af301d;
+  --color-sweet-salmon-700: #842415;
+  --color-sweet-salmon-800: #58180e;
+  --color-sweet-salmon-900: #2c0c07;
+  --color-sweet-salmon-950: #1f0805;
+
+  /* Light Gold - Secondary Accent */
+  --color-light-gold-50: #fdf8e8;
+  --color-light-gold-100: #faf2d1;
+  --color-light-gold-200: #f5e5a3;
+  --color-light-gold-300: #f0d875;
+  --color-light-gold-400: #eccb46;
+  --color-light-gold-500: #e7bd18;
+  --color-light-gold-600: #b99813;
+  --color-light-gold-700: #8a720f;
+  --color-light-gold-800: #5c4c0a;
+  --color-light-gold-900: #2e2605;
+  --color-light-gold-950: #201b03;
+
+  /* Shadow Grey - Dark Mode Backgrounds */
+  --color-shadow-grey-50: #f0f0f5;
+  --color-shadow-grey-100: #e1e2ea;
+  --color-shadow-grey-200: #c3c4d5;
+  --color-shadow-grey-300: #a5a7c0;
+  --color-shadow-grey-400: #8789ab;
+  --color-shadow-grey-500: #696c96;
+  --color-shadow-grey-600: #545678;
+  --color-shadow-grey-700: #3f415a;
+  --color-shadow-grey-800: #2a2b3c;
+  --color-shadow-grey-900: #15161e;
+  --color-shadow-grey-950: #0f0f15;
+
+  /* Lavender Grey - Cards & Surfaces */
+  --color-lavender-grey-50: #f1f1f4;
+  --color-lavender-grey-100: #e2e3e9;
+  --color-lavender-grey-200: #c6c6d2;
+  --color-lavender-grey-300: #a9a9abc;
+  --color-lavender-grey-400: #8d8ea5;
+  --color-lavender-grey-500: #70718f;
+  --color-lavender-grey-600: #5a5b72;
+  --color-lavender-grey-700: #434456;
+  --color-lavender-grey-800: #2d2d39;
+  --color-lavender-grey-900: #16171d;
+  --color-lavender-grey-950: #101014;
+
+  /* Bright Snow - Light Backgrounds */
+  --color-bright-snow-50: #f3f1f1;
+  --color-bright-snow-100: #e8e3e3;
+  --color-bright-snow-200: #d0c8c8;
+  --color-bright-snow-300: #b9acac;
+  --color-bright-snow-400: #a19191;
+  --color-bright-snow-500: #8a7575;
+  --color-bright-snow-600: #6e5e5e;
+  --color-bright-snow-700: #534646;
+  --color-bright-snow-800: #372f2f;
+  --color-bright-snow-900: #1c1717;
+  --color-bright-snow-950: #131010;
+
+  /* ========================================
+     SEMANTIC COLOR MAPPINGS
+     ======================================== */
+
+  /* Primary */
+  --color-primary-50: var(--color-sweet-salmon-50);
+  --color-primary-100: var(--color-sweet-salmon-100);
+  --color-primary-200: var(--color-sweet-salmon-200);
+  --color-primary-300: var(--color-sweet-salmon-300);
+  --color-primary-400: var(--color-sweet-salmon-400);
+  --color-primary-500: var(--color-sweet-salmon-500);
+  --color-primary-600: var(--color-sweet-salmon-600);
+  --color-primary-700: var(--color-sweet-salmon-700);
+  --color-primary-800: var(--color-sweet-salmon-800);
+  --color-primary-900: var(--color-sweet-salmon-900);
+  --color-primary: var(--color-primary-500);
+  --color-primary-hover: var(--color-primary-400);
+  --color-primary-active: var(--color-primary-600);
+
+  /* Secondary */
+  --color-secondary-50: var(--color-light-gold-50);
+  --color-secondary-100: var(--color-light-gold-100);
+  --color-secondary-200: var(--color-light-gold-200);
+  --color-secondary-300: var(--color-light-gold-300);
+  --color-secondary-400: var(--color-light-gold-400);
+  --color-secondary-500: var(--color-light-gold-500);
+  --color-secondary-600: var(--color-light-gold-600);
+  --color-secondary-700: var(--color-light-gold-700);
+  --color-secondary-800: var(--color-light-gold-800);
+  --color-secondary-900: var(--color-light-gold-900);
+  --color-secondary: var(--color-secondary-500);
+  --color-secondary-hover: var(--color-secondary-400);
+  --color-secondary-active: var(--color-secondary-600);
+
+  /* Background */
+  --color-bg-50: var(--color-bright-snow-50);
+  --color-bg-100: var(--color-bright-snow-100);
+  --color-bg-200: var(--color-bright-snow-200);
+  --color-bg-300: var(--color-bright-snow-300);
+  --color-bg-400: var(--color-bright-snow-400);
+  --color-bg-500: var(--color-bright-snow-500);
+  --color-bg: var(--color-bg-50);
+  --color-bg-secondary: var(--color-lavender-grey-50);
+  --color-bg-tertiary: #ffffff;
+
+  /* Surface */
+  --color-surface-50: var(--color-lavender-grey-50);
+  --color-surface-100: var(--color-lavender-grey-100);
+  --color-surface-200: var(--color-lavender-grey-200);
+  --color-surface-300: var(--color-lavender-grey-300);
+  --color-surface-400: var(--color-lavender-grey-400);
+  --color-surface-500: var(--color-lavender-grey-500);
+  --color-surface-600: var(--color-lavender-grey-600);
+  --color-surface-700: var(--color-lavender-grey-700);
+  --color-surface-800: var(--color-lavender-grey-800);
+  --color-surface-900: var(--color-lavender-grey-900);
+  --color-surface: var(--color-surface-50);
+  --color-surface-hover: var(--color-surface-100);
+
+  /* Text */
+  --color-text-50: var(--color-lavender-grey-50);
+  --color-text-100: var(--color-lavender-grey-100);
+  --color-text-200: var(--color-lavender-grey-200);
+  --color-text-300: var(--color-lavender-grey-300);
+  --color-text-400: var(--color-lavender-grey-400);
+  --color-text-500: var(--color-lavender-grey-500);
+  --color-text-600: var(--color-lavender-grey-600);
+  --color-text-700: var(--color-lavender-grey-700);
+  --color-text-800: var(--color-lavender-grey-800);
+  --color-text-900: var(--color-lavender-grey-900);
+  --color-text-950: var(--color-lavender-grey-950);
+  --color-text-primary: var(--color-text-900);
+  --color-text-secondary: var(--color-text-500);
+  --color-text-tertiary: var(--color-text-400);
+  --color-text-inverse: #ffffff;
+
+  /* Border */
+  --color-border-50: var(--color-lavender-grey-50);
+  --color-border-100: var(--color-lavender-grey-100);
+  --color-border-200: var(--color-lavender-grey-200);
+  --color-border-300: var(--color-lavender-grey-300);
+  --color-border-400: var(--color-lavender-grey-400);
+  --color-border-500: var(--color-lavender-grey-500);
+  --color-border: var(--color-border-200);
+  --color-border-light: var(--color-border-100);
+  --color-border-heavy: var(--color-border-300);
+
+  /* Success */
+  --color-success-50: #f0fdf4;
+  --color-success-100: #dcfce7;
+  --color-success-200: #bbf7d0;
+  --color-success-300: #86efac;
+  --color-success-400: #4ade80;
+  --color-success-500: #22c55e;
+  --color-success-600: #16a34a;
+  --color-success-700: #15803d;
+  --color-success-800: #166534;
+  --color-success-900: #14532d;
+  --color-success: var(--color-success-500);
+
+  /* Warning */
+  --color-warning-50: #fefce8;
+  --color-warning-100: #fef9c3;
+  --color-warning-200: #fef08a;
+  --color-warning-300: #fde047;
+  --color-warning-400: #facc15;
+  --color-warning-500: #eab308;
+  --color-warning-600: #ca8a04;
+  --color-warning-700: #a16207;
+  --color-warning-800: #854d0e;
+  --color-warning-900: #713f12;
+  --color-warning: var(--color-warning-500);
+
+  /* Error */
+  --color-error-50: #fef2f2;
+  --color-error-100: #fee2e2;
+  --color-error-200: #fecaca;
+  --color-error-300: #fca5a5;
+  --color-error-400: #f87171;
+  --color-error-500: #ef4444;
+  --color-error-600: #dc2626;
+  --color-error-700: #b91c1c;
+  --color-error-800: #991b1b;
+  --color-error-900: #7f1d1d;
+  --color-error: var(--color-error-500);
+
+  /* Info */
+  --color-info-50: #eff6ff;
+  --color-info-100: #dbeafe;
+  --color-info-200: #bfdbfe;
+  --color-info-300: #93c5fd;
+  --color-info-400: #60a5fa;
+  --color-info-500: #3b82f6;
+  --color-info-600: #2563eb;
+  --color-info-700: #1d4ed8;
+  --color-info-800: #1e40af;
+  --color-info-900: #1e3a8a;
+  --color-info: var(--color-info-500);
+
+  /* ========================================
+     DARK MODE COLOR MAPPINGS
+     ======================================== */
+
+  --dark-color-bg-50: var(--color-shadow-grey-950);
+  --dark-color-bg-100: var(--color-shadow-grey-900);
+  --dark-color-bg-200: var(--color-shadow-grey-800);
+  --dark-color-bg-300: var(--color-shadow-grey-700);
+  --dark-color-bg-400: var(--color-shadow-grey-600);
+  --dark-color-bg-500: var(--color-shadow-grey-500);
+  --dark-color-bg: var(--dark-color-bg-50);
+  --dark-color-bg-secondary: var(--dark-color-bg-100);
+
+  --dark-color-surface-50: var(--color-shadow-grey-900);
+  --dark-color-surface-100: var(--color-shadow-grey-800);
+  --dark-color-surface-200: var(--color-shadow-grey-700);
+  --dark-color-surface-300: var(--color-shadow-grey-600);
+  --dark-color-surface-400: var(--color-shadow-grey-500);
+  --dark-color-surface-500: var(--color-shadow-grey-400);
+  --dark-color-surface: var(--dark-color-surface-50);
+
+  --dark-color-text-50: var(--color-bright-snow-50);
+  --dark-color-text-100: var(--color-bright-snow-100);
+  --dark-color-text-200: var(--color-bright-snow-200);
+  --dark-color-text-300: var(--color-bright-snow-300);
+  --dark-color-text-400: var(--color-bright-snow-400);
+  --dark-color-text-500: var(--color-bright-snow-500);
+  --dark-color-text-primary: var(--dark-color-text-50);
+  --dark-color-text-secondary: var(--dark-color-text-400);
+  --dark-color-text-tertiary: var(--dark-color-text-500);
+
+  --dark-color-border-50: var(--color-shadow-grey-800);
+  --dark-color-border-100: var(--color-shadow-grey-700);
+  --dark-color-border-200: var(--color-shadow-grey-600);
+  --dark-color-border-300: var(--color-shadow-grey-500);
+  --dark-color-border-400: var(--color-shadow-grey-400);
+  --dark-color-border: var(--dark-color-border-100);
+
+  /* ========================================
+     TYPOGRAPHY SCALE (8pt Grid)
+     ======================================== */
+
+  --font-family-heading: "Outfit", system-ui, -apple-system, sans-serif;
+  --font-family-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-family-mono: "IBM Plex Mono", "SF Mono", Consolas, monospace;
+
+  --font-size-xs: 0.75rem; /* 12px */
+  --font-size-sm: 0.875rem; /* 14px */
+  --font-size-base: 1rem; /* 16px */
+  --font-size-lg: 1.125rem; /* 18px */
+  --font-size-xl: 1.25rem; /* 20px */
+  --font-size-2xl: 1.5rem; /* 24px */
+  --font-size-3xl: 1.875rem; /* 30px */
+  --font-size-4xl: 2.25rem; /* 36px */
+  --font-size-5xl: 3rem; /* 48px */
+  --font-size-6xl: 3.75rem; /* 60px */
+  --font-size-7xl: 4.5rem; /* 72px */
+
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+
+  --line-height-tight: 1.25;
+  --line-height-normal: 1.5;
+  --line-height-relaxed: 1.625;
+  --line-height-loose: 2;
+
+  --letter-spacing-tight: -0.025em;
+  --letter-spacing-normal: 0;
+  --letter-spacing-wide: 0.025em;
+  --letter-spacing-wider: 0.05em;
+
+  /* ========================================
+     SPACING SCALE (4px Base)
+     ======================================== */
+
+  --space-0: 0;
+  --space-px: 1px;
+  --space-0-5: 0.125rem; /* 2px */
+  --space-1: 0.25rem; /* 4px */
+  --space-1-5: 0.375rem; /* 6px */
+  --space-2: 0.5rem; /* 8px */
+  --space-2-5: 0.625rem; /* 10px */
+  --space-3: 0.75rem; /* 12px */
+  --space-3-5: 0.875rem; /* 14px */
+  --space-4: 1rem; /* 16px */
+  --space-5: 1.25rem; /* 20px */
+  --space-6: 1.5rem; /* 24px */
+  --space-7: 1.75rem; /* 28px */
+  --space-8: 2rem; /* 32px */
+  --space-9: 2.25rem; /* 36px */
+  --space-10: 2.5rem; /* 40px */
+  --space-12: 3rem; /* 48px */
+  --space-16: 4rem; /* 64px */
+  --space-20: 5rem; /* 80px */
+  --space-24: 6rem; /* 96px */
+  --space-32: 8rem; /* 128px */
+
+  /* ========================================
+     BORDER RADIUS
+     ======================================== */
+
+  --radius-none: 0;
+  --radius-sm: 0.25rem; /* 4px */
+  --radius-md: 0.5rem; /* 8px */
+  --radius-lg: 0.75rem; /* 12px */
+  --radius-xl: 1rem; /* 16px */
+  --radius-2xl: 1.5rem; /* 24px */
+  --radius-3xl: 2rem; /* 32px */
+  --radius-full: 9999px;
+
+  /* ========================================
+     SHADOW SYSTEM
+     ======================================== */
+
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm:
+    0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl:
+    0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  --shadow-2xl: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+
+  --shadow-glow-sm: 0 0 10px rgba(219, 60, 36, 0.3);
+  --shadow-glow-md: 0 0 20px rgba(219, 60, 36, 0.4);
+  --shadow-glow-lg: 0 0 30px rgba(219, 60, 36, 0.5);
+
+  --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.05);
+
+  /* Dark mode glow */
+  --dark-shadow-glow-sm: 0 0 10px rgba(234, 138, 123, 0.3);
+  --dark-shadow-glow-md: 0 0 20px rgba(234, 138, 123, 0.4);
+  --dark-shadow-glow-lg: 0 0 30px rgba(234, 138, 123, 0.5);
+
+  /* ========================================
+     Z-INDEX SCALE
+     ======================================== */
+
+  --z-dropdown: 1000;
+  --z-sticky: 1020;
+  --z-fixed: 1030;
+  --z-modal-backdrop: 1040;
+  --z-modal: 1050;
+  --z-popover: 1060;
+  --z-tooltip: 1070;
+  --z-toast: 1080;
+
+  /* ========================================
+     TRANSITIONS
+     ======================================== */
+
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-base: 200ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: 300ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-theme: 500ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  --easing-default: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-in: cubic-bezier(0.4, 0, 1, 1);
+  --easing-out: cubic-bezier(0, 0, 0.2, 1);
+  --easing-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --easing-elastic: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  /* ========================================
+     BREAKPOINTS
+     ======================================== */
+
+  --breakpoint-sm: 640px;
+  --breakpoint-md: 768px;
+  --breakpoint-lg: 1024px;
+  --breakpoint-xl: 1280px;
+  --breakpoint-2xl: 1536px;
+
+  /* ========================================
+     CONTAINER WIDTHS
+     ======================================== */
+
+  --container-sm: 640px;
+  --container-md: 768px;
+  --container-lg: 1024px;
+  --container-xl: 1280px;
+  --container-2xl: 1536px;
+  --container-full: 100%;
+
+  /* ========================================
+     GLASSMORPHISM
+     ======================================== */
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.2);
+  --glass-blur: 20px;
+
+  --dark-glass-bg: rgba(21, 22, 30, 0.7);
+  --dark-glass-border: rgba(255, 255, 255, 0.1);
+  --dark-glass-blur: 20px;
+
+  /* ========================================
+     GRADIENTS
+     ======================================== */
+
+  --gradient-primary: linear-gradient(
+    135deg,
+    var(--color-primary-500) 0%,
+    var(--color-primary-300) 100%
+  );
+  --gradient-secondary: linear-gradient(
+    135deg,
+    var(--color-secondary-500) 0%,
+    var(--color-secondary-300) 100%
+  );
+  --gradient-hero: linear-gradient(
+    135deg,
+    var(--color-primary-500) 0%,
+    var(--color-secondary-500) 100%
+  );
+  --gradient-surface: linear-gradient(
+    135deg,
+    var(--color-surface-50) 0%,
+    var(--color-bg-50) 100%
+  );
+
+  --dark-gradient-primary: linear-gradient(
+    135deg,
+    var(--color-primary-400) 0%,
+    var(--color-primary-500) 100%
+  );
+  --dark-gradient-hero: linear-gradient(
+    135deg,
+    var(--color-primary-400) 0%,
+    var(--color-secondary-400) 100%
+  );
+
+  /* ========================================
+     OVERLAYS
+     ======================================== */
+
+  --overlay-light: rgba(0, 0, 0, 0.4);
+  --overlay-heavy: rgba(0, 0, 0, 0.6);
+  --overlay-heavy-dark: rgba(0, 0, 0, 0.8);
+}

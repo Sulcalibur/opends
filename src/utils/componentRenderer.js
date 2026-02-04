@@ -3,7 +3,7 @@
  * Dynamically renders components based on their specifications
  */
 
-import { defineAsyncComponent, h, resolveComponent } from 'vue'
+import { defineAsyncComponent, h } from 'vue'
 
 // Component registry for known components
 const componentRegistry = {

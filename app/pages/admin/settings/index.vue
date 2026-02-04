@@ -13,7 +13,7 @@
           :class="['nav-item', { active: currentTab === tab.id }]"
           @click="currentTab = tab.id"
         >
-          <i :class="tab.icon"></i>
+          <i :class="tab.icon"/>
           {{ tab.label }}
         </button>
       </div>
@@ -50,8 +50,8 @@
                   <Dropdown 
                     v-model="settings.general.language" 
                     :options="languages" 
-                    optionLabel="name" 
-                    optionValue="code" 
+                    option-label="name" 
+                    option-value="code" 
                     class="w-full" 
                   />
                 </div>
@@ -98,9 +98,9 @@
                 </div>
               </div>
 
-              <div class="p-4 bg-gray-50 rounded-lg border border-dashed flex items-center gap-4" v-if="settings.home_hero.image_url">
+              <div v-if="settings.home_hero.image_url" class="p-4 bg-gray-50 rounded-lg border border-dashed flex items-center gap-4">
                 <div class="w-24 h-16 rounded overflow-hidden border shadow-sm flex-shrink-0">
-                  <img :src="settings.home_hero.image_url" class="w-full h-full object-cover" />
+                  <img :src="settings.home_hero.image_url" class="w-full h-full object-cover" >
                 </div>
                 <div>
                   <p class="text-sm font-medium">Hero Preview</p>
@@ -118,7 +118,7 @@
                   :class="{ active: settings.appearance.theme === 'light' }"
                   @click="settings.appearance.theme = 'light'"
                 >
-                  <div class="bg-white border rounded h-24 mb-2"></div>
+                  <div class="bg-white border rounded h-24 mb-2"/>
                   <span>Light</span>
                 </div>
                 <div 
@@ -126,7 +126,7 @@
                   :class="{ active: settings.appearance.theme === 'dark' }"
                   @click="settings.appearance.theme = 'dark'"
                 >
-                  <div class="bg-gray-900 border border-gray-700 rounded h-24 mb-2"></div>
+                  <div class="bg-gray-900 border border-gray-700 rounded h-24 mb-2"/>
                   <span>Dark</span>
                 </div>
                 <div 
@@ -134,7 +134,7 @@
                   :class="{ active: settings.appearance.theme === 'system' }"
                   @click="settings.appearance.theme = 'system'"
                 >
-                  <div class="bg-gradient-to-br from-white to-gray-900 border rounded h-24 mb-2"></div>
+                  <div class="bg-gradient-to-br from-white to-gray-900 border rounded h-24 mb-2"/>
                   <span>System</span>
                 </div>
               </div>
@@ -153,10 +153,10 @@
                       :style="{ backgroundColor: color }"
                       :class="{ 'ring-2 ring-offset-2 ring-blue-500': settings.appearance.primaryColor === color }"
                       @click="settings.appearance.primaryColor = color"
-                    ></div>
+                    />
                   </div>
                   <div class="flex items-center gap-3">
-                    <input type="color" v-model="settings.appearance.primaryColor" class="h-10 w-20 p-1 rounded border border-gray-300 cursor-pointer" />
+                    <input v-model="settings.appearance.primaryColor" type="color" class="h-10 w-20 p-1 rounded border border-gray-300 cursor-pointer" >
                     <InputText v-model="settings.appearance.primaryColor" class="w-full" placeholder="#3b82f6" />
                   </div>
                 </div>
@@ -171,10 +171,10 @@
                       :style="{ backgroundColor: color }"
                       :class="{ 'ring-2 ring-offset-2 ring-blue-500': settings.appearance.secondaryColor === color }"
                       @click="settings.appearance.secondaryColor = color"
-                    ></div>
+                    />
                   </div>
                   <div class="flex items-center gap-3">
-                    <input type="color" v-model="settings.appearance.secondaryColor" class="h-10 w-20 p-1 rounded border border-gray-300 cursor-pointer" />
+                    <input v-model="settings.appearance.secondaryColor" type="color" class="h-10 w-20 p-1 rounded border border-gray-300 cursor-pointer" >
                     <InputText v-model="settings.appearance.secondaryColor" class="w-full" placeholder="#10b981" />
                   </div>
                 </div>
@@ -189,8 +189,8 @@
                   <Dropdown 
                     v-model="settings.appearance.headingFont" 
                     :options="headingFonts" 
-                    optionLabel="label" 
-                    optionValue="value" 
+                    option-label="label" 
+                    option-value="value" 
                     class="w-full"
                   />
                   <div class="mt-2 text-2xl" :style="{ fontFamily: settings.appearance.headingFont }">
@@ -202,8 +202,8 @@
                   <Dropdown 
                     v-model="settings.appearance.bodyFont" 
                     :options="bodyFonts" 
-                    optionLabel="label" 
-                    optionValue="value" 
+                    option-label="label" 
+                    option-value="value" 
                     class="w-full"
                   />
                   <div class="mt-2 text-sm" :style="{ fontFamily: settings.appearance.bodyFont }">
@@ -241,8 +241,8 @@
                 >
                   <div class="text-sm font-bold mb-1">{{ preset.label }}</div>
                   <div class="flex justify-center gap-1 mb-2">
-                    <div class="w-4 h-4 rounded-full" :style="{ backgroundColor: preset.primary }"></div>
-                    <div class="w-4 h-4 rounded-full" :style="{ backgroundColor: preset.secondary }"></div>
+                    <div class="w-4 h-4 rounded-full" :style="{ backgroundColor: preset.primary }"/>
+                    <div class="w-4 h-4 rounded-full" :style="{ backgroundColor: preset.secondary }"/>
                   </div>
                   <div class="text-[10px] text-gray-500">{{ preset.description }}</div>
                 </div>
@@ -256,19 +256,19 @@
               <h3 class="section-title">Access Control</h3>
               
               <div class="field-checkbox">
-                <Checkbox v-model="settings.security.publicAccess" :binary="true" inputId="public-access" />
+                <Checkbox v-model="settings.security.publicAccess" :binary="true" input-id="public-access" />
                 <label for="public-access" class="ml-2 font-medium">Allow public access to documentation</label>
               </div>
               <p class="text-sm text-gray-500 ml-8">If unchecked, only authenticated users can view the documentation.</p>
 
               <div class="field-checkbox mt-4">
-                <Checkbox v-model="settings.security.allowRegistration" :binary="true" inputId="allow-registration" />
+                <Checkbox v-model="settings.security.allowRegistration" :binary="true" input-id="allow-registration" />
                 <label for="allow-registration" class="ml-2 font-medium">Allow new user registration</label>
               </div>
             </div>
 
             <div class="mt-8 flex justify-end">
-              <Button label="Save Changes" icon="pi pi-check" @click="saveSettings" :loading="saving" />
+              <Button label="Save Changes" icon="pi pi-check" :loading="saving" @click="saveSettings" />
             </div>
           </template>
         </Card>

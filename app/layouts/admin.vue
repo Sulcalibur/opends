@@ -1,196 +1,66 @@
 <template>
-  <div class="flex h-screen w-full bg-gray-50 overflow-hidden">
-    <!-- Sidebar -->
-    <aside
-      class="flex flex-col flex-shrink-0 border-r border-white/10 text-white admin-sidebar-bg transition-all duration-300 relative group z-30"
-      :class="isCollapsed ? 'w-20' : 'w-[280px]'"
-    >
-      <!-- Edge Toggle Button -->
-      <button
-        class="absolute -right-3 top-8 w-6 h-6 rounded-full bg-[#1e293b] border border-gray-600 text-gray-400 flex items-center justify-center hover:text-white hover:bg-slate-700 hover:border-gray-400 transition-all z-50 focus:outline-none shadow-lg opacity-0 group-hover:opacity-100"
-        :class="{ 'opacity-100': isCollapsed }"
-        @click="isCollapsed = !isCollapsed"
-        :title="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
-      >
-        <i
-          class="pi"
-          :class="isCollapsed ? 'pi-angle-right' : 'pi-angle-left'"
-          style="font-size: 0.75rem"
-        ></i>
-      </button>
+  <div class="admin-layout">
+    <AdminSidebar />
 
-      <div class="sidebar-header" :class="{ 'px-2 items-center': isCollapsed }">
-        <h2 class="sidebar-logo" :class="{ 'text-xl': isCollapsed }">
-          {{ isCollapsed ? "ODS" : "OpenDS" }}
-        </h2>
-        <p v-if="!isCollapsed" class="sidebar-subtitle">Admin Panel</p>
-      </div>
-
-      <nav
-        class="sidebar-nav flex-1 overflow-y-auto custom-scrollbar"
-        :class="{ 'px-2': isCollapsed }"
-      >
-        <NuxtLink
-          to="/admin"
-          class="nav-item"
-          active-class="active"
-          exact
-          :class="{ 'justify-center': isCollapsed }"
-          v-tooltip.right="isCollapsed ? 'Dashboard' : ''"
-        >
-          <i class="pi pi-home"></i>
-          <span v-if="!isCollapsed">Dashboard</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/admin/components"
-          class="nav-item"
-          active-class="active"
-          :class="{ 'justify-center': isCollapsed }"
-          v-tooltip.right="isCollapsed ? 'Components' : ''"
-        >
-          <i class="pi pi-box"></i>
-          <span v-if="!isCollapsed">Components</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/admin/tokens"
-          class="nav-item"
-          active-class="active"
-          :class="{ 'justify-center': isCollapsed }"
-          v-tooltip.right="isCollapsed ? 'Design Tokens' : ''"
-        >
-          <i class="pi pi-palette"></i>
-          <span v-if="!isCollapsed">Design Tokens</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/admin/docs"
-          class="nav-item"
-          active-class="active"
-          :class="{ 'justify-center': isCollapsed }"
-          v-tooltip.right="isCollapsed ? 'Documentation' : ''"
-        >
-          <i class="pi pi-file-edit"></i>
-          <span v-if="!isCollapsed">Documentation</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/admin/users"
-          class="nav-item"
-          active-class="active"
-          :class="{ 'justify-center': isCollapsed }"
-          v-tooltip.right="isCollapsed ? 'Users' : ''"
-        >
-          <i class="pi pi-users"></i>
-          <span v-if="!isCollapsed">Users</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/admin/settings"
-          class="nav-item"
-          active-class="active"
-          :class="{ 'justify-center': isCollapsed }"
-          v-tooltip.right="isCollapsed ? 'Settings' : ''"
-        >
-          <i class="pi pi-cog"></i>
-          <span v-if="!isCollapsed">Settings</span>
-        </NuxtLink>
-
-        <NuxtLink
-          to="/admin/api-keys"
-          class="nav-item"
-          active-class="active"
-          :class="{ 'justify-center': isCollapsed }"
-          v-tooltip.right="isCollapsed ? 'API Keys' : ''"
-        >
-          <i class="pi pi-key"></i>
-          <span v-if="!isCollapsed">API Keys</span>
-        </NuxtLink>
-      </nav>
-
-      <div class="sidebar-footer" :class="{ 'px-2': isCollapsed }">
-        <div class="user-profile" :class="{ 'justify-center': isCollapsed }">
-          <div class="user-avatar">
-            {{ userInitials }}
+    <main class="admin-main">
+      <header class="admin-header backdrop-blur">
+        <div class="header-content">
+          <div class="header-left">
+            <h1 class="page-title">{{ pageTitle }}</h1>
+            <button
+              class="mobile-menu-toggle lg:hidden"
+              @click="isMobileMenuOpen = !isMobileMenuOpen"
+            >
+              <i class="pi pi-bars"/>
+            </button>
           </div>
-          <div v-if="!isCollapsed" class="user-info">
-            <p class="user-name truncate">{{ authStore.user?.name }}</p>
-            <p class="user-role">{{ authStore.user?.role }}</p>
-          </div>
-        </div>
-        <Button
-          icon="pi pi-sign-out"
-          :label="isCollapsed ? '' : 'Logout'"
-          text
-          severity="secondary"
-          class="logout-btn"
-          :class="{ 'justify-center': isCollapsed }"
-          @click="handleLogout"
-          v-tooltip.right="isCollapsed ? 'Logout' : ''"
-        />
-      </div>
-    </aside>
-
-    <!-- Main Content -->
-    <main class="flex-1 flex flex-col min-w-0 overflow-hidden">
-      <!-- Top Bar -->
-      <header
-        class="bg-white border-b border-gray-200 px-8 py-6 sticky top-0 z-10"
-      >
-        <div class="flex items-center justify-between">
-          <div class="flex items-center gap-4">
-            <Button
-              icon="pi pi-bars"
-              text
-              rounded
-              class="lg:hidden"
-              aria-label="Menu"
-            />
-            <h1 class="text-2xl font-bold text-gray-900 m-0">
-              {{ pageTitle }}
-            </h1>
-          </div>
-          <div class="flex gap-2">
-            <Button icon="pi pi-bell" text rounded aria-label="Notifications" />
-            <Button
-              icon="pi pi-question-circle"
-              text
-              rounded
-              aria-label="Help"
-            />
+          <div class="header-right">
+            <button
+              class="theme-toggle hover-lift"
+              title="Toggle theme"
+              @click="
+                $colorMode.preference =
+                  $colorMode.value === 'dark' ? 'light' : 'dark'
+              "
+            >
+              <i
+                :class="`pi ${$colorMode.value === 'dark' ? 'pi-sun' : 'pi-moon'}`"
+              />
+            </button>
+            <button class="header-action hover-lift" title="Notifications">
+              <i class="pi pi-bell"/>
+              <span class="badge">3</span>
+            </button>
+            <button class="header-action hover-lift" title="Help">
+              <i class="pi pi-question-circle"/>
+            </button>
           </div>
         </div>
       </header>
 
-      <!-- Page Content -->
-      <div class="flex-1 overflow-y-auto p-8 custom-scrollbar">
+      <div class="page-content">
         <slot />
       </div>
     </main>
+
+    <Teleport to="body">
+      <Transition name="slide">
+        <div
+          v-if="isMobileMenuOpen"
+          class="mobile-overlay"
+          @click="isMobileMenuOpen = false"
+        />
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import "primeicons/primeicons.css";
 
-const authStore = useAuthStore();
-const router = useRouter();
 const route = useRoute();
 
-// Initialize state from local storage preference if possible, default false
-const isCollapsed = ref(false);
-
-const userInitials = computed(() => {
-  const name = authStore.user?.name || "U";
-  return name
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-    .slice(0, 2);
-});
+const isMobileMenuOpen = ref(false);
 
 const pageTitle = computed(() => {
   const path = route.path;
@@ -205,211 +75,295 @@ const pageTitle = computed(() => {
   return "Admin";
 });
 
-async function handleLogout() {
-  authStore.logout();
-}
-
-// Initialize auth on mount
 onMounted(() => {
-  authStore.initialize();
-  // Recover collapsed state preference
-  const savedState = localStorage.getItem("sidebarCollapsed");
-  if (savedState) {
-    isCollapsed.value = savedState === "true";
-  }
-});
-
-// Persist state
-watch(isCollapsed, (val) => {
   if (typeof window !== "undefined") {
-    localStorage.setItem("sidebarCollapsed", String(val));
+    document.body.classList.add("admin-page");
   }
 });
 </script>
 
 <style scoped>
-.admin-sidebar-bg {
-  background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+.admin-layout {
+  display: flex;
+  min-height: 100vh;
+  background: var(--color-bg-50);
+  transition: background var(--transition-slow);
 }
 
-.sidebar-header {
-  padding: 2rem 1.5rem;
-  min-height: 100px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+.admin-main {
+  flex: 1;
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  margin-left: 280px;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.sidebar-logo {
-  font-size: 1.75rem;
-  font-weight: 800;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+:deep(.is-collapsed) + .admin-main {
+  margin-left: 80px;
+}
+
+.admin-header {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--color-border-light);
+  transition: all var(--transition-base);
+}
+
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 2rem;
+  gap: 1rem;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.page-title {
+  font-size: 1.875rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  margin: 0;
+  background: var(--gradient-primary);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  margin: 0;
-  white-space: nowrap;
+  transition: all var(--transition-base);
 }
 
-.sidebar-subtitle {
-  color: #94a3b8;
-  font-size: 0.875rem;
-  margin: 0.25rem 0 0 0;
-  white-space: nowrap;
-}
-
-.sidebar-nav {
-  padding: 1.5rem 1rem;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.875rem 1rem;
-  color: #cbd5e1;
-  text-decoration: none;
-  border-radius: 0.75rem;
-  transition: all 0.2s;
-  margin-bottom: 0.5rem;
-  font-weight: 500;
-  overflow: hidden;
-}
-
-.nav-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-}
-
-.nav-item.active {
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  color: white;
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
-}
-
-.nav-item i {
-  font-size: 1.125rem;
-  flex-shrink: 0;
-  width: 1.5rem;
-  text-align: center;
-}
-
-.sidebar-footer {
-  padding: 1.5rem 1rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.collapse-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: rgba(255, 255, 255, 0.05);
-  color: #94a3b8;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.collapse-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border-color: rgba(255, 255, 255, 0.2);
-}
-
-.user-profile {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 1rem;
-  overflow: hidden;
-}
-
-.user-avatar {
+.mobile-menu-toggle {
+  display: none;
   width: 40px;
   height: 40px;
-  flex-shrink: 0;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-border);
+  background: var(--color-bg-tertiary);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.mobile-menu-toggle:hover {
+  border-color: var(--color-primary-300);
+  background: var(--color-bg-200);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.theme-toggle {
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-border);
+  background: var(--color-bg-200);
+  color: var(--color-text-primary);
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 700;
-  font-size: 0.875rem;
-  color: white;
+  transition: all var(--transition-base);
 }
 
-.user-info {
+.theme-toggle:hover {
+  border-color: var(--color-primary-300);
+  background: var(--color-bg-300);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.theme-toggle i {
+  font-size: 1.25rem;
+  transition: transform var(--transition-base);
+}
+
+.theme-toggle:hover i {
+  transform: rotate(20deg);
+}
+
+.header-action {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-border);
+  background: var(--color-bg-200);
+  color: var(--color-text-primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.header-action:hover {
+  border-color: var(--color-primary-300);
+  background: var(--color-bg-300);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.header-action i {
+  font-size: 1.125rem;
+}
+
+.badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--color-error-500);
+  color: white;
+  font-size: 0.625rem;
+  font-weight: var(--font-weight-bold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--color-bg);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.page-content {
   flex: 1;
-  min-width: 0;
+  overflow-y: auto;
+  padding: 2rem;
+  animation: fade-in 0.5s var(--easing-out);
 }
 
-.user-name {
-  font-weight: 600;
-  margin: 0;
-  font-size: 0.875rem;
-  color: white;
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  z-index: 35;
+  transition: opacity 0.3s;
 }
 
-.user-role {
-  font-size: 0.75rem;
-  color: #94a3b8;
-  margin: 0.125rem 0 0 0;
-  text-transform: capitalize;
+.dark .admin-layout {
+  background: var(--dark-color-bg-900);
 }
 
-.logout-btn {
-  width: 100%;
-  justify-content: flex-start;
-  color: #94a3b8 !important;
+.dark .admin-header {
+  background: rgba(21, 22, 30, 0.9);
+  border-bottom-color: var(--dark-color-border);
 }
 
-.logout-btn:hover {
-  color: white !important;
-  background: rgba(255, 255, 255, 0.1) !important;
+.dark .page-title {
+  background: var(--dark-gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Custom Scrollbar */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
-}
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-</style>
-
-<!-- Global Tooltip Overrides for Premium Look -->
-<style>
-.p-tooltip {
-  z-index: 9999 !important;
+.dark .mobile-menu-toggle,
+.dark .theme-toggle,
+.dark .header-action {
+  background: var(--dark-color-bg-200);
+  border-color: var(--dark-color-border);
+  color: var(--dark-color-text-primary);
 }
 
-.p-tooltip-text {
-  background: #1e293b !important;
-  color: #fff !important;
-  padding: 0.5rem 0.75rem !important;
-  border-radius: 6px !important;
-  font-size: 0.8rem !important;
-  font-weight: 500 !important;
-  box-shadow:
-    0 10px 15px -3px rgba(0, 0, 0, 0.1),
-    0 4px 6px -2px rgba(0, 0, 0, 0.05) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+.dark .mobile-menu-toggle:hover,
+.dark .theme-toggle:hover,
+.dark .header-action:hover {
+  background: var(--dark-color-bg-100);
+  border-color: var(--color-primary-400);
+  box-shadow: var(--shadow-md), var(--dark-shadow-glow-sm);
 }
 
-.p-tooltip-arrow {
-  border-right-color: #1e293b !important;
-  border-left-color: #1e293b !important;
-  border-top-color: #1e293b !important;
-  border-bottom-color: #1e293b !important;
+.dark .badge {
+  background: var(--color-error-400);
+  border-color: var(--dark-color-bg-900);
+}
+
+.dark .page-content {
+  background: var(--dark-color-bg);
+}
+
+@media (max-width: 1024px) {
+  .admin-main {
+    margin-left: 80px;
+  }
+
+  :deep(.is-collapsed) + .admin-main {
+    margin-left: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-main {
+    margin-left: 0;
+  }
+
+  :deep(.is-collapsed) + .admin-main {
+    margin-left: 0;
+  }
+
+  .mobile-menu-toggle {
+    display: flex;
+  }
+
+  .page-title {
+    font-size: 1.5rem;
+  }
+
+  .header-content {
+    padding: 1rem 1.5rem;
+  }
+
+  .page-content {
+    padding: 1.5rem;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-enter-active,
+.slide-leave-active {
+  transition: opacity 0.3s;
+}
+
+.slide-enter-from,
+.slide-leave-to {
+  opacity: 0;
 }
 </style>

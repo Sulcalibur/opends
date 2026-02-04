@@ -1,10 +1,12 @@
 # Environment files (create from .env.example)
 .env
 .env.local
+.env.*.local
 .env.development
 .env.staging
 .env.production
 *.local
+!.env.example
 
 # OpenSpec
 openspec/

@@ -14,7 +14,7 @@ export interface OpenDSToken {
     | "radius"
     | "size"
     | "other";
-  value: any;
+  value: unknown;
   description?: string;
   category?: string;
   source?: string;
@@ -28,14 +28,14 @@ export interface OpenDSComponent {
   name: string;
   description?: string;
   category?: string;
-  props: any[];
-  slots?: any[];
-  events?: any[];
+  props: unknown[];
+  slots?: unknown[];
+  events?: unknown[];
   source?: string;
   sourceId?: string;
 }
 
-export function penpotColorToOpenDS(penpotColor: any): OpenDSToken {
+export function penpotColorToOpenDS(penpotColor: Record<string, any>): OpenDSToken {
   return {
     name: penpotColor.name,
     type: "color",
@@ -47,7 +47,7 @@ export function penpotColorToOpenDS(penpotColor: any): OpenDSToken {
   };
 }
 
-export function penpotTypographyToOpenDS(penpotTypography: any): OpenDSToken {
+export function penpotTypographyToOpenDS(penpotTypography: Record<string, any>): OpenDSToken {
   return {
     name: penpotTypography.name,
     type: "typography",
@@ -65,7 +65,7 @@ export function penpotTypographyToOpenDS(penpotTypography: any): OpenDSToken {
   };
 }
 
-export function penpotComponentToOpenDS(penpotComponent: any): OpenDSComponent {
+export function penpotComponentToOpenDS(penpotComponent: Record<string, any>): OpenDSComponent {
   return {
     name: penpotComponent.name,
     description: penpotComponent.description,
@@ -76,7 +76,7 @@ export function penpotComponentToOpenDS(penpotComponent: any): OpenDSComponent {
   };
 }
 
-export function figmaStyleToOpenDS(figmaStyle: any): OpenDSToken | null {
+export function figmaStyleToOpenDS(figmaStyle: Record<string, any>): OpenDSToken | null {
   if (figmaStyle.style_type === "FILL") {
     return {
       name: figmaStyle.name,
@@ -104,7 +104,7 @@ export function figmaStyleToOpenDS(figmaStyle: any): OpenDSToken | null {
   return null;
 }
 
-export function figmaNodeToOpenDS(figmaNode: any): OpenDSComponent | null {
+export function figmaNodeToOpenDS(figmaNode: Record<string, any>): OpenDSComponent | null {
   if (figmaNode.type === "COMPONENT" || figmaNode.type === "COMPONENT_SET") {
     return {
       name: figmaNode.name,
@@ -118,8 +118,8 @@ export function figmaNodeToOpenDS(figmaNode: any): OpenDSComponent | null {
   return null;
 }
 
-function extractFigmaProperties(node: any): any[] {
-  const props: any[] = [];
+function extractFigmaProperties(node: Record<string, any>): unknown[] {
+  const props: unknown[] = [];
 
   if (node.componentProperties) {
     Object.entries(node.componentProperties).forEach(
@@ -137,7 +137,7 @@ function extractFigmaProperties(node: any): any[] {
   return props;
 }
 
-export function sketchColorToOpenDS(sketchColor: any): OpenDSToken {
+export function sketchColorToOpenDS(sketchColor: Record<string, any>): OpenDSToken {
   return {
     name: sketchColor.name,
     type: "color",
@@ -149,7 +149,7 @@ export function sketchColorToOpenDS(sketchColor: any): OpenDSToken {
   };
 }
 
-export function sketchLayerStyleToOpenDS(sketchStyle: any): OpenDSToken | null {
+export function sketchLayerStyleToOpenDS(sketchStyle: Record<string, any>): OpenDSToken | null {
   if (sketchStyle.fills) {
     return {
       name: sketchStyle.name,
@@ -164,7 +164,7 @@ export function sketchLayerStyleToOpenDS(sketchStyle: any): OpenDSToken | null {
   return null;
 }
 
-export function sketchSymbolToOpenDS(sketchSymbol: any): OpenDSComponent {
+export function sketchSymbolToOpenDS(sketchSymbol: Record<string, any>): OpenDSComponent {
   return {
     name: sketchSymbol.name,
     description: sketchSymbol.description || "",
@@ -175,7 +175,7 @@ export function sketchSymbolToOpenDS(sketchSymbol: any): OpenDSComponent {
   };
 }
 
-export function openDSTokenToPenpot(token: OpenDSToken): any {
+export function openDSTokenToPenpot(token: OpenDSToken): unknown {
   if (token.type === "color") {
     return {
       name: token.name,
@@ -196,7 +196,7 @@ export function openDSTokenToPenpot(token: OpenDSToken): any {
 }
 
 export function resolveTokenReferences(tokens: OpenDSToken[]): OpenDSToken[] {
-  const tokenMap = new Map<string, any>();
+  const tokenMap = new Map<string, unknown>();
 
   tokens.forEach((token) => {
     tokenMap.set(token.name, token.value);

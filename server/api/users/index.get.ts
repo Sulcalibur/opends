@@ -4,7 +4,7 @@
  */
 
 import { z } from 'zod'
-import { createSuccessResponse, createPaginatedResponse } from '../../utils/response'
+import { createPaginatedResponse } from '../../utils/response'
 import { paginationSchema } from '../../utils/validation'
 import { asyncHandler } from '../../middleware/error-handler'
 import getDatabase from '../../utils/db'
@@ -29,7 +29,7 @@ export default asyncHandler(async (event) => {
 
     // Build query
     let whereClause = 'WHERE deleted_at IS NULL'
-    const params: any[] = []
+    const params: (string | number)[] = []
     let paramIndex = 1
 
     if (role) {

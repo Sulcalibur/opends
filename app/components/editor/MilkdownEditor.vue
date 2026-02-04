@@ -137,10 +137,10 @@ defineExpose({
 <template>
   <div class="milkdown-editor-wrapper relative">
     <div v-if="error" class="absolute inset-0 flex items-center justify-center text-red-500 bg-red-50 p-4 border border-red-200 rounded z-10">
-      <i class="pi pi-exclamation-triangle mr-2"></i> {{ error }}
+      <i class="pi pi-exclamation-triangle mr-2"/> {{ error }}
     </div>
     <div v-if="loading" class="absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-50 z-10">
-      <i class="pi pi-spin pi-spinner mr-2"></i> Loading editor...
+      <i class="pi pi-spin pi-spinner mr-2"/> Loading editor...
     </div>
     <div ref="editorRef" class="milkdown-editor" />
   </div>

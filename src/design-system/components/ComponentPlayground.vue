@@ -7,8 +7,8 @@
         <Dropdown
           v-model="selectedFramework"
           :options="frameworkOptions"
-          optionLabel="label"
-          optionValue="value"
+          option-label="label"
+          option-value="value"
           class="control-select"
         />
       </div>
@@ -20,8 +20,8 @@
         <!-- String/Number inputs -->
         <InputText
           v-if="prop.type === 'string' || prop.type === 'number'"
-          :type="prop.type === 'number' ? 'number' : 'text'"
           v-model="propValues[prop.name]"
+          :type="prop.type === 'number' ? 'number' : 'text'"
           :placeholder="prop.default || prop.name"
           class="control-input"
         />
@@ -63,13 +63,13 @@
         <div class="preview-content">
           <!-- Loading state -->
           <div v-if="loading" class="component-placeholder">
-            <i class="pi pi-spin pi-spinner text-4xl text-gray-400 mb-4"></i>
+            <i class="pi pi-spin pi-spinner text-4xl text-gray-400 mb-4"/>
             <p class="text-gray-600">Loading component...</p>
           </div>
 
           <!-- Error state -->
           <div v-else-if="error" class="component-placeholder">
-            <i class="pi pi-exclamation-triangle text-4xl text-red-400 mb-4"></i>
+            <i class="pi pi-exclamation-triangle text-4xl text-red-400 mb-4"/>
             <h3 class="text-lg font-semibold text-red-900">Error</h3>
             <p class="text-red-600">{{ error }}</p>
           </div>
@@ -88,26 +88,26 @@
               ]"
               :disabled="propValues.disabled || propValues.loading"
             >
-              <i v-if="propValues.loading" class="pi pi-spin pi-spinner mr-2"></i>
-              <i v-if="propValues.icon && !propValues.loading" :class="`pi pi-${propValues.icon} mr-2`"></i>
+              <i v-if="propValues.loading" class="pi pi-spin pi-spinner mr-2"/>
+              <i v-if="propValues.icon && !propValues.loading" :class="`pi pi-${propValues.icon} mr-2`"/>
               <slot>{{ componentName }}</slot>
             </button>
 
             <!-- InputText component preview -->
             <input
               v-else-if="componentName === 'InputText'"
+              v-model="inputValue"
               type="text"
               class="opends-input"
               :placeholder="propValues.placeholder || 'Enter text...'"
               :disabled="propValues.disabled"
               :required="propValues.required"
               :maxlength="propValues.maxlength"
-              v-model="inputValue"
-            />
+            >
 
             <!-- Default placeholder -->
             <div v-else class="component-placeholder">
-              <i class="pi pi-box text-4xl text-gray-400 mb-4"></i>
+              <i class="pi pi-box text-4xl text-gray-400 mb-4"/>
               <h3 class="text-lg font-semibold text-gray-900">{{ componentName }}</h3>
               <p class="text-gray-600">Component preview not available</p>
             </div>
@@ -121,11 +121,11 @@
       <div class="code-header">
         <h4 class="font-semibold text-gray-900">Generated Code</h4>
         <Button
-          @click="copyCode"
           icon="pi pi-copy"
           size="small"
           outlined
           label="Copy"
+          @click="copyCode"
         />
       </div>
       <pre class="code-content"><code>{{ generatedCode }}</code></pre>

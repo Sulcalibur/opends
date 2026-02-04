@@ -150,8 +150,8 @@ const categories = [
               <Select 
                 v-model="form.category" 
                 :options="categories" 
-                optionLabel="label" 
-                optionValue="value" 
+                option-label="label" 
+                option-value="value" 
                 class="w-full"
               />
             </div>

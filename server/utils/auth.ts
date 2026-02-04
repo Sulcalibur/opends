@@ -1,5 +1,5 @@
 import { getDatabase } from "../utils/db";
-import { getHeader, createError } from "h3";
+import { getHeader, createError, type H3Event } from "h3";
 
 const API_KEYS = new Set([
   "test-api-key",
@@ -19,12 +19,12 @@ export async function validateApiKey(apiKey: string): Promise<boolean> {
       [apiKey],
     );
     return result.rows.length > 0;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
 
-export function extractApiKey(event: any): string | null {
+export function extractApiKey(event: H3Event): string | null {
   // Try Authorization header with Bearer prefix first
   const authHeader = getHeader(event, "authorization");
   if (authHeader) {

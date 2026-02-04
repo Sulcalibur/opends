@@ -3,7 +3,7 @@
  * Provides consistent response format across all endpoints
  */
 
-export interface ApiResponse<T = any> {
+export interface ApiResponse<T = unknown> {
     success: boolean
     data?: T
     error?: ApiError
@@ -13,7 +13,7 @@ export interface ApiResponse<T = any> {
 export interface ApiError {
     code: string
     message: string
-    details?: any
+    details?: unknown
     field?: string
 }
 
@@ -55,7 +55,7 @@ export function createSuccessResponse<T>(
 export function createErrorResponse(
     code: string,
     message: string,
-    details?: any,
+    details?: unknown,
     field?: string
 ): ApiResponse {
     return {

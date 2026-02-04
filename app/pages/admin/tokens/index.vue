@@ -8,12 +8,12 @@
       </div>
       <div class="header-actions">
         <input 
-          type="file" 
           ref="fileInput" 
+          type="file" 
           accept=".json" 
-          @change="importTokens" 
-          style="display: none"
-        />
+          style="display: none" 
+          @change="importTokens"
+        >
         <Button 
           icon="pi pi-download" 
           label="Export" 
@@ -42,7 +42,7 @@
         :class="['category-btn', { active: selectedTokenCategory === cat.value }]"
         @click="selectedTokenCategory = cat.value"
       >
-        <i :class="cat.icon"></i>
+        <i :class="cat.icon"/>
         <span>{{ cat.label }}</span>
         <span class="count">{{ getTokenCount(cat.value) }}</span>
       </button>
@@ -72,7 +72,7 @@
                   v-if="data.category === 'color'" 
                   class="color-preview"
                   :style="{ background: getColorValue(data.value) }"
-                ></div>
+                />
                 <span v-if="data.category === 'color'">{{ getColorValue(data.value) }}</span>
                 <span v-else>{{ formatTokenValue(data.value) }}</span>
               </div>
@@ -131,7 +131,7 @@
           />
         </div>
 
-        <div class="form-field" v-if="tokenForm.category === 'color'">
+        <div v-if="tokenForm.category === 'color'" class="form-field">
           <label for="token-color">Color Value *</label>
           <div class="color-input-group">
             <ColorPicker v-model="tokenForm.colorValue" format="hex" />
@@ -143,7 +143,7 @@
           </div>
         </div>
 
-        <div class="form-field" v-else-if="tokenForm.category === 'spacing'">
+        <div v-else-if="tokenForm.category === 'spacing'" class="form-field">
           <label for="token-spacing">Spacing Value *</label>
           <div class="spacing-input-group">
             <InputNumber 
@@ -155,7 +155,7 @@
           </div>
         </div>
 
-        <div class="form-field" v-else-if="tokenForm.category === 'fontSize'">
+        <div v-else-if="tokenForm.category === 'fontSize'" class="form-field">
           <label for="token-fontsize">Font Size *</label>
           <InputNumber 
             v-model="tokenForm.numericValue" 
@@ -165,7 +165,7 @@
           />
         </div>
 
-        <div class="form-field" v-else-if="tokenForm.category === 'fontFamily'">
+        <div v-else-if="tokenForm.category === 'fontFamily'" class="form-field">
           <label for="token-font">Font Family *</label>
           <InputText 
             id="token-font" 
@@ -174,7 +174,7 @@
           />
         </div>
 
-        <div class="form-field" v-else>
+        <div v-else class="form-field">
           <label for="token-value">Value *</label>
           <Textarea 
             id="token-value" 

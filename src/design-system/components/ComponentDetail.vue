@@ -26,8 +26,8 @@
                 {{ component.status }}
               </span>
               <button
-                @click="editMode = !editMode"
                 class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                @click="editMode = !editMode"
               >
                 {{ editMode ? 'Cancel' : 'Edit' }}
               </button>
@@ -52,7 +52,7 @@
                 class="w-full px-3 py-2 border border-gray-300 rounded-md"
                 rows="3"
                 placeholder="Component description..."
-              ></textarea>
+              />
             </p>
             <p v-else class="text-gray-700">
               {{ component.description || 'No description provided.' }}
@@ -63,8 +63,8 @@
           <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
             <h2 class="text-xl font-semibold mb-4">Preview</h2>
             <ComponentPreview
-              :component-spec="component.spec"
               :key="component.id"
+              :component-spec="component.spec"
             />
           </div>
 
@@ -162,21 +162,21 @@
             <div class="space-y-2">
               <button
                 v-if="editMode"
-                @click="saveChanges"
                 class="w-full px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700"
+                @click="saveChanges"
               >
                 Save Changes
               </button>
               <button
-                @click="createVersion"
                 class="w-full px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                @click="createVersion"
               >
                 Create Version
               </button>
               <button
                 v-if="component.status === 'draft'"
-                @click="submitForReview"
                 class="w-full px-4 py-2 bg-yellow-600 text-white rounded-md hover:bg-yellow-700"
+                @click="submitForReview"
               >
                 Submit for Review
               </button>
@@ -191,7 +191,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import ComponentPreview from './ComponentPreview.vue'
 
 // Props

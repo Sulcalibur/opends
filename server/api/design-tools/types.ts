@@ -68,14 +68,14 @@ export interface WebhookPayload {
   tool: DesignTool;
   event: string;
   timestamp: string;
-  data: any;
+  data: unknown;
   signature?: string;
 }
 
 export interface WebhookEvent {
   tool: DesignTool;
   eventType: string;
-  payload: any;
+  payload: unknown;
   receivedAt: string;
 }
 

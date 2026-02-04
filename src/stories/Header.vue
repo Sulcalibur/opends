@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <header>
     <div class="storybook-header">
@@ -21,18 +22,18 @@
         <h1>Acme</h1>
       </div>
       <div>
-        <span class="welcome" v-if="user"
+        <span v-if="user" class="welcome"
           >Welcome, <b>{{ user.name }}</b
           >!</span
         >
-        <my-button size="small" @click="$emit('logout')" label="Log out" v-if="user" />
-        <my-button size="small" @click="$emit('login')" label="Log in" v-if="!user" />
+        <my-button v-if="user" size="small" label="Log out" @click="$emit('logout')" />
+        <my-button v-if="!user" size="small" label="Log in" @click="$emit('login')" />
         <my-button
+          v-if="!user"
           primary
           size="small"
-          @click="$emit('createAccount')"
           label="Sign up"
-          v-if="!user"
+          @click="$emit('createAccount')"
         />
       </div>
     </div>

@@ -12,11 +12,11 @@
         </p>
         <div class="flex gap-4 justify-center">
           <NuxtLink to="/" class="theme-btn-primary">
-            <i class="pi pi-home mr-2"></i>
+            <i class="pi pi-home mr-2"/>
             Go Home
           </NuxtLink>
           <NuxtLink to="/docs" class="px-6 py-3 rounded-lg font-medium border border-slate-300 hover:bg-slate-50 transition-colors inline-flex items-center">
-            <i class="pi pi-book mr-2"></i>
+            <i class="pi pi-book mr-2"/>
             View Documentation
           </NuxtLink>
         </div>

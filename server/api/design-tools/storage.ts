@@ -10,8 +10,8 @@ import type {
 
 const credentialsMap = new Map<string, DesignToolCredentials>();
 const connectionsMap = new Map<string, DesignToolConnection>();
-const importedTokens: any[] = [];
-const importedComponents: any[] = [];
+const importedTokens: unknown[] = [];
+const importedComponents: unknown[] = [];
 
 class DesignToolStorage {
   saveCredentials(credentials: DesignToolCredentials): void {
@@ -43,7 +43,7 @@ class DesignToolStorage {
   }
 
   saveTokens(
-    tokens: any[],
+    tokens: Record<string, any>[],
     source: DesignTool,
   ): { created: number; updated: number; errors: number } {
     const result = { created: 0, updated: 0, errors: 0 };
@@ -83,12 +83,12 @@ class DesignToolStorage {
     return result;
   }
 
-  getImportedTokens(): any[] {
+  getImportedTokens(): unknown[] {
     return [...importedTokens];
   }
 
   saveComponents(
-    components: any[],
+    components: Record<string, any>[],
     source: DesignTool,
   ): { created: number; updated: number; errors: number } {
     const result = { created: 0, updated: 0, errors: 0 };
@@ -128,7 +128,7 @@ class DesignToolStorage {
     return result;
   }
 
-  getImportedComponents(): any[] {
+  getImportedComponents(): unknown[] {
     return [...importedComponents];
   }
 }

@@ -28,8 +28,8 @@
               <Dropdown
                 v-model="filters.category"
                 :options="categoryOptions"
-                optionLabel="label"
-                optionValue="value"
+                option-label="label"
+                option-value="value"
                 placeholder="All Categories"
                 class="w-full"
                 @change="loadTokens"
@@ -49,8 +49,8 @@
               <Dropdown
                 v-model="filters.type"
                 :options="typeOptions"
-                optionLabel="label"
-                optionValue="value"
+                option-label="label"
+                option-value="value"
                 placeholder="All Types"
                 class="w-full"
                 @change="loadTokens"
@@ -79,9 +79,9 @@
             :value="tokens"
             :paginator="true"
             :rows="20"
-            :totalRecords="totalTokens"
-            @page="onPage"
+            :total-records="totalTokens"
             class="p-datatable-sm"
+            @page="onPage"
           >
             <Column field="name" header="Name" style="width: 15%">
               <template #body="slotProps">
@@ -175,8 +175,8 @@
               <Dropdown
                 v-model="tokenForm.category"
                 :options="categoryOptions"
-                optionLabel="label"
-                optionValue="value"
+                option-label="label"
+                option-value="value"
                 placeholder="Select category"
                 :class="{ 'p-invalid': errors.category }"
               />
@@ -188,8 +188,8 @@
               <Dropdown
                 v-model="tokenForm.type"
                 :options="typeOptions"
-                optionLabel="label"
-                optionValue="value"
+                option-label="label"
+                option-value="value"
                 placeholder="Select type"
               />
             </div>
@@ -246,15 +246,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { useToast } from 'primevue/usetoast'
 import { useConfirm } from 'primevue/useconfirm'
-
-declare global {
-  interface Window {
-    searchTimeout: ReturnType<typeof setTimeout>
-  }
-}
 import InputText from 'primevue/inputtext'
 import Textarea from 'primevue/textarea'
 import Dropdown from 'primevue/dropdown'
@@ -265,10 +259,14 @@ import Column from 'primevue/column'
 import ProgressSpinner from 'primevue/progressspinner'
 import Badge from 'primevue/badge'
 import ConfirmDialog from 'primevue/confirmdialog'
-import AdminSidebar from '@/app/components/AdminSidebar.vue'
-
+import AdminSidebar from '@/app/components/admin/AdminSidebar.vue'
 import type { DesignToken } from '@/utils/tokenUtils'
-import { validateToken } from '@/utils/tokenValidation'
+
+declare global {
+  interface Window {
+    searchTimeout: ReturnType<typeof setTimeout>
+  }
+}
 
 const confirm = useConfirm()
 const toast = useToast()
@@ -346,8 +344,8 @@ async function loadTokens() {
 
     tokens.value = data.tokens || []
     totalTokens.value = data.total || 0
-  } catch (error) {
-    console.error('Failed to load tokens:', error)
+  } catch {
+    console.error('Failed to load tokens')
     toast.add({
       severity: 'error',
       summary: 'Error',
@@ -376,7 +374,7 @@ function clearFilters() {
   loadTokens()
 }
 
-function onPage(event: any) {
+function onPage(event: { page: number }) {
   currentPage.value = event.page + 1
   loadTokens()
 }
@@ -425,7 +423,7 @@ async function deleteToken(token: DesignToken) {
     } else {
       throw new Error('Failed to delete token')
     }
-  } catch (error) {
+  } catch {
     toast.add({
       severity: 'error',
       summary: 'Error',
@@ -539,7 +537,7 @@ function resetForm() {
   })
 }
 
-function formatValue(value: any): string {
+function formatValue(value: string | number | Record<string, unknown> | null): string {
   if (typeof value === 'string') {
     return value.length > 50 ? value.substring(0, 50) + '...' : value
   }

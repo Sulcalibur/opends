@@ -14,7 +14,7 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event);
-  const { version, source, exportedAt, colors, typography, spacing } = body;
+  const { colors, typography, spacing } = body;
 
   return {
     success: true,

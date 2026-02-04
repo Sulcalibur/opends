@@ -1,95 +1,103 @@
 <template>
   <div class="auth-page">
     <div class="background-decor">
-      <div class="circle circle-1"></div>
-      <div class="circle circle-2"></div>
+      <div class="circle circle-1"/>
+      <div class="circle circle-2"/>
+      <div class="circle circle-3"/>
     </div>
 
     <div class="auth-container">
-      <!-- Logo/Header -->
-      <div class="text-center mb-10">
-        <div class="ds-logo-wrapper mb-4">
-          <div class="ds-logo">
-            {{ orgInitial }}
+      <div class="auth-card glass-card">
+        <div class="card-header">
+          <div class="logo-wrapper">
+            <div class="logo">{{ orgInitial }}</div>
           </div>
         </div>
-        <h1 class="text-3xl font-bold text-slate-900 mb-2 mt-4">
-          {{ orgName }}
-        </h1>
-        <p class="text-slate-500">Welcome back! Please sign in.</p>
-      </div>
+        <div class="card-content">
+          <h1 id="auth-title" class="auth-title">Welcome back!</h1>
+          <p class="auth-subtitle">Sign in to continue</p>
 
-      <!-- Login Card -->
-      <Card class="auth-card glass">
-        <template #content>
-          <form @submit.prevent="handleLogin" class="space-y-6">
-            <!-- Email -->
-            <div class="field">
-              <label for="email" class="auth-label">Email Address</label>
-              <span class="p-input-icon-left w-full">
-                <i class="pi pi-envelope" />
-                <InputText
-                  id="email"
-                  v-model="email"
-                  type="email"
-                  placeholder="name@company.com"
-                  class="w-full auth-input"
-                  :class="{ 'p-invalid': emailError }"
-                />
-              </span>
-              <small v-if="emailError" class="p-error block mt-1">{{ emailError }}</small>
+          <form class="auth-form" aria-labelledby="auth-title" @submit.prevent="handleLogin">
+            <div class="form-group">
+              <FloatingInput
+                id="email"
+                v-model="email"
+                type="email"
+                label="Email Address"
+                placeholder="name@company.com"
+                icon="pi-envelope"
+                :error="emailError"
+                required
+              />
             </div>
 
-            <!-- Password -->
-            <div class="field">
-              <div class="flex justify-between items-center mb-1">
-                <label for="password" class="auth-label">Password</label>
-                <a href="#" class="text-xs font-semibold text-blue-600 hover:text-blue-700">Forgot password?</a>
-              </div>
-              <span class="p-input-icon-left w-full">
-                <i class="pi pi-lock" />
-                <Password
+            <div class="form-group">
+              <div class="password-field-wrapper">
+                <FloatingInput
                   id="password"
                   v-model="password"
-                  :feedback="false"
-                  toggle-mask
-                  class="w-full"
-                  input-class="w-full auth-input"
+                  :type="showPassword ? 'text' : 'password'"
+                  label="Password"
                   placeholder="Enter password"
-                  :class="{ 'p-invalid': passwordError }"
+                  icon="pi-lock"
+                  :error="passwordError"
+                  required
                 />
-              </span>
-              <small v-if="passwordError" class="p-error block mt-1">{{ passwordError }}</small>
+                <button
+                  type="button"
+                  class="toggle-password"
+                  :aria-label="showPassword ? 'Hide password' : 'Show password'"
+                  :aria-pressed="showPassword"
+                  @click="showPassword = !showPassword"
+                >
+                  <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" aria-hidden="true"/>
+                </button>
+              </div>
             </div>
 
-            <!-- Error Message -->
-            <Message v-if="authStore.error" severity="error" :closable="false" class="mt-4">
-              {{ authStore.error }}
-            </Message>
+            <div v-if="authStore.error" class="auth-error" role="alert">
+              <i class="pi pi-times-circle" aria-hidden="true"/>
+              <span>{{ authStore.error }}</span>
+            </div>
 
-            <!-- Submit Button -->
-            <Button
+            <PremiumButton
               type="submit"
-              label="Sign In"
-              class="w-full premium-auth-btn"
+              variant="primary"
+              size="lg"
+              class="auth-button"
               :loading="authStore.loading"
-            />
+            >
+              <template #icon>
+                <i class="pi pi-sign-in" aria-hidden="true"/>
+              </template>
+              Sign In
+            </PremiumButton>
 
-            <!-- Register Link -->
-            <div class="text-center text-sm pt-2">
-              <span class="text-slate-500">New around here?</span>
-              <NuxtLink to="/register" class="text-blue-600 font-bold hover:underline ml-1">
-                Create account
-              </NuxtLink>
+            <div class="form-footer">
+              <div class="form-links">
+                <NuxtLink to="/register" class="form-link">Create account</NuxtLink>
+                <a href="#" class="form-link">Forgot password?</a>
+              </div>
+            </div>
+
+            <div class="social-login">
+              <p class="social-title">Or continue with</p>
+              <div class="social-buttons">
+                <button type="button" class="social-button google" aria-label="Sign in with Google">
+                  <i class="pi pi-google" aria-hidden="true"/>
+                </button>
+                <button type="button" class="social-button github" aria-label="Sign in with GitHub">
+                  <i class="pi pi-github" aria-hidden="true"/>
+                </button>
+              </div>
             </div>
           </form>
-        </template>
-      </Card>
-
-      <!-- Footer -->
-      <div class="text-center mt-12 text-xs text-slate-400">
-        <p>{{ orgName }} v0.2.0 • Powered by Nessie Design Engine</p>
+        </div>
       </div>
+    </div>
+
+    <div class="auth-footer">
+      <p>{{ orgName }} v0.2.0 • Powered by Nessie Design Engine</p>
     </div>
   </div>
 </template>
@@ -104,6 +112,7 @@ definePageMeta({
 
 const { data: settingsData } = await useFetch('/api/settings/public')
 const settings = computed(() => settingsData.value?.settings || {})
+
 const orgName = computed(() => settings.value.organization_name || 'OpenDS')
 const orgInitial = computed(() => orgName.value.substring(0, 2).toUpperCase())
 
@@ -112,6 +121,7 @@ const router = useRouter()
 
 const email = ref('')
 const password = ref('')
+const showPassword = ref(false)
 const emailError = ref('')
 const passwordError = ref('')
 
@@ -136,16 +146,14 @@ async function handleLogin() {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap');
-
 .auth-page {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8fafc;
+  background: linear-gradient(135deg, var(--color-bg-50) 0%, var(--color-bg-200) 100%);
   padding: 2rem;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-family-body);
   position: relative;
   overflow: hidden;
 }
@@ -154,112 +162,357 @@ async function handleLogin() {
   position: absolute;
   inset: 0;
   z-index: 0;
+  overflow: hidden;
 }
 
 .circle {
   position: absolute;
   border-radius: 50%;
   filter: blur(80px);
+  opacity: 0.6;
 }
 
 .circle-1 {
   width: 400px;
   height: 400px;
-  background: rgba(99, 102, 241, 0.1);
+  background: var(--color-primary-500);
   top: -100px;
-  left: -100px;
+  right: -100px;
+  animation: float 20s ease-in-out infinite;
 }
 
 .circle-2 {
   width: 300px;
   height: 300px;
-  background: rgba(236, 72, 153, 0.1);
+  background: var(--color-secondary-500);
+  top: 50%;
+  left: -50px;
+  animation: float 25s ease-in-out infinite reverse;
+}
+
+.circle-3 {
+  width: 200px;
+  height: 200px;
+  background: var(--color-primary-400);
   bottom: -50px;
-  right: -50px;
+  right: 20%;
+  animation: float 30s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) translateX(0px); }
+  33% { transform: translateY(-30px) translateX(20px); }
+  66% { transform: translateY(20px) translateX(-20px); }
 }
 
 .auth-container {
   width: 100%;
-  max-width: 440px;
+  max-width: 480px;
   position: relative;
   z-index: 10;
 }
 
-.ds-logo-wrapper {
-  display: flex;
-  justify-content: center;
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: var(--radius-2xl);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+  padding: 3rem;
+  animation: fade-up 0.8s var(--easing-out);
+  overflow: hidden;
 }
 
-.ds-logo {
-  width: 64px;
-  height: 64px;
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
-  border-radius: 1.25rem;
+.glass-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--color-primary-400) 0%, var(--color-secondary-400) 100%);
+  opacity: 0;
+  animation: shimmer 0.6s var(--easing-out);
+}
+
+.glass-card:hover::before {
+  opacity: 0.15;
+}
+
+.card-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.logo-wrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.logo {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-secondary-500) 100%);
+  border-radius: var(--radius-xl);
   display: flex;
   align-items: center;
   justify-content: center;
   color: white;
-  font-weight: 800;
-  font-size: 1.5rem;
-  box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+  font-weight: var(--font-weight-extrabold);
+  font-size: 2rem;
+  box-shadow: 0 8px 24px -6px rgba(219, 60, 36, 0.25);
+  animation: scale-in 0.5s var(--easing-bounce);
 }
 
-.auth-card {
-  border-radius: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+@keyframes scale-in {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 
-.auth-card.glass {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(20px);
+.card-content {
+  animation: fade-in 0.6s var(--easing-out) 0.3s both;
 }
 
-.auth-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #334155;
+.auth-title {
+  font-size: 2.5rem;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-primary);
+  text-align: center;
   margin-bottom: 0.5rem;
-  display: block;
+  line-height: 1.2;
 }
 
-.auth-input {
-  border-radius: 0.75rem;
-  padding: 0.75rem 1rem;
-  border: 1px solid #e2e8f0;
-  background: #ffffff;
-  transition: all 0.2s;
+.auth-subtitle {
+  font-size: 1.125rem;
+  color: var(--color-text-secondary);
+  text-align: center;
+  margin-bottom: 2.5rem;
 }
 
-.auth-input:focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1);
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
-.premium-auth-btn {
-  background: #0f172a;
+.form-group {
+  position: relative;
+}
+
+.password-field-wrapper {
+  position: relative;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  background: transparent;
   border: none;
-  border-radius: 0.75rem;
+  color: var(--color-text-400);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.toggle-password:hover {
+  color: var(--color-primary-500);
+}
+
+.auth-error {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   padding: 1rem;
-  font-weight: 700;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: rgba(239, 68, 68, 0.1);
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+  animation: slide-down 0.3s var(--easing-out);
 }
 
-.premium-auth-btn:hover {
-  background: #1e293b;
-  transform: translateY(-2px);
-  box-shadow: 0 10px 20px -5px rgba(15, 23, 42, 0.3);
+.auth-error i {
+  color: var(--color-error-500);
+  font-size: 1.25rem;
 }
 
-:deep(.p-card-content) {
-  padding: 2.5rem;
+.auth-error span {
+  font-size: 0.9375rem;
+  color: var(--color-error-600);
 }
 
-:deep(.p-input-icon-left > i) {
-  color: #94a3b8;
+.auth-button {
+  width: 100%;
+  margin-top: 1.5rem;
+  padding: 1.25rem 2rem !important;
 }
 
-:deep(.p-input-icon-left > .auth-input) {
-  padding-left: 2.75rem;
+.form-footer {
+  text-align: center;
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--color-border-light);
+}
+
+.form-links {
+  display: flex;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.form-link {
+  color: var(--color-primary-500);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  font-size: 1rem;
+  transition: color var(--transition-base);
+}
+
+.form-link:hover {
+  color: var(--color-primary-400);
+  text-decoration: underline;
+}
+
+.social-login {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.social-title {
+  font-size: 0.9375rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 1rem;
+}
+
+.social-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.social-button {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-lg);
+  border: 2px solid var(--color-border);
+  background: white;
+  color: var(--color-text-primary);
+  font-size: 1.25rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition-base);
+}
+
+.social-button:hover {
+  border-color: var(--color-primary-300);
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.auth-footer p {
+  font-size: 0.875rem;
+  color: var(--color-text-tertiary);
+}
+
+.dark .auth-page {
+  background: linear-gradient(135deg, var(--dark-color-bg-900) 0%, var(--dark-color-bg-800) 100%);
+}
+
+.dark .circle-1 {
+  background: var(--color-primary-400);
+}
+
+.dark .circle-2 {
+  background: var(--color-secondary-400);
+}
+
+.dark .circle-3 {
+  background: var(--color-primary-300);
+}
+
+.dark .glass-card {
+  background: rgba(21, 22, 30, 0.85);
+  border-color: rgba(255, 255, 255, 0.15);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.dark .logo {
+  background: linear-gradient(135deg, var(--color-primary-400) 0%, var(--color-secondary-400) 100%);
+  box-shadow: 0 8px 24px -6px rgba(234, 138, 123, 0.3);
+}
+
+.dark .auth-title,
+.dark .auth-error span {
+  color: var(--dark-color-text-primary);
+}
+
+.dark .auth-subtitle,
+.dark .social-title {
+  color: var(--dark-color-text-secondary);
+}
+
+.dark .social-button {
+  background: var(--dark-color-bg-100);
+  border-color: var(--dark-color-border-200);
+  color: var(--dark-color-text-primary);
+}
+
+.dark .social-button:hover {
+  border-color: var(--color-primary-400);
+  box-shadow: 0 4px 12px rgba(234, 138, 123, 0.2);
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes scale-in {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 </style>

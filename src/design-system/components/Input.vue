@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/multi-word-component-names -->
 <template>
   <input
     :type="type"
@@ -15,7 +16,7 @@
     @input="$emit('update:modelValue', $event.target.value)"
     @blur="$emit('blur', $event)"
     @focus="$emit('focus', $event)"
-  />
+  >
   <div v-if="error" class="text-red-600 text-sm mt-1">
     {{ error }}
   </div>

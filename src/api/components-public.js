@@ -1,9 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { fileURLToPath } from 'node:url'
 import yaml from 'js-yaml'
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
 // Helper function to read component YAML files
 async function readComponentFromYAML(componentName) {

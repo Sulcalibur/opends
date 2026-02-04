@@ -10,8 +10,8 @@
             <p class="text-gray-600">Manage and organize your design system components.</p>
           </div>
           <div class="flex gap-4">
-            <Button @click="$router.push('/admin/codegen')" icon="pi pi-plus" label="Add Component" class="p-button-primary" />
-            <Button @click="$router.push('/admin/codegen')" icon="pi pi-code" label="Generate Code" class="p-button-secondary" />
+            <Button icon="pi pi-plus" label="Add Component" class="p-button-primary" @click="$router.push('/admin/codegen')" />
+            <Button icon="pi pi-code" label="Generate Code" class="p-button-secondary" @click="$router.push('/admin/codegen')" />
           </div>
         </div>
 
@@ -27,8 +27,8 @@
             <Dropdown
               v-model="selectedCategory"
               :options="categoryOptions"
-              optionLabel="label"
-              optionValue="value"
+              option-label="label"
+              option-value="value"
               placeholder="All Categories"
               class="w-48"
             />
@@ -75,12 +75,12 @@
           <!-- Empty State -->
           <div v-if="filteredComponents.length === 0" class="col-span-full">
             <div class="text-center py-12">
-              <i class="pi pi-box text-4xl text-gray-400 mb-4"></i>
+              <i class="pi pi-box text-4xl text-gray-400 mb-4"/>
               <h3 class="text-lg font-medium text-gray-900 mb-2">No components found</h3>
               <p class="text-gray-500 mb-4">
                 {{ searchQuery || selectedCategory ? 'Try adjusting your search filters.' : 'Get started by adding your first component.' }}
               </p>
-              <Button @click="showCreateDialog = true" label="Add First Component" class="p-button-primary" />
+              <Button label="Add First Component" class="p-button-primary" @click="showCreateDialog = true" />
             </div>
           </div>
         </div>
@@ -115,9 +115,9 @@ interface Component {
   name: string
   category: string
   description: string
-  props: any[]
-  slots: any[]
-  events: any[]
+  props: unknown[]
+  slots: unknown[]
+  events: unknown[]
 }
 
 const components = ref<Component[]>([])
@@ -151,7 +151,7 @@ const loadComponents = async () => {
   try {
     const response = await axios.get('/api/components')
     components.value = response.data
-  } catch (error) {
+  } catch {
     toast.add({
       severity: 'error',
       summary: 'Error',

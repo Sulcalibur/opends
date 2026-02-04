@@ -20,11 +20,12 @@ export default defineEventHandler((event) => {
         // Content Security Policy (basic)
         'Content-Security-Policy': [
             "default-src 'self'",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval'", // Needed for Nuxt dev
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob:", // Needed for Nuxt dev
+            "worker-src 'self' blob:", // Needed for SharedWorker
             "style-src 'self' 'unsafe-inline'",
-            "img-src 'self' data: https:",
+            "img-src 'self' data: https: blob:",
             "font-src 'self' data:",
-            "connect-src 'self' ws: wss:"
+            "connect-src 'self' ws: wss: http: https:" // Allow dev server connections
         ].join('; '),
 
         // Strict Transport Security (HTTPS only - enable in production)

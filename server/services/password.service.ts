@@ -7,6 +7,7 @@ import bcrypt from 'bcryptjs'
 
 const SALT_ROUNDS = 12
 
+/* eslint-disable @typescript-eslint/no-extraneous-class */
 export class PasswordService {
     /**
      * Hash a password using bcrypt

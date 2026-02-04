@@ -5,9 +5,7 @@
 
 import { Router } from 'express'
 import { body, param, query, validationResult } from 'express-validator'
-import { requireAuth, requireRole } from '../middleware/auth.js'
 import { db } from '../database.js'
-import { ApiError } from '../utils/errors.js'
 
 const router = Router()
 
@@ -53,7 +51,7 @@ function handleValidationErrors(req, res, next) {
 }
 
 // GET /api/components - List components with search/filter
-router.get('/', componentValidators.search, handleValidationErrors, async (req, res) => {
+router.get('/', componentValidators.search, handleValidationErrors, async (req, res, next) => {
   try {
     const { page = 1, limit = 20, category, status, query } = req.query
 
@@ -129,6 +127,10 @@ router.get('/', componentValidators.search, handleValidationErrors, async (req, 
         limit: parseInt(limit),
         total,
         pages: Math.ceil(total / limit)
+      }
+    })
+  } catch (error) {
+    next(error)
   }
 })
 

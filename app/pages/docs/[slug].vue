@@ -32,7 +32,7 @@ const renderMarkdown = (markdown: string) => {
   if (!markdown) return ''
   
   // Basic markdown parsing (you should use a proper library in production)
-  let html = markdown
+  const html = markdown
     // Headers
     .replace(/^### (.*$)/gim, '<h3>$1</h3>')
     .replace(/^## (.*$)/gim, '<h2>$1</h2>')
@@ -68,9 +68,9 @@ const htmlContent = computed(() => renderMarkdown(page.content))
       <div class="ds-container">
         <nav class="breadcrumb">
           <NuxtLink to="/" class="breadcrumb-item">Home</NuxtLink>
-          <i class="pi pi-angle-right"></i>
+          <i class="pi pi-angle-right"/>
           <NuxtLink to="/docs" class="breadcrumb-item">Documentation</NuxtLink>
-          <i class="pi pi-angle-right"></i>
+          <i class="pi pi-angle-right"/>
           <span class="breadcrumb-item active">{{ page.title }}</span>
         </nav>
         
@@ -79,11 +79,11 @@ const htmlContent = computed(() => renderMarkdown(page.content))
         
         <div class="docs-meta">
           <span class="meta-item">
-            <i class="pi pi-folder"></i>
+            <i class="pi pi-folder"/>
             {{ page.category || 'General' }}
           </span>
           <span class="meta-item">
-            <i class="pi pi-clock"></i>
+            <i class="pi pi-clock"/>
             Updated {{ new Date(page.updatedAt).toLocaleDateString() }}
           </span>
         </div>
@@ -93,12 +93,12 @@ const htmlContent = computed(() => renderMarkdown(page.content))
     <!-- Content -->
     <div class="docs-content">
       <div class="ds-container">
-        <article class="prose" v-html="htmlContent"></article>
+        <article class="prose" v-html="htmlContent"/>
         
         <!-- Footer navigation -->
         <div class="docs-footer">
           <NuxtLink to="/docs" class="back-link">
-            <i class="pi pi-arrow-left"></i>
+            <i class="pi pi-arrow-left"/>
             Back to Documentation
           </NuxtLink>
         </div>

@@ -76,7 +76,7 @@ function formatDate(dateStr: string) {
       <Card class="stat-card">
         <template #content>
           <div class="stat-item">
-            <i class="pi pi-file-edit stat-icon"></i>
+            <i class="pi pi-file-edit stat-icon"/>
             <div>
               <p class="stat-value">{{ pages.length }}</p>
               <p class="stat-label">Total Pages</p>
@@ -88,7 +88,7 @@ function formatDate(dateStr: string) {
       <Card class="stat-card">
         <template #content>
           <div class="stat-item">
-            <i class="pi pi-check-circle stat-icon" style="color: #10b981"></i>
+            <i class="pi pi-check-circle stat-icon" style="color: #10b981"/>
             <div>
               <p class="stat-value">{{ pages.filter(p => p.isPublished).length }}</p>
               <p class="stat-label">Published</p>
@@ -100,7 +100,7 @@ function formatDate(dateStr: string) {
       <Card class="stat-card">
         <template #content>
           <div class="stat-item">
-            <i class="pi pi-clock stat-icon" style="color: #f59e0b"></i>
+            <i class="pi pi-clock stat-icon" style="color: #f59e0b"/>
             <div>
               <p class="stat-value">{{ pages.filter(p => !p.isPublished).length }}</p>
               <p class="stat-label">Drafts</p>
@@ -112,7 +112,7 @@ function formatDate(dateStr: string) {
 
     <!-- Content Area -->
     <div v-if="pending" class="loading-state">
-      <ProgressSpinner style="width: 50px; height: 50px" strokeWidth="4" />
+      <ProgressSpinner style="width: 50px; height: 50px" stroke-width="4" />
       <p>Loading documentation pages...</p>
     </div>
 
@@ -199,8 +199,8 @@ function formatDate(dateStr: string) {
         </div>
       </div>
       <template #footer>
-        <Button label="Cancel" text severity="secondary" @click="showDeleteDialog = false" :disabled="deleting" />
-        <Button label="Delete" severity="danger" icon="pi pi-trash" @click="deletePage" :loading="deleting" />
+        <Button label="Cancel" text severity="secondary" :disabled="deleting" @click="showDeleteDialog = false" />
+        <Button label="Delete" severity="danger" icon="pi pi-trash" :loading="deleting" @click="deletePage" />
       </template>
     </Dialog>
   </div>

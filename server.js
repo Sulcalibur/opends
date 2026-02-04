@@ -13,8 +13,14 @@ import { fileURLToPath } from 'url'
 import fs from 'fs/promises'
 import yaml from 'js-yaml'
 import pkg from 'pg'
-const { Pool } = pkg
 import { v4 as uuidv4 } from 'uuid'
+
+// Admin API Routes
+import authRouter from './src/api/admin/auth.js'
+
+// Component API Routes
+import componentsRouter from './src/api/components.js'
+const { Pool } = pkg
 
 
 const __filename = fileURLToPath(import.meta.url)
@@ -271,13 +277,7 @@ app.use('/api/plugin', (req, res, next) => {
 
   next()
 })
-
-// Admin API Routes
-import authRouter from './src/api/admin/auth.js'
 app.use('/api/admin', authRouter)
-
-// Component API Routes
-import componentsRouter from './src/api/components.js'
 app.use('/api/components', componentsRouter)
 
 app.get('/api/admin/stats', async (_req, res) => {

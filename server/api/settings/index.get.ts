@@ -16,7 +16,7 @@ export default defineEventHandler(async (event) => {
     const settings = await repo.getAll()
 
     // Transform to a cleaner object for the frontend
-    const settingsMap: Record<string, any> = {}
+    const settingsMap: Record<string, unknown> = {}
     settings.forEach(s => {
         settingsMap[s.key] = s.value
     })

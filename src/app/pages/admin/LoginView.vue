@@ -11,7 +11,7 @@
           <div class="login-form p-4">
             <div class="mb-8 text-center">
               <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-50 mb-4">
-                <i class="pi pi-lock text-primary text-3xl"></i>
+                <i class="pi pi-lock text-primary text-3xl"/>
               </div>
               <h2 class="text-2xl font-bold text-slate-900">Admin Access</h2>
             </div>
@@ -75,7 +75,7 @@
       <div class="flex flex-column gap-6 py-2">
         <div class="flex gap-4">
           <div class="w-12 h-12 flex items-center justify-center rounded-full bg-blue-50 flex-shrink-0">
-            <i class="pi pi-info-circle text-primary text-xl"></i>
+            <i class="pi pi-info-circle text-primary text-xl"/>
           </div>
           <div>
             <p class="font-bold text-lg mb-2 text-slate-900">Admin Password Setup</p>
@@ -90,7 +90,7 @@
 
         <div class="flex gap-4">
            <div class="w-12 h-12 flex items-center justify-center rounded-full bg-green-50 flex-shrink-0">
-            <i class="pi pi-key text-green-600 text-xl"></i>
+            <i class="pi pi-key text-green-600 text-xl"/>
           </div>
           <div>
             <p class="font-bold text-lg mb-2 text-slate-900">Generating a Hash</p>
@@ -108,9 +108,9 @@
         <Button 
           label="Close" 
           severity="secondary" 
-          @click="showHelpDialog = false"
           text
           class="font-bold"
+          @click="showHelpDialog = false"
         />
       </template>
     </Dialog>

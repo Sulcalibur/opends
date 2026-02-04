@@ -1,36 +1,57 @@
 # Build stage
-FROM node:18-alpine as builder
+FROM node:20-alpine AS builder
 
 WORKDIR /app
 
-RUN npm install -g pnpm
+# Install pnpm via corepack (recommended method)
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Copy all manifests and workspace configuration first
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-COPY simplified/package.json ./simplified/
-COPY opends-penpot-plugin/package.json ./opends-penpot-plugin/
+# Install build dependencies for native modules (better-sqlite3, pg)
+RUN apk add --no-cache python3 make g++ postgresql-dev
 
-# Now, install ALL dependencies for the entire workspace
-RUN pnpm install --prod=false
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
 
-# Copy the rest of the source code
+# Install dependencies
+RUN pnpm install --frozen-lockfile
+
+# Copy source code
 COPY . .
 
-# Build the specific package using a filter
-RUN pnpm --filter opends-simplified run build
+# Build Nuxt application
+RUN pnpm build
 
 # Production stage
-FROM nginx:alpine
+FROM node:20-alpine
 
-# Copy built files from builder stage
-COPY --from=builder /app/simplified/dist /usr/share/nginx/html
+WORKDIR /app
 
-# Create directory for SQLite database and design system data
-RUN mkdir -p /app/data /app/design-system-data && \
-    chown -R nginx:nginx /app
+# Install runtime dependencies
+RUN corepack enable && \
+    apk add --no-cache postgresql-libs curl && \
+    addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
 
-# Expose port 80
-EXPOSE 80
+# Copy built application from builder
+COPY --from=builder --chown=nodejs:nodejs /app/.output /app/.output
+COPY --from=builder --chown=nodejs:nodejs /app/package.json /app/package.json
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Create data directory for database
+RUN mkdir -p /app/data && chown -R nodejs:nodejs /app/data
+
+# Switch to non-root user
+USER nodejs
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD curl -f http://localhost:3000/api/health || exit 1
+
+# Start application
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=3000
+
+CMD ["node", ".output/server/index.mjs"]

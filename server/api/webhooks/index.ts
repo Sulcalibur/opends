@@ -8,7 +8,7 @@ import {
   createErrorResponse,
   ErrorCodes,
 } from "../../utils/response";
-import { DesignTool } from "../design-tools/types";
+import type { DesignTool } from "../design-tools/types";
 import designToolStorage from "../design-tools/storage";
 import crypto from "crypto";
 
@@ -84,7 +84,7 @@ export default defineEventHandler(async (event) => {
 function validateWebhook(
   signature: string | undefined,
   timestamp: string | undefined,
-  body: any,
+  body: Record<string, unknown>,
 ): boolean {
   if (!signature || !timestamp) {
     return false;
@@ -117,7 +117,7 @@ function isReplayAttack(timestamp: string | undefined): boolean {
 
 async function processWebhookEvent(
   tool: DesignTool,
-  event: any,
+  event: Record<string, unknown>,
 ): Promise<void> {
   switch (event.eventType) {
     case "file.updated":

@@ -24,7 +24,7 @@
               type="text"
               :placeholder="prop.default || getExampleValue(prop)"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            >
 
             <!-- Number input -->
             <input
@@ -33,7 +33,7 @@
               type="number"
               :placeholder="prop.default || getExampleValue(prop)"
               class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+            >
 
             <!-- Boolean checkbox -->
             <label v-if="prop.type === 'boolean'" class="flex items-center">
@@ -41,7 +41,7 @@
                 v-model="previewProps[prop.name]"
                 type="checkbox"
                 class="mr-2"
-              />
+              >
               <span class="text-sm text-gray-600">{{ prop.name }}</span>
             </label>
 
@@ -93,13 +93,13 @@
           <button
             v-for="mode in previewModes"
             :key="mode.name"
-            @click="selectedMode = mode"
             :class="[
               'px-3 py-1 rounded text-sm',
               selectedMode.name === mode.name
                 ? 'bg-blue-600 text-white'
                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
             ]"
+            @click="selectedMode = mode"
           >
             {{ mode.label }}
           </button>
@@ -116,8 +116,8 @@
         No component specification provided
       </div>
       <component
-        v-else
         :is="renderedComponent"
+        v-else
         v-bind="previewProps"
       />
     </div>
@@ -125,12 +125,13 @@
     <!-- Accessibility Check -->
     <div v-if="componentSpec" class="mt-4">
       <button
-        @click="runAccessibilityCheck"
         class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+        @click="runAccessibilityCheck"
       >
         Check Accessibility
       </button>
-      <div v-if="accessibilityResult" class="mt-2 p-3 rounded"
+      <div
+v-if="accessibilityResult" class="mt-2 p-3 rounded"
            :class="accessibilityResult.score === 'good' ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'">
         <div class="font-medium">Accessibility Score: {{ accessibilityResult.score }}</div>
         <ul v-if="accessibilityResult.issues.length" class="mt-1 text-sm">
