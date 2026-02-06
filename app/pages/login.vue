@@ -1,9 +1,9 @@
 <template>
   <div class="auth-page">
     <div class="background-decor">
-      <div class="circle circle-1"/>
-      <div class="circle circle-2"/>
-      <div class="circle circle-3"/>
+      <div class="circle circle-1" />
+      <div class="circle circle-2" />
+      <div class="circle circle-3" />
     </div>
 
     <div class="auth-container">
@@ -17,9 +17,13 @@
           <h1 id="auth-title" class="auth-title">Welcome back!</h1>
           <p class="auth-subtitle">Sign in to continue</p>
 
-          <form class="auth-form" aria-labelledby="auth-title" @submit.prevent="handleLogin">
+          <form
+            class="auth-form"
+            aria-labelledby="auth-title"
+            @submit.prevent="handleLogin"
+          >
             <div class="form-group">
-              <FloatingInput
+              <UiFloatingInput
                 id="email"
                 v-model="email"
                 type="email"
@@ -33,7 +37,7 @@
 
             <div class="form-group">
               <div class="password-field-wrapper">
-                <FloatingInput
+                <UiFloatingInput
                   id="password"
                   v-model="password"
                   :type="showPassword ? 'text' : 'password'"
@@ -50,17 +54,20 @@
                   :aria-pressed="showPassword"
                   @click="showPassword = !showPassword"
                 >
-                  <i :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'" aria-hidden="true"/>
+                  <i
+                    :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
             </div>
 
             <div v-if="authStore.error" class="auth-error" role="alert">
-              <i class="pi pi-times-circle" aria-hidden="true"/>
+              <i class="pi pi-times-circle" aria-hidden="true" />
               <span>{{ authStore.error }}</span>
             </div>
 
-            <PremiumButton
+            <UiPremiumButton
               type="submit"
               variant="primary"
               size="lg"
@@ -68,14 +75,16 @@
               :loading="authStore.loading"
             >
               <template #icon>
-                <i class="pi pi-sign-in" aria-hidden="true"/>
+                <i class="pi pi-sign-in" aria-hidden="true" />
               </template>
               Sign In
-            </PremiumButton>
+            </UiPremiumButton>
 
             <div class="form-footer">
               <div class="form-links">
-                <NuxtLink to="/register" class="form-link">Create account</NuxtLink>
+                <NuxtLink to="/register" class="form-link"
+                  >Create account</NuxtLink
+                >
                 <a href="#" class="form-link">Forgot password?</a>
               </div>
             </div>
@@ -83,11 +92,19 @@
             <div class="social-login">
               <p class="social-title">Or continue with</p>
               <div class="social-buttons">
-                <button type="button" class="social-button google" aria-label="Sign in with Google">
-                  <i class="pi pi-google" aria-hidden="true"/>
+                <button
+                  type="button"
+                  class="social-button google"
+                  aria-label="Sign in with Google"
+                >
+                  <i class="pi pi-google" aria-hidden="true" />
                 </button>
-                <button type="button" class="social-button github" aria-label="Sign in with GitHub">
-                  <i class="pi pi-github" aria-hidden="true"/>
+                <button
+                  type="button"
+                  class="social-button github"
+                  aria-label="Sign in with GitHub"
+                >
+                  <i class="pi pi-github" aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -103,44 +120,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed } from "vue";
 
 definePageMeta({
-  layout: 'centered',
-  middleware: 'guest'
-})
+  layout: "centered",
+  middleware: "guest",
+});
 
-const { data: settingsData } = await useFetch('/api/settings/public')
-const settings = computed(() => settingsData.value?.settings || {})
+const { data: settingsData } = useFetch("/api/settings/public", {
+  server: false,
+});
+const settings = computed(() => settingsData.value?.settings || {});
 
-const orgName = computed(() => settings.value.organization_name || 'OpenDS')
-const orgInitial = computed(() => orgName.value.substring(0, 2).toUpperCase())
+const orgName = computed(() => settings.value.organization_name || "OpenDS");
+const orgInitial = computed(() => orgName.value.substring(0, 2).toUpperCase());
 
-const authStore = useAuthStore()
-const router = useRouter()
+const authStore = useAuthStore();
+const router = useRouter();
 
-const email = ref('')
-const password = ref('')
-const showPassword = ref(false)
-const emailError = ref('')
-const passwordError = ref('')
+const email = ref("");
+const password = ref("");
+const showPassword = ref(false);
+const emailError = ref("");
+const passwordError = ref("");
 
 async function handleLogin() {
-  emailError.value = ''
-  passwordError.value = ''
+  emailError.value = "";
+  passwordError.value = "";
 
   if (!email.value) {
-    emailError.value = 'Email is required'
-    return
+    emailError.value = "Email is required";
+    return;
   }
   if (!password.value) {
-    passwordError.value = 'Password is required'
-    return
+    passwordError.value = "Password is required";
+    return;
   }
 
-  const success = await authStore.login(email.value, password.value)
+  const success = await authStore.login(email.value, password.value);
   if (success) {
-    router.push('/admin')
+    router.push("/admin");
   }
 }
 </script>
@@ -151,7 +170,11 @@ async function handleLogin() {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--color-bg-50) 0%, var(--color-bg-200) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-bg-50) 0%,
+    var(--color-bg-200) 100%
+  );
   padding: 2rem;
   font-family: var(--font-family-body);
   position: relative;
@@ -200,9 +223,16 @@ async function handleLogin() {
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0px) translateX(0px); }
-  33% { transform: translateY(-30px) translateX(20px); }
-  66% { transform: translateY(20px) translateX(-20px); }
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+  }
+  33% {
+    transform: translateY(-30px) translateX(20px);
+  }
+  66% {
+    transform: translateY(20px) translateX(-20px);
+  }
 }
 
 .auth-container {
@@ -225,10 +255,14 @@ async function handleLogin() {
 }
 
 .glass-card::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(135deg, var(--color-primary-400) 0%, var(--color-secondary-400) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-400) 0%,
+    var(--color-secondary-400) 100%
+  );
   opacity: 0;
   animation: shimmer 0.6s var(--easing-out);
 }
@@ -251,7 +285,11 @@ async function handleLogin() {
 .logo {
   width: 72px;
   height: 72px;
-  background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-secondary-500) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-500) 0%,
+    var(--color-secondary-500) 100%
+  );
   border-radius: var(--radius-xl);
   display: flex;
   align-items: center;
@@ -431,7 +469,11 @@ async function handleLogin() {
 }
 
 .dark .auth-page {
-  background: linear-gradient(135deg, var(--dark-color-bg-900) 0%, var(--dark-color-bg-800) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--dark-color-bg-900) 0%,
+    var(--dark-color-bg-800) 100%
+  );
 }
 
 .dark .circle-1 {
@@ -453,7 +495,11 @@ async function handleLogin() {
 }
 
 .dark .logo {
-  background: linear-gradient(135deg, var(--color-primary-400) 0%, var(--color-secondary-400) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-400) 0%,
+    var(--color-secondary-400) 100%
+  );
   box-shadow: 0 8px 24px -6px rgba(234, 138, 123, 0.3);
 }
 
@@ -501,8 +547,12 @@ async function handleLogin() {
 }
 
 @keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
 }
 
 @keyframes scale-in {

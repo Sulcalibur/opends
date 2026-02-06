@@ -8,7 +8,7 @@
       :title="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
       @click="isCollapsed = !isCollapsed"
     >
-      <i :class="isCollapsed ? 'pi-angle-right' : 'pi-angle-left'"/>
+      <i :class="isCollapsed ? 'pi-angle-right' : 'pi-angle-left'" />
     </button>
 
     <div class="sidebar-header">
@@ -27,9 +27,9 @@
         exact
         :class="{ 'justify-center': isCollapsed }"
       >
-        <i class="pi pi-home"/>
+        <i class="pi pi-home" />
         <span v-if="!isCollapsed">Dashboard</span>
-        <span class="glow"/>
+        <span class="glow" />
       </NuxtLink>
 
       <NuxtLink
@@ -39,9 +39,9 @@
         active-class="active"
         :class="{ 'justify-center': isCollapsed }"
       >
-        <i class="pi pi-box"/>
+        <i class="pi pi-box" />
         <span v-if="!isCollapsed">Components</span>
-        <span class="glow"/>
+        <span class="glow" />
       </NuxtLink>
 
       <NuxtLink
@@ -51,9 +51,9 @@
         active-class="active"
         :class="{ 'justify-center': isCollapsed }"
       >
-        <i class="pi pi-palette"/>
+        <i class="pi pi-palette" />
         <span v-if="!isCollapsed">Design Tokens</span>
-        <span class="glow"/>
+        <span class="glow" />
       </NuxtLink>
 
       <NuxtLink
@@ -63,9 +63,9 @@
         active-class="active"
         :class="{ 'justify-center': isCollapsed }"
       >
-        <i class="pi pi-file-edit"/>
+        <i class="pi pi-file-edit" />
         <span v-if="!isCollapsed">Documentation</span>
-        <span class="glow"/>
+        <span class="glow" />
       </NuxtLink>
 
       <NuxtLink
@@ -75,9 +75,9 @@
         active-class="active"
         :class="{ 'justify-center': isCollapsed }"
       >
-        <i class="pi pi-users"/>
+        <i class="pi pi-users" />
         <span v-if="!isCollapsed">Users</span>
-        <span class="glow"/>
+        <span class="glow" />
       </NuxtLink>
 
       <NuxtLink
@@ -87,9 +87,9 @@
         active-class="active"
         :class="{ 'justify-center': isCollapsed }"
       >
-        <i class="pi pi-cog"/>
+        <i class="pi pi-cog" />
         <span v-if="!isCollapsed">Settings</span>
-        <span class="glow"/>
+        <span class="glow" />
       </NuxtLink>
 
       <NuxtLink
@@ -99,9 +99,9 @@
         active-class="active"
         :class="{ 'justify-center': isCollapsed }"
       >
-        <i class="pi pi-key"/>
+        <i class="pi pi-key" />
         <span v-if="!isCollapsed">API Keys</span>
-        <span class="glow"/>
+        <span class="glow" />
       </NuxtLink>
 
       <NuxtLink
@@ -110,12 +110,12 @@
         class="nav-item"
         :class="[
           $route.path.startsWith('/components') ? 'active' : '',
-          'justify-center': isCollapsed
+          { 'justify-center': isCollapsed },
         ]"
       >
-        <i class="pi pi-box-open"/>
+        <i class="pi pi-box-open" />
         <span v-if="!isCollapsed">Public Components</span>
-        <span class="glow"/>
+        <span class="glow" />
       </NuxtLink>
 
       <NuxtLink
@@ -123,13 +123,16 @@
         to="/docs"
         class="nav-item"
         :class="[
-          $route.path.startsWith('/docs') && !$route.path.startsWith('/admin/docs') ? 'active' : '',
-          'justify-center': isCollapsed
+          $route.path.startsWith('/docs') &&
+          !$route.path.startsWith('/admin/docs')
+            ? 'active'
+            : '',
+          { 'justify-center': isCollapsed },
         ]"
       >
-        <i class="pi pi-book"/>
+        <i class="pi pi-book" />
         <span v-if="!isCollapsed">Public Docs</span>
-        <span class="glow"/>
+        <span class="glow" />
       </NuxtLink>
     </nav>
 
@@ -138,9 +141,9 @@
         <div class="user-avatar">
           {{ userInitials }}
         </div>
-        <div v-if="!isCollapsed" class="user-info">
-          <p class="user-name truncate">{{ authStore.user?.name }}</p>
-          <p class="user-role">{{ authStore.user?.role }}</p>
+        <div v-if="!isCollapsed && authStore.user" class="user-info">
+          <p class="user-name truncate">{{ authStore.user?.name || "" }}</p>
+          <p class="user-role">{{ authStore.user?.role || "" }}</p>
         </div>
       </div>
       <Button

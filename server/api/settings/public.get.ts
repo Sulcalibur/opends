@@ -1,19 +1,11 @@
-export default defineEventHandler(async (event) => {
-    const db = event.context.cloudflare?.env?.DB
-    if (!db) {
-        throw createError({
-            statusCode: 500,
-            message: 'Database connection not available'
-        })
-    }
+import { asyncHandler } from "../../middleware/error-handler";
+import { createSuccessResponse } from "../../utils/response";
+import SettingsRepository from "../../repositories/settings.repository";
 
-    const { SettingsRepository } = await import('~~/server/repositories/settings.repository')
-    const repo = new SettingsRepository(db)
+export default asyncHandler(async () => {
+  const publicSettings = await SettingsRepository.getPublic();
 
-    const publicSettings = await repo.getPublic()
-
-    return {
-        success: true,
-        settings: publicSettings
-    }
-})
+  return createSuccessResponse({
+    settings: publicSettings,
+  });
+});

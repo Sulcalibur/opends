@@ -11,8 +11,76 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
 
-const { data: settingsData } = await useFetch("/api/settings/public").catch(() => ({ data: ref(null) }));
-const settings = computed(() => settingsData.value?.settings || {});
+const { data: settingsData } = await useFetch("/api/settings/public").catch(
+  () => ({ data: ref(null) }),
+);
+
+// Transform flat public settings to nested structure expected by UI
+const transformPublicSettings = (flatSettings: Record<string, any>) => {
+  const transformed: any = {};
+
+  // Map known flat keys
+  if (flatSettings["app.theme"] !== undefined) {
+    if (!transformed.appearance) transformed.appearance = {};
+    transformed.appearance.theme = flatSettings["app.theme"];
+  }
+  if (flatSettings["app.primary_color"] !== undefined) {
+    if (!transformed.appearance) transformed.appearance = {};
+    transformed.appearance.primaryColor = flatSettings["app.primary_color"];
+  }
+  if (flatSettings["app.secondary_color"] !== undefined) {
+    if (!transformed.appearance) transformed.appearance = {};
+    transformed.appearance.secondaryColor = flatSettings["app.secondary_color"];
+  }
+  if (flatSettings["app.border_radius"] !== undefined) {
+    if (!transformed.appearance) transformed.appearance = {};
+    transformed.appearance.borderRadius = flatSettings["app.border_radius"];
+  }
+  if (flatSettings["app.heading_font"] !== undefined) {
+    if (!transformed.appearance) transformed.appearance = {};
+    transformed.appearance.headingFont = flatSettings["app.heading_font"];
+  }
+  if (flatSettings["app.body_font"] !== undefined) {
+    if (!transformed.appearance) transformed.appearance = {};
+    transformed.appearance.bodyFont = flatSettings["app.body_font"];
+  }
+  if (flatSettings["app.preset_theme"] !== undefined) {
+    if (!transformed.appearance) transformed.appearance = {};
+    transformed.appearance.presetTheme = flatSettings["app.preset_theme"];
+  }
+  if (flatSettings["app.name"] !== undefined) {
+    transformed.organization_name = flatSettings["app.name"];
+  }
+
+  // Parse JSON fields
+  if (flatSettings["app.home_hero"]) {
+    try {
+      transformed.home_hero =
+        typeof flatSettings["app.home_hero"] === "string"
+          ? JSON.parse(flatSettings["app.home_hero"])
+          : flatSettings["app.home_hero"];
+    } catch (e) {
+      console.error("Failed to parse home_hero:", e);
+    }
+  }
+  if (flatSettings["app.general"]) {
+    try {
+      transformed.general =
+        typeof flatSettings["app.general"] === "string"
+          ? JSON.parse(flatSettings["app.general"])
+          : flatSettings["app.general"];
+    } catch (e) {
+      console.error("Failed to parse general:", e);
+    }
+  }
+
+  return transformed;
+};
+
+const settings = computed(() => {
+  const flatSettings = settingsData.value?.settings || {};
+  return transformPublicSettings(flatSettings);
+});
 
 const isDark = ref(false);
 

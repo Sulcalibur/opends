@@ -11,9 +11,9 @@
               Here's what's happening with your design system today
             </p>
           </div>
-          <div class="welcome-badge">
+          <div class="welcome-badge" v-if="authStore.user">
             <span class="badge-icon">👑</span>
-            <span class="badge-text">{{ authStore.user?.role }}</span>
+            <span class="badge-text">{{ authStore.user.role }}</span>
           </div>
         </div>
       </template>
@@ -24,7 +24,7 @@
         <template #default>
           <div class="stat-content">
             <div class="stat-icon blue">
-              <i class="pi pi-box"/>
+              <i class="pi pi-box" />
             </div>
             <div class="stat-info">
               <p class="stat-value">{{ stats.components }}</p>
@@ -38,7 +38,7 @@
         <template #default>
           <div class="stat-content">
             <div class="stat-icon purple">
-              <i class="pi pi-palette"/>
+              <i class="pi pi-palette" />
             </div>
             <div class="stat-info">
               <p class="stat-value">{{ stats.tokens }}</p>
@@ -52,7 +52,7 @@
         <template #default>
           <div class="stat-content">
             <div class="stat-icon green">
-              <i class="pi pi-users"/>
+              <i class="pi pi-users" />
             </div>
             <div class="stat-info">
               <p class="stat-value">{{ stats.users }}</p>
@@ -66,7 +66,7 @@
         <template #default>
           <div class="stat-content">
             <div class="stat-icon gold">
-              <i class="pi pi-clock"/>
+              <i class="pi pi-clock" />
             </div>
             <div class="stat-info">
               <p class="stat-value">{{ stats.recentUpdates }}</p>
@@ -84,7 +84,7 @@
       <template #header>
         <div class="card-header">
           <div class="header-icon">
-            <i class="pi pi-bolt"/>
+            <i class="pi pi-bolt" />
           </div>
           <div>
             <h3 class="card-title">Quick Actions</h3>
@@ -99,7 +99,7 @@
             @click="navigateTo('/admin/components')"
           >
             <div class="action-icon blue">
-              <i class="pi pi-plus-circle"/>
+              <i class="pi pi-plus-circle" />
             </div>
             <div class="action-info">
               <p class="action-title">Add Component</p>
@@ -112,7 +112,7 @@
             @click="navigateTo('/admin/tokens')"
           >
             <div class="action-icon purple">
-              <i class="pi pi-palette"/>
+              <i class="pi pi-palette" />
             </div>
             <div class="action-info">
               <p class="action-title">Manage Tokens</p>
@@ -125,7 +125,7 @@
             @click="navigateTo('/admin/users')"
           >
             <div class="action-icon green">
-              <i class="pi pi-user-plus"/>
+              <i class="pi pi-user-plus" />
             </div>
             <div class="action-info">
               <p class="action-title">Invite User</p>
@@ -138,7 +138,7 @@
             @click="navigateTo('/admin/settings')"
           >
             <div class="action-icon gold">
-              <i class="pi pi-cog"/>
+              <i class="pi pi-cog" />
             </div>
             <div class="action-info">
               <p class="action-title">Settings</p>
@@ -156,7 +156,7 @@
       <template #header>
         <div class="card-header">
           <div class="header-icon rocket">
-            <i class="pi pi-rocket"/>
+            <i class="pi pi-rocket" />
           </div>
           <div>
             <h3 class="card-title">🚀 Getting Started</h3>
@@ -169,7 +169,7 @@
       <template #default>
         <div class="checklist">
           <div class="checklist-item completed">
-            <i class="pi pi-check-circle"/>
+            <i class="pi pi-check-circle" />
             <div class="checklist-content">
               <p class="checklist-title">Create your admin account</p>
               <p class="checklist-desc">You're all set!</p>
@@ -177,7 +177,7 @@
           </div>
 
           <div class="checklist-item">
-            <i class="pi pi-circle"/>
+            <i class="pi pi-circle" />
             <div class="checklist-content">
               <p class="checklist-title">Add your first component</p>
               <p class="checklist-desc">Document your UI components</p>
@@ -185,7 +185,7 @@
           </div>
 
           <div class="checklist-item">
-            <i class="pi pi-circle"/>
+            <i class="pi pi-circle" />
             <div class="checklist-content">
               <p class="checklist-title">Define design tokens</p>
               <p class="checklist-desc">
@@ -195,7 +195,7 @@
           </div>
 
           <div class="checklist-item">
-            <i class="pi pi-circle"/>
+            <i class="pi pi-circle" />
             <div class="checklist-content">
               <p class="checklist-title">Invite your team</p>
               <p class="checklist-desc">

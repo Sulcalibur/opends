@@ -8,7 +8,7 @@
     ]"
     :disabled="disabled || loading"
     :aria-busy="loading"
-    type="button"
+    :type="type"
     @click="$emit('click', $event)"
   >
     <span v-if="$slots.icon" class="icon-wrapper" :aria-hidden="loading">
@@ -29,6 +29,7 @@ interface Props {
   size?: "sm" | "md" | "lg" | "xl";
   loading?: boolean;
   disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -36,6 +37,7 @@ const props = withDefaults(defineProps<Props>(), {
   size: "md",
   loading: false,
   disabled: false,
+  type: "button",
 });
 
 const emit = defineEmits<{

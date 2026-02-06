@@ -2,8 +2,11 @@
 import { computed } from "vue";
 
 const router = useRouter();
-const { data: settingsData } = await useFetch("/api/settings/public").catch(() => ({ data: ref(null) }));
+const { data: settingsData } = await useFetch("/api/settings/public").catch(
+  () => ({ data: ref(null) }),
+);
 const settings = computed(() => settingsData.value?.settings || {});
+const colorMode = useColorMode();
 
 const orgName = computed(() => settings.value?.organization_name || "OpenDS");
 const orgInitial = computed(() => orgName.value.substring(0, 2).toUpperCase());
@@ -34,7 +37,7 @@ function handleLogout() {
           class="nav-link hover-lift"
         >
           <span class="link-text">{{ link.name }}</span>
-          <span class="link-indicator"/>
+          <span class="link-indicator" />
         </NuxtLink>
       </div>
 
@@ -43,12 +46,11 @@ function handleLogout() {
           class="theme-toggle hover-lift"
           title="Toggle theme"
           @click="
-            $colorMode.preference =
-              $colorMode.value === 'dark' ? 'light' : 'dark'
+            colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'
           "
         >
           <i
-            :class="`pi ${$colorMode.value === 'dark' ? 'pi-sun' : 'pi-moon'}`"
+            :class="`pi ${colorMode.value === 'dark' ? 'pi-sun' : 'pi-moon'}`"
           />
         </button>
 

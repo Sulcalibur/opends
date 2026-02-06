@@ -1,30 +1,49 @@
-export default defineEventHandler(async (event) => {
-    const db = event.context.cloudflare?.env?.DB
-    if (!db) {
-        throw createError({
-            statusCode: 500,
-            message: 'Database connection not available'
-        })
-    }
+import { asyncHandler } from "../../middleware/error-handler";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  ErrorCodes,
+} from "../../utils/response";
+import SettingsRepository from "../../repositories/settings.repository";
+import JwtService from "../../services/jwt.service";
+import { getRequestHeader, setResponseStatus, readBody } from "h3";
 
-    // TODO: Add proper auth check
-    // For now, only admins should be able to update settings
+export default asyncHandler(async (event) => {
+  // Get user from JWT
+  const authHeader = getRequestHeader(event, "authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(
+      ErrorCodes.UNAUTHORIZED,
+      "Missing authentication token",
+    );
+  }
 
-    const body = await readBody(event)
-    if (!body || typeof body !== 'object') {
-        throw createError({
-            statusCode: 400,
-            message: 'Invalid settings data'
-        })
-    }
+  const token = authHeader.substring(7);
+  const payload = JwtService.verify(token);
 
-    const { SettingsRepository } = await import('~~/server/repositories/settings.repository')
-    const repo = new SettingsRepository(db)
+  if (!payload) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
+  }
 
-    await repo.updateMultiple(body)
+  // Check if user is admin
+  if (payload.role !== "admin") {
+    setResponseStatus(event, 403);
+    return createErrorResponse(ErrorCodes.FORBIDDEN, "Admin access required");
+  }
 
-    return {
-        success: true,
-        message: 'Settings updated successfully'
-    }
-})
+  const body = await readBody(event);
+  if (!body || typeof body !== "object") {
+    return createErrorResponse(
+      ErrorCodes.VALIDATION_ERROR,
+      "Invalid settings data",
+    );
+  }
+
+  await SettingsRepository.updateMultiple(body);
+
+  return createSuccessResponse({
+    message: "Settings updated successfully",
+  });
+});

@@ -1,28 +1,47 @@
-export default defineEventHandler(async (event) => {
-    const db = event.context.cloudflare?.env?.DB
-    if (!db) {
-        throw createError({
-            statusCode: 500,
-            message: 'Database connection not available'
-        })
-    }
+import { asyncHandler } from "../../middleware/error-handler";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  ErrorCodes,
+} from "../../utils/response";
+import SettingsRepository from "../../repositories/settings.repository";
+import JwtService from "../../services/jwt.service";
+import { getRequestHeader, setResponseStatus } from "h3";
 
-    // TODO: Add proper auth check
-    // For now, only admins can access settings
+export default asyncHandler(async (event) => {
+  // Get user from JWT
+  const authHeader = getRequestHeader(event, "authorization");
+  if (!authHeader?.startsWith("Bearer ")) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(
+      ErrorCodes.UNAUTHORIZED,
+      "Missing authentication token",
+    );
+  }
 
-    const { SettingsRepository } = await import('~~/server/repositories/settings.repository')
-    const repo = new SettingsRepository(db)
+  const token = authHeader.substring(7);
+  const payload = JwtService.verify(token);
 
-    const settings = await repo.getAll()
+  if (!payload) {
+    setResponseStatus(event, 401);
+    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
+  }
 
-    // Transform to a cleaner object for the frontend
-    const settingsMap: Record<string, unknown> = {}
-    settings.forEach(s => {
-        settingsMap[s.key] = s.value
-    })
+  // Check if user is admin
+  if (payload.role !== "admin") {
+    setResponseStatus(event, 403);
+    return createErrorResponse(ErrorCodes.FORBIDDEN, "Admin access required");
+  }
 
-    return {
-        success: true,
-        settings: settingsMap
-    }
-})
+  const settings = await SettingsRepository.getAll();
+
+  // Transform to a cleaner object for the frontend
+  const settingsMap: Record<string, unknown> = {};
+  settings.forEach((s) => {
+    settingsMap[s.key] = s.value;
+  });
+
+  return createSuccessResponse({
+    settings: settingsMap,
+  });
+});
