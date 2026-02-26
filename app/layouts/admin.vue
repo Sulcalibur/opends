@@ -11,29 +11,44 @@
               class="mobile-menu-toggle lg:hidden"
               @click="isMobileMenuOpen = !isMobileMenuOpen"
             >
-              <i class="pi pi-bars"/>
+              <Icon name="i-lucide-menu" />
             </button>
           </div>
           <div class="header-right">
-            <button
-              class="theme-toggle hover-lift"
-              title="Toggle theme"
-              @click="
-                $colorMode.preference =
-                  $colorMode.value === 'dark' ? 'light' : 'dark'
+            <UTooltip
+              :text="
+                colorMode.value === 'dark'
+                  ? 'Switch to light mode'
+                  : 'Switch to dark mode'
               "
             >
-              <i
-                :class="`pi ${$colorMode.value === 'dark' ? 'pi-sun' : 'pi-moon'}`"
-              />
-            </button>
-            <button class="header-action hover-lift" title="Notifications">
-              <i class="pi pi-bell"/>
-              <span class="badge">3</span>
-            </button>
-            <button class="header-action hover-lift" title="Help">
-              <i class="pi pi-question-circle"/>
-            </button>
+              <button
+                class="theme-toggle hover-lift"
+                @click="
+                  colorMode.preference =
+                    colorMode.value === 'dark' ? 'light' : 'dark'
+                "
+              >
+                <Icon
+                  :name="
+                    colorMode.value === 'dark'
+                      ? 'i-lucide-sun'
+                      : 'i-lucide-moon'
+                  "
+                />
+              </button>
+            </UTooltip>
+            <UTooltip text="Notifications">
+              <button class="header-action hover-lift">
+                <Icon name="i-lucide-bell" />
+                <span class="badge">3</span>
+              </button>
+            </UTooltip>
+            <UTooltip text="Help">
+              <button class="header-action hover-lift">
+                <Icon name="i-lucide-help-circle" />
+              </button>
+            </UTooltip>
           </div>
         </div>
       </header>
@@ -56,9 +71,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-
 const route = useRoute();
+const colorMode = useColorMode();
 
 const isMobileMenuOpen = ref(false);
 
@@ -190,12 +204,12 @@ onMounted(() => {
   box-shadow: var(--shadow-md);
 }
 
-.theme-toggle i {
+.theme-toggle :deep(.iconify) {
   font-size: 1.25rem;
   transition: transform var(--transition-base);
 }
 
-.theme-toggle:hover i {
+.theme-toggle:hover :deep(.iconify) {
   transform: rotate(20deg);
 }
 
@@ -221,7 +235,7 @@ onMounted(() => {
   box-shadow: var(--shadow-md);
 }
 
-.header-action i {
+.header-action :deep(.iconify) {
   font-size: 1.125rem;
 }
 

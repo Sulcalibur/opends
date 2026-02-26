@@ -42,7 +42,7 @@ watch(form, () => {
 
 async function savePage() {
   if (!form.value.title || !form.value.slug) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Title and slug are required', life: 3000 })
+    toast.add({ color: 'error', title: 'Error', description: 'Title and slug are required' })
     return
   }
 
@@ -62,14 +62,13 @@ async function savePage() {
     })
 
     hasChanges.value = false
-    
-    toast.add({ severity: 'success', summary: 'Saved', detail: 'Page updated successfully', life: 3000 })
+    toast.add({ color: 'success', title: 'Saved', description: 'Page updated successfully' })
 
     if (form.value.slug !== slug) {
       router.push(`/admin/docs/${form.value.slug}`)
     }
   } catch (err: any) {
-    toast.add({ severity: 'error', summary: 'Error', detail: err.data?.message || 'Failed to save', life: 5000 })
+    toast.add({ color: 'error', title: 'Error', description: err.data?.message || 'Failed to save' })
   } finally {
     saving.value = false
   }

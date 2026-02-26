@@ -1,4 +1,4 @@
-import type { Component } from "../../../types/component";
+import type { Component } from "../../src/types/component";
 
 export async function generateCode(
   spec: Record<string, unknown>,

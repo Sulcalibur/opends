@@ -127,7 +127,13 @@ definePageMeta({
   middleware: "guest",
 });
 
-const { data: settingsData } = useFetch("/api/settings/public", {
+interface PublicSettingsResponse {
+  settings: {
+    organization_name?: string
+  }
+}
+
+const { data: settingsData } = useFetch<PublicSettingsResponse>("/api/settings/public", {
   server: false,
 });
 const settings = computed(() => settingsData.value?.settings || {});

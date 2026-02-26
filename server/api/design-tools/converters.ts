@@ -183,12 +183,13 @@ export function openDSTokenToPenpot(token: OpenDSToken): unknown {
       description: token.description,
     };
   } else if (token.type === "typography") {
+    const typo = token.value as { fontFamily?: string; fontWeight?: string | number; fontSize?: string | number; lineHeight?: string | number }
     return {
       name: token.name,
-      fontFamily: token.value.fontFamily,
-      fontWeight: token.value.fontWeight,
-      fontSize: token.value.fontSize,
-      lineHeight: token.value.lineHeight,
+      fontFamily: typo.fontFamily,
+      fontWeight: typo.fontWeight,
+      fontSize: typo.fontSize,
+      lineHeight: typo.lineHeight,
       description: token.description,
     };
   }

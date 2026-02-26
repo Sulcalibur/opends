@@ -144,7 +144,7 @@ export class DocumentationRepository {
         Object.entries(fieldMap).forEach(([key, value]) => {
             if (value !== undefined) {
                 updates.push(`${key} = $${paramIndex}`)
-                values.push(value)
+                values.push(value as string | number | boolean | null)
                 paramIndex++
             }
         })

@@ -1,20 +1,7 @@
 {
   "extends": "./.nuxt/tsconfig.json",
-  "include": ["src/**/*", "**/*.vue"],
-  "exclude": ["node_modules", "dist", ".nuxt"],
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
-    "allowJs": true,
-    "baseUrl": ".",
     "strict": false,
-    "noImplicitAny": false,
-    "skipLibCheck": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "paths": {
-      "@/*": ["src/*"],
-      "#imports": [".nuxt/imports.d.ts"],
-      "vue": ["node_modules/vue"],
-      "vue-router": ["node_modules/vue-router"]
-    }
+    "noImplicitAny": false
   }
 }

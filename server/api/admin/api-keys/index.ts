@@ -20,9 +20,8 @@ interface ApiKeyDisplay {
 }
 
 export default defineEventHandler(async (event: H3Event) => {
-  const userId = requireAuth(event); // Use existing auth middleware
-  requireRole(event, "admin"); // Only admins can manage MCP keys
-
+  const userId = await requireAuth(event);
+  await requireRole(event, 'admin');
   const method = getMethod(event);
 
   if (method === "GET") {

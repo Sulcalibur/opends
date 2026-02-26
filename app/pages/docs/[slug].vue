@@ -5,10 +5,21 @@ import { useRoute, useFetch, useHead, createError } from '#app'
 const route = useRoute()
 const slug = route.params.slug as string
 
-// Fetch the documentation page
-const { data: doc, error } = await useFetch(`/api/docs/${slug}`)
+interface DocResponse {
+  success: boolean
+  data: {
+    title: string
+    slug: string
+    content: string
+    excerpt?: string
+    category: string
+    isPublished: boolean
+    updatedAt: string
+  }
+}
 
-// Handle not found or unpublished pages
+const { data: doc, error } = await useFetch<DocResponse>(`/api/docs/${slug}`)
+
 if (error.value || !doc.value?.data) {
   throw createError({
     statusCode: 404,

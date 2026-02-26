@@ -28,7 +28,7 @@
           severity="secondary"
           outlined
           :loading="importing"
-          @click="$refs.fileInput.click()" 
+          @click="fileInput?.click()" 
         />
         <Button icon="pi pi-plus" label="New Token" @click="showCreateDialog = true" />
       </div>
@@ -231,6 +231,7 @@ interface DesignToken {
   description?: string
 }
 
+const fileInput = useTemplateRef<HTMLInputElement>('fileInput')
 const showCreateDialog = ref(false)
 const editingToken = ref<DesignToken | null>(null)
 const saving = ref(false)

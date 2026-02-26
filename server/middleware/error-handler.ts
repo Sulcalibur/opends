@@ -26,12 +26,12 @@ export function handleApiError(event: H3Event, error: unknown) {
 
     // Zod validation errors
     if (error instanceof ZodError) {
-        const firstError = error.errors[0]
+        const firstError = error.issues[0]
         setResponseStatus(event, 400)
         return createErrorResponse(
             ErrorCodes.VALIDATION_ERROR,
             firstError.message,
-            error.errors,
+            error.issues,
             firstError.path.join('.')
         )
     }

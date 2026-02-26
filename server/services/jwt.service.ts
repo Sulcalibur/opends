@@ -30,22 +30,24 @@ export class JwtService {
      * Generate access token (short-lived)
      */
     static generateAccessToken(payload: TokenPayload): string {
+        const expiresIn = process.env.JWT_ACCESS_EXPIRE || '15m'
         return jwt.sign(payload, this.getSecret(), {
-            expiresIn: process.env.JWT_ACCESS_EXPIRE || '15m',
+            expiresIn,
             issuer: 'opends',
             audience: 'opends-api'
-        })
+        } as jwt.SignOptions)
     }
 
     /**
      * Generate refresh token (long-lived)
      */
     static generateRefreshToken(payload: TokenPayload): string {
+        const expiresIn = process.env.JWT_REFRESH_EXPIRE || '7d'
         return jwt.sign(payload, this.getSecret(), {
-            expiresIn: process.env.JWT_REFRESH_EXPIRE || '7d',
+            expiresIn,
             issuer: 'opends',
             audience: 'opends-api'
-        })
+        } as jwt.SignOptions)
     }
 
     /**

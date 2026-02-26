@@ -39,7 +39,7 @@ function generateSlug(text: string): string {
 
 async function savePage() {
   if (!form.value.title || !form.value.slug) {
-    toast.add({ severity: 'error', summary: 'Error', detail: 'Title and slug are required', life: 3000 })
+    toast.add({ color: 'error', title: 'Error', description: 'Title and slug are required' })
     return
   }
 
@@ -58,10 +58,10 @@ async function savePage() {
       }
     })
 
-    toast.add({ severity: 'success', summary: 'Created', detail: 'Page created successfully', life: 3000 })
+    toast.add({ color: 'success', title: 'Created', description: 'Page created successfully' })
     router.push('/admin/docs')
   } catch (err: any) {
-    toast.add({ severity: 'error', summary: 'Error', detail: err.data?.message || 'Failed to create page', life: 5000 })
+    toast.add({ color: 'error', title: 'Error', description: err.data?.message || 'Failed to create page' })
   } finally {
     saving.value = false
   }

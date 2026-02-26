@@ -1,7 +1,18 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-const { data: docs, error } = await useFetch("/api/docs", {
+interface DocsListResponse {
+  pages: Array<{
+    id: string
+    title: string
+    slug: string
+    excerpt?: string
+    category: string
+    sortOrder?: number
+  }>
+}
+
+const { data: docs, error } = await useFetch<DocsListResponse>("/api/docs", {
   query: { isPublished: 1 },
 });
 

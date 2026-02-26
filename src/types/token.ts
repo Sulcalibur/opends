@@ -11,6 +11,7 @@ export type TokenCategory =
     | 'shadow'
     | 'animation'
     | 'breakpoint'
+    | 'opacity'
     | 'other';
 
 export interface DesignToken {

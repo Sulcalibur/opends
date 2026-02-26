@@ -1,0 +1,254 @@
+/* OpenDS - Tailwind CSS v4 + Nuxt UI v4 */
+
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/* Source directories for Tailwind to scan */
+@source "../components";
+@source "../pages";
+@source "../layouts";
+@source "../composables";
+
+/* Import Design Token System */
+@import "./design-tokens.css";
+
+/* Import Base Styles & Reset */
+@import "./base.css";
+
+/* Import Animation Library */
+@import "./animations.css";
+
+/* Import Dark Mode System */
+@import "./dark-mode.css";
+
+/* OpenDS Custom Theme Extensions */
+
+:root {
+  /* Legacy compatibility variables */
+  --primary-color: var(--color-primary-500);
+  --primary-color-hover: var(--color-primary-400);
+  --secondary-color: var(--color-secondary-500);
+  --border-radius: var(--radius-lg);
+  --font-heading: var(--font-family-heading);
+  --font-body: var(--font-family-body);
+
+  /* GDS Specific variables */
+  --gds-focus-color: var(--color-light-gold-500);
+  --gds-text-color: var(--color-text-primary);
+}
+
+body {
+  font-family: var(--font-body);
+  color: var(--gds-text-color, #1a1a1a);
+  background-color: #ffffff;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--gds-text-color);
+}
+
+/* Links - Default Style */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+a:hover {
+  color: var(--primary-color-hover);
+  text-decoration: underline;
+}
+
+/* Standard Focus */
+:focus-visible {
+  outline: 2px solid var(--primary-color);
+  outline-offset: 2px;
+}
+
+/* Layout Utilities */
+.ds-container {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+/* Phase Banner (GDS Pattern) */
+.ds-phase-banner {
+  padding: 0.75rem 0;
+  border-bottom: 2px solid #b1b4b6;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ds-phase-tag {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 2px 8px;
+  font-weight: 700;
+  font-size: 0.875rem;
+  letter-spacing: 1px;
+}
+
+/* GDS / MOJ Link Style */
+[data-theme-preset="govuk"] a,
+[data-theme-preset="moj"] a {
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.1em;
+  text-decoration: underline;
+}
+
+[data-theme-preset="govuk"] a:hover,
+[data-theme-preset="moj"] a:hover {
+  text-decoration-thickness: 3px;
+  text-decoration-color: var(--gds-text-color, black);
+  background-color: var(--gds-focus-color);
+  color: var(--gds-text-color, black);
+  box-shadow:
+    0 -2px var(--gds-focus-color),
+    0 4px var(--gds-text-color, black);
+}
+
+/* Accessible Focus State - Only for GDS/MOJ */
+[data-theme-preset="govuk"] :focus,
+[data-theme-preset="moj"] :focus {
+  outline: 3px solid var(--gds-focus-color) !important;
+  outline-offset: 0 !important;
+  background-color: var(--gds-focus-color) !important;
+  color: #0b0c0c !important;
+  box-shadow:
+    0 -2px var(--gds-focus-color),
+    0 4px #0b0c0c !important;
+}
+
+/* Theme Button Primary */
+.theme-btn-primary {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: white !important;
+  border-radius: var(--border-radius) !important;
+  font-weight: 600 !important;
+  padding: 0.75rem 1.5rem !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  text-decoration: none !important;
+  transition: all 0.2s;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.theme-btn-primary:hover {
+  background-color: var(--primary-color-hover) !important;
+  border-color: var(--primary-color-hover) !important;
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* GDS Button Overrides */
+[data-theme-preset="govuk"] .theme-btn-primary,
+[data-theme-preset="moj"] .theme-btn-primary {
+  border-bottom: 3px solid rgba(0, 0, 0, 0.4) !important;
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0) !important;
+}
+
+[data-theme-preset="govuk"] .theme-btn-primary:hover,
+[data-theme-preset="moj"] .theme-btn-primary:hover {
+  background-color: var(--primary-color-hover) !important;
+  transform: translateY(1px);
+  box-shadow: none !important;
+}
+
+[data-theme-preset="govuk"] .theme-btn-primary:active,
+[data-theme-preset="moj"] .theme-btn-primary:active {
+  transform: translateY(2px);
+  border-bottom: none !important;
+  margin-top: 3px;
+  margin-bottom: -3px;
+}
+
+/* -------------------------------------------------------------------------- */
+/*  THEME PRESET OVERRIDES                                                    */
+/* -------------------------------------------------------------------------- */
+
+/* 1. SOFT MINT (Friendly, Round, Pastel) */
+[data-theme-preset="soft"] {
+  --primary-color-hover: #059669;
+}
+
+[data-theme-preset="soft"] .bg-white,
+[data-theme-preset="soft"] input,
+[data-theme-preset="soft"] .theme-btn-primary {
+  border-radius: 16px !important;
+  box-shadow:
+    0 10px 25px -5px rgba(16, 185, 129, 0.1),
+    0 8px 10px -6px rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+[data-theme-preset="soft"] h1,
+[data-theme-preset="soft"] h2,
+[data-theme-preset="soft"] h3 {
+  letter-spacing: -0.02em;
+  color: #334155;
+}
+
+/* 2. CYBER GREEN (Tech, Mono, Sharp, Neon) */
+[data-theme-preset="tech"] {
+  --font-heading: "Space Grotesk", monospace;
+  --font-body: "IBM Plex Sans", sans-serif;
+}
+
+[data-theme-preset="tech"] * {
+  border-radius: 0px !important;
+}
+
+[data-theme-preset="tech"] .theme-btn-primary {
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 1px solid var(--primary-color) !important;
+  box-shadow:
+    0 0 10px var(--primary-color),
+    inset 0 0 5px var(--primary-color);
+  background: transparent !important;
+  color: var(--primary-color) !important;
+}
+
+[data-theme-preset="tech"] .theme-btn-primary:hover {
+  background: var(--primary-color) !important;
+  color: black !important;
+  box-shadow: 0 0 20px var(--primary-color);
+}
+
+/* 3. CLASSIC NOIR (Serif, Elegant, Minimal) */
+[data-theme-preset="elegant"] {
+  --font-heading: "Playfair Display", serif;
+  --font-body: "Lora", serif;
+}
+
+[data-theme-preset="elegant"] .theme-btn-primary {
+  background-color: #0f172a !important;
+  border-radius: 2px !important;
+  font-family: var(--font-heading);
+  font-weight: 400 !important;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 2rem !important;
+}
+
+[data-theme-preset="elegant"] h1 {
+  font-style: italic;
+}

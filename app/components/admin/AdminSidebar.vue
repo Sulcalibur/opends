@@ -8,7 +8,9 @@
       :title="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
       @click="isCollapsed = !isCollapsed"
     >
-      <i :class="isCollapsed ? 'pi-angle-right' : 'pi-angle-left'" />
+      <Icon
+        :name="isCollapsed ? 'i-lucide-chevron-right' : 'i-lucide-chevron-left'"
+      />
     </button>
 
     <div class="sidebar-header">
@@ -19,121 +21,27 @@
     </div>
 
     <nav class="sidebar-nav">
-      <NuxtLink
-        v-tooltip.right="isCollapsed ? 'Dashboard' : ''"
-        to="/admin"
-        class="nav-item"
-        active-class="active"
-        exact
-        :class="{ 'justify-center': isCollapsed }"
+      <UTooltip
+        v-for="item in navItems"
+        :key="item.to"
+        :text="isCollapsed ? item.label : ''"
+        :side="'right'"
       >
-        <i class="pi pi-home" />
-        <span v-if="!isCollapsed">Dashboard</span>
-        <span class="glow" />
-      </NuxtLink>
-
-      <NuxtLink
-        v-tooltip.right="isCollapsed ? 'Components' : ''"
-        to="/admin/components"
-        class="nav-item"
-        active-class="active"
-        :class="{ 'justify-center': isCollapsed }"
-      >
-        <i class="pi pi-box" />
-        <span v-if="!isCollapsed">Components</span>
-        <span class="glow" />
-      </NuxtLink>
-
-      <NuxtLink
-        v-tooltip.right="isCollapsed ? 'Design Tokens' : ''"
-        to="/admin/tokens"
-        class="nav-item"
-        active-class="active"
-        :class="{ 'justify-center': isCollapsed }"
-      >
-        <i class="pi pi-palette" />
-        <span v-if="!isCollapsed">Design Tokens</span>
-        <span class="glow" />
-      </NuxtLink>
-
-      <NuxtLink
-        v-tooltip.right="isCollapsed ? 'Documentation' : ''"
-        to="/admin/docs"
-        class="nav-item"
-        active-class="active"
-        :class="{ 'justify-center': isCollapsed }"
-      >
-        <i class="pi pi-file-edit" />
-        <span v-if="!isCollapsed">Documentation</span>
-        <span class="glow" />
-      </NuxtLink>
-
-      <NuxtLink
-        v-tooltip.right="isCollapsed ? 'Users' : ''"
-        to="/admin/users"
-        class="nav-item"
-        active-class="active"
-        :class="{ 'justify-center': isCollapsed }"
-      >
-        <i class="pi pi-users" />
-        <span v-if="!isCollapsed">Users</span>
-        <span class="glow" />
-      </NuxtLink>
-
-      <NuxtLink
-        v-tooltip.right="isCollapsed ? 'Settings' : ''"
-        to="/admin/settings"
-        class="nav-item"
-        active-class="active"
-        :class="{ 'justify-center': isCollapsed }"
-      >
-        <i class="pi pi-cog" />
-        <span v-if="!isCollapsed">Settings</span>
-        <span class="glow" />
-      </NuxtLink>
-
-      <NuxtLink
-        v-tooltip.right="isCollapsed ? 'API Keys' : ''"
-        to="/admin/api-keys"
-        class="nav-item"
-        active-class="active"
-        :class="{ 'justify-center': isCollapsed }"
-      >
-        <i class="pi pi-key" />
-        <span v-if="!isCollapsed">API Keys</span>
-        <span class="glow" />
-      </NuxtLink>
-
-      <NuxtLink
-        v-tooltip.right="isCollapsed ? 'Public Components' : ''"
-        to="/components"
-        class="nav-item"
-        :class="[
-          $route.path.startsWith('/components') ? 'active' : '',
-          { 'justify-center': isCollapsed },
-        ]"
-      >
-        <i class="pi pi-box-open" />
-        <span v-if="!isCollapsed">Public Components</span>
-        <span class="glow" />
-      </NuxtLink>
-
-      <NuxtLink
-        v-tooltip.right="isCollapsed ? 'Public Docs' : ''"
-        to="/docs"
-        class="nav-item"
-        :class="[
-          $route.path.startsWith('/docs') &&
-          !$route.path.startsWith('/admin/docs')
-            ? 'active'
-            : '',
-          { 'justify-center': isCollapsed },
-        ]"
-      >
-        <i class="pi pi-book" />
-        <span v-if="!isCollapsed">Public Docs</span>
-        <span class="glow" />
-      </NuxtLink>
+        <NuxtLink
+          :to="item.to"
+          class="nav-item"
+          :active-class="item.exact ? 'active' : ''"
+          :class="[
+            item.exact && route.path === item.to ? 'active' : '',
+            !item.exact && route.path.startsWith(item.to) ? 'active' : '',
+            { 'justify-center': isCollapsed },
+          ]"
+        >
+          <Icon :name="item.icon" />
+          <span v-if="!isCollapsed">{{ item.label }}</span>
+          <span class="glow" />
+        </NuxtLink>
+      </UTooltip>
     </nav>
 
     <div class="sidebar-footer">
@@ -146,29 +54,43 @@
           <p class="user-role">{{ authStore.user?.role || "" }}</p>
         </div>
       </div>
-      <Button
-        v-tooltip.right="isCollapsed ? 'Logout' : ''"
-        icon="pi pi-sign-out"
-        :label="isCollapsed ? '' : 'Logout'"
-        text
-        severity="secondary"
-        class="logout-btn"
-        :class="{ 'justify-center': isCollapsed }"
-        @click="handleLogout"
-      />
+      <UTooltip :text="isCollapsed ? 'Logout' : ''" :side="'right'">
+        <UButton
+          icon="i-lucide-log-out"
+          :label="isCollapsed ? '' : 'Logout'"
+          variant="ghost"
+          color="neutral"
+          class="logout-btn"
+          :class="{ 'justify-center': isCollapsed }"
+          @click="handleLogout"
+        />
+      </UTooltip>
     </div>
   </aside>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, watch } from "vue";
-import "primeicons/primeicons.css";
-
 const authStore = useAuthStore();
 const router = useRouter();
 const route = useRoute();
 
 const isCollapsed = ref(false);
+
+const navItems = [
+  { label: "Dashboard", to: "/admin", icon: "i-lucide-home", exact: true },
+  { label: "Components", to: "/admin/components", icon: "i-lucide-box" },
+  { label: "Design Tokens", to: "/admin/tokens", icon: "i-lucide-palette" },
+  { label: "Documentation", to: "/admin/docs", icon: "i-lucide-file-edit" },
+  { label: "Users", to: "/admin/users", icon: "i-lucide-users" },
+  { label: "Settings", to: "/admin/settings", icon: "i-lucide-settings" },
+  { label: "API Keys", to: "/admin/api-keys", icon: "i-lucide-key" },
+  {
+    label: "Public Components",
+    to: "/components",
+    icon: "i-lucide-box-select",
+  },
+  { label: "Public Docs", to: "/docs", icon: "i-lucide-book-open" },
+];
 
 const userInitials = computed(() => {
   const name = authStore.user?.name || "U";
@@ -369,7 +291,7 @@ watch(isCollapsed, (val) => {
   opacity: 0.3;
 }
 
-.nav-item i {
+.nav-item :deep(.iconify) {
   font-size: 1.25rem;
   flex-shrink: 0;
   width: 1.5rem;
@@ -377,11 +299,11 @@ watch(isCollapsed, (val) => {
   transition: transform var(--transition-base);
 }
 
-.nav-item:hover i {
+.nav-item:hover :deep(.iconify) {
   transform: scale(1.1);
 }
 
-.nav-item.active i {
+.nav-item.active :deep(.iconify) {
   transform: scale(1.15);
 }
 
@@ -492,14 +414,6 @@ watch(isCollapsed, (val) => {
   padding: 0.75rem;
 }
 
-.is-collapsed .logout-btn .p-button-label {
-  display: none;
-}
-
-.is-collapsed .logout-btn .p-button-icon {
-  margin-right: 0;
-}
-
 ::-webkit-scrollbar {
   width: 4px;
 }
@@ -515,29 +429,5 @@ watch(isCollapsed, (val) => {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.2);
-}
-</style>
-
-<style>
-.p-tooltip {
-  z-index: 9999 !important;
-}
-
-.p-tooltip-text {
-  background: #1e293b !important;
-  color: #fff !important;
-  padding: 0.5rem 0.75rem !important;
-  border-radius: 8px !important;
-  font-size: 0.8125rem !important;
-  font-weight: var(--font-weight-medium) !important;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.p-tooltip-arrow {
-  border-right-color: #1e293b !important;
-  border-left-color: #1e293b !important;
-  border-top-color: #1e293b !important;
-  border-bottom-color: #1e293b !important;
 }
 </style>

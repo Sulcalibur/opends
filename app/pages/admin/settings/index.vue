@@ -725,16 +725,13 @@ onMounted(async () => {
       };
     }
   } catch (error) {
-    console.error("Failed to load settings:", error);
     toast.add({
-      severity: "error",
-      summary: "Error",
-      detail: "Failed to load settings",
-      life: 3000,
+      color: "error",
+      title: "Error",
+      description: "Failed to load settings",
     });
   }
 });
-
 const languages = [
   { name: "English", code: "en" },
   { name: "Spanish", code: "es" },
@@ -749,7 +746,7 @@ async function saveSettings() {
     // Transform nested settings to flat for API
     const flatSettings = transformNestedToFlat(settings.value)
     await api.put('/settings', flatSettings)
-    toast.add({ severity: 'success', summary: 'Success', detail: 'Settings updated successfully', life: 3000 })
+    toast.add({ color: 'success', title: 'Success', description: 'Settings updated successfully' })
 
     // Force reload settings to ensure UI is in sync
     const response = await api.get('/settings')
@@ -761,22 +758,12 @@ async function saveSettings() {
       }
     }
   } catch (error: any) {
-    toast.add({ severity: 'error', summary: 'Error', detail: error.message || 'Failed to save settings', life: 5000 })
+    toast.add({ color: 'error', title: 'Error', description: error.message || 'Failed to save settings' })
   } finally {
     saving.value = false
   }
 }
-  } catch (error: any) {
-    toast.add({
-      severity: "error",
-      summary: "Error",
-      detail: error.message || "Failed to save settings",
-      life: 5000,
-    });
-  } finally {
-    saving.value = false;
-  }
-}
+
 </script>
 
 <style scoped>

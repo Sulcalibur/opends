@@ -190,7 +190,6 @@ class UniversalDatabase {
             throw new Error('PostgreSQL not connected')
         }
 
-        // @ts-expect-error - QueryResult<T> compatibility
         const result: QueryResult<T> = await this.pgPool.query(text, params)
         return { rows: result.rows, rowCount: result.rowCount || 0 }
     }
@@ -202,7 +201,6 @@ class UniversalDatabase {
         // Try to get binding from Nitro runtime context
         if (!this.d1Db) {
             try {
-                // @ts-expect-error - useEvent is auto-imported in Nitro context
                 const event = useEvent()
                 // Cloudflare Pages bindings are at event.context.cloudflare.env
                 if (event?.context?.cloudflare?.env?.DB) {

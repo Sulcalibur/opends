@@ -135,7 +135,13 @@ definePageMeta({
   middleware: "guest",
 });
 
-const { data: settingsData } = await useFetch("/api/settings/public");
+interface PublicSettingsResponse {
+  settings: {
+    organization_name?: string
+  }
+}
+
+const { data: settingsData } = await useFetch<PublicSettingsResponse>("/api/settings/public");
 const settings = computed(() => settingsData.value?.settings || {});
 
 const orgName = computed(() => settings.value.organization_name || "OpenDS");

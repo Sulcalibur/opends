@@ -3,66 +3,85 @@
  * Provides authenticated API calls with automatic token injection
  */
 
-export const useApi = () => {
-    const authStore = useAuthStore()
-    const config = useRuntimeConfig()
+interface RequestOptions {
+  method?: "GET" | "POST" | "PUT" | "DELETE" | "PATCH";
+  body?: any;
+  headers?: Record<string, string>;
+}
 
-    const apiBase = config.public.apiBase || '/api'
+export function useApi() {
+  const authStore = useAuthStore();
+  const config = useRuntimeConfig();
 
-    /**
-     * Make authenticated API request
-     */
-    async function request<T = any>(
-        url: string,
-        options: RequestInit = {}
-    ): Promise<T> {
-        const headers = new Headers(options.headers)
+  const apiBase = config.public.apiBase || "/api";
 
-        // Add auth token if available
-        if (authStore.accessToken) {
-            headers.set('Authorization', `Bearer ${authStore.accessToken}`)
-        }
+  /**
+   * Make authenticated API request
+   */
+  async function request<T = any>(
+    url: string,
+    options: RequestOptions = {},
+  ): Promise<T> {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+      ...options.headers,
+    };
 
-        headers.set('Content-Type', 'application/json')
-
-        try {
-            const response = await $fetch<any>(`${apiBase}${url}`, {
-                ...options,
-                headers: Object.fromEntries(headers.entries())
-            })
-
-            return response.data as T
-        } catch (error: any) {
-            // Handle 401 - token expired
-            if (error.statusCode === 401) {
-                authStore.logout()
-                navigateTo('/login')
-            }
-
-            throw error
-        }
+    // Add auth token if available
+    if (authStore.accessToken) {
+      headers.Authorization = `Bearer ${authStore.accessToken}`;
     }
 
-    return {
-        // Generic request
-        request,
+    try {
+      const response = await $fetch<T>(`${apiBase}${url}`, {
+        method: options.method || "GET",
+        headers,
+        body: options.body,
+      });
 
-        // Convenience methods
-        get: <T = any>(url: string) => request<T>(url, { method: 'GET' }),
+      return response;
+    } catch (error: any) {
+      // Handle 401 - token expired
+      if (error.statusCode === 401) {
+        authStore.logout();
+        navigateTo("/login");
+      }
 
-        post: <T = any>(url: string, data?: any) =>
-            request<T>(url, {
-                method: 'POST',
-                body: JSON.stringify(data)
-            }),
-
-        put: <T = any>(url: string, data?: any) =>
-            request<T>(url, {
-                method: 'PUT',
-                body: JSON.stringify(data)
-            }),
-
-        delete: <T = any>(url: string) =>
-            request<T>(url, { method: 'DELETE' })
+      throw error;
     }
+  }
+
+  return {
+    // Generic request
+    request,
+
+    // Convenience methods
+    get: <T = any>(
+      url: string,
+      options?: Omit<RequestOptions, "method" | "body">,
+    ) => request<T>(url, { ...options, method: "GET" }),
+
+    post: <T = any>(
+      url: string,
+      data?: any,
+      options?: Omit<RequestOptions, "method" | "body">,
+    ) => request<T>(url, { ...options, method: "POST", body: data }),
+
+    put: <T = any>(
+      url: string,
+      data?: any,
+      options?: Omit<RequestOptions, "method" | "body">,
+    ) => request<T>(url, { ...options, method: "PUT", body: data }),
+
+    patch: <T = any>(
+      url: string,
+      data?: any,
+      options?: Omit<RequestOptions, "method" | "body">,
+    ) => request<T>(url, { ...options, method: "PATCH", body: data }),
+
+    delete: <T = any>(
+      url: string,
+      options?: Omit<RequestOptions, "method" | "body">,
+    ) => request<T>(url, { ...options, method: "DELETE" }),
+  };
 }

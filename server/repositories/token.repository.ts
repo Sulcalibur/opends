@@ -190,6 +190,56 @@ class DesignTokenRepository {
 
         return { imported, skipped, errors }
     }
+
+    /**
+     * Delete token (soft delete)
+     */
+    async delete(id: string): Promise<boolean> {
+        const db = getDatabase()
+        const result = await db.query(
+            'UPDATE design_tokens SET deleted_at = CURRENT_TIMESTAMP WHERE id = $1 AND deleted_at IS NULL',
+            [id]
+        )
+        return result.rowCount > 0
+    }
+
+    /**
+     * Export tokens to JSON format
+     */
+    async exportTokens(format: string = 'json'): Promise<Record<string, any>> {
+        const tokens = await this.findAll()
+        const exported: Record<string, any> = {}
+
+        for (const token of tokens) {
+            exported[token.name] = {
+                value: token.value,
+                category: token.category,
+                description: token.description
+            }
+        }
+
+        return exported
+    }
+
+    /**
+     * Get token statistics
+     */
+    async getStats(): Promise<{
+        total: number
+        byCategory: Record<string, number>
+    }> {
+        const tokens = await this.findAll()
+        const byCategory: Record<string, number> = {}
+
+        for (const token of tokens) {
+            byCategory[token.category] = (byCategory[token.category] || 0) + 1
+        }
+
+        return {
+            total: tokens.length,
+            byCategory
+        }
+    }
 }
 
 export default new DesignTokenRepository()

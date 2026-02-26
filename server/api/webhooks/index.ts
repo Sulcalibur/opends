@@ -17,8 +17,7 @@ const WEBHOOK_SECRET_KEY =
 
 export default defineEventHandler(async (event) => {
   const method = getMethod(event);
-  const path = getPath(event);
-
+  const path = getRequestPath(event);
   if (method !== "POST") {
     throw createErrorResponse(
       ErrorCodes.INVALID_INPUT,

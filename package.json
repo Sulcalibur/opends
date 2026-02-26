@@ -4,7 +4,7 @@
   "description": "Simple, self-hosted design system documentation tool",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.11.1",
+  "packageManager": "pnpm@10.30.3",
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",
@@ -25,11 +25,8 @@
   },
   "devDependencies": {
     "@nuxt/eslint": "^1.12.1",
-    "@nuxtjs/tailwindcss": "^6.14.0",
     "@pinia/nuxt": "^0.11.3",
     "@playwright/test": "^1.57.0",
-    "@primevue/nuxt-module": "^4.5.4",
-    "@primevue/themes": "^4.5.4",
     "@storybook/addon-a11y": "^8.6.15",
     "@storybook/addon-essentials": "^8.6.14",
     "@storybook/addon-interactions": "^8.6.14",
@@ -51,13 +48,11 @@
     "pinia": "^3.0.4",
     "postcss": "^8.5.6",
     "prettier": "^3.0.0",
-    "primeicons": "^7.0.0",
-    "primevue": "^4.5.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "storybook": "^8.6.15",
-    "tailwindcss": "^3.4.17",
-    "typescript": "~5.3.0",
+    "tailwindcss": "^4.2.1",
+    "typescript": "~5.9.3",
     "vitest": "^4.0.16"
   },
   "engines": {
@@ -80,11 +75,21 @@
   "bugs": {
     "url": "https://github.com/opends/opends/issues"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "@parcel/watcher",
+      "esbuild",
+      "unrs-resolver"
+    ]
+  },
   "homepage": "https://opends.dev",
   "dependencies": {
     "@milkdown/crepe": "^7.17.3",
     "@milkdown/kit": "^7.17.3",
     "@milkdown/vue": "^7.17.3",
+    "@nuxt/ui": "^4.5.0",
+    "@nuxtjs/color-mode": "^4.0.0",
     "@nuxtjs/mcp-toolkit": "^0.6.1",
     "@types/pg": "^8.16.0",
     "bcryptjs": "^3.0.3",

@@ -11,7 +11,7 @@ import JwtService from '../../services/jwt.service'
 import { getRequestHeader, setResponseStatus, readBody } from 'h3'
 
 const importSchema = z.object({
-    tokens: z.record(z.any())
+    tokens: z.record(z.string(), z.any())
 })
 
 export default asyncHandler(async (event) => {

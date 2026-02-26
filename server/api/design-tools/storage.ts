@@ -8,11 +8,38 @@ import type {
   DesignToolConnection,
 } from "./types";
 
+interface ImportedToken {
+  id?: string
+  source: DesignTool
+  sourceId?: string
+  name?: string
+  value?: unknown
+  category?: string
+  importedAt?: string
+  updatedAt?: string
+  [key: string]: unknown
+}
+
+interface ImportedComponent {
+  id?: string
+  source: DesignTool
+  sourceId?: string
+  name?: string
+  display_name?: string
+  description?: string
+  category?: string
+  status?: string
+  preview_url?: string
+  spec?: unknown
+  importedAt?: string
+  updatedAt?: string
+  [key: string]: unknown
+}
+
 const credentialsMap = new Map<string, DesignToolCredentials>();
 const connectionsMap = new Map<string, DesignToolConnection>();
-const importedTokens: unknown[] = [];
-const importedComponents: unknown[] = [];
-
+const importedTokens: ImportedToken[] = [];
+const importedComponents: ImportedComponent[] = [];
 class DesignToolStorage {
   saveCredentials(credentials: DesignToolCredentials): void {
     credentialsMap.set(credentials.tool, credentials);
@@ -83,7 +110,7 @@ class DesignToolStorage {
     return result;
   }
 
-  getImportedTokens(): unknown[] {
+  getImportedTokens(): ImportedToken[] {
     return [...importedTokens];
   }
 
@@ -128,7 +155,7 @@ class DesignToolStorage {
     return result;
   }
 
-  getImportedComponents(): unknown[] {
+  getImportedComponents(): ImportedComponent[] {
     return [...importedComponents];
   }
 }

@@ -5,160 +5,148 @@
       <p class="subtitle">Manage API keys for external integrations</p>
     </div>
 
-    <div class="content-card">
-      <div class="card-header">
-        <h2>Your API Keys</h2>
-        <Button
-          label="Create New Key"
-          icon="pi pi-plus"
-          @click="showCreateDialog = true"
-        />
-      </div>
+    <UCard>
+      <template #header>
+        <div class="card-header">
+          <h2>Your API Keys</h2>
+          <UButton
+            icon="i-lucide-plus"
+            label="Create New Key"
+            @click="showCreateDialog = true"
+          />
+        </div>
+      </template>
 
-      <DataTable :value="apiKeys" :loading="loading" responsive-layout="scroll">
-        <Column field="name" header="Name">
-          <template #body="slotProps">
-            <div class="key-name">
-              <i class="pi pi-key"/>
-              <span>{{ slotProps.data.name }}</span>
-            </div>
-          </template>
-        </Column>
-        <Column field="key" header="API Key">
-          <template #body="slotProps">
-            <code class="key-value">{{ slotProps.data.key }}</code>
-          </template>
-        </Column>
-        <Column field="createdAt" header="Created">
-          <template #body="slotProps">
-            {{ formatDate(slotProps.data.createdAt) }}
-          </template>
-        </Column>
-        <Column field="lastUsed" header="Last Used">
-          <template #body="slotProps">
-            {{
-              slotProps.data.lastUsed
-                ? formatDate(slotProps.data.lastUsed)
-                : "Never"
-            }}
-          </template>
-        </Column>
-        <Column header="Actions" style="width: 100px">
-          <template #body="slotProps">
-            <Button
-              icon="pi pi-trash"
-              class="p-button-danger p-button-text"
-              @click="confirmDelete(slotProps.data)"
-            />
-          </template>
-        </Column>
-      </DataTable>
+      <UTable :data="apiKeys" :columns="columns" :loading="loading">
+        <template #name-cell="{ row }">
+          <div class="key-name">
+            <Icon name="i-lucide-key" class="text-gray-400" />
+            <span>{{ row.original.name }}</span>
+          </div>
+        </template>
+        <template #key-cell="{ row }">
+          <code class="key-value">{{ row.original.key }}</code>
+        </template>
+        <template #createdAt-cell="{ row }">
+          {{ formatDate(row.original.createdAt) }}
+        </template>
+        <template #lastUsed-cell="{ row }">
+          {{
+            row.original.lastUsed ? formatDate(row.original.lastUsed) : "Never"
+          }}
+        </template>
+        <template #actions-cell="{ row }">
+          <UButton
+            icon="i-lucide-trash-2"
+            color="error"
+            variant="ghost"
+            size="sm"
+            @click="confirmDelete(row.original)"
+          />
+        </template>
+      </UTable>
 
       <div v-if="apiKeys.length === 0 && !loading" class="empty-state">
-        <i class="pi pi-key empty-icon"/>
+        <Icon name="i-lucide-key" class="empty-icon" />
         <h3>No API keys yet</h3>
         <p>Create your first API key to integrate with design tools</p>
-        <Button
+        <UButton
+          icon="i-lucide-plus"
           label="Create API Key"
-          icon="pi pi-plus"
           @click="showCreateDialog = true"
         />
       </div>
-    </div>
+    </UCard>
 
     <!-- Create Dialog -->
-    <Dialog
-      v-model:visible="showCreateDialog"
-      header="Create API Key"
-      :modal="true"
-      :style="{ width: '450px' }"
-    >
-      <div class="form-field">
-        <label for="keyName">Key Name</label>
-        <InputText
-          id="keyName"
-          v-model="newKeyName"
-          placeholder="e.g., Penpot Integration"
-          class="w-full"
-        />
-        <small>Give your API key a descriptive name</small>
-      </div>
-
-      <template #footer>
-        <Button
-          label="Cancel"
-          class="p-button-text"
-          @click="showCreateDialog = false"
-        />
-        <Button
-          label="Create Key"
-          icon="pi pi-check"
-          :loading="creating"
-          @click="createKey"
-        />
+    <UModal v-model:open="showCreateDialog" title="Create API Key">
+      <template #body>
+        <div class="form-field">
+          <label for="keyName">Key Name</label>
+          <UInput
+            id="keyName"
+            v-model="newKeyName"
+            placeholder="e.g., Penpot Integration"
+          />
+          <small>Give your API key a descriptive name</small>
+        </div>
       </template>
-    </Dialog>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <UButton
+            variant="ghost"
+            label="Cancel"
+            @click="showCreateDialog = false"
+          />
+          <UButton
+            icon="i-lucide-check"
+            label="Create Key"
+            :loading="creating"
+            @click="createKey"
+          />
+        </div>
+      </template>
+    </UModal>
 
     <!-- Success Dialog -->
-    <Dialog
-      v-model:visible="showSuccessDialog"
-      header="API Key Created"
-      :modal="true"
-      :style="{ width: '500px' }"
-    >
-      <div class="success-content">
-        <i class="pi pi-check-circle success-icon"/>
-        <p>
-          Your new API key has been created. Copy it now - you won't be able to
-          see it again!
-        </p>
-        <div class="created-key">
-          <code>{{ newCreatedKey }}</code>
-          <Button icon="pi pi-copy" class="p-button-text" @click="copyKey" />
+    <UModal v-model:open="showSuccessDialog" title="API Key Created">
+      <template #body>
+        <div class="success-content">
+          <Icon name="i-lucide-check-circle" class="success-icon" />
+          <p>
+            Your new API key has been created. Copy it now - you won't be able
+            to see it again!
+          </p>
+          <div class="created-key">
+            <code>{{ newCreatedKey }}</code>
+            <UButton
+              icon="i-lucide-copy"
+              variant="ghost"
+              size="sm"
+              @click="copyKey"
+            />
+          </div>
         </div>
-      </div>
-
-      <template #footer>
-        <Button label="Done" @click="showSuccessDialog = false" />
       </template>
-    </Dialog>
+      <template #footer>
+        <div class="flex justify-end">
+          <UButton label="Done" @click="showSuccessDialog = false" />
+        </div>
+      </template>
+    </UModal>
 
     <!-- Delete Confirmation -->
-    <Dialog
-      v-model:visible="showDeleteDialog"
-      header="Revoke API Key"
-      :modal="true"
-      :style="{ width: '400px' }"
-    >
-      <p>
-        Are you sure you want to revoke <strong>{{ deletingKey?.name }}</strong
-        >? This action cannot be undone.
-      </p>
-      <p class="warning-text">
-        Any applications using this key will lose access immediately.
-      </p>
-
-      <template #footer>
-        <Button
-          label="Cancel"
-          class="p-button-text"
-          @click="showDeleteDialog = false"
-        />
-        <Button
-          label="Revoke Key"
-          class="p-button-danger"
-          :loading="deleting"
-          @click="deleteKey"
-        />
+    <UModal v-model:open="showDeleteDialog" title="Revoke API Key">
+      <template #body>
+        <p>
+          Are you sure you want to revoke
+          <strong>{{ deletingKey?.name }}</strong
+          >? This action cannot be undone.
+        </p>
+        <p class="warning-text">
+          Any applications using this key will lose access immediately.
+        </p>
       </template>
-    </Dialog>
+      <template #footer>
+        <div class="flex justify-end gap-2">
+          <UButton
+            variant="ghost"
+            label="Cancel"
+            @click="showDeleteDialog = false"
+          />
+          <UButton
+            color="error"
+            label="Revoke Key"
+            :loading="deleting"
+            @click="deleteKey"
+          />
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { useToast } from "primevue/usetoast";
-
 definePageMeta({
   layout: "admin",
   middleware: "auth",
@@ -166,7 +154,23 @@ definePageMeta({
 
 const toast = useToast();
 
-const apiKeys = ref<any[]>([]);
+interface ApiKey {
+  id: string;
+  name: string;
+  key: string;
+  createdAt: string;
+  lastUsed: string | null;
+}
+
+const columns = [
+  { accessorKey: "name", header: "Name" },
+  { accessorKey: "key", header: "API Key" },
+  { accessorKey: "createdAt", header: "Created" },
+  { accessorKey: "lastUsed", header: "Last Used" },
+  { id: "actions", header: "Actions" },
+];
+
+const apiKeys = ref<ApiKey[]>([]);
 const loading = ref(false);
 const creating = ref(false);
 const deleting = ref(false);
@@ -175,14 +179,14 @@ const showSuccessDialog = ref(false);
 const showDeleteDialog = ref(false);
 const newKeyName = ref("");
 const newCreatedKey = ref("");
-const deletingKey = ref<any>(null);
+const deletingKey = ref<ApiKey | null>(null);
 
 async function fetchApiKeys() {
   loading.value = true;
   try {
-    const response = await $fetch("/api/admin/api-keys", {
+    const response = await $fetch<{ success: boolean; data?: { keys: ApiKey[]; count: number } }>('/api/admin/api-keys', {
       headers: {
-        Authorization: `Bearer ${useAuthStore().token}`,
+        Authorization: `Bearer ${useAuthStore().accessToken}`,
       },
     });
     if (response.success && response.data) {
@@ -190,10 +194,9 @@ async function fetchApiKeys() {
     }
   } catch (error: any) {
     toast.add({
-      severity: "error",
-      summary: "Error",
-      detail: "Failed to load API keys",
-      life: 3000,
+      color: 'error',
+      title: 'Error',
+      description: 'Failed to load API keys',
     });
   } finally {
     loading.value = false;
@@ -203,44 +206,42 @@ async function fetchApiKeys() {
 async function createKey() {
   if (!newKeyName.value.trim()) {
     toast.add({
-      severity: "warn",
-      summary: "Warning",
-      detail: "Please enter a name for the API key",
-      life: 3000,
+      color: 'warning',
+      title: 'Warning',
+      description: 'Please enter a name for the API key',
     });
     return;
   }
 
   creating.value = true;
   try {
-    const response = await $fetch("/api/admin/api-keys", {
-      method: "POST",
+    const response = await $fetch<{ success: boolean; data?: { key: string; keyId: string; message: string } }>('/api/admin/api-keys', {
+      method: 'POST',
       headers: {
-        Authorization: `Bearer ${useAuthStore().token}`,
+        Authorization: `Bearer ${useAuthStore().accessToken}`,
       },
       body: { name: newKeyName.value },
     });
 
     if (response.success && response.data) {
-      newCreatedKey.value = response.data.key.key;
+      newCreatedKey.value = response.data.key;
       showCreateDialog.value = false;
       showSuccessDialog.value = true;
-      newKeyName.value = "";
+      newKeyName.value = '';
       await fetchApiKeys();
     }
   } catch (error: any) {
     toast.add({
-      severity: "error",
-      summary: "Error",
-      detail: "Failed to create API key",
-      life: 3000,
+      color: 'error',
+      title: 'Error',
+      description: 'Failed to create API key',
     });
   } finally {
     creating.value = false;
   }
 }
 
-function confirmDelete(key: any) {
+function confirmDelete(key: ApiKey) {
   deletingKey.value = key;
   showDeleteDialog.value = true;
 }
@@ -251,17 +252,16 @@ async function deleteKey() {
   deleting.value = true;
   try {
     await $fetch(`/api/admin/api-keys/${deletingKey.value.id}`, {
-      method: "DELETE",
+      method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${useAuthStore().token}`,
+        Authorization: `Bearer ${useAuthStore().accessToken}`,
       },
     });
 
     toast.add({
-      severity: "success",
-      summary: "Success",
-      detail: "API key revoked",
-      life: 3000,
+      color: 'success',
+      title: 'Success',
+      description: 'API key revoked',
     });
 
     showDeleteDialog.value = false;
@@ -269,10 +269,9 @@ async function deleteKey() {
     await fetchApiKeys();
   } catch (error: any) {
     toast.add({
-      severity: "error",
-      summary: "Error",
-      detail: "Failed to revoke API key",
-      life: 3000,
+      color: 'error',
+      title: 'Error',
+      description: 'Failed to revoke API key',
     });
   } finally {
     deleting.value = false;
@@ -282,10 +281,9 @@ async function deleteKey() {
 function copyKey() {
   navigator.clipboard.writeText(newCreatedKey.value);
   toast.add({
-    severity: "success",
-    summary: "Copied",
-    detail: "API key copied to clipboard",
-    life: 2000,
+    color: "success",
+    title: "Copied",
+    description: "API key copied to clipboard",
   });
 }
 
@@ -323,19 +321,10 @@ onMounted(() => {
   margin: 0.5rem 0 0 0;
 }
 
-.content-card {
-  background: white;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-}
-
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e2e8f0;
 }
 
 .card-header h2 {
@@ -349,10 +338,6 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-}
-
-.key-name i {
-  color: #64748b;
 }
 
 .key-value {
@@ -437,22 +422,8 @@ onMounted(() => {
   margin-top: 0.5rem;
 }
 
-:deep(.p-datatable) {
-  border: none;
-}
-
-:deep(.p-datatable .p-datatable-thead > tr > th) {
-  background: #f8fafc;
-  color: #64748b;
-  font-weight: 600;
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  padding: 1rem 1.5rem;
-}
-
-:deep(.p-datatable .p-datatable-tbody > tr > td) {
-  padding: 1rem 1.5rem;
-  border-color: #f1f5f9;
+.dark .page-header h1,
+.dark .card-header h2 {
+  color: var(--dark-color-text-primary);
 }
 </style>

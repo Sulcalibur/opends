@@ -232,7 +232,10 @@ function getStatusSeverity(status: string) {
 
 function editComponent(component: Component) {
   editingComponent.value = component
-  form.value = { ...component }
+  form.value = { 
+    ...component,
+    preview_url: component.preview_url || ''
+  }
   showCreateDialog.value = true
 }
 

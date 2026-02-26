@@ -171,8 +171,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import type { DesignToken } from '@/utils/tokenUtils'
-
+import type { DesignToken } from '../../src/types/token'
 interface Props {
   token: DesignToken
   modelValue: any
@@ -234,7 +233,7 @@ const fontFamily = computed({
 const fontSize = computed({
   get: () => {
     if (props.token.name.toLowerCase().includes('size')) {
-      return props.token.value
+      return String(props.token.value)
     }
     return ''
   },
@@ -246,7 +245,7 @@ const fontSize = computed({
 const fontWeight = computed({
   get: () => {
     if (props.token.name.toLowerCase().includes('weight')) {
-      return props.token.value
+      return String(props.token.value)
     }
     return '400'
   },

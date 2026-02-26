@@ -4,25 +4,22 @@ export default defineNuxtConfig({
   compatibilityDate: "2024-04-03",
   devtools: { enabled: true },
   modules: [
+    "@nuxt/ui",
+    "@nuxtjs/color-mode",
     "@pinia/nuxt",
-    "@primevue/nuxt-module",
-    "@nuxtjs/tailwindcss",
     "@nuxt/eslint",
     "@nuxtjs/mcp-toolkit",
   ],
   css: [
-    "primeicons/primeicons.css",
     "@milkdown/crepe/theme/common/style.css",
     "@milkdown/crepe/theme/frame.css",
-    "~/assets/css/global.css",
+    "~/assets/css/main.css",
     "~/assets/css/dialogs.css",
   ],
-  primevue: {
-    usePrimeVue: true,
-    options: {
-      theme: "aura",
-      cssLayerOrder: "tailwind-base, tailwind-utilities, primevue",
-    },
+
+  colorMode: {
+    preference: "system",
+    fallback: "light",
   },
   app: {
     head: {
@@ -60,17 +57,17 @@ export default defineNuxtConfig({
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
-        "@design-system": fileURLToPath(new URL("./src/design-system", import.meta.url)),
+        "@design-system": fileURLToPath(
+          new URL("./src/design-system", import.meta.url),
+        ),
         "@api": fileURLToPath(new URL("./src/api", import.meta.url)),
       },
     },
   },
   nitro: {
     experimental: {
-      openAPI: {
-        enabled: true,
-      },
-      asyncContext: true, // Required for useEvent() in MCP tools
+      openAPI: true,
+      asyncContext: true,
     },
     // Externalize native modules - don't bundle them
     externals: {
