@@ -1,0 +1,44 @@
+<template>
+  <div
+    class="{{kebabCase name}}"
+    :class="[
+      {{#each props}}
+      '{{kebabCase name}}--{{name}}-' + {{name}}{{#unless @last}},{{/unless}}
+      {{/each}}
+    ]"
+  >
+    <slot />
+  </div>
+</template>
+
+<script setup lang="ts">
+{{#if props}}
+interface Props {
+  {{#each props}}
+  {{name}}{{unless required}}?{{/unless}}: {{typescriptType type}}
+  {{/each}}
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  {{#each props}}
+  {{#if default}}
+  {{name}}: {{{json default}}},
+  {{/if}}
+  {{/each}}
+})
+{{/if}}
+</script>
+
+<style scoped>
+.{{kebabCase name}} {
+  /* Base styles */
+}
+
+{{#each props}}
+{{#if (eq type 'string')}}
+.{{kebabCase ../name}}--{{name}}- {{../name}} {
+  /* Variant: {{name}} = {{../name}} */
+}
+{{/if}}
+{{/each}}
+</style>

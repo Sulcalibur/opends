@@ -1,0 +1,37 @@
+<template>
+  <div class="{{kebabCase name}}">
+    {{#each slots}}
+    <div class="{{kebabCase ../name}}__{{name}}">
+      <slot name="{{name}}">{{#if description}}{{ description }}{{/if}}</slot>
+    </div>
+    {{/each}}
+    {{#unless slots}}
+    <slot />
+    {{/unless}}
+  </div>
+</template>
+
+<script setup lang="ts">
+{{#if props}}
+interface Props {
+  {{#each props}}
+  {{name}}{{unless required}}?{{/unless}}: {{typescriptType type}}
+  {{/each}}
+}
+
+defineProps<Props>()
+{{/if}}
+</script>
+
+<style scoped>
+.{{kebabCase name}} {
+  display: flex;
+  flex-direction: column;
+}
+
+{{#each slots}}
+.{{kebabCase ../name}}__{{name}} {
+  /* {{description}} */
+}
+{{/each}}
+</style>

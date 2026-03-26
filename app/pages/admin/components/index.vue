@@ -6,34 +6,38 @@
         <h1 class="page-title">Components</h1>
         <p class="page-subtitle">Manage your design system components</p>
       </div>
-      <Button icon="pi pi-plus" label="New Component" @click="showCreateDialog = true" />
+      <Button
+        icon="pi pi-plus"
+        label="New Component"
+        @click="showCreateDialog = true"
+      />
     </div>
 
     <!-- Filters -->
     <Card class="filters-card">
       <template #content>
         <div class="filters">
-          <InputText 
-            v-model="searchQuery" 
-            placeholder="Search components..." 
+          <InputText
+            v-model="searchQuery"
+            placeholder="Search components..."
             class="search-input"
           >
             <template #prefix>
-              <i class="pi pi-search"/>
+              <i class="pi pi-search" />
             </template>
           </InputText>
-          
-          <Dropdown 
-            v-model="selectedCategory" 
-            :options="categories" 
+
+          <Dropdown
+            v-model="selectedCategory"
+            :options="categories"
             placeholder="All Categories"
             class="category-filter"
             show-clear
           />
-          
-          <Dropdown 
-            v-model="selectedStatus" 
-            :options="statuses" 
+
+          <Dropdown
+            v-model="selectedStatus"
+            :options="statuses"
             placeholder="All Statuses"
             class="status-filter"
             show-clear
@@ -44,16 +48,20 @@
 
     <!-- Components Grid -->
     <div v-if="filteredComponents.length > 0" class="components-grid">
-      <Card 
-        v-for="component in filteredComponents" 
-        :key="component.id" 
+      <Card
+        v-for="component in filteredComponents"
+        :key="component.id"
         class="component-card"
       >
         <template #header>
           <div class="card-image">
-            <img v-if="component.preview_url" :src="component.preview_url" alt="Preview" >
+            <img
+              v-if="component.preview_url"
+              :src="component.preview_url"
+              alt="Preview"
+            />
             <div v-else class="placeholder-image">
-              <i class="pi pi-image"/>
+              <i class="pi pi-image" />
             </div>
           </div>
         </template>
@@ -63,19 +71,36 @@
         <template #subtitle>
           <div class="component-meta">
             <Tag :value="component.category" severity="info" />
-            <Tag :value="component.status" :severity="getStatusSeverity(component.status)" />
+            <Tag
+              :value="component.status"
+              :severity="getStatusSeverity(component.status)"
+            />
           </div>
         </template>
         <template #content>
           <p class="component-description">
-            {{ component.description || 'No description provided' }}
+            {{ component.description || "No description provided" }}
           </p>
         </template>
         <template #footer>
           <div class="card-actions">
-            <Button icon="pi pi-pencil" text @click="editComponent(component)" />
-            <Button icon="pi pi-eye" text @click="viewComponent(component)" />
-            <Button icon="pi pi-trash" text severity="danger" @click="deleteComponent(component)" />
+            <Button
+              icon="pi pi-pencil"
+              text
+              @click="editComponent(component)"
+            />
+            <Button
+              data-testid="view-btn"
+              icon="pi pi-eye"
+              text
+              @click="viewComponent(component)"
+            />
+            <Button
+              icon="pi pi-trash"
+              text
+              severity="danger"
+              @click="deleteComponent(component)"
+            />
           </div>
         </template>
       </Card>
@@ -83,15 +108,19 @@
 
     <!-- Empty State -->
     <div v-else class="empty-state">
-      <i class="pi pi-box empty-icon"/>
+      <i class="pi pi-box empty-icon" />
       <h3 class="empty-title">No components yet</h3>
       <p class="empty-text">Create your first component to get started</p>
-      <Button icon="pi pi-plus" label="Create Component" @click="showCreateDialog = true" />
+      <Button
+        icon="pi pi-plus"
+        label="Create Component"
+        @click="showCreateDialog = true"
+      />
     </div>
 
     <!-- Create/Edit Dialog -->
-    <Dialog 
-      v-model:visible="showCreateDialog" 
+    <Dialog
+      v-model:visible="showCreateDialog"
       :header="editingComponent ? 'Edit Component' : 'New Component'"
       :style="{ width: '600px' }"
       modal
@@ -104,15 +133,19 @@
 
         <div class="form-field">
           <label for="display_name">Display Name</label>
-          <InputText id="display_name" v-model="form.display_name" placeholder="e.g., Primary Button" />
+          <InputText
+            id="display_name"
+            v-model="form.display_name"
+            placeholder="e.g., Primary Button"
+          />
         </div>
 
         <div class="form-field">
           <label for="category">Category</label>
-          <Dropdown 
-            id="category" 
-            v-model="form.category" 
-            :options="categories" 
+          <Dropdown
+            id="category"
+            v-model="form.category"
+            :options="categories"
             placeholder="Select category"
             editable
           />
@@ -120,19 +153,19 @@
 
         <div class="form-field">
           <label for="status">Status</label>
-          <Dropdown 
-            id="status" 
-            v-model="form.status" 
-            :options="statuses" 
+          <Dropdown
+            id="status"
+            v-model="form.status"
+            :options="statuses"
             placeholder="Select status"
           />
         </div>
 
         <div class="form-field">
           <label for="description">Description</label>
-          <Textarea 
-            id="description" 
-            v-model="form.description" 
+          <Textarea
+            id="description"
+            v-model="form.description"
             rows="3"
             placeholder="Describe this component..."
           />
@@ -140,16 +173,20 @@
 
         <div class="form-field">
           <label for="preview_url">Preview URL</label>
-          <InputText id="preview_url" v-model="form.preview_url" placeholder="https://..." />
+          <InputText
+            id="preview_url"
+            v-model="form.preview_url"
+            placeholder="https://..."
+          />
         </div>
       </div>
 
       <template #footer>
         <Button label="Cancel" text @click="closeDialog" />
-        <Button 
-          :label="editingComponent ? 'Update' : 'Create'" 
+        <Button
+          :label="editingComponent ? 'Update' : 'Create'"
           :loading="saving"
-          @click="saveComponent" 
+          @click="saveComponent"
         />
       </template>
     </Dialog>
@@ -158,154 +195,157 @@
 
 <script setup lang="ts">
 definePageMeta({
-  layout: 'admin',
-  middleware: 'auth'
-})
+  layout: "admin",
+  middleware: "auth",
+});
 
 interface Component {
-  id: string
-  name: string
-  display_name: string
-  description: string
-  category: string
-  status: 'draft' | 'review' | 'approved' | 'deprecated'
-  preview_url?: string
-  spec: any
+  id: string;
+  name: string;
+  display_name: string;
+  description: string;
+  category: string;
+  status: "draft" | "review" | "approved" | "deprecated";
+  preview_url?: string;
+  spec: any;
 }
 
-const showCreateDialog = ref(false)
-const editingComponent = ref<Component | null>(null)
-const saving = ref(false)
-const searchQuery = ref('')
-const selectedCategory = ref(null)
-const selectedStatus = ref(null)
-const loading = ref(false)
+const showCreateDialog = ref(false);
+const editingComponent = ref<Component | null>(null);
+const saving = ref(false);
+const searchQuery = ref("");
+const selectedCategory = ref(null);
+const selectedStatus = ref(null);
+const loading = ref(false);
 
 const form = ref({
-  name: '',
-  display_name: '',
-  description: '',
-  category: '',
-  status: 'draft',
-  preview_url: '',
-  spec: {}
-})
+  name: "",
+  display_name: "",
+  description: "",
+  category: "",
+  status: "draft",
+  preview_url: "",
+  spec: {},
+});
 
 const categories = [
-  'Form',
-  'Navigation',
-  'Layout',
-  'Data Display',
-  'Feedback',
-  'Overlay',
-  'Media',
-  'Misc'
-]
+  "Form",
+  "Navigation",
+  "Layout",
+  "Data Display",
+  "Feedback",
+  "Overlay",
+  "Media",
+  "Misc",
+];
 
-const statuses = ['draft', 'review', 'approved', 'deprecated']
+const statuses = ["draft", "review", "approved", "deprecated"];
 
-const components = ref<Component[]>([])
-const api = useApi()
+const components = ref<Component[]>([]);
+const api = useApi();
 
 const filteredComponents = computed(() => {
-  return components.value.filter(c => {
-    const matchesSearch = !searchQuery.value || 
+  return components.value.filter((c) => {
+    const matchesSearch =
+      !searchQuery.value ||
       c.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-      c.display_name?.toLowerCase().includes(searchQuery.value.toLowerCase())
-    
-    const matchesCategory = !selectedCategory.value || c.category === selectedCategory.value
-    const matchesStatus = !selectedStatus.value || c.status === selectedStatus.value
-    
-    return matchesSearch && matchesCategory && matchesStatus
-  })
-})
+      c.display_name?.toLowerCase().includes(searchQuery.value.toLowerCase());
+
+    const matchesCategory =
+      !selectedCategory.value || c.category === selectedCategory.value;
+    const matchesStatus =
+      !selectedStatus.value || c.status === selectedStatus.value;
+
+    return matchesSearch && matchesCategory && matchesStatus;
+  });
+});
 
 function getStatusSeverity(status: string) {
   const map: Record<string, any> = {
-    draft: 'secondary',
-    review: 'warning',
-    approved: 'success',
-    deprecated: 'danger'
-  }
-  return map[status] || 'info'
+    draft: "secondary",
+    review: "warning",
+    approved: "success",
+    deprecated: "danger",
+  };
+  return map[status] || "info";
 }
 
 function editComponent(component: Component) {
-  editingComponent.value = component
-  form.value = { 
-    ...component,
-    preview_url: component.preview_url || ''
-  }
-  showCreateDialog.value = true
+  navigateTo(`/admin/components/${component.id}/edit`);
 }
 
 function viewComponent(component: Component) {
-  navigateTo(`/admin/components/${component.id}`)
+  navigateTo(`/admin/components/${component.id}`);
 }
 
 async function deleteComponent(component: Component) {
   if (confirm(`Delete ${component.name}?`)) {
     try {
-      await api.delete(`/components/${component.id}`)
-      components.value = components.value.filter(c => c.id !== component.id)
+      await api.delete(`/components/${component.id}`);
+      components.value = components.value.filter((c) => c.id !== component.id);
     } catch (error: any) {
-      alert('Failed to delete component: ' + error.message)
+      alert("Failed to delete component: " + error.message);
     }
   }
 }
 
 async function saveComponent() {
-  saving.value = true
+  saving.value = true;
   try {
     if (editingComponent.value) {
       // Update existing
-      const updated = await api.put(`/components/${editingComponent.value.id}`, form.value)
-      const index = components.value.findIndex(c => c.id === editingComponent.value!.id)
+      const updated = await api.put(
+        `/components/${editingComponent.value.id}`,
+        form.value,
+      );
+      const index = components.value.findIndex(
+        (c) => c.id === editingComponent.value!.id,
+      );
       if (index !== -1) {
-        components.value[index] = updated.component
+        components.value[index] = updated.component;
       }
     } else {
       // Create new
-      const created = await api.post('/components', form.value)
-      components.value.unshift(created.component)
+      const created = await api.post("/components", form.value);
+      components.value.unshift(created.component);
     }
-    closeDialog()
+    closeDialog();
   } catch (error: any) {
-    alert('Failed to save component: ' + error.message)
+    alert("Failed to save component: " + error.message);
   } finally {
-    saving.value = false
+    saving.value = false;
   }
 }
 
 function closeDialog() {
-  showCreateDialog.value = false
-  editingComponent.value = null
+  showCreateDialog.value = false;
+  editingComponent.value = null;
   form.value = {
-    name: '',
-    display_name: '',
-    description: '',
-    category: '',
-    status: 'draft',
-    preview_url: '',
-    spec: {}
-  }
+    name: "",
+    display_name: "",
+    description: "",
+    category: "",
+    status: "draft",
+    preview_url: "",
+    spec: {},
+  };
 }
 
 async function loadComponents() {
-  loading.value = true
+  loading.value = true;
   try {
-    const response = await api.get('/components')
-    components.value = response.components || []
+    const response = await api.get("/components");
+    components.value = response.components || [];
   } catch (error: any) {
-    console.error('Failed to load components:', error)
+    console.error("Failed to load components:", error);
   } finally {
-    loading.value = false
+    loading.value = false;
   }
 }
 
 onMounted(async () => {
-  await loadComponents()
-})
+  await loadComponents();
+});
 </script>
 
 <style scoped>

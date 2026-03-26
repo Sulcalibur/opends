@@ -1,0 +1,23 @@
+<template>
+  <div class="{{kebabCase name}}">
+    {{#if description}}
+    <!-- {{description}} -->
+    {{/if}}
+    <slot />
+  </div>
+</template>
+
+<script setup lang="ts">
+{{#if description}}
+/**
+ * {{display_name}}
+ * {{description}}
+ */
+{{/if}}
+</script>
+
+<style scoped>
+.{{kebabCase name}} {
+  /* Component styles */
+}
+</style>
