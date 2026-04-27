@@ -49,7 +49,15 @@ export default asyncHandler(async (event) => {
 
   // Validate request body
   const body = await readBody(event);
-  const data = createUserSchema.parse(body);
+  const parseResult = createUserSchema.safeParse(body);
+  if (!parseResult.success) {
+    setResponseStatus(event, 400);
+    return createErrorResponse(
+      ErrorCodes.VALIDATION_ERROR,
+      parseResult.error.issues.map((e) => e.message).join(", "),
+    );
+  }
+  const data = parseResult.data;
 
   // Hash password
   const passwordHash = await bcrypt.hash(data.password, 10);

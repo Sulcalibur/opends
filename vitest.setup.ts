@@ -27,23 +27,15 @@ Object.defineProperty(globalThis, "$fetch", {
   configurable: true,
 });
 
-// Mock h3 functions globally
-vi.mock("h3", () => ({
-  getRequestHeader: vi.fn((event: any, key: string) =>
-    event.headers?.get?.(key),
-  ),
-  setResponseStatus: vi.fn(),
-  readBody: vi.fn().mockResolvedValue({}),
-  defineEventHandler: vi.fn((handler: any) => handler),
-  getHeader: vi.fn(),
-  getQuery: vi.fn(),
-  getRouterParams: vi.fn(),
-  getValidatedQuery: vi.fn(),
-  createApp: vi.fn().mockReturnValue({
-    use: vi.fn(),
-    handler: vi.fn(),
-  }),
-}));
+// Mock h3 functions globally - only mock defineEventHandler for unit tests
+// Other h3 functions are mocked locally in unit tests that need them
+vi.mock("h3", async () => {
+  const actual = await vi.importActual<typeof import("h3")>("h3");
+  return {
+    ...actual,
+    defineEventHandler: vi.fn((handler: any) => handler),
+  };
+});
 
 // Mock the error handler middleware
 vi.mock("./server/middleware/error-handler", () => ({

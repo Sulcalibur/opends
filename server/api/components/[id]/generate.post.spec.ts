@@ -12,14 +12,14 @@ const mockGetValidatedRouterParams = vi.fn();
 const mockReadBody = vi.fn();
 
 // Mock repositories
-vi.mock("../../repositories/component.repository", () => ({
+vi.mock("../../../repositories/component.repository", () => ({
   default: {
     findById: (...args: unknown[]) => mockFindById(...args),
   },
 }));
 
 // Mock code generator
-vi.mock("../../utils/codeGenerator", () => ({
+vi.mock("../../../utils/codeGenerator", () => ({
   generateCode: (...args: unknown[]) => mockGenerateCode(...args),
 }));
 
@@ -33,12 +33,20 @@ vi.mock("h3", () => ({
 }));
 
 // Mock error handler
-vi.mock("../../middleware/error-handler", () => ({
-  asyncHandler: (handler: unknown) => handler,
+vi.mock("../../../middleware/error-handler", () => ({
+  asyncHandler: (handler: any) => {
+    return async (event: any) => {
+      try {
+        return await handler(event);
+      } catch (error) {
+        return { success: false };
+      }
+    };
+  },
 }));
 
 // Mock response utilities
-vi.mock("../../utils/response", () => ({
+vi.mock("../../../utils/response", () => ({
   createSuccessResponse: vi.fn((data) => ({ success: true, data })),
   createErrorResponse: vi.fn((code, message) => ({
     success: false,
@@ -93,6 +101,9 @@ describe("POST /api/components/:id/generate", () => {
     beforeEach(() => {
       mockGetValidatedRouterParams.mockImplementation(
         async (event: any, schema: any) => {
+          if (typeof schema === "function") {
+            return schema(event.params);
+          }
           return schema.parse(event.params);
         },
       );
@@ -128,6 +139,9 @@ describe("POST /api/components/:id/generate", () => {
     beforeEach(() => {
       mockGetValidatedRouterParams.mockImplementation(
         async (event: any, schema: any) => {
+          if (typeof schema === "function") {
+            return schema(event.params);
+          }
           return schema.parse(event.params);
         },
       );
@@ -186,6 +200,9 @@ describe("POST /api/components/:id/generate", () => {
     beforeEach(() => {
       mockGetValidatedRouterParams.mockImplementation(
         async (event: any, schema: any) => {
+          if (typeof schema === "function") {
+            return schema(event.params);
+          }
           return schema.parse(event.params);
         },
       );
@@ -223,6 +240,9 @@ describe("POST /api/components/:id/generate", () => {
     it("should return validation error for invalid framework", async () => {
       mockGetValidatedRouterParams.mockImplementation(
         async (event: any, schema: any) => {
+          if (typeof schema === "function") {
+            return schema(event.params);
+          }
           return schema.parse(event.params);
         },
       );
@@ -241,6 +261,9 @@ describe("POST /api/components/:id/generate", () => {
     beforeEach(() => {
       mockGetValidatedRouterParams.mockImplementation(
         async (event: any, schema: any) => {
+          if (typeof schema === "function") {
+            return schema(event.params);
+          }
           return schema.parse(event.params);
         },
       );

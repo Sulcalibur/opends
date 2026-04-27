@@ -72,10 +72,10 @@ describe("SearchDropdown", () => {
   it("should export component with correct structure", async () => {
     const component = await import("./SearchDropdown.vue");
 
-    // Component should have default export (Vue component compiled to template string)
+    // Component should have default export (Vue component object)
     expect(component.default).toBeDefined();
-    // Should be a string (Vue component template)
-    expect(typeof component.default).toBe("string");
+    // Should be an object (Vue component compiled by @vitejs/plugin-vue)
+    expect(typeof component.default).toBe("object");
   });
 
   it("should have search composable integrated", async () => {

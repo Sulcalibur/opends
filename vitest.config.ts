@@ -1,7 +1,9 @@
 import { defineConfig } from "vitest/config";
 import { resolve } from "path";
+import vue from "@vitejs/plugin-vue";
 
 export default defineConfig({
+  plugins: [vue()],
   test: {
     environment: "node",
     globals: true,
@@ -12,7 +14,11 @@ export default defineConfig({
     alias: {
       "~": resolve(__dirname, "./"),
       "~~": resolve(__dirname, "./"),
-      vue: "vue",
+      vue: resolve(__dirname, "node_modules/.pnpm/node_modules/vue"),
+      "vue-router": resolve(
+        __dirname,
+        "node_modules/.pnpm/node_modules/vue-router",
+      ),
     },
   },
 });
