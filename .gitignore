@@ -84,3 +84,5 @@ UX_IMPROVEMENTS.md
 STATUS_LOG.md
 QA_AUDIT_REPORT.md
 .git.bfg-report/
+.superpowers/
+.worktrees/
