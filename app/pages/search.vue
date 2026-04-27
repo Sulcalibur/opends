@@ -158,7 +158,9 @@ function getTypeIconClass(type: SearchContentType): string {
 }
 
 // Get badge color for UBadge
-function getBadgeColor(type: SearchContentType): "secondary" | "info" | "success" | "neutral" {
+function getBadgeColor(
+  type: SearchContentType,
+): "secondary" | "info" | "success" | "neutral" {
   switch (type) {
     case "token":
       return "secondary";
@@ -168,6 +170,7 @@ function getBadgeColor(type: SearchContentType): "secondary" | "info" | "success
       return "success";
     default:
       return "neutral";
+  }
 }
 
 function getTypeLabel(type: SearchContentType): string {
