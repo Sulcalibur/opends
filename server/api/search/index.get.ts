@@ -17,7 +17,7 @@ import {
   createErrorResponse,
   ErrorCodes,
 } from "../../utils/response";
-import SearchRepository from "../../repositories/search.repository";
+import { search as searchService } from "../../services/search.service";
 import type {
   SearchResponse,
   SearchContentType,
@@ -51,24 +51,18 @@ export default asyncHandler(async (event) => {
   const { q, type, limit, offset } = validation.data;
 
   try {
-    // Execute search
-    const [results, total] = await Promise.all([
-      SearchRepository.search(q, { type, limit, offset }),
-      SearchRepository.count(q, { type }),
-    ]);
+    // Execute search via service
+    const response = await searchService(q, { type, limit, offset });
 
-    const response: SearchResponse = {
-      results,
+    const formattedResponse: SearchResponse = {
+      results: response.results,
       meta: {
-        total,
-        limit,
-        offset,
-        query: q,
+        ...response.meta,
         type: (type || "all") as SearchContentType,
       },
     };
 
-    return createSuccessResponse(response);
+    return createSuccessResponse(formattedResponse);
   } catch (error) {
     console.error("[Search API] Error:", error);
     return createErrorResponse(

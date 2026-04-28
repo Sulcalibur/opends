@@ -12,7 +12,10 @@ import {
   createErrorResponse,
 } from "../../../utils/response";
 import ComponentRepository from "../../../repositories/component.repository";
-import { generateCode } from "../../../utils/codeGenerator";
+import {
+  generateComponentCodeService,
+  generateUsageExampleService,
+} from "../../../services/codeGenerator.service";
 
 const paramsSchema = z.object({
   id: z.string().uuid("Invalid component ID format"),
@@ -36,8 +39,12 @@ export default asyncHandler(async (event) => {
     return createErrorResponse(ErrorCodes.NOT_FOUND, "Component not found");
   }
 
-  // Generate code using the generateCode function
-  const code = await generateCode(component.spec, framework, variant);
+  // Generate code using the service
+  const code = await generateComponentCodeService(
+    component,
+    framework,
+    variant,
+  );
 
   return createSuccessResponse({
     code,

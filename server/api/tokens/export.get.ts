@@ -3,12 +3,47 @@
  * GET /api/tokens/export
  */
 
-import { asyncHandler } from '../../middleware/error-handler'
-import { createSuccessResponse } from '../../utils/response'
-import DesignTokenRepository from '../../repositories/token.repository'
+import { z } from "zod";
+import { getQuery, setResponseHeader } from "h3";
+import { asyncHandler } from "../../middleware/error-handler";
+import {
+  createSuccessResponse,
+  createErrorResponse,
+  ErrorCodes,
+} from "../../utils/response";
+import {
+  exportTokens,
+  getSupportedFormats,
+  type ExportFormat,
+} from "../../services/tokenEngine.service";
 
-export default asyncHandler(async () => {
-    const tokens = await DesignTokenRepository.exportTokens()
+const querySchema = z.object({
+  format: z.enum(["json", "css", "scss", "less", "stylus"]).default("json"),
+});
 
-    return createSuccessResponse({ tokens })
-})
+const contentTypeMap: Record<ExportFormat, string> = {
+  json: "application/json",
+  css: "text/css",
+  scss: "text/x-scss",
+  less: "text/x-less",
+  stylus: "text/x-stylus",
+};
+
+export default asyncHandler(async (event) => {
+  const query = getQuery(event);
+  const validation = querySchema.safeParse(query);
+
+  if (!validation.success) {
+    return createErrorResponse(
+      ErrorCodes.VALIDATION_ERROR,
+      `Invalid format. Supported: ${getSupportedFormats().join(", ")}`,
+    );
+  }
+
+  const { format } = validation.data;
+  const content = await exportTokens(format);
+
+  setResponseHeader(event, "Content-Type", contentTypeMap[format]);
+
+  return createSuccessResponse({ content, format });
+});

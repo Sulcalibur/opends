@@ -20,7 +20,8 @@ vi.mock("../../../repositories/component.repository", () => ({
 
 // Mock code generator
 vi.mock("../../../utils/codeGenerator", () => ({
-  generateCode: (...args: unknown[]) => mockGenerateCode(...args),
+  generateComponentCode: (...args: unknown[]) => mockGenerateCode(...args),
+  generateUsageExample: vi.fn(),
 }));
 
 // Mock h3 utilities
@@ -128,7 +129,7 @@ describe("POST /api/components/:id/generate", () => {
       expect(result.data.generatedAt).toBeDefined();
       expect(mockFindById).toHaveBeenCalledWith(componentId);
       expect(mockGenerateCode).toHaveBeenCalledWith(
-        mockComponent.spec,
+        mockComponent,
         "vue",
         undefined,
       );
@@ -286,7 +287,7 @@ describe("POST /api/components/:id/generate", () => {
 
       expect(result.success).toBe(true);
       expect(mockGenerateCode).toHaveBeenCalledWith(
-        mockComponent.spec,
+        mockComponent,
         "vue",
         "primary",
       );
