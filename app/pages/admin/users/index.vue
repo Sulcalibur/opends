@@ -1,217 +1,16 @@
-<template>
-  <div class="users-page">
-    <!-- Header -->
-    <div class="page-header">
-      <div>
-        <h1 class="page-title">Users</h1>
-        <p class="page-subtitle">Manage team members and permissions</p>
-      </div>
-      <Button
-        icon="pi pi-user-plus"
-        label="Invite User"
-        @click="showInviteDialog = true"
-      />
-    </div>
-
-    <!-- Stats -->
-    <div class="user-stats">
-      <Card class="stat-card">
-        <template #content>
-          <div class="stat-item">
-            <i class="pi pi-users stat-icon" />
-            <div>
-              <p class="stat-value">{{ users.length }}</p>
-              <p class="stat-label">Total Users</p>
-            </div>
-          </div>
-        </template>
-      </Card>
-
-      <Card class="stat-card">
-        <template #content>
-          <div class="stat-item">
-            <i class="pi pi-check-circle stat-icon" style="color: #10b981" />
-            <div>
-              <p class="stat-value">
-                {{ users.filter((u) => u.is_active).length }}
-              </p>
-              <p class="stat-label">Active</p>
-            </div>
-          </div>
-        </template>
-      </Card>
-
-      <Card class="stat-card">
-        <template #content>
-          <div class="stat-item">
-            <i class="pi pi-shield stat-icon" style="color: #f59e0b" />
-            <div>
-              <p class="stat-value">
-                {{ users.filter((u) => u.role === "admin").length }}
-              </p>
-              <p class="stat-label">Admins</p>
-            </div>
-          </div>
-        </template>
-      </Card>
-    </div>
-
-    <!-- Users Table -->
-    <Card class="users-table-card">
-      <template #content>
-        <DataTable
-          :value="users"
-          :rows="15"
-          :paginator="users.length > 15"
-          responsive-layout="scroll"
-          striped-rows
-        >
-          <Column header="User">
-            <template #body="{ data }">
-              <div class="user-cell">
-                <div class="user-avatar">
-                  {{ getUserInitials(data.name) }}
-                </div>
-                <div class="user-info">
-                  <p class="user-name">{{ data.name }}</p>
-                  <p class="user-email">{{ data.email }}</p>
-                </div>
-              </div>
-            </template>
-          </Column>
-
-          <Column field="role" header="Role">
-            <template #body="{ data }">
-              <Select
-                v-model="data.role"
-                :options="roles"
-                :disabled="data.id === authStore.user?.id"
-                class="role-select"
-                @change="updateUserRole(data)"
-              />
-            </template>
-          </Column>
-
-          <Column field="is_active" header="Status">
-            <template #body="{ data }">
-              <Tag
-                :value="data.is_active ? 'Active' : 'Inactive'"
-                :severity="data.is_active ? 'success' : 'secondary'"
-              />
-            </template>
-          </Column>
-
-          <Column field="last_login_at" header="Last Login">
-            <template #body="{ data }">
-              <span class="date-text">
-                {{
-                  data.last_login_at ? formatDate(data.last_login_at) : "Never"
-                }}
-              </span>
-            </template>
-          </Column>
-
-          <Column field="created_at" header="Joined">
-            <template #body="{ data }">
-              <span class="date-text">{{ formatDate(data.created_at) }}</span>
-            </template>
-          </Column>
-
-          <Column header="Actions" :style="{ width: '160px' }">
-            <template #body="{ data }">
-              <div v-if="data.id !== authStore.user?.id" class="table-actions">
-                <Button
-                  :icon="data.is_active ? 'pi pi-ban' : 'pi pi-check'"
-                  :label="data.is_active ? 'Deactivate' : 'Activate'"
-                  text
-                  size="small"
-                  :severity="data.is_active ? 'danger' : 'success'"
-                  @click="toggleUserStatus(data)"
-                />
-                <Button
-                  icon="pi pi-trash"
-                  text
-                  size="small"
-                  severity="danger"
-                  @click="deleteUser(data)"
-                />
-              </div>
-              <Tag v-else value="You" severity="info" />
-            </template>
-          </Column>
-        </DataTable>
-      </template>
-    </Card>
-
-    <!-- Invite Dialog -->
-    <Dialog
-      v-model:visible="showInviteDialog"
-      header="Invite User"
-      :style="{ width: '500px' }"
-      modal
-    >
-      <div class="dialog-form">
-        <Message severity="info" :closable="false">
-          An invitation email will be sent to the user with a registration link.
-        </Message>
-
-        <div class="form-field">
-          <label for="invite-email">Email Address *</label>
-          <InputText
-            id="invite-email"
-            v-model="inviteForm.email"
-            type="email"
-            placeholder="user@example.com"
-          />
-        </div>
-
-        <div class="form-field">
-          <label for="invite-name">Name *</label>
-          <InputText
-            id="invite-name"
-            v-model="inviteForm.name"
-            placeholder="John Doe"
-          />
-        </div>
-
-        <div class="form-field">
-          <label for="invite-role">Role *</label>
-          <Select
-            id="invite-role"
-            v-model="inviteForm.role"
-            :options="roles"
-            placeholder="Select a role"
-          />
-          <small class="role-description">{{
-            getRoleDescription(inviteForm.role)
-          }}</small>
-        </div>
-      </div>
-
-      <template #footer>
-        <Button label="Cancel" text @click="closeInviteDialog" />
-        <Button
-          label="Send Invitation"
-          icon="pi pi-send"
-          :loading="sending"
-          @click="sendInvite"
-        />
-      </template>
-    </Dialog>
-  </div>
-</template>
-
 <script setup lang="ts">
+/**
+ * Admin Users Management
+ * Refactored to use NuxtUI v4 + Tailwind + Lucide icons
+ */
 definePageMeta({
   layout: "admin",
   middleware: "auth",
 });
 
-import { useToast } from "primevue/usetoast";
-const toast = useToast();
-
 const authStore = useAuthStore();
 const api = useApi();
+const toast = useToast();
 
 interface User {
   id: string;
@@ -223,17 +22,17 @@ interface User {
   created_at: string;
 }
 
-const showInviteDialog = ref(false);
+const showInviteModal = ref(false);
 const sending = ref(false);
 const loading = ref(false);
 
 const inviteForm = ref({
   email: "",
   name: "",
-  role: "viewer",
+  role: "viewer" as "admin" | "editor" | "viewer",
 });
 
-const roles = ["admin", "editor", "viewer"];
+const roles = ["admin", "editor", "viewer"] as const;
 
 const users = ref<User[]>([]);
 
@@ -266,8 +65,17 @@ function getRoleDescription(role: string): string {
 async function updateUserRole(user: User) {
   try {
     await api.put(`/users/${user.id}`, { role: user.role });
+    toast.add({
+      title: "Role Updated",
+      description: `${user.name}'s role updated to ${user.role}`,
+      color: "success",
+    });
   } catch (error: any) {
-    alert("Failed to update role: " + error.message);
+    toast.add({
+      title: "Failed to update role",
+      description: error.message,
+      color: "error",
+    });
     await loadUsers(); // Reload to revert
   }
 }
@@ -280,8 +88,17 @@ async function toggleUserStatus(user: User) {
     try {
       await api.put(`/users/${user.id}`, { is_active: !user.is_active });
       user.is_active = !user.is_active;
+      toast.add({
+        title: `User ${action}d`,
+        description: `${user.name} has been ${action}d.`,
+        color: "success",
+      });
     } catch (error: any) {
-      alert("Failed to update status: " + error.message);
+      toast.add({
+        title: "Failed to update status",
+        description: error.message,
+        color: "error",
+      });
     }
   }
 }
@@ -293,8 +110,17 @@ async function deleteUser(user: User) {
     try {
       await api.delete(`/users/${user.id}`);
       users.value = users.value.filter((u) => u.id !== user.id);
+      toast.add({
+        title: "User Deleted",
+        description: `${user.name} has been deleted.`,
+        color: "success",
+      });
     } catch (error: any) {
-      alert("Failed to delete user: " + error.message);
+      toast.add({
+        title: "Failed to delete user",
+        description: error.message,
+        color: "error",
+      });
     }
   }
 }
@@ -311,7 +137,6 @@ async function sendInvite() {
 
   sending.value = true;
   try {
-    // Use the new POST /api/users endpoint instead of /auth/invite
     const tempPassword = generateTempPassword();
 
     await api.post("/users", {
@@ -325,7 +150,6 @@ async function sendInvite() {
       title: "User created",
       description: `Account created for ${inviteForm.value.email}. Temporary password: ${tempPassword}`,
       color: "success",
-      timeout: 10000, // Show longer since it has temp password
     });
 
     await loadUsers();
@@ -352,7 +176,7 @@ function generateTempPassword(): string {
 }
 
 function closeInviteDialog() {
-  showInviteDialog.value = false;
+  showInviteModal.value = false;
   inviteForm.value = {
     email: "",
     name: "",
@@ -377,205 +201,238 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>
-.users-page {
-  max-width: 1400px;
-  margin: 0 auto;
-}
+<template>
+  <div class="max-w-7xl mx-auto space-y-8">
+    <!-- Header -->
+    <div class="flex items-start justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Users</h1>
+        <p class="mt-2 text-gray-500 dark:text-gray-400">
+          Manage team members and their access levels
+        </p>
+      </div>
+      <UButton
+        color="primary"
+        icon="i-lucide-user-plus"
+        @click="showInviteModal = true"
+      >
+        Invite User
+      </UButton>
+    </div>
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-}
+    <!-- Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <UCard>
+        <div class="flex items-center gap-4">
+          <div class="p-3 rounded-xl bg-blue-50 dark:bg-blue-950">
+            <UIcon
+              name="i-lucide-users"
+              class="w-8 h-8 text-blue-600 dark:text-blue-400"
+            />
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ users.length }}
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Total Users</p>
+          </div>
+        </div>
+      </UCard>
 
-.page-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-  color: #0f172a;
-}
+      <UCard>
+        <div class="flex items-center gap-4">
+          <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950">
+            <UIcon
+              name="i-lucide-check-circle"
+              class="w-8 h-8 text-emerald-600 dark:text-emerald-400"
+            />
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ users.filter((u) => u.is_active).length }}
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Active</p>
+          </div>
+        </div>
+      </UCard>
 
-.page-subtitle {
-  color: #64748b;
-  margin: 0.5rem 0 0 0;
-}
+      <UCard>
+        <div class="flex items-center gap-4">
+          <div class="p-3 rounded-xl bg-purple-50 dark:bg-purple-950">
+            <UIcon
+              name="i-lucide-shield"
+              class="w-8 h-8 text-purple-600 dark:text-purple-400"
+            />
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ users.filter((u) => u.role === "admin").length }}
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Admins</p>
+          </div>
+        </div>
+      </UCard>
+    </div>
 
-.user-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
+    <!-- Users Table -->
+    <UCard>
+      <AdminTable
+        :data="users"
+        :columns="[
+          { key: 'name', label: 'User' },
+          { key: 'role', label: 'Role' },
+          { key: 'is_active', label: 'Status' },
+          { key: 'last_login_at', label: 'Last Login' },
+          { key: 'created_at', label: 'Joined' },
+          { key: 'actions', label: 'Actions' },
+        ]"
+        :loading="loading"
+      >
+        <template #name-cell="{ row }">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-purple-600 flex items-center justify-center text-white font-bold text-sm"
+            >
+              {{ getUserInitials(row.name) }}
+            </div>
+            <div>
+              <p class="font-semibold text-gray-900 dark:text-white">
+                {{ row.name }}
+              </p>
+              <p class="text-sm text-gray-500 dark:text-gray-400">
+                {{ row.email }}
+              </p>
+            </div>
+          </div>
+        </template>
 
-.stat-card {
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
+        <template #role-cell="{ row }">
+          <USelect
+            v-model="row.role"
+            :items="
+              roles.map((r) => ({
+                value: r,
+                label: r.charAt(0).toUpperCase() + r.slice(1),
+              }))
+            "
+            :disabled="row.id === authStore.user?.id"
+            class="w-32"
+            @update:model-value="updateUserRole(row)"
+          />
+        </template>
 
-.user-avatar {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: 700;
-  font-size: 1rem;
-}
+        <template #is_active-cell="{ row }">
+          <UBadge
+            :color="row.is_active ? 'success' : 'neutral'"
+            variant="soft"
+            size="sm"
+          >
+            {{ row.is_active ? "Active" : "Inactive" }}
+          </UBadge>
+        </template>
 
-.user-info {
-  flex: 1;
-}
+        <template #last_login_at-cell="{ row }">
+          <span class="text-sm text-gray-500 dark:text-gray-400">
+            {{ row.last_login_at ? formatDate(row.last_login_at) : "Never" }}
+          </span>
+        </template>
 
-.user-name {
-  font-weight: 600;
-  margin: 0;
-  color: #0f172a;
-}
+        <template #created_at-cell="{ row }">
+          <span class="text-sm text-gray-500 dark:text-gray-400">
+            {{ formatDate(row.created_at) }}
+          </span>
+        </template>
 
-.user-email {
-  font-size: 0.875rem;
-  color: #64748b;
-  margin: 0.25rem 0 0 0;
-}
+        <template #actions-cell="{ row }">
+          <div
+            v-if="row.id !== authStore.user?.id"
+            class="flex items-center gap-2"
+          >
+            <UButton
+              :color="row.is_active ? 'error' : 'success'"
+              variant="ghost"
+              size="xs"
+              :icon="row.is_active ? 'i-lucide-ban' : 'i-lucide-check'"
+              @click="toggleUserStatus(row)"
+            >
+              {{ row.is_active ? "Deactivate" : "Activate" }}
+            </UButton>
+            <UButton
+              color="error"
+              variant="ghost"
+              size="xs"
+              icon="i-lucide-trash"
+              @click="deleteUser(row)"
+            />
+          </div>
+          <UBadge v-else color="info" variant="soft" size="sm">You</UBadge>
+        </template>
+      </AdminTable>
+    </UCard>
 
-.role-description {
-  display: block;
-  margin-top: 0.5rem;
-  color: #64748b;
-  font-size: 0.75rem;
-  line-height: 1.4;
-}
+    <!-- Invite Modal -->
+    <UModal :open="showInviteModal" @update:open="showInviteModal = $event">
+      <template #content>
+        <UCard>
+          <template #header>
+            <h3 class="text-lg font-semibold">Invite User</h3>
+            <p class="text-sm text-gray-500">
+              An invitation email will be sent to the user with a registration
+              link.
+            </p>
+          </template>
 
-.users-table-card {
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
+          <div class="space-y-4">
+            <UFormField label="Email Address" required>
+              <UInput
+                v-model="inviteForm.email"
+                type="email"
+                placeholder="user@example.com"
+              />
+            </UFormField>
 
-.user-cell {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
+            <UFormField label="Name" required>
+              <UInput v-model="inviteForm.name" placeholder="John Doe" />
+            </UFormField>
 
-.role-select {
-  min-width: 120px;
-}
+            <UFormField label="Role" required>
+              <USelect
+                v-model="inviteForm.role"
+                :items="
+                  roles.map((r) => ({
+                    value: r,
+                    label: r.charAt(0).toUpperCase() + r.slice(1),
+                  }))
+                "
+                placeholder="Select a role"
+              />
+              <p class="text-xs text-gray-500 mt-1">
+                {{ getRoleDescription(inviteForm.role) }}
+              </p>
+            </UFormField>
+          </div>
 
-.date-text {
-  color: #64748b;
-  font-size: 0.875rem;
-}
-
-.table-actions {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.stat-icon {
-  font-size: 2.5rem;
-  color: #3b82f6;
-}
-
-.stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-  color: #0f172a;
-}
-
-.stat-label {
-  color: #64748b;
-  margin: 0.25rem 0 0 0;
-  font-size: 0.875rem;
-}
-
-.dialog-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  padding: 1rem 0;
-}
-
-.form-field label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #0f172a;
-}
-
-:deep(.p-datatable-thead > tr > th) {
-  background: #f8fafc;
-  color: #475569;
-  font-weight: 600;
-  text-transform: uppercase;
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
-  padding: 1rem 1.5rem;
-}
-
-:deep(.p-datatable-tbody > tr > td) {
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-:deep(.p-datatable-tbody > tr:last-child > td) {
-  border-bottom: none;
-}
-
-:deep(.p-dialog-content),
-:deep(.p-dialog-header),
-:deep(.p-dialog-footer) {
-  background: white !important;
-}
-
-:deep(.p-dialog-header) {
-  border-bottom: 1px solid #e2e8f0;
-  padding: 1.5rem;
-}
-
-:deep(.p-dialog-content) {
-  padding: 1.5rem;
-}
-
-:deep(.p-dialog-footer) {
-  border-top: 1px solid #e2e8f0;
-  padding: 1rem 1.5rem;
-}
-
-/* Ensure dialog mask and background are visible */
-:deep(.p-dialog-mask) {
-  background: rgba(0, 0, 0, 0.4) !important;
-}
-
-:deep(.p-dialog) {
-  background: white !important;
-  border-radius: 0.75rem !important;
-  box-shadow:
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04) !important;
-}
-
-:deep(.p-dialog .p-dialog-header) {
-  background: white !important;
-}
-
-:deep(.p-dialog .p-dialog-content) {
-  background: white !important;
-}
-
-:deep(.p-dialog .p-dialog-footer) {
-  background: white !important;
-}
-</style>
+          <template #footer>
+            <div class="flex justify-end gap-3">
+              <UButton
+                color="neutral"
+                variant="ghost"
+                @click="closeInviteDialog"
+              >
+                Cancel
+              </UButton>
+              <UButton
+                color="primary"
+                icon="i-lucide-send"
+                :loading="sending"
+                @click="sendInvite"
+              >
+                Send Invitation
+              </UButton>
+            </div>
+          </template>
+        </UCard>
+      </template>
+    </UModal>
+  </div>
+</template>

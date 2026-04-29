@@ -7,7 +7,7 @@
       @click="handleClick"
     >
       <div class="toast-icon">
-        <i v-if="icon" :class="icon"/>
+        <Icon v-if="icon" :name="icon" class="h-6 w-6" />
       </div>
 
       <div class="toast-content">
@@ -21,14 +21,11 @@
         :aria-label="'Close notification'"
         @click.stop="dismiss"
       >
-        <i class="pi pi-times"/>
+        <Icon name="i-lucide-x" />
       </button>
 
       <div v-if="showProgress && progress" class="toast-progress">
-        <div
-          class="toast-progress-bar"
-          :style="{ width: `${progress}%` }"
-        />
+        <div class="toast-progress-bar" :style="{ width: `${progress}%` }" />
       </div>
     </div>
   </Transition>
@@ -63,10 +60,10 @@ const emit = defineEmits<{
 const visible = ref(true);
 
 const icons = {
-  success: "pi pi-check-circle",
-  error: "pi pi-times-circle",
-  warning: "pi pi-exclamation-triangle",
-  info: "pi pi-info-circle",
+  success: "i-lucide-check-circle",
+  error: "i-lucide-x-circle",
+  warning: "i-lucide-triangle-alert",
+  info: "i-lucide-info",
 };
 
 const icon = computed(

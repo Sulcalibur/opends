@@ -74,15 +74,24 @@
         <div v-if="component?.spec" class="spec-content">
           <div v-if="component.spec.props?.length" class="spec-section">
             <h4>Props</h4>
-            <UTable :rows="component.spec.props" :columns="propColumns" />
+            <UTable
+              :rows="component.spec.props"
+              :columns="propColumns as any"
+            />
           </div>
           <div v-if="component.spec.slots?.length" class="spec-section">
             <h4>Slots</h4>
-            <UTable :rows="component.spec.slots" :columns="slotColumns" />
+            <UTable
+              :rows="component.spec.slots"
+              :columns="slotColumns as any"
+            />
           </div>
           <div v-if="component.spec.events?.length" class="spec-section">
             <h4>Events</h4>
-            <UTable :rows="component.spec.events" :columns="eventColumns" />
+            <UTable
+              :rows="component.spec.events"
+              :columns="eventColumns as any"
+            />
           </div>
         </div>
         <div v-else class="empty-state">
@@ -165,7 +174,7 @@
     </UModal>
 
     <!-- Code Generation Modal -->
-    <UModal v-model="showCodeModal" :ui="{ width: 'lg' }">
+    <UModal v-model="showCodeModal">
       <UCard>
         <template #header>
           <div class="code-modal-header">
@@ -246,8 +255,26 @@ const eventColumns = [
   { key: "payload", label: "Payload" },
 ];
 
-function getStatusColor(status?: string): string {
-  const colors: Record<string, string> = {
+function getStatusColor(
+  status?: string,
+):
+  | "primary"
+  | "secondary"
+  | "success"
+  | "info"
+  | "warning"
+  | "error"
+  | "neutral" {
+  const colors: Record<
+    string,
+    | "primary"
+    | "secondary"
+    | "success"
+    | "info"
+    | "warning"
+    | "error"
+    | "neutral"
+  > = {
     draft: "neutral",
     review: "warning",
     approved: "success",

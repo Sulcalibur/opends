@@ -2,7 +2,7 @@
   <div class="empty-state">
     <div class="empty-icon" :style="{ '--icon-color': iconColor }">
       <slot name="icon">
-        <i v-if="icon" :class="icon"/>
+        <Icon v-if="icon" :name="icon" class="h-12 w-12" />
       </slot>
     </div>
 
@@ -11,7 +11,7 @@
       <p v-if="description" class="empty-description">{{ description }}</p>
 
       <div v-if="$slots.default" class="empty-message">
-        <slot/>
+        <slot />
       </div>
 
       <PremiumButton
@@ -22,7 +22,7 @@
         @click="$emit('action')"
       >
         <template v-if="actionIcon" #icon>
-          <i :class="actionIcon"/>
+          <i :class="actionIcon" />
         </template>
         {{ action }}
       </PremiumButton>

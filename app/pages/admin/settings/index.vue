@@ -1,408 +1,14 @@
-<template>
-  <div class="settings-page">
-    <div class="page-header">
-      <h1 class="page-title">Settings</h1>
-      <p class="page-subtitle">Manage workspace configuration</p>
-    </div>
-
-    <div class="settings-grid">
-      <div class="settings-nav">
-        <button
-          v-for="tab in tabs"
-          :key="tab.id"
-          :class="['nav-item', { active: currentTab === tab.id }]"
-          @click="currentTab = tab.id"
-        >
-          <i :class="tab.icon" />
-          {{ tab.label }}
-        </button>
-      </div>
-
-      <div class="settings-content">
-        <Card class="content-card">
-          <template #content>
-            <!-- General Settings -->
-            <div v-if="currentTab === 'general'" class="space-y-6">
-              <h3 class="section-title">General Information</h3>
-
-              <div class="form-field">
-                <label>Organization Name</label>
-                <InputText
-                  v-model="settings.organization_name"
-                  class="w-full"
-                />
-                <small class="help-text"
-                  >Used in headers, footers and page titles</small
-                >
-              </div>
-
-              <div class="form-field mt-4">
-                <label>Service Phase</label>
-                <Dropdown
-                  v-model="settings.general.phase"
-                  :options="['Alpha', 'Beta', 'Live', 'None']"
-                  class="w-full"
-                />
-                <small class="help-text"
-                  >Displays a banner at the top of all pages (e.g. ALPHA)</small
-                >
-              </div>
-
-              <Divider />
-
-              <h3 class="section-title">Localization</h3>
-              <div class="grid grid-cols-2 gap-4">
-                <div class="form-field">
-                  <label>Language</label>
-                  <Dropdown
-                    v-model="settings.general.language"
-                    :options="languages"
-                    option-label="name"
-                    option-value="code"
-                    class="w-full"
-                  />
-                </div>
-                <div class="form-field">
-                  <label>Timezone</label>
-                  <Dropdown
-                    v-model="settings.general.timezone"
-                    :options="timezones"
-                    class="w-full"
-                  />
-                </div>
-              </div>
-            </div>
-
-            <!-- Homepage Settings -->
-            <div v-else-if="currentTab === 'homepage'" class="space-y-6">
-              <h3 class="section-title">Hero Section</h3>
-              <p class="text-sm text-gray-500 mb-4">
-                Configure the main landing page hero area.
-              </p>
-
-              <div class="form-field">
-                <label>Hero Title</label>
-                <InputText
-                  v-model="settings.home_hero.title"
-                  class="w-full"
-                  placeholder="e.g. OpenDS Design System"
-                />
-              </div>
-
-              <div class="form-field">
-                <label>Hero Subtitle</label>
-                <Textarea
-                  v-model="settings.home_hero.subtitle"
-                  rows="2"
-                  class="w-full"
-                  placeholder="e.g. Establishing quality and inclusivity across our digital experiences."
-                />
-              </div>
-
-              <div class="form-field">
-                <label>Hero Image URL</label>
-                <InputText
-                  v-model="settings.home_hero.image_url"
-                  class="w-full"
-                  placeholder="https://example.com/hero.png"
-                />
-                <small class="help-text"
-                  >Direct link to a high-quality background image or
-                  illustration</small
-                >
-              </div>
-
-              <div class="grid grid-cols-2 gap-4">
-                <div class="form-field">
-                  <label>CTA Button Text</label>
-                  <InputText
-                    v-model="settings.home_hero.cta_text"
-                    class="w-full"
-                    placeholder="Get Started"
-                  />
-                </div>
-                <div class="form-field">
-                  <label>CTA Button Link</label>
-                  <InputText
-                    v-model="settings.home_hero.cta_link"
-                    class="w-full"
-                    placeholder="/docs"
-                  />
-                </div>
-              </div>
-
-              <div
-                v-if="settings.home_hero.image_url"
-                class="p-4 bg-gray-50 rounded-lg border border-dashed flex items-center gap-4"
-              >
-                <div
-                  class="w-24 h-16 rounded overflow-hidden border shadow-sm flex-shrink-0"
-                >
-                  <img
-                    :src="settings.home_hero.image_url"
-                    class="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <p class="text-sm font-medium">Hero Preview</p>
-                  <p class="text-xs text-gray-500">Image successfully linked</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Appearance Settings -->
-            <div v-else-if="currentTab === 'appearance'" class="space-y-6">
-              <h3 class="section-title">Theme</h3>
-              <div class="grid grid-cols-3 gap-4">
-                <div
-                  class="theme-option"
-                  :class="{ active: settings.appearance.theme === 'light' }"
-                  @click="settings.appearance.theme = 'light'"
-                >
-                  <div class="bg-white border rounded h-24 mb-2" />
-                  <span>Light</span>
-                </div>
-                <div
-                  class="theme-option"
-                  :class="{ active: settings.appearance.theme === 'dark' }"
-                  @click="settings.appearance.theme = 'dark'"
-                >
-                  <div
-                    class="bg-gray-900 border border-gray-700 rounded h-24 mb-2"
-                  />
-                  <span>Dark</span>
-                </div>
-                <div
-                  class="theme-option"
-                  :class="{ active: settings.appearance.theme === 'system' }"
-                  @click="settings.appearance.theme = 'system'"
-                >
-                  <div
-                    class="bg-gradient-to-br from-white to-gray-900 border rounded h-24 mb-2"
-                  />
-                  <span>System</span>
-                </div>
-              </div>
-
-              <Divider />
-
-              <h3 class="section-title">Brand Colors</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="space-y-4">
-                  <label class="block text-sm font-medium text-gray-700"
-                    >Primary Color</label
-                  >
-                  <div class="flex flex-wrap gap-2 mb-2">
-                    <div
-                      v-for="color in brandColors"
-                      :key="'p-' + color"
-                      class="w-8 h-8 rounded-full cursor-pointer transition-transform hover:scale-110 border border-gray-200"
-                      :style="{ backgroundColor: color }"
-                      :class="{
-                        'ring-2 ring-offset-2 ring-blue-500':
-                          settings.appearance.primaryColor === color,
-                      }"
-                      @click="settings.appearance.primaryColor = color"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <input
-                      v-model="settings.appearance.primaryColor"
-                      type="color"
-                      class="h-10 w-20 p-1 rounded border border-gray-300 cursor-pointer"
-                    />
-                    <InputText
-                      v-model="settings.appearance.primaryColor"
-                      class="w-full"
-                      placeholder="#3b82f6"
-                    />
-                  </div>
-                </div>
-
-                <div class="space-y-4">
-                  <label class="block text-sm font-medium text-gray-700"
-                    >Secondary Color</label
-                  >
-                  <div class="flex flex-wrap gap-2 mb-2">
-                    <div
-                      v-for="color in secondaryColors"
-                      :key="'s-' + color"
-                      class="w-8 h-8 rounded-full cursor-pointer transition-transform hover:scale-110 border border-gray-200"
-                      :style="{ backgroundColor: color }"
-                      :class="{
-                        'ring-2 ring-offset-2 ring-blue-500':
-                          settings.appearance.secondaryColor === color,
-                      }"
-                      @click="settings.appearance.secondaryColor = color"
-                    />
-                  </div>
-                  <div class="flex items-center gap-3">
-                    <input
-                      v-model="settings.appearance.secondaryColor"
-                      type="color"
-                      class="h-10 w-20 p-1 rounded border border-gray-300 cursor-pointer"
-                    />
-                    <InputText
-                      v-model="settings.appearance.secondaryColor"
-                      class="w-full"
-                      placeholder="#10b981"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              <Divider />
-
-              <h3 class="section-title">Typography</h3>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="form-field">
-                  <label>Heading Font</label>
-                  <Dropdown
-                    v-model="settings.appearance.headingFont"
-                    :options="headingFonts"
-                    option-label="label"
-                    option-value="value"
-                    class="w-full"
-                  />
-                  <div
-                    class="mt-2 text-2xl"
-                    :style="{ fontFamily: settings.appearance.headingFont }"
-                  >
-                    Example Heading
-                  </div>
-                </div>
-                <div class="form-field">
-                  <label>Body Font</label>
-                  <Dropdown
-                    v-model="settings.appearance.bodyFont"
-                    :options="bodyFonts"
-                    option-label="label"
-                    option-value="value"
-                    class="w-full"
-                  />
-                  <div
-                    class="mt-2 text-sm"
-                    :style="{ fontFamily: settings.appearance.bodyFont }"
-                  >
-                    The quick brown fox jumps over the lazy dog. This is how
-                    your body text will look.
-                  </div>
-                </div>
-              </div>
-
-              <div class="form-field mt-6">
-                <label>Corner Roundness</label>
-                <div class="flex gap-4">
-                  <div
-                    v-for="opt in radiusOptions"
-                    :key="opt.value"
-                    class="flex-1 p-3 border rounded-lg text-center cursor-pointer hover:bg-gray-50 transition-all"
-                    :class="{
-                      'border-blue-500 bg-blue-50 text-blue-700':
-                        settings.appearance.borderRadius === opt.value,
-                    }"
-                    @click="settings.appearance.borderRadius = opt.value"
-                  >
-                    <div class="text-sm font-bold">{{ opt.label }}</div>
-                    <div class="text-xs text-gray-400">{{ opt.value }}</div>
-                  </div>
-                </div>
-              </div>
-
-              <Divider />
-
-              <h3 class="section-title">Theme Presets</h3>
-              <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div
-                  v-for="preset in themePresets"
-                  :key="preset.id"
-                  class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50 transition-all text-center"
-                  :class="{
-                    'border-blue-500 bg-blue-50':
-                      settings.appearance.presetTheme === preset.id,
-                  }"
-                  @click="applyPreset(preset)"
-                >
-                  <div class="text-sm font-bold mb-1">{{ preset.label }}</div>
-                  <div class="flex justify-center gap-1 mb-2">
-                    <div
-                      class="w-4 h-4 rounded-full"
-                      :style="{ backgroundColor: preset.primary }"
-                    />
-                    <div
-                      class="w-4 h-4 rounded-full"
-                      :style="{ backgroundColor: preset.secondary }"
-                    />
-                  </div>
-                  <div class="text-[10px] text-gray-500">
-                    {{ preset.description }}
-                  </div>
-                </div>
-              </div>
-
-              <Divider />
-            </div>
-
-            <!-- Security Settings -->
-            <div v-else-if="currentTab === 'security'" class="space-y-6">
-              <h3 class="section-title">Access Control</h3>
-
-              <div class="field-checkbox">
-                <Checkbox
-                  v-model="settings.security.publicAccess"
-                  :binary="true"
-                  input-id="public-access"
-                />
-                <label for="public-access" class="ml-2 font-medium"
-                  >Allow public access to documentation</label
-                >
-              </div>
-              <p class="text-sm text-gray-500 ml-8">
-                If unchecked, only authenticated users can view the
-                documentation.
-              </p>
-
-              <div class="field-checkbox mt-4">
-                <Checkbox
-                  v-model="settings.security.allowRegistration"
-                  :binary="true"
-                  input-id="allow-registration"
-                />
-                <label for="allow-registration" class="ml-2 font-medium"
-                  >Allow new user registration</label
-                >
-              </div>
-            </div>
-
-            <div class="mt-8 flex justify-end">
-              <Button
-                label="Save Changes"
-                icon="pi pi-check"
-                :loading="saving"
-                @click="saveSettings"
-              />
-            </div>
-          </template>
-        </Card>
-      </div>
-    </div>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { ref, onMounted, computed, watch } from "vue";
-import { useApi } from "~/composables/useApi";
-
 definePageMeta({
   layout: "admin",
   middleware: "auth",
 });
 
 const tabs = [
-  { id: "general", label: "General", icon: "pi pi-cog" },
-  { id: "homepage", label: "Homepage", icon: "pi pi-home" },
-  { id: "appearance", label: "Appearance", icon: "pi pi-palette" },
-  { id: "security", label: "Security", icon: "pi pi-lock" },
+  { id: "general", label: "General", icon: "i-lucide-settings" },
+  { id: "homepage", label: "Homepage", icon: "i-lucide-home" },
+  { id: "appearance", label: "Appearance", icon: "i-lucide-palette" },
+  { id: "security", label: "Security", icon: "i-lucide-lock" },
 ];
 
 const currentTab = ref("general");
@@ -732,6 +338,7 @@ onMounted(async () => {
     });
   }
 });
+
 const languages = [
   { name: "English", code: "en" },
   { name: "Spanish", code: "es" },
@@ -741,142 +348,502 @@ const languages = [
 const timezones = ["UTC", "America/New_York", "Europe/London", "Asia/Tokyo"];
 
 async function saveSettings() {
-  saving.value = true
+  saving.value = true;
   try {
     // Transform nested settings to flat for API
-    const flatSettings = transformNestedToFlat(settings.value)
-    await api.put('/settings', flatSettings)
-    toast.add({ color: 'success', title: 'Success', description: 'Settings updated successfully' })
+    const flatSettings = transformNestedToFlat(settings.value);
+    await api.put("/settings", flatSettings);
+    toast.add({
+      color: "success",
+      title: "Success",
+      description: "Settings updated successfully",
+    });
 
     // Force reload settings to ensure UI is in sync
-    const response = await api.get('/settings')
+    const response = await api.get("/settings");
     if (response.success && response.settings) {
-      const nestedSettings = transformFlatToNested(response.settings)
+      const nestedSettings = transformFlatToNested(response.settings);
       settings.value = {
         ...settings.value,
-        ...nestedSettings
-      }
+        ...nestedSettings,
+      };
     }
   } catch (error: any) {
-    toast.add({ color: 'error', title: 'Error', description: error.message || 'Failed to save settings' })
+    toast.add({
+      color: "error",
+      title: "Error",
+      description: error.message || "Failed to save settings",
+    });
   } finally {
-    saving.value = false
+    saving.value = false;
   }
 }
-
 </script>
 
-<style scoped>
-.settings-page {
-  max-width: 1200px;
-  margin: 0 auto;
-}
+<template>
+  <div class="max-w-[1200px] mx-auto p-6">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
+      <p class="text-gray-500 dark:text-gray-400 mt-1">
+        Manage workspace configuration
+      </p>
+    </div>
 
-.page-header {
-  margin-bottom: 2rem;
-}
+    <div class="grid grid-cols-1 lg:grid-cols-[240px_1fr] gap-8 items-start">
+      <!-- Settings Navigation -->
+      <div
+        class="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible pb-2 lg:pb-0"
+      >
+        <UButton
+          v-for="tab in tabs"
+          :key="tab.id"
+          :icon="tab.icon"
+          :label="tab.label"
+          :color="currentTab === tab.id ? 'primary' : 'neutral'"
+          :variant="currentTab === tab.id ? 'soft' : 'ghost'"
+          class="whitespace-nowrap justify-start"
+          @click="currentTab = tab.id"
+        />
+      </div>
 
-.page-title {
-  font-size: 2rem;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0;
-}
+      <!-- Settings Content -->
+      <UCard>
+        <!-- General Settings -->
+        <div v-if="currentTab === 'general'" class="space-y-6">
+          <div>
+            <h3
+              class="text-lg font-semibold text-gray-900 dark:text-white mb-4"
+            >
+              General Information
+            </h3>
 
-.page-subtitle {
-  color: #64748b;
-  margin-top: 0.5rem;
-}
+            <div class="space-y-4">
+              <UFormField label="Organization Name">
+                <UInput v-model="settings.organization_name" class="w-full" />
+                <template #hint>
+                  <span class="text-xs text-gray-500"
+                    >Used in headers, footers and page titles</span
+                  >
+                </template>
+              </UFormField>
 
-.settings-grid {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 2rem;
-  align-items: start;
-}
+              <UFormField label="Service Phase">
+                <USelect
+                  v-model="settings.general.phase"
+                  :items="['Alpha', 'Beta', 'Live', 'None']"
+                  class="w-full"
+                />
+                <template #hint>
+                  <span class="text-xs text-gray-500"
+                    >Displays a banner at the top of all pages (e.g.
+                    ALPHA)</span
+                  >
+                </template>
+              </UFormField>
+            </div>
+          </div>
 
-.settings-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+          <UDivider />
 
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  color: #64748b;
-  font-weight: 500;
-  transition: all 0.2s;
-  text-align: left;
-}
+          <div>
+            <h3
+              class="text-lg font-semibold text-gray-900 dark:text-white mb-4"
+            >
+              Localization
+            </h3>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <UFormField label="Language">
+                <USelect
+                  v-model="settings.general.language"
+                  :items="
+                    languages.map((l) => ({ label: l.name, value: l.code }))
+                  "
+                  class="w-full"
+                />
+              </UFormField>
+              <UFormField label="Timezone">
+                <USelect
+                  v-model="settings.general.timezone"
+                  :items="timezones"
+                  class="w-full"
+                />
+              </UFormField>
+            </div>
+          </div>
+        </div>
 
-.nav-item:hover {
-  background: #f1f5f9;
-  color: #0f172a;
-}
+        <!-- Homepage Settings -->
+        <div v-else-if="currentTab === 'homepage'" class="space-y-6">
+          <div>
+            <h3
+              class="text-lg font-semibold text-gray-900 dark:text-white mb-2"
+            >
+              Hero Section
+            </h3>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+              Configure the main landing page hero area.
+            </p>
 
-.nav-item.active {
-  background: #eff6ff;
-  color: #3b82f6;
-}
+            <div class="space-y-4">
+              <UFormField label="Hero Title">
+                <UInput
+                  v-model="settings.home_hero.title"
+                  class="w-full"
+                  placeholder="e.g. OpenDS Design System"
+                />
+              </UFormField>
 
-.content-card {
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
+              <UFormField label="Hero Subtitle">
+                <UTextarea
+                  v-model="settings.home_hero.subtitle"
+                  :rows="2"
+                  class="w-full"
+                  placeholder="e.g. Establishing quality and inclusivity across our digital experiences."
+                />
+              </UFormField>
 
-.section-title {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #0f172a;
-  margin-bottom: 1rem;
-}
+              <UFormField label="Hero Image URL">
+                <UInput
+                  v-model="settings.home_hero.image_url"
+                  class="w-full"
+                  placeholder="https://example.com/hero.png"
+                />
+                <template #hint>
+                  <span class="text-xs text-gray-500"
+                    >Direct link to a high-quality background image or
+                    illustration</span
+                  >
+                </template>
+              </UFormField>
 
-.form-field {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <UFormField label="CTA Button Text">
+                  <UInput
+                    v-model="settings.home_hero.cta_text"
+                    class="w-full"
+                    placeholder="Get Started"
+                  />
+                </UFormField>
+                <UFormField label="CTA Button Link">
+                  <UInput
+                    v-model="settings.home_hero.cta_link"
+                    class="w-full"
+                    placeholder="/docs"
+                  />
+                </UFormField>
+              </div>
+            </div>
+          </div>
 
-.form-field label {
-  font-weight: 500;
-  color: #334155;
-}
+          <div
+            v-if="settings.home_hero.image_url"
+            class="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg border border-dashed border-gray-300 dark:border-gray-600 flex items-center gap-4"
+          >
+            <div
+              class="w-24 h-16 rounded overflow-hidden border shadow-sm flex-shrink-0"
+            >
+              <img
+                :src="settings.home_hero.image_url"
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <div>
+              <p class="text-sm font-medium text-gray-900 dark:text-white">
+                Hero Preview
+              </p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Image successfully linked
+              </p>
+            </div>
+          </div>
+        </div>
 
-.theme-option {
-  cursor: pointer;
-  text-align: center;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  border: 2px solid transparent;
-}
+        <!-- Appearance Settings -->
+        <div v-else-if="currentTab === 'appearance'" class="space-y-6">
+          <div>
+            <h3
+              class="text-lg font-semibold text-gray-900 dark:text-white mb-4"
+            >
+              Theme
+            </h3>
+            <div class="grid grid-cols-3 gap-4">
+              <div
+                class="cursor-pointer text-center p-4 rounded-lg border-2 transition-all"
+                :class="
+                  settings.appearance.theme === 'light'
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600 bg-gray-50 dark:bg-gray-800'
+                "
+                @click="settings.appearance.theme = 'light'"
+              >
+                <div class="bg-white border rounded-lg h-24 mb-2 shadow-sm" />
+                <span class="font-medium text-gray-700 dark:text-gray-300"
+                  >Light</span
+                >
+              </div>
+              <div
+                class="cursor-pointer text-center p-4 rounded-lg border-2 transition-all"
+                :class="
+                  settings.appearance.theme === 'dark'
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600 bg-gray-50 dark:bg-gray-800'
+                "
+                @click="settings.appearance.theme = 'dark'"
+              >
+                <div
+                  class="bg-gray-900 border border-gray-700 rounded-lg h-24 mb-2 shadow-sm"
+                />
+                <span class="font-medium text-gray-700 dark:text-gray-300"
+                  >Dark</span
+                >
+              </div>
+              <div
+                class="cursor-pointer text-center p-4 rounded-lg border-2 transition-all"
+                :class="
+                  settings.appearance.theme === 'system'
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-900/20'
+                    : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600 bg-gray-50 dark:bg-gray-800'
+                "
+                @click="settings.appearance.theme = 'system'"
+              >
+                <div
+                  class="bg-gradient-to-br from-white to-gray-900 border rounded-lg h-24 mb-2 shadow-sm"
+                />
+                <span class="font-medium text-gray-700 dark:text-gray-300"
+                  >System</span
+                >
+              </div>
+            </div>
+          </div>
 
-.theme-option.active {
-  border-color: #3b82f6;
-  background: #eff6ff;
-}
+          <UDivider />
 
-.theme-option span {
-  font-weight: 500;
-  color: #334155;
-}
+          <div>
+            <h3
+              class="text-lg font-semibold text-gray-900 dark:text-white mb-4"
+            >
+              Brand Colors
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div class="space-y-4">
+                <label
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Primary Color
+                </label>
+                <div class="flex flex-wrap gap-2 mb-2">
+                  <div
+                    v-for="color in brandColors"
+                    :key="'p-' + color"
+                    class="w-8 h-8 rounded-full cursor-pointer transition-transform hover:scale-110 border border-gray-200 dark:border-gray-600"
+                    :style="{ backgroundColor: color }"
+                    :class="{
+                      'ring-2 ring-offset-2 ring-blue-500':
+                        settings.appearance.primaryColor === color,
+                    }"
+                    @click="settings.appearance.primaryColor = color"
+                  />
+                </div>
+                <div class="flex items-center gap-3">
+                  <input
+                    v-model="settings.appearance.primaryColor"
+                    type="color"
+                    class="h-10 w-20 p-1 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+                  />
+                  <UInput
+                    v-model="settings.appearance.primaryColor"
+                    class="flex-1"
+                    placeholder="#3b82f6"
+                  />
+                </div>
+              </div>
 
-@media (max-width: 768px) {
-  .settings-grid {
-    grid-template-columns: 1fr;
-  }
+              <div class="space-y-4">
+                <label
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300"
+                >
+                  Secondary Color
+                </label>
+                <div class="flex flex-wrap gap-2 mb-2">
+                  <div
+                    v-for="color in secondaryColors"
+                    :key="'s-' + color"
+                    class="w-8 h-8 rounded-full cursor-pointer transition-transform hover:scale-110 border border-gray-200 dark:border-gray-600"
+                    :style="{ backgroundColor: color }"
+                    :class="{
+                      'ring-2 ring-offset-2 ring-blue-500':
+                        settings.appearance.secondaryColor === color,
+                    }"
+                    @click="settings.appearance.secondaryColor = color"
+                  />
+                </div>
+                <div class="flex items-center gap-3">
+                  <input
+                    v-model="settings.appearance.secondaryColor"
+                    type="color"
+                    class="h-10 w-20 p-1 rounded border border-gray-300 dark:border-gray-600 cursor-pointer"
+                  />
+                  <UInput
+                    v-model="settings.appearance.secondaryColor"
+                    class="flex-1"
+                    placeholder="#10b981"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
 
-  .settings-nav {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 1rem;
-  }
+          <UDivider />
 
-  .nav-item {
-    white-space: nowrap;
-  }
-}
-</style>
+          <div>
+            <h3
+              class="text-lg font-semibold text-gray-900 dark:text-white mb-4"
+            >
+              Typography
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <UFormField label="Heading Font">
+                <USelect
+                  v-model="settings.appearance.headingFont"
+                  :items="headingFonts"
+                  class="w-full"
+                />
+                <div
+                  class="mt-2 text-2xl text-gray-900 dark:text-white"
+                  :style="{ fontFamily: settings.appearance.headingFont }"
+                >
+                  Example Heading
+                </div>
+              </UFormField>
+              <UFormField label="Body Font">
+                <USelect
+                  v-model="settings.appearance.bodyFont"
+                  :items="bodyFonts"
+                  class="w-full"
+                />
+                <div
+                  class="mt-2 text-sm text-gray-700 dark:text-gray-300"
+                  :style="{ fontFamily: settings.appearance.bodyFont }"
+                >
+                  The quick brown fox jumps over the lazy dog. This is how your
+                  body text will look.
+                </div>
+              </UFormField>
+            </div>
+          </div>
+
+          <UFormField label="Corner Roundness" class="mt-6">
+            <div class="flex gap-4">
+              <div
+                v-for="opt in radiusOptions"
+                :key="opt.value"
+                class="flex-1 p-3 border rounded-lg text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-all"
+                :class="{
+                  'border-blue-500 bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-400':
+                    settings.appearance.borderRadius === opt.value,
+                  'border-gray-200 dark:border-gray-600':
+                    settings.appearance.borderRadius !== opt.value,
+                }"
+                @click="settings.appearance.borderRadius = opt.value"
+              >
+                <div class="text-sm font-bold text-gray-900 dark:text-white">
+                  {{ opt.label }}
+                </div>
+                <div class="text-xs text-gray-500 dark:text-gray-400">
+                  {{ opt.value }}
+                </div>
+              </div>
+            </div>
+          </UFormField>
+
+          <UDivider />
+
+          <div>
+            <h3
+              class="text-lg font-semibold text-gray-900 dark:text-white mb-4"
+            >
+              Theme Presets
+            </h3>
+            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+              <div
+                v-for="preset in themePresets"
+                :key="preset.id"
+                class="p-4 border rounded-xl cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-all text-center"
+                :class="{
+                  'border-blue-500 bg-blue-50 dark:bg-blue-900/20':
+                    settings.appearance.presetTheme === preset.id,
+                  'border-gray-200 dark:border-gray-600':
+                    settings.appearance.presetTheme !== preset.id,
+                }"
+                @click="applyPreset(preset)"
+              >
+                <div
+                  class="text-sm font-bold text-gray-900 dark:text-white mb-1"
+                >
+                  {{ preset.label }}
+                </div>
+                <div class="flex justify-center gap-1 mb-2">
+                  <div
+                    class="w-4 h-4 rounded-full"
+                    :style="{ backgroundColor: preset.primary }"
+                  />
+                  <div
+                    class="w-4 h-4 rounded-full"
+                    :style="{ backgroundColor: preset.secondary }"
+                  />
+                </div>
+                <div class="text-[10px] text-gray-500 dark:text-gray-400">
+                  {{ preset.description }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Security Settings -->
+        <div v-else-if="currentTab === 'security'" class="space-y-6">
+          <div>
+            <h3
+              class="text-lg font-semibold text-gray-900 dark:text-white mb-4"
+            >
+              Access Control
+            </h3>
+
+            <div class="space-y-4">
+              <div class="flex items-start gap-3">
+                <UCheckbox
+                  v-model="settings.security.publicAccess"
+                  :label="'Allow public access to documentation'"
+                />
+              </div>
+              <p class="text-sm text-gray-500 dark:text-gray-400 ml-7">
+                If unchecked, only authenticated users can view the
+                documentation.
+              </p>
+
+              <div class="flex items-start gap-3">
+                <UCheckbox
+                  v-model="settings.security.allowRegistration"
+                  :label="'Allow new user registration'"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Save Button -->
+        <div
+          class="mt-8 flex justify-end pt-6 border-t border-gray-200 dark:border-gray-700"
+        >
+          <UButton
+            label="Save Changes"
+            icon="i-lucide-check"
+            :loading="saving"
+            @click="saveSettings"
+          />
+        </div>
+      </UCard>
+    </div>
+  </div>
+</template>

@@ -11,7 +11,7 @@
 
       <EmptyState
         v-if="tokens.length === 0"
-        icon="pi-palette"
+        icon="i-lucide-palette"
         title="No Tokens Yet"
         description="Get started by creating your first design token in the admin panel."
         action-link="/admin/tokens"
@@ -23,7 +23,7 @@
         <AnimatedCard variant="elevated" class="stats-card fade-up stagger-1">
           <template #header>
             <div class="card-header-title">
-              <i class="pi pi-chart-bar"/>
+              <Icon name="i-lucide-bar-chart-3" />
               Token Overview
             </div>
           </template>
@@ -46,127 +46,136 @@
                 <div class="stat-label">Spacing</div>
               </div>
             </div>
-            <Button
-              icon="pi pi-download"
+            <UButton
+              icon="i-lucide-download"
               label="Export JSON"
-              class="p-button-outlined"
+              variant="outline"
               @click="downloadTokens"
             />
           </template>
         </AnimatedCard>
 
-        <TabView class="tabs-container fade-up stagger-2">
-          <TabPanel header="Colors">
-            <div v-if="colorTokens.length === 0" class="empty-tab">
-              <i class="pi pi-palette"/>
-              <p>No color tokens defined yet.</p>
-            </div>
-            <div v-else class="colors-grid">
-              <div
-                v-for="(token, index) in colorTokens"
-                :key="token.name"
-                class="color-card hover-lift"
-                :class="`stagger-${(index % 3) + 1}`"
-              >
-                <div
-                  class="color-swatch"
-                  :style="{ backgroundColor: token.value }"
-                />
-                <div class="color-info">
-                  <div class="color-name" :title="token.name">
-                    {{ token.name }}
-                  </div>
-                  <div class="color-value">{{ token.value }}</div>
-                </div>
-                <button
-                  class="copy-btn"
-                  title="Copy value"
-                  @click="copyToClipboard(token.value)"
-                >
-                  <i class="pi pi-copy"/>
-                </button>
+        <div class="tabs-container fade-up stagger-2">
+          <UTabs v-model="activeTab" :items="tabItems" :content="false" />
+          <div class="tab-content mt-4">
+            <div v-if="activeTab === 0">
+              <div v-if="colorTokens.length === 0" class="empty-tab">
+                <Icon name="i-lucide-palette" />
+                <p>No color tokens defined yet.</p>
               </div>
-            </div>
-          </TabPanel>
-
-          <TabPanel header="Typography">
-            <div v-if="typographyTokens.length === 0" class="empty-tab">
-              <i class="pi pi-font"/>
-              <p>No typography tokens defined yet.</p>
-            </div>
-            <div v-else class="typography-list">
-              <div
-                v-for="(token, index) in typographyTokens"
-                :key="token.name"
-                class="typography-card hover-lift"
-                :class="`stagger-${(index % 3) + 1}`"
-              >
-                <div class="typo-details">
-                  <div class="typo-name">{{ token.name }}</div>
-                  <div class="typo-meta">
-                    <span class="typo-tag"
-                      >Family: {{ token.value.fontFamily }}</span
-                    >
-                    <span class="typo-tag"
-                      >Size: {{ token.value.fontSize }}</span
-                    >
-                    <span class="typo-tag"
-                      >Weight: {{ token.value.fontWeight }}</span
-                    >
-                    <span class="typo-tag"
-                      >Line: {{ token.value.lineHeight }}</span
-                    >
-                  </div>
-                </div>
+              <div v-else class="colors-grid">
                 <div
-                  class="typo-preview"
-                  :style="getTypographyStyle(token.value)"
+                  v-for="(token, index) in colorTokens"
+                  :key="token.name"
+                  class="color-card hover-lift"
+                  :class="`stagger-${(index % 3) + 1}`"
                 >
-                  The quick brown fox jumps over the lazy dog
-                </div>
-              </div>
-            </div>
-          </TabPanel>
-
-          <TabPanel header="Spacing">
-            <div v-if="spacingTokens.length === 0" class="empty-tab">
-              <i class="pi pi-arrows-alt"/>
-              <p>No spacing tokens defined yet.</p>
-            </div>
-            <div v-else class="spacing-list">
-              <div
-                v-for="(token, index) in spacingTokens"
-                :key="token.name"
-                class="spacing-item hover-lift"
-                :class="`stagger-${(index % 3) + 1}`"
-              >
-                <div class="spacing-label">
-                  <span class="spacing-name">{{ token.name }}</span>
-                  <span class="spacing-value">{{ token.value }}</span>
-                </div>
-                <div class="spacing-bar">
                   <div
-                    class="spacing-fill"
-                    :style="{
-                      width: token.value,
-                      background: 'var(--gradient-primary)',
-                    }"
+                    class="color-swatch"
+                    :style="{ backgroundColor: token.value }"
                   />
+                  <div class="color-info">
+                    <div class="color-name" :title="token.name">
+                      {{ token.name }}
+                    </div>
+                    <div class="color-value">{{ token.value }}</div>
+                  </div>
+                  <button
+                    class="copy-btn"
+                    title="Copy value"
+                    @click="copyToClipboard(token.value)"
+                  >
+                    <Icon name="i-lucide-copy" />
+                  </button>
                 </div>
               </div>
             </div>
-          </TabPanel>
-        </TabView>
+
+            <div v-if="activeTab === 1">
+              <div v-if="typographyTokens.length === 0" class="empty-tab">
+                <Icon name="i-lucide-type" />
+                <p>No typography tokens defined yet.</p>
+              </div>
+              <div v-else class="typography-list">
+                <div
+                  v-for="(token, index) in typographyTokens"
+                  :key="token.name"
+                  class="typography-card hover-lift"
+                  :class="`stagger-${(index % 3) + 1}`"
+                >
+                  <div class="typo-details">
+                    <div class="typo-name">{{ token.name }}</div>
+                    <div class="typo-meta">
+                      <span class="typo-tag"
+                        >Family: {{ token.value.fontFamily }}</span
+                      >
+                      <span class="typo-tag"
+                        >Size: {{ token.value.fontSize }}</span
+                      >
+                      <span class="typo-tag"
+                        >Weight: {{ token.value.fontWeight }}</span
+                      >
+                      <span class="typo-tag"
+                        >Line: {{ token.value.lineHeight }}</span
+                      >
+                    </div>
+                  </div>
+                  <div
+                    class="typo-preview"
+                    :style="getTypographyStyle(token.value)"
+                  >
+                    The quick brown fox jumps over the lazy dog
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="activeTab === 2">
+              <div v-if="spacingTokens.length === 0" class="empty-tab">
+                <Icon name="i-lucide-move" />
+                <p>No spacing tokens defined yet.</p>
+              </div>
+              <div v-else class="spacing-list">
+                <div
+                  v-for="(token, index) in spacingTokens"
+                  :key="token.name"
+                  class="spacing-item hover-lift"
+                  :class="`stagger-${(index % 3) + 1}`"
+                >
+                  <div class="spacing-label">
+                    <span class="spacing-name">{{ token.name }}</span>
+                    <span class="spacing-value">{{ token.value }}</span>
+                  </div>
+                  <div class="spacing-bar">
+                    <div
+                      class="spacing-fill"
+                      :style="{
+                        width: token.value,
+                        background: 'var(--gradient-primary)',
+                      }"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
 import designSystemStorage from "../../src/design-system/storage";
 
 const tokens = designSystemStorage.getTokens();
+const activeTab = ref(0);
+
+const tabItems = [
+  { label: "Colors", icon: "i-lucide-palette" },
+  { label: "Typography", icon: "i-lucide-type" },
+  { label: "Spacing", icon: "i-lucide-move" },
+];
 
 const colorTokens = computed(() => tokens.filter((t) => t.type === "color"));
 const typographyTokens = computed(() =>

@@ -1,9 +1,9 @@
 <template>
   <div class="auth-page">
     <div class="background-decor">
-      <div class="circle circle-1"/>
-      <div class="circle circle-2"/>
-      <div class="circle circle-3"/>
+      <div class="circle circle-1" />
+      <div class="circle circle-2" />
+      <div class="circle circle-3" />
     </div>
 
     <div class="auth-container">
@@ -19,7 +19,11 @@
           <h1 id="auth-title" class="auth-title">Create Account</h1>
           <p class="auth-subtitle">Join us to build beautiful design systems</p>
 
-          <form class="auth-form" aria-labelledby="auth-title" @submit.prevent="handleRegister">
+          <form
+            class="auth-form"
+            aria-labelledby="auth-title"
+            @submit.prevent="handleRegister"
+          >
             <div class="form-group">
               <FloatingInput
                 id="name"
@@ -27,7 +31,7 @@
                 type="text"
                 label="Full Name"
                 placeholder="John Doe"
-                icon="pi-user"
+                icon="i-lucide-user"
                 :error="nameError"
                 required
               />
@@ -40,7 +44,7 @@
                 type="email"
                 label="Email Address"
                 placeholder="name@company.com"
-                icon="pi-envelope"
+                icon="i-lucide-mail"
                 :error="emailError"
                 required
               />
@@ -54,7 +58,7 @@
                   :type="showPassword ? 'text' : 'password'"
                   label="Password"
                   placeholder="Create a secure password"
-                  icon="pi-lock"
+                  icon="i-lucide-lock"
                   :error="passwordError"
                   required
                 />
@@ -66,7 +70,7 @@
                   @click="showPassword = !showPassword"
                 >
                   <i
-                    :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                    :class="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
                     aria-hidden="true"
                   />
                 </button>
@@ -77,12 +81,12 @@
             </div>
 
             <div v-if="authStore.error" class="auth-error" role="alert">
-              <i class="pi pi-times-circle" aria-hidden="true"/>
+              <Icon name="i-lucide-x-circle" aria-hidden="true" />
               <span>{{ authStore.error }}</span>
             </div>
 
             <div v-if="isFirstUser" class="first-user-notice" role="status">
-              <i class="pi pi-info-circle" aria-hidden="true"/>
+              <Icon name="i-lucide-info" aria-hidden="true" />
               <div>
                 <strong>First User Setup</strong>
                 <p>You'll become the administrator with full system access.</p>
@@ -97,7 +101,7 @@
               :loading="authStore.loading"
             >
               <template #icon>
-                <i class="pi pi-user-plus" aria-hidden="true"/>
+                <Icon name="i-lucide-user-plus" aria-hidden="true" />
               </template>
               Create Account
             </PremiumButton>
@@ -112,11 +116,19 @@
             <div class="social-login">
               <p class="social-title">Or continue with</p>
               <div class="social-buttons">
-                <button type="button" class="social-button google" aria-label="Sign in with Google">
-                  <i class="pi pi-google" aria-hidden="true"/>
+                <button
+                  type="button"
+                  class="social-button google"
+                  aria-label="Sign in with Google"
+                >
+                  <Icon name="i-lucide-google" aria-hidden="true" />
                 </button>
-                <button type="button" class="social-button github" aria-label="Sign in with GitHub">
-                  <i class="pi pi-github" aria-hidden="true"/>
+                <button
+                  type="button"
+                  class="social-button github"
+                  aria-label="Sign in with GitHub"
+                >
+                  <Icon name="i-lucide-github" aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -137,11 +149,13 @@ definePageMeta({
 
 interface PublicSettingsResponse {
   settings: {
-    organization_name?: string
-  }
+    organization_name?: string;
+  };
 }
 
-const { data: settingsData } = await useFetch<PublicSettingsResponse>("/api/settings/public");
+const { data: settingsData } = await useFetch<PublicSettingsResponse>(
+  "/api/settings/public",
+);
 const settings = computed(() => settingsData.value?.settings || {});
 
 const orgName = computed(() => settings.value.organization_name || "OpenDS");

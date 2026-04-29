@@ -30,11 +30,11 @@ vi.mock("vue-router", () => ({
   },
 }));
 
-// Mock SearchDropdown component
-vi.mock("./search/SearchDropdown.vue", () => ({
+// Mock SearchModal component
+vi.mock("./layout/SearchModal.vue", () => ({
   default: {
-    name: "SearchDropdown",
-    template: '<div class="search-dropdown-mock" />',
+    name: "SearchModal",
+    template: '<div class="search-modal-mock" />',
     props: ["modelValue"],
   },
 }));
@@ -49,8 +49,8 @@ describe("NavBar - Search Integration", () => {
     vi.clearAllMocks();
   });
 
-  it("should have SearchDropdown component available", async () => {
-    const component = await import("./search/SearchDropdown.vue");
+  it("should have SearchModal component available", async () => {
+    const component = await import("./layout/SearchModal.vue");
     expect(component.default).toBeDefined();
   });
 

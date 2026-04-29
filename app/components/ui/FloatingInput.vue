@@ -9,7 +9,7 @@
     }"
   >
     <div v-if="icon" class="input-icon">
-      <i :class="['pi', icon]" aria-hidden="true" />
+      <Icon :name="icon" class="h-5 w-5" aria-hidden="true" />
     </div>
 
     <input
@@ -26,17 +26,12 @@
       class="input-field"
       @focus="handleFocus"
       @blur="handleBlur"
-    >
+    />
     <label v-if="label" :for="id" class="floating-label">
       {{ label }}
     </label>
 
-    <div
-      v-if="error"
-      :id="`${id}-error`"
-      class="error-message"
-      role="alert"
-    >
+    <div v-if="error" :id="`${id}-error`" class="error-message" role="alert">
       {{ error }}
     </div>
 
@@ -187,7 +182,9 @@ function handleBlur(event: FocusEvent) {
   transform: scale(0.85);
   font-size: var(--font-size-sm);
   color: var(--color-primary-500);
-  background: var(--color-bg-primary); /* Add background only when floating to cover border */
+  background: var(
+    --color-bg-primary
+  ); /* Add background only when floating to cover border */
   padding: 0 var(--space-1);
 }
 
@@ -247,7 +244,7 @@ function handleBlur(event: FocusEvent) {
 
 .dark .floating-input.is-focused .floating-label,
 .dark .floating-input.has-value .floating-label {
-   background: var(--dark-color-bg-900); /* Match card background */
+  background: var(--dark-color-bg-900); /* Match card background */
 }
 
 .dark .floating-input .input-field:focus {

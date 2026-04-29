@@ -1,205 +1,223 @@
 <template>
-  <div class="components-page">
+  <div class="max-w-[1400px] mx-auto p-6 space-y-6">
     <!-- Header -->
-    <div class="page-header">
+    <div
+      class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+    >
       <div>
-        <h1 class="page-title">Components</h1>
-        <p class="page-subtitle">Manage your design system components</p>
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+          Components
+        </h1>
+        <p class="text-gray-500 dark:text-gray-400 mt-1">
+          Manage your design system components
+        </p>
       </div>
-      <Button
-        icon="pi pi-plus"
+      <UButton
+        icon="i-lucide-plus"
         label="New Component"
         @click="showCreateDialog = true"
       />
     </div>
 
     <!-- Filters -->
-    <Card class="filters-card">
-      <template #content>
-        <div class="filters">
-          <InputText
-            v-model="searchQuery"
-            placeholder="Search components..."
-            class="search-input"
-          >
-            <template #prefix>
-              <i class="pi pi-search" />
-            </template>
-          </InputText>
-
-          <Dropdown
-            v-model="selectedCategory"
-            :options="categories"
-            placeholder="All Categories"
-            class="category-filter"
-            show-clear
-          />
-
-          <Dropdown
-            v-model="selectedStatus"
-            :options="statuses"
-            placeholder="All Statuses"
-            class="status-filter"
-            show-clear
-          />
-        </div>
-      </template>
-    </Card>
+    <UCard>
+      <div class="flex flex-col sm:flex-row gap-4">
+        <UInput
+          v-model="searchQuery"
+          placeholder="Search components..."
+          icon="i-lucide-search"
+          class="flex-1"
+        />
+        <USelect
+          v-model="selectedCategory"
+          :items="categories"
+          placeholder="All Categories"
+          class="w-full sm:w-48"
+        />
+        <USelect
+          v-model="selectedStatus"
+          :items="statusOptions"
+          placeholder="All Statuses"
+          class="w-full sm:w-48"
+        />
+      </div>
+    </UCard>
 
     <!-- Components Grid -->
-    <div v-if="filteredComponents.length > 0" class="components-grid">
-      <Card
+    <div
+      v-if="filteredComponents.length > 0"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+    >
+      <UCard
         v-for="component in filteredComponents"
         :key="component.id"
-        class="component-card"
+        class="group hover:shadow-lg transition-shadow"
       >
         <template #header>
-          <div class="card-image">
+          <div
+            class="h-48 bg-gray-100 dark:bg-gray-800 flex items-center justify-center rounded-t-lg overflow-hidden"
+          >
             <img
               v-if="component.preview_url"
               :src="component.preview_url"
               alt="Preview"
+              class="w-full h-full object-cover"
             />
-            <div v-else class="placeholder-image">
-              <i class="pi pi-image" />
-            </div>
-          </div>
-        </template>
-        <template #title>
-          {{ component.display_name || component.name }}
-        </template>
-        <template #subtitle>
-          <div class="component-meta">
-            <Tag :value="component.category" severity="info" />
-            <Tag
-              :value="component.status"
-              :severity="getStatusSeverity(component.status)"
+            <UIcon
+              v-else
+              name="i-lucide-image"
+              class="w-12 h-12 text-gray-300 dark:text-gray-600"
             />
           </div>
         </template>
-        <template #content>
-          <p class="component-description">
+
+        <div class="space-y-3">
+          <div class="flex items-center gap-2 flex-wrap">
+            <UBadge
+              :label="component.category"
+              color="info"
+              variant="soft"
+              size="sm"
+            />
+            <UBadge
+              :label="component.status"
+              :color="getStatusColor(component.status)"
+              variant="soft"
+              size="sm"
+            />
+          </div>
+
+          <h3 class="font-semibold text-gray-900 dark:text-white">
+            {{ component.display_name || component.name }}
+          </h3>
+
+          <p class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">
             {{ component.description || "No description provided" }}
           </p>
-        </template>
+        </div>
+
         <template #footer>
-          <div class="card-actions">
-            <Button
-              icon="pi pi-pencil"
-              text
+          <div class="flex items-center justify-end gap-2">
+            <UButton
+              icon="i-lucide-pencil"
+              color="neutral"
+              variant="ghost"
+              size="sm"
               @click="editComponent(component)"
             />
-            <Button
+            <UButton
               data-testid="view-btn"
-              icon="pi pi-eye"
-              text
+              icon="i-lucide-eye"
+              color="neutral"
+              variant="ghost"
+              size="sm"
               @click="viewComponent(component)"
             />
-            <Button
-              icon="pi pi-trash"
-              text
-              severity="danger"
+            <UButton
+              icon="i-lucide-trash-2"
+              color="error"
+              variant="ghost"
+              size="sm"
               @click="deleteComponent(component)"
             />
           </div>
         </template>
-      </Card>
+      </UCard>
     </div>
 
     <!-- Empty State -->
-    <div v-else class="empty-state">
-      <i class="pi pi-box empty-icon" />
-      <h3 class="empty-title">No components yet</h3>
-      <p class="empty-text">Create your first component to get started</p>
-      <Button
-        icon="pi pi-plus"
+    <UCard v-else class="text-center py-16">
+      <UIcon
+        name="i-lucide-box"
+        class="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4"
+      />
+      <h3 class="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+        No components yet
+      </h3>
+      <p class="text-gray-500 dark:text-gray-400 mb-6">
+        Create your first component to get started
+      </p>
+      <UButton
+        icon="i-lucide-plus"
         label="Create Component"
         @click="showCreateDialog = true"
       />
-    </div>
+    </UCard>
 
-    <!-- Create/Edit Dialog -->
-    <Dialog
-      v-model:visible="showCreateDialog"
-      :header="editingComponent ? 'Edit Component' : 'New Component'"
-      :style="{ width: '600px' }"
-      modal
-    >
-      <div class="dialog-form">
-        <div class="form-field">
-          <label for="name">Component Name *</label>
-          <InputText id="name" v-model="form.name" placeholder="e.g., Button" />
-        </div>
+    <!-- Create/Edit Modal -->
+    <UModal :open="showCreateDialog" @update:open="showCreateDialog = $event">
+      <template #content>
+        <UCard>
+          <template #header>
+            <h3 class="text-lg font-semibold">
+              {{ editingComponent ? "Edit Component" : "New Component" }}
+            </h3>
+          </template>
 
-        <div class="form-field">
-          <label for="display_name">Display Name</label>
-          <InputText
-            id="display_name"
-            v-model="form.display_name"
-            placeholder="e.g., Primary Button"
-          />
-        </div>
+          <div class="space-y-4">
+            <UFormField label="Component Name *">
+              <UInput v-model="form.name" placeholder="e.g., Button" />
+            </UFormField>
 
-        <div class="form-field">
-          <label for="category">Category</label>
-          <Dropdown
-            id="category"
-            v-model="form.category"
-            :options="categories"
-            placeholder="Select category"
-            editable
-          />
-        </div>
+            <UFormField label="Display Name">
+              <UInput
+                v-model="form.display_name"
+                placeholder="e.g., Primary Button"
+              />
+            </UFormField>
 
-        <div class="form-field">
-          <label for="status">Status</label>
-          <Dropdown
-            id="status"
-            v-model="form.status"
-            :options="statuses"
-            placeholder="Select status"
-          />
-        </div>
+            <UFormField label="Category">
+              <USelect
+                v-model="form.category"
+                :items="categories"
+                placeholder="Select category"
+              />
+            </UFormField>
 
-        <div class="form-field">
-          <label for="description">Description</label>
-          <Textarea
-            id="description"
-            v-model="form.description"
-            rows="3"
-            placeholder="Describe this component..."
-          />
-        </div>
+            <UFormField label="Status">
+              <USelect
+                v-model="form.status"
+                :items="statusOptions"
+                placeholder="Select status"
+              />
+            </UFormField>
 
-        <div class="form-field">
-          <label for="preview_url">Preview URL</label>
-          <InputText
-            id="preview_url"
-            v-model="form.preview_url"
-            placeholder="https://..."
-          />
-        </div>
-      </div>
+            <UFormField label="Description">
+              <UTextarea
+                v-model="form.description"
+                :rows="3"
+                placeholder="Describe this component..."
+              />
+            </UFormField>
 
-      <template #footer>
-        <Button label="Cancel" text @click="closeDialog" />
-        <Button
-          :label="editingComponent ? 'Update' : 'Create'"
-          :loading="saving"
-          @click="saveComponent"
-        />
+            <UFormField label="Preview URL">
+              <UInput v-model="form.preview_url" placeholder="https://..." />
+            </UFormField>
+          </div>
+
+          <template #footer>
+            <div class="flex justify-end gap-3">
+              <UButton
+                label="Cancel"
+                color="neutral"
+                variant="ghost"
+                @click="closeDialog"
+              />
+              <UButton
+                :label="editingComponent ? 'Update' : 'Create'"
+                :loading="saving"
+                @click="saveComponent"
+              />
+            </div>
+          </template>
+        </UCard>
       </template>
-    </Dialog>
+    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
-definePageMeta({
-  layout: "admin",
-  middleware: "auth",
-});
-
-interface Component {
+interface ComponentItem {
   id: string;
   name: string;
   display_name: string;
@@ -207,15 +225,20 @@ interface Component {
   category: string;
   status: "draft" | "review" | "approved" | "deprecated";
   preview_url?: string;
-  spec: any;
+  spec: Record<string, unknown>;
 }
 
+definePageMeta({
+  layout: "admin",
+  middleware: "auth",
+});
+
 const showCreateDialog = ref(false);
-const editingComponent = ref<Component | null>(null);
+const editingComponent = ref<ComponentItem | null>(null);
 const saving = ref(false);
 const searchQuery = ref("");
-const selectedCategory = ref(null);
-const selectedStatus = ref(null);
+const selectedCategory = ref<string | null>(null);
+const selectedStatus = ref<string | null>(null);
 const loading = ref(false);
 
 const form = ref({
@@ -223,9 +246,9 @@ const form = ref({
   display_name: "",
   description: "",
   category: "",
-  status: "draft",
+  status: "draft" as "draft" | "review" | "approved" | "deprecated",
   preview_url: "",
-  spec: {},
+  spec: {} as Record<string, unknown>,
 });
 
 const categories = [
@@ -239,9 +262,9 @@ const categories = [
   "Misc",
 ];
 
-const statuses = ["draft", "review", "approved", "deprecated"];
+const statusOptions = ["draft", "review", "approved", "deprecated"];
 
-const components = ref<Component[]>([]);
+const components = ref<ComponentItem[]>([]);
 const api = useApi();
 
 const filteredComponents = computed(() => {
@@ -260,25 +283,34 @@ const filteredComponents = computed(() => {
   });
 });
 
-function getStatusSeverity(status: string) {
-  const map: Record<string, any> = {
+function getStatusColor(status: string) {
+  const map: Record<
+    string,
+    | "primary"
+    | "secondary"
+    | "success"
+    | "info"
+    | "warning"
+    | "error"
+    | "neutral"
+  > = {
     draft: "secondary",
     review: "warning",
     approved: "success",
-    deprecated: "danger",
+    deprecated: "error",
   };
   return map[status] || "info";
 }
 
-function editComponent(component: Component) {
+function editComponent(component: ComponentItem) {
   navigateTo(`/admin/components/${component.id}/edit`);
 }
 
-function viewComponent(component: Component) {
+function viewComponent(component: ComponentItem) {
   navigateTo(`/admin/components/${component.id}`);
 }
 
-async function deleteComponent(component: Component) {
+async function deleteComponent(component: ComponentItem) {
   if (confirm(`Delete ${component.name}?`)) {
     try {
       await api.delete(`/components/${component.id}`);
@@ -293,7 +325,6 @@ async function saveComponent() {
   saving.value = true;
   try {
     if (editingComponent.value) {
-      // Update existing
       const updated = await api.put(
         `/components/${editingComponent.value.id}`,
         form.value,
@@ -305,7 +336,6 @@ async function saveComponent() {
         components.value[index] = updated.component;
       }
     } else {
-      // Create new
       const created = await api.post("/components", form.value);
       components.value.unshift(created.component);
     }
@@ -347,173 +377,3 @@ onMounted(async () => {
   await loadComponents();
 });
 </script>
-
-<style scoped>
-.components-page {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-}
-
-.page-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-  color: #0f172a;
-}
-
-.page-subtitle {
-  color: #64748b;
-  margin: 0.5rem 0 0 0;
-}
-
-.filters-card {
-  margin-bottom: 2rem;
-}
-
-.filters {
-  display: grid;
-  grid-template-columns: 1fr auto auto;
-  gap: 1rem;
-}
-
-.search-input {
-  min-width: 300px;
-}
-
-.components-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
-}
-
-.component-card {
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  transition: all 0.2s;
-}
-
-.component-card:hover {
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
-  transform: translateY(-4px);
-}
-
-.card-image {
-  height: 200px;
-  background: #f1f5f9;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 1rem 1rem 0 0;
-  overflow: hidden;
-}
-
-.card-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.placeholder-image {
-  font-size: 3rem;
-  color: #cbd5e1;
-}
-
-.component-meta {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-}
-
-.component-description {
-  color: #64748b;
-  font-size: 0.875rem;
-  line-height: 1.5;
-  margin: 1rem 0 0 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.card-actions {
-  display: flex;
-  gap: 0.5rem;
-  justify-content: flex-end;
-}
-
-.empty-state {
-  text-align: center;
-  padding: 4rem 2rem;
-  background: white;
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.empty-icon {
-  font-size: 4rem;
-  color: #cbd5e1;
-  margin-bottom: 1rem;
-}
-
-.empty-title {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #0f172a;
-  margin: 0 0 0.5rem 0;
-}
-
-.empty-text {
-  color: #64748b;
-  margin: 0 0 1.5rem 0;
-}
-
-.dialog-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  padding: 1rem 0;
-}
-
-.form-field label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: 600;
-  color: #0f172a;
-}
-
-:deep(.p-card-content) {
-  padding: 1.25rem;
-}
-
-:deep(.p-card-footer) {
-  padding: 1rem 1.25rem;
-  border-top: 1px solid #e2e8f0;
-}
-
-:deep(.p-dialog-content),
-:deep(.p-dialog-header),
-:deep(.p-dialog-footer) {
-  background: white !important;
-}
-
-:deep(.p-dialog-header) {
-  border-bottom: 1px solid #e2e8f0;
-  padding: 1.5rem;
-}
-
-:deep(.p-dialog-content) {
-  padding: 0 1.5rem 1.5rem 1.5rem;
-}
-
-:deep(.p-dialog-footer) {
-  border-top: 1px solid #e2e8f0;
-  padding: 1rem 1.5rem;
-}
-</style>

@@ -29,7 +29,7 @@
                 type="email"
                 label="Email Address"
                 placeholder="name@company.com"
-                icon="pi-envelope"
+                icon="i-lucide-mail"
                 :error="emailError"
                 required
               />
@@ -43,7 +43,7 @@
                   :type="showPassword ? 'text' : 'password'"
                   label="Password"
                   placeholder="Enter password"
-                  icon="pi-lock"
+                  icon="i-lucide-lock"
                   :error="passwordError"
                   required
                 />
@@ -55,7 +55,7 @@
                   @click="showPassword = !showPassword"
                 >
                   <i
-                    :class="showPassword ? 'pi pi-eye-slash' : 'pi pi-eye'"
+                    :class="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
                     aria-hidden="true"
                   />
                 </button>
@@ -63,7 +63,11 @@
             </div>
 
             <div v-if="authStore.error" class="auth-error" role="alert">
-              <i class="pi pi-times-circle" aria-hidden="true" />
+              <Icon
+                name="i-lucide-x-circle"
+                class="h-5 w-5"
+                aria-hidden="true"
+              />
               <span>{{ authStore.error }}</span>
             </div>
 
@@ -75,7 +79,11 @@
               :loading="authStore.loading"
             >
               <template #icon>
-                <i class="pi pi-sign-in" aria-hidden="true" />
+                <Icon
+                  name="i-lucide-log-in"
+                  class="h-5 w-5"
+                  aria-hidden="true"
+                />
               </template>
               Sign In
             </UiPremiumButton>
@@ -97,14 +105,22 @@
                   class="social-button google"
                   aria-label="Sign in with Google"
                 >
-                  <i class="pi pi-google" aria-hidden="true" />
+                  <Icon
+                    name="i-lucide-google"
+                    class="h-5 w-5"
+                    aria-hidden="true"
+                  />
                 </button>
                 <button
                   type="button"
                   class="social-button github"
                   aria-label="Sign in with GitHub"
                 >
-                  <i class="pi pi-github" aria-hidden="true" />
+                  <Icon
+                    name="i-lucide-github"
+                    class="h-5 w-5"
+                    aria-hidden="true"
+                  />
                 </button>
               </div>
             </div>
@@ -129,13 +145,16 @@ definePageMeta({
 
 interface PublicSettingsResponse {
   settings: {
-    organization_name?: string
-  }
+    organization_name?: string;
+  };
 }
 
-const { data: settingsData } = useFetch<PublicSettingsResponse>("/api/settings/public", {
-  server: false,
-});
+const { data: settingsData } = useFetch<PublicSettingsResponse>(
+  "/api/settings/public",
+  {
+    server: false,
+  },
+);
 const settings = computed(() => settingsData.value?.settings || {});
 
 const orgName = computed(() => settings.value.organization_name || "OpenDS");

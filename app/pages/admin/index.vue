@@ -1,727 +1,401 @@
-<template>
-  <div class="dashboard">
-    <AnimatedCard variant="elevated" class="welcome-card">
-      <template #default>
-        <div class="welcome-content">
-          <div class="welcome-text">
-            <h2 class="welcome-title">
-              Welcome back, {{ authStore.user?.name }}! 👋
-            </h2>
-            <p class="welcome-subtitle">
-              Here's what's happening with your design system today
-            </p>
-          </div>
-          <div class="welcome-badge" v-if="authStore.user">
-            <span class="badge-icon">👑</span>
-            <span class="badge-text">{{ authStore.user.role }}</span>
-          </div>
-        </div>
-      </template>
-    </AnimatedCard>
-
-    <div class="stats-grid">
-      <AnimatedCard variant="elevated" hover="lift" class="stat-card stagger-1">
-        <template #default>
-          <div class="stat-content">
-            <div class="stat-icon blue">
-              <i class="pi pi-box" />
-            </div>
-            <div class="stat-info">
-              <p class="stat-value">{{ stats.components }}</p>
-              <p class="stat-label">Components</p>
-            </div>
-          </div>
-        </template>
-      </AnimatedCard>
-
-      <AnimatedCard variant="elevated" hover="lift" class="stat-card stagger-2">
-        <template #default>
-          <div class="stat-content">
-            <div class="stat-icon purple">
-              <i class="pi pi-palette" />
-            </div>
-            <div class="stat-info">
-              <p class="stat-value">{{ stats.tokens }}</p>
-              <p class="stat-label">Design Tokens</p>
-            </div>
-          </div>
-        </template>
-      </AnimatedCard>
-
-      <AnimatedCard variant="elevated" hover="lift" class="stat-card stagger-3">
-        <template #default>
-          <div class="stat-content">
-            <div class="stat-icon green">
-              <i class="pi pi-users" />
-            </div>
-            <div class="stat-info">
-              <p class="stat-value">{{ stats.users }}</p>
-              <p class="stat-label">Team Members</p>
-            </div>
-          </div>
-        </template>
-      </AnimatedCard>
-
-      <AnimatedCard variant="elevated" hover="lift" class="stat-card stagger-4">
-        <template #default>
-          <div class="stat-content">
-            <div class="stat-icon gold">
-              <i class="pi pi-clock" />
-            </div>
-            <div class="stat-info">
-              <p class="stat-value">{{ stats.recentUpdates }}</p>
-              <p class="stat-label">Recent Updates</p>
-            </div>
-          </div>
-        </template>
-      </AnimatedCard>
-    </div>
-
-    <AnimatedCard
-      variant="elevated"
-      class="quick-actions-card fade-up stagger-1"
-    >
-      <template #header>
-        <div class="card-header">
-          <div class="header-icon">
-            <i class="pi pi-bolt" />
-          </div>
-          <div>
-            <h3 class="card-title">Quick Actions</h3>
-            <p class="card-subtitle">Common tasks to get started</p>
-          </div>
-        </div>
-      </template>
-      <template #default>
-        <div class="quick-actions-grid">
-          <button
-            class="action-btn hover-lift"
-            @click="navigateTo('/admin/components')"
-          >
-            <div class="action-icon blue">
-              <i class="pi pi-plus-circle" />
-            </div>
-            <div class="action-info">
-              <p class="action-title">Add Component</p>
-              <p class="action-desc">Create a new UI component</p>
-            </div>
-          </button>
-
-          <button
-            class="action-btn hover-lift"
-            @click="navigateTo('/admin/tokens')"
-          >
-            <div class="action-icon purple">
-              <i class="pi pi-palette" />
-            </div>
-            <div class="action-info">
-              <p class="action-title">Manage Tokens</p>
-              <p class="action-desc">Edit design tokens</p>
-            </div>
-          </button>
-
-          <button
-            class="action-btn hover-lift"
-            @click="navigateTo('/admin/users')"
-          >
-            <div class="action-icon green">
-              <i class="pi pi-user-plus" />
-            </div>
-            <div class="action-info">
-              <p class="action-title">Invite User</p>
-              <p class="action-desc">Add team members</p>
-            </div>
-          </button>
-
-          <button
-            class="action-btn hover-lift"
-            @click="navigateTo('/admin/settings')"
-          >
-            <div class="action-icon gold">
-              <i class="pi pi-cog" />
-            </div>
-            <div class="action-info">
-              <p class="action-title">Settings</p>
-              <p class="action-desc">Configure your system</p>
-            </div>
-          </button>
-        </div>
-      </template>
-    </AnimatedCard>
-
-    <AnimatedCard
-      variant="elevated"
-      class="getting-started-card fade-up stagger-2"
-    >
-      <template #header>
-        <div class="card-header">
-          <div class="header-icon rocket">
-            <i class="pi pi-rocket" />
-          </div>
-          <div>
-            <h3 class="card-title">🚀 Getting Started</h3>
-            <p class="card-subtitle">
-              Complete these steps to set up your design system
-            </p>
-          </div>
-        </div>
-      </template>
-      <template #default>
-        <div class="checklist">
-          <div class="checklist-item completed">
-            <i class="pi pi-check-circle" />
-            <div class="checklist-content">
-              <p class="checklist-title">Create your admin account</p>
-              <p class="checklist-desc">You're all set!</p>
-            </div>
-          </div>
-
-          <div class="checklist-item">
-            <i class="pi pi-circle" />
-            <div class="checklist-content">
-              <p class="checklist-title">Add your first component</p>
-              <p class="checklist-desc">Document your UI components</p>
-            </div>
-          </div>
-
-          <div class="checklist-item">
-            <i class="pi pi-circle" />
-            <div class="checklist-content">
-              <p class="checklist-title">Define design tokens</p>
-              <p class="checklist-desc">
-                Set up colors, typography, and spacing
-              </p>
-            </div>
-          </div>
-
-          <div class="checklist-item">
-            <i class="pi pi-circle" />
-            <div class="checklist-content">
-              <p class="checklist-title">Invite your team</p>
-              <p class="checklist-desc">
-                Collaborate with designers and developers
-              </p>
-            </div>
-          </div>
-        </div>
-      </template>
-    </AnimatedCard>
-  </div>
-</template>
-
 <script setup lang="ts">
 definePageMeta({
   layout: "admin",
   middleware: "auth",
 });
 
-const authStore = useAuthStore();
+const api = useApi();
+
+interface QuickAction {
+  label: string;
+  icon: string;
+  description: string;
+  to: string;
+}
+
+interface ActivityItem {
+  action: string;
+  timestamp: string;
+  icon: string;
+  iconColor: string;
+}
+
+const quickActions: QuickAction[] = [
+  {
+    label: "Components",
+    icon: "i-lucide-package",
+    description: "Manage UI components",
+    to: "/admin/components",
+  },
+  {
+    label: "Design Tokens",
+    icon: "i-lucide-palette",
+    description: "Colors, spacing, typography",
+    to: "/admin/tokens",
+  },
+  {
+    label: "Documentation",
+    icon: "i-lucide-file-text",
+    description: "Edit docs content",
+    to: "/admin/docs",
+  },
+  {
+    label: "Users",
+    icon: "i-lucide-users",
+    description: "Team management",
+    to: "/admin/users",
+  },
+];
 
 const stats = ref({
   components: 0,
   tokens: 0,
-  users: 1,
-  recentUpdates: 0,
+  docs: 0,
+  users: 0,
 });
 
+const activities = ref<ActivityItem[]>([]);
+
+const recentSearches = ref<string[]>([]);
+const newSearch = ref("");
+
+function addSearch() {
+  if (!newSearch.value.trim()) return;
+  recentSearches.value.unshift(newSearch.value.trim());
+  if (recentSearches.value.length > 5) {
+    recentSearches.value.pop();
+  }
+  newSearch.value = "";
+}
+
+function removeSearch(index: number) {
+  recentSearches.value.splice(index, 1);
+}
+
+function formatTimeAgo(date: string): string {
+  const now = new Date();
+  const then = new Date(date);
+  const diffMs = now.getTime() - then.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMs / 3600000);
+  const diffDays = Math.floor(diffMs / 86400000);
+
+  if (diffMins < 1) return "just now";
+  if (diffMins < 60) return `${diffMins}m ago`;
+  if (diffHours < 24) return `${diffHours}h ago`;
+  if (diffDays < 7) return `${diffDays}d ago`;
+  return then.toLocaleDateString();
+}
+
+function loadStats() {
+  // Placeholder: replace with real API calls
+  stats.value = {
+    components: 12,
+    tokens: 48,
+    docs: 6,
+    users: 3,
+  };
+}
+
+function loadActivities() {
+  activities.value = [
+    {
+      action: "Added Button component",
+      timestamp: new Date(Date.now() - 1000 * 60 * 5).toISOString(),
+      icon: "i-lucide-package",
+      iconColor: "text-blue-500",
+    },
+    {
+      action: "Updated color tokens",
+      timestamp: new Date(Date.now() - 1000 * 60 * 30).toISOString(),
+      icon: "i-lucide-palette",
+      iconColor: "text-purple-500",
+    },
+    {
+      action: "Published v1.2.0 docs",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+      icon: "i-lucide-file-text",
+      iconColor: "text-green-500",
+    },
+    {
+      action: "Invited sarah@example.com",
+      timestamp: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
+      icon: "i-lucide-users",
+      iconColor: "text-orange-500",
+    },
+  ];
+}
+
 onMounted(() => {
-  console.log("Dashboard mounted for user:", authStore.user?.email);
+  loadStats();
+  loadActivities();
 });
 </script>
 
-<style scoped>
-.dashboard {
-  max-width: 1400px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-.welcome-card {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-500) 0%,
-    var(--color-secondary-500) 100%
-  );
-  border: none;
-  box-shadow: 0 20px 60px rgba(219, 60, 36, 0.3);
-  animation: fade-up 0.8s var(--easing-out);
-}
-
-.welcome-card::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.1) 0%,
-    transparent 100%
-  );
-  pointer-events: none;
-}
-
-.welcome-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 2rem;
-  color: white;
-  position: relative;
-  z-index: 1;
-}
-
-.welcome-text {
-  flex: 1;
-}
-
-.welcome-title {
-  font-size: 2.5rem;
-  font-weight: var(--font-weight-bold);
-  margin: 0 0 0.75rem 0;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-}
-
-.welcome-subtitle {
-  font-size: 1.125rem;
-  opacity: 0.95;
-  margin: 0;
-  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
-}
-
-.welcome-badge {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(10px);
-  padding: 0.75rem 1.5rem;
-  border-radius: var(--radius-full);
-  font-weight: var(--font-weight-semibold);
-  text-transform: capitalize;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-}
-
-.badge-icon {
-  font-size: 1.5rem;
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
-}
-
-.stat-card {
-  animation: scale-in 0.6s var(--easing-bounce);
-}
-
-.stat-content {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.stat-icon {
-  width: 72px;
-  height: 72px;
-  border-radius: var(--radius-xl);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 2rem;
-  transition: all var(--transition-slow);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-}
-
-.stat-card:hover .stat-icon {
-  transform: scale(1.1) rotate(5deg);
-}
-
-.stat-icon.blue {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-}
-
-.stat-icon.purple {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-}
-
-.stat-icon.green {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.stat-icon.gold {
-  background: linear-gradient(135deg, #e7bd18 0%, #d4a017 100%);
-}
-
-.stat-info {
-  flex: 1;
-}
-
-.stat-value {
-  font-size: 2.5rem;
-  font-weight: var(--font-weight-extrabold);
-  margin: 0;
-  color: var(--color-text-primary);
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  line-height: 1;
-}
-
-.stat-label {
-  color: var(--color-text-secondary);
-  margin: 0.5rem 0 0 0;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.quick-actions-card,
-.getting-started-card {
-  animation: fade-up 1s var(--easing-out) 0.3s both;
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 0.5rem;
-}
-
-.header-icon {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-lg);
-  background: var(--gradient-primary);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.5rem;
-  transition: all var(--transition-base);
-}
-
-.header-icon.rocket {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-}
-
-.card-header:hover .header-icon {
-  transform: scale(1.1) rotate(-5deg);
-}
-
-.card-title {
-  font-size: 1.5rem;
-  font-weight: var(--font-weight-bold);
-  margin: 0;
-  color: var(--color-text-primary);
-}
-
-.card-subtitle {
-  color: var(--color-text-secondary);
-  margin: 0.25rem 0 0 0;
-  font-size: var(--font-size-sm);
-}
-
-.quick-actions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1rem;
-}
-
-.action-btn {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: var(--color-bg-200);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  cursor: pointer;
-  transition: all var(--transition-slow);
-  text-align: left;
-  position: relative;
-  overflow: hidden;
-}
-
-.action-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--gradient-primary);
-  opacity: 0;
-  transition: opacity var(--transition-slow);
-}
-
-.action-btn:hover {
-  border-color: var(--color-primary-300);
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-lg);
-}
-
-.action-btn:hover::before {
-  opacity: 0.05;
-}
-
-.action-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 1.5rem;
-  flex-shrink: 0;
-  transition: all var(--transition-slow);
-}
-
-.action-btn:hover .action-icon {
-  transform: scale(1.1) rotate(-5deg);
-}
-
-.action-icon.blue {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-}
-
-.action-icon.purple {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
-}
-
-.action-icon.green {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.action-icon.gold {
-  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-}
-
-.action-info {
-  flex: 1;
-  position: relative;
-  z-index: 1;
-}
-
-.action-title {
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  margin: 0 0 0.25rem 0;
-  font-size: var(--font-size-lg);
-}
-
-.action-desc {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  margin: 0;
-  line-height: var(--line-height-normal);
-}
-
-.checklist {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.checklist-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  padding: 1.5rem;
-  background: var(--color-bg-200);
-  border-radius: var(--radius-xl);
-  border: 2px solid var(--color-border);
-  transition: all var(--transition-slow);
-  position: relative;
-  overflow: hidden;
-}
-
-.checklist-item::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--gradient-primary);
-  opacity: 0;
-  transition: opacity var(--transition-slow);
-}
-
-.checklist-item:hover {
-  transform: translateX(8px);
-  border-color: var(--color-primary-300);
-}
-
-.checklist-item:hover::before {
-  opacity: 0.03;
-}
-
-.checklist-item.completed {
-  background: rgba(16, 185, 129, 0.1);
-  border-color: rgba(16, 185, 129, 0.3);
-}
-
-.checklist-item.completed::before {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-}
-
-.checklist-item.completed:hover {
-  border-color: #10b981;
-}
-
-.checklist-item i {
-  font-size: 1.5rem;
-  color: var(--color-text-300);
-  margin-top: 0.125rem;
-  flex-shrink: 0;
-  transition: color var(--transition-base);
-}
-
-.checklist-item.completed i {
-  color: #10b981;
-}
-
-.checklist-item:hover i {
-  color: var(--color-primary-500);
-}
-
-.checklist-item.completed:hover i {
-  color: #059669;
-}
-
-.checklist-content {
-  flex: 1;
-  position: relative;
-  z-index: 1;
-}
-
-.checklist-title {
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  margin: 0 0 0.25rem 0;
-  font-size: var(--font-size-lg);
-}
-
-.checklist-desc {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  margin: 0;
-  line-height: var(--line-height-normal);
-}
-
-.dark .welcome-card {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-400) 0%,
-    var(--color-secondary-400) 100%
-  );
-  box-shadow: 0 20px 60px rgba(234, 138, 123, 0.3);
-}
-
-.dark .stat-value {
-  background: var(--dark-gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.dark .card-title {
-  color: var(--dark-color-text-primary);
-}
-
-.dark .card-subtitle,
-.dark .action-desc,
-.dark .checklist-desc,
-.dark .stat-label {
-  color: var(--dark-color-text-secondary);
-}
-
-.dark .action-btn {
-  background: var(--dark-color-bg-200);
-  border-color: var(--dark-color-border);
-}
-
-.dark .action-btn:hover {
-  border-color: var(--color-primary-400);
-  box-shadow: var(--shadow-lg), var(--dark-shadow-glow-sm);
-}
-
-.dark .checklist-item {
-  background: var(--dark-color-bg-200);
-  border-color: var(--dark-color-border);
-}
-
-.dark .checklist-item.completed {
-  background: rgba(16, 185, 129, 0.15);
-  border-color: rgba(16, 185, 129, 0.4);
-}
-
-.dark .checklist-item i {
-  color: var(--dark-color-text-300);
-}
-
-.dark .checklist-item:hover i {
-  color: var(--color-primary-400);
-}
-
-.dark .checklist-item.completed:hover i {
-  color: #10b981;
-}
-
-@keyframes fade-up {
-  from {
-    opacity: 0;
-    transform: translateY(30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scale-in {
-  from {
-    transform: scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@media (max-width: 1024px) {
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 768px) {
-  .welcome-title {
-    font-size: 1.75rem;
-  }
-
-  .welcome-subtitle {
-    font-size: 1rem;
-  }
-
-  .welcome-content {
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .stats-grid,
-  .quick-actions-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .welcome-badge {
-    align-self: center;
-  }
-
-  .card-header {
-    flex-direction: column;
-    text-align: center;
-  }
-}
-</style>
+<template>
+  <div class="max-w-[1400px] mx-auto p-6 space-y-8">
+    <!-- Header -->
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 dark:text-white">
+        Dashboard
+      </h1>
+      <p class="text-gray-500 dark:text-gray-400 mt-1">
+        Overview of your design system
+      </p>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <UCard class="hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Components</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ stats.components }}
+            </p>
+          </div>
+          <div
+            class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center"
+          >
+            <Icon name="i-lucide-package" class="text-blue-500 text-xl" />
+          </div>
+        </div>
+      </UCard>
+
+      <UCard class="hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Design Tokens
+            </p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ stats.tokens }}
+            </p>
+          </div>
+          <div
+            class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center"
+          >
+            <Icon name="i-lucide-palette" class="text-purple-500 text-xl" />
+          </div>
+        </div>
+      </UCard>
+
+      <UCard class="hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Documentation
+            </p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ stats.docs }}
+            </p>
+          </div>
+          <div
+            class="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center"
+          >
+            <Icon name="i-lucide-file-text" class="text-green-500 text-xl" />
+          </div>
+        </div>
+      </UCard>
+
+      <UCard class="hover:shadow-md transition-shadow">
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Team Members</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white mt-1">
+              {{ stats.users }}
+            </p>
+          </div>
+          <div
+            class="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center"
+          >
+            <Icon name="i-lucide-users" class="text-orange-500 text-xl" />
+          </div>
+        </div>
+      </UCard>
+    </div>
+
+    <!-- Quick Actions -->
+    <div>
+      <h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+        Quick Actions
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <NuxtLink
+          v-for="action in quickActions"
+          :key="action.label"
+          :to="action.to"
+          class="group flex items-center gap-4 p-4 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-md transition-all"
+        >
+          <div
+            class="w-10 h-10 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors"
+          >
+            <Icon
+              :name="action.icon"
+              class="text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors"
+            />
+          </div>
+          <div class="flex-1 min-w-0">
+            <p class="font-medium text-gray-900 dark:text-white">
+              {{ action.label }}
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400 truncate">
+              {{ action.description }}
+            </p>
+          </div>
+          <Icon
+            name="i-lucide-chevron-right"
+            class="text-gray-300 dark:text-gray-600 group-hover:text-blue-500 transition-colors"
+          />
+        </NuxtLink>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- Activity Feed -->
+      <UCard class="lg:col-span-2">
+        <template #header>
+          <div class="flex items-center justify-between">
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Recent Activity
+            </h2>
+            <UButton
+              variant="ghost"
+              color="neutral"
+              size="sm"
+              icon="i-lucide-external-link"
+              to="/admin/components"
+            >
+              View All
+            </UButton>
+          </div>
+        </template>
+
+        <div class="space-y-4">
+          <div
+            v-for="activity in activities"
+            :key="activity.timestamp"
+            class="flex items-start gap-3"
+          >
+            <div
+              class="w-8 h-8 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center flex-shrink-0"
+            >
+              <Icon :name="activity.icon" :class="activity.iconColor" />
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="text-sm text-gray-900 dark:text-white">
+                {{ activity.action }}
+              </p>
+              <p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">
+                {{ formatTimeAgo(activity.timestamp) }}
+              </p>
+            </div>
+          </div>
+
+          <div
+            v-if="activities.length === 0"
+            class="text-center py-8 text-gray-500 dark:text-gray-400"
+          >
+            <Icon
+              name="i-lucide-clock"
+              class="text-3xl mx-auto mb-2 opacity-50"
+            />
+            <p>No recent activity</p>
+          </div>
+        </div>
+      </UCard>
+
+      <!-- Search & Shortcuts -->
+      <div class="space-y-6">
+        <!-- Quick Search -->
+        <UCard>
+          <template #header>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Quick Search
+            </h2>
+          </template>
+
+          <div class="space-y-3">
+            <UInput
+              v-model="newSearch"
+              placeholder="Search components, tokens..."
+              icon="i-lucide-search"
+              @keyup.enter="addSearch"
+            />
+            <UButton block icon="i-lucide-search" @click="addSearch">
+              Search
+            </UButton>
+          </div>
+
+          <div v-if="recentSearches.length > 0" class="mt-4">
+            <p
+              class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2"
+            >
+              Recent
+            </p>
+            <div class="flex flex-wrap gap-2">
+              <UBadge
+                v-for="(search, index) in recentSearches"
+                :key="index"
+                color="neutral"
+                variant="soft"
+                class="cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600"
+                @click="newSearch = search"
+              >
+                {{ search }}
+                <Icon
+                  name="i-lucide-x"
+                  class="ml-1 text-xs"
+                  @click.stop="removeSearch(index)"
+                />
+              </UBadge>
+            </div>
+          </div>
+        </UCard>
+
+        <!-- Keyboard Shortcuts -->
+        <UCard>
+          <template #header>
+            <h2 class="text-lg font-semibold text-gray-900 dark:text-white">
+              Shortcuts
+            </h2>
+          </template>
+
+          <div class="space-y-2 text-sm">
+            <div class="flex items-center justify-between py-1.5">
+              <span class="text-gray-600 dark:text-gray-400">Search</span>
+              <kbd
+                class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs font-mono text-gray-700 dark:text-gray-300"
+                >⌘K</kbd
+              >
+            </div>
+            <div class="flex items-center justify-between py-1.5">
+              <span class="text-gray-600 dark:text-gray-400"
+                >New Component</span
+              >
+              <kbd
+                class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs font-mono text-gray-700 dark:text-gray-300"
+                >N</kbd
+              >
+            </div>
+            <div class="flex items-center justify-between py-1.5">
+              <span class="text-gray-600 dark:text-gray-400">Toggle Theme</span>
+              <kbd
+                class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs font-mono text-gray-700 dark:text-gray-300"
+                >T</kbd
+              >
+            </div>
+            <div class="flex items-center justify-between py-1.5">
+              <span class="text-gray-600 dark:text-gray-400">Go to Docs</span>
+              <kbd
+                class="px-2 py-0.5 bg-gray-100 dark:bg-gray-700 rounded text-xs font-mono text-gray-700 dark:text-gray-300"
+                >G D</kbd
+              >
+            </div>
+          </div>
+        </UCard>
+      </div>
+    </div>
+  </div>
+</template>

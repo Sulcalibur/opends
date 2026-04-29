@@ -1,448 +1,304 @@
 <script setup lang="ts">
 /**
  * Admin Documentation Pages List
- * Uses PrimeVue components matching Users page design
+ * Refactored to use NuxtUI v4 + Tailwind + Lucide icons
  */
 definePageMeta({
-  layout: 'admin'
-})
+  layout: "admin",
+});
 
 interface DocPage {
-  id: string
-  slug: string
-  title: string
-  excerpt: string | null
-  category: string
-  isPublished: boolean
-  createdAt: string
-  updatedAt: string
+  id: string;
+  slug: string;
+  title: string;
+  excerpt: string | null;
+  category: string;
+  isPublished: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
 
-const { data, pending, refresh } = await useFetch<{ success: boolean; data: { pages: DocPage[] } }>('/api/docs', {
-  query: { published: 'false' }
-})
+const { data, pending, refresh } = await useFetch<{
+  success: boolean;
+  data: { pages: DocPage[] };
+}>("/api/docs", {
+  query: { published: "false" },
+});
 
-const pages = computed(() => data.value?.data?.pages || [])
+const pages = computed(() => data.value?.data?.pages || []);
 
-const showDeleteDialog = ref(false)
-const pageToDelete = ref<DocPage | null>(null)
-const deleting = ref(false)
+const showDeleteModal = ref(false);
+const pageToDelete = ref<DocPage | null>(null);
+const deleting = ref(false);
 
 function confirmDelete(page: DocPage) {
-  pageToDelete.value = page
-  showDeleteDialog.value = true
+  pageToDelete.value = page;
+  showDeleteModal.value = true;
 }
 
 async function deletePage() {
-  if (!pageToDelete.value) return
-  
-  deleting.value = true
+  if (!pageToDelete.value) return;
+
+  deleting.value = true;
   try {
-    await $fetch(`/api/docs/${pageToDelete.value.slug}`, { method: 'DELETE' })
-    showDeleteDialog.value = false
-    pageToDelete.value = null
-    refresh()
+    await $fetch(`/api/docs/${pageToDelete.value.slug}`, { method: "DELETE" });
+    showDeleteModal.value = false;
+    pageToDelete.value = null;
+    refresh();
   } catch (error) {
-    console.error('Failed to delete page:', error)
+    console.error("Failed to delete page:", error);
   } finally {
-    deleting.value = false
+    deleting.value = false;
   }
 }
 
 function formatDate(dateStr: string) {
-  return new Date(dateStr).toLocaleDateString('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric'
-  })
+  return new Date(dateStr).toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function getStatusColor(published: boolean) {
+  return published ? ("success" as const) : ("warning" as const);
 }
 </script>
 
 <template>
-  <div class="docs-page">
+  <div class="max-w-7xl mx-auto space-y-8">
     <!-- Header -->
-    <div class="page-header">
+    <div class="flex items-start justify-between">
       <div>
-        <h1 class="page-title">Documentation Pages</h1>
-        <p class="page-subtitle">Create and manage your design system documentation</p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">
+          Documentation Pages
+        </h1>
+        <p class="mt-2 text-gray-500 dark:text-gray-400">
+          Create and manage your design system documentation
+        </p>
       </div>
       <NuxtLink to="/admin/docs/new">
-        <Button icon="pi pi-plus" label="New Page" />
+        <UButton color="primary" icon="i-lucide-plus"> New Page </UButton>
       </NuxtLink>
     </div>
 
-    <!-- Stats Section -->
-    <div class="stats-grid">
-      <Card class="stat-card">
-        <template #content>
-          <div class="stat-item">
-            <i class="pi pi-file-edit stat-icon"/>
-            <div>
-              <p class="stat-value">{{ pages.length }}</p>
-              <p class="stat-label">Total Pages</p>
-            </div>
-          </div>
-        </template>
-      </Card>
-
-      <Card class="stat-card">
-        <template #content>
-          <div class="stat-item">
-            <i class="pi pi-check-circle stat-icon" style="color: #10b981"/>
-            <div>
-              <p class="stat-value">{{ pages.filter(p => p.isPublished).length }}</p>
-              <p class="stat-label">Published</p>
-            </div>
-          </div>
-        </template>
-      </Card>
-
-      <Card class="stat-card">
-        <template #content>
-          <div class="stat-item">
-            <i class="pi pi-clock stat-icon" style="color: #f59e0b"/>
-            <div>
-              <p class="stat-value">{{ pages.filter(p => !p.isPublished).length }}</p>
-              <p class="stat-label">Drafts</p>
-            </div>
-          </div>
-        </template>
-      </Card>
-    </div>
-
-    <!-- Content Area -->
-    <div v-if="pending" class="loading-state">
-      <ProgressSpinner style="width: 50px; height: 50px" stroke-width="4" />
-      <p>Loading documentation pages...</p>
-    </div>
-
-    <!-- Empty State -->
-    <div v-else-if="pages.length === 0" class="empty-state-card">
-      <Card>
-        <template #content>
-          <div class="empty-content">
-            <i class="pi pi-file-edit empty-icon" />
-            <h3>No documentation pages yet</h3>
-            <p>Create your first documentation page to get started with your design system docs.</p>
-            <NuxtLink to="/admin/docs/new">
-              <Button label="Create First Page" icon="pi pi-plus" size="large" />
-            </NuxtLink>
-          </div>
-        </template>
-      </Card>
-    </div>
-
-    <!-- Pages Grid -->
-    <div v-else class="pages-grid">
-      <Card v-for="page in pages" :key="page.id" class="page-card">
-        <template #content>
-          <div class="card-header">
-            <div class="category-badge">{{ page.category }}</div>
-            <Tag 
-              :value="page.isPublished ? 'Published' : 'Draft'" 
-              :severity="page.isPublished ? 'success' : 'warn'"
-              class="status-tag"
+    <!-- Stats -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      <UCard>
+        <div class="flex items-center gap-4">
+          <div class="p-3 rounded-xl bg-blue-50 dark:bg-blue-950">
+            <UIcon
+              name="i-lucide-file-text"
+              class="w-8 h-8 text-blue-600 dark:text-blue-400"
             />
           </div>
-
-          <h3 class="card-title">{{ page.title }}</h3>
-          
-          <p class="card-excerpt">{{ page.excerpt || 'No excerpt available.' }}</p>
-          
-          <div class="card-meta">
-            <div class="meta-item">
-              <i class="pi pi-link" />
-              <code class="slug-code">/docs/{{ page.slug }}</code>
-            </div>
-            <div class="meta-item">
-              <i class="pi pi-clock" />
-              <span>{{ formatDate(page.updatedAt) }}</span>
-            </div>
+          <div>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ pages.length }}
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Total Pages</p>
           </div>
+        </div>
+      </UCard>
 
-          <div class="card-actions">
-            <NuxtLink :to="`/admin/docs/${page.slug}`" class="action-btn-link">
-              <Button icon="pi pi-pencil" label="Edit" severity="secondary" outlined size="small" class="w-full" />
-            </NuxtLink>
-            <NuxtLink :to="`/docs/${page.slug}`" target="_blank" class="action-btn-link">
-              <Button icon="pi pi-external-link" severity="secondary" text aria-label="View" />
-            </NuxtLink>
-            <Button 
-              icon="pi pi-trash" 
-              severity="danger" 
-              text
-              aria-label="Delete"
-              @click="confirmDelete(page)"
+      <UCard>
+        <div class="flex items-center gap-4">
+          <div class="p-3 rounded-xl bg-emerald-50 dark:bg-emerald-950">
+            <UIcon
+              name="i-lucide-check-circle"
+              class="w-8 h-8 text-emerald-600 dark:text-emerald-400"
             />
           </div>
-        </template>
-      </Card>
+          <div>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ pages.filter((p) => p.isPublished).length }}
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Published</p>
+          </div>
+        </div>
+      </UCard>
+
+      <UCard>
+        <div class="flex items-center gap-4">
+          <div class="p-3 rounded-xl bg-amber-50 dark:bg-amber-950">
+            <UIcon
+              name="i-lucide-clock"
+              class="w-8 h-8 text-amber-600 dark:text-amber-400"
+            />
+          </div>
+          <div>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">
+              {{ pages.filter((p) => !p.isPublished).length }}
+            </p>
+            <p class="text-sm text-gray-500 dark:text-gray-400">Drafts</p>
+          </div>
+        </div>
+      </UCard>
     </div>
 
-    <!-- Delete Confirmation Dialog -->
-    <Dialog 
-      v-model:visible="showDeleteDialog" 
-      header="Delete Page" 
-      :style="{ width: '450px' }"
-      modal
-      :closable="!deleting"
-    >
-      <div class="delete-content">
-        <div class="warning-icon-wrapper">
-          <i class="pi pi-exclamation-triangle warning-icon" />
-        </div>
-        <div>
-          <p class="font-semibold text-lg mb-2">Are you sure?</p>
-          <p class="text-gray-600 mb-0">
-            You are about to delete <strong>{{ pageToDelete?.title }}</strong>. This action cannot be undone.
-          </p>
-        </div>
+    <!-- Loading -->
+    <div v-if="pending" class="flex flex-col items-center justify-center py-16">
+      <UIcon
+        name="i-lucide-loader-2"
+        class="w-10 h-10 animate-spin text-gray-400"
+      />
+      <p class="mt-4 text-gray-500 dark:text-gray-400">
+        Loading documentation pages...
+      </p>
+    </div>
+
+    <!-- Empty -->
+    <UCard v-else-if="pages.length === 0" class="max-w-2xl mx-auto">
+      <div class="text-center py-12">
+        <UIcon
+          name="i-lucide-file-text"
+          class="w-16 h-16 mx-auto text-gray-300 dark:text-gray-600 mb-4"
+        />
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          No documentation pages yet
+        </h3>
+        <p class="text-gray-500 dark:text-gray-400 mb-6">
+          Create your first documentation page to get started with your design
+          system docs.
+        </p>
+        <NuxtLink to="/admin/docs/new">
+          <UButton size="lg" color="primary" icon="i-lucide-plus">
+            Create First Page
+          </UButton>
+        </NuxtLink>
       </div>
-      <template #footer>
-        <Button label="Cancel" text severity="secondary" :disabled="deleting" @click="showDeleteDialog = false" />
-        <Button label="Delete" severity="danger" icon="pi pi-trash" :loading="deleting" @click="deletePage" />
+    </UCard>
+
+    <!-- Grid -->
+    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <UCard
+        v-for="page in pages"
+        :key="page.id"
+        class="hover:-translate-y-1 hover:shadow-lg transition-all duration-200"
+      >
+        <div class="flex items-start justify-between mb-3">
+          <UBadge color="neutral" variant="soft" size="sm">
+            {{ page.category }}
+          </UBadge>
+          <UBadge
+            :color="getStatusColor(page.isPublished)"
+            variant="soft"
+            size="sm"
+          >
+            {{ page.isPublished ? "Published" : "Draft" }}
+          </UBadge>
+        </div>
+
+        <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+          {{ page.title }}
+        </h3>
+
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4 line-clamp-2">
+          {{ page.excerpt || "No excerpt available." }}
+        </p>
+
+        <div
+          class="space-y-2 mb-4 pb-4 border-b border-gray-100 dark:border-gray-800"
+        >
+          <div
+            class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400"
+          >
+            <UIcon name="i-lucide-link" class="w-4 h-4" />
+            <code
+              class="text-xs bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded"
+            >
+              /docs/{{ page.slug }}
+            </code>
+          </div>
+          <div
+            class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400"
+          >
+            <UIcon name="i-lucide-clock" class="w-4 h-4" />
+            <span>{{ formatDate(page.updatedAt) }}</span>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <NuxtLink :to="`/admin/docs/${page.slug}`" class="flex-1">
+            <UButton
+              color="neutral"
+              variant="soft"
+              size="sm"
+              icon="i-lucide-pencil"
+              block
+            >
+              Edit
+            </UButton>
+          </NuxtLink>
+          <NuxtLink :to="`/docs/${page.slug}`" target="_blank">
+            <UButton
+              color="neutral"
+              variant="ghost"
+              size="sm"
+              icon="i-lucide-external-link"
+            />
+          </NuxtLink>
+          <UButton
+            color="error"
+            variant="ghost"
+            size="sm"
+            icon="i-lucide-trash"
+            @click="confirmDelete(page)"
+          />
+        </div>
+      </UCard>
+    </div>
+
+    <!-- Delete Modal -->
+    <UModal :open="showDeleteModal" @update:open="showDeleteModal = $event">
+      <template #content>
+        <UCard>
+          <template #header>
+            <div class="flex items-center gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-red-50 dark:bg-red-950 flex items-center justify-center"
+              >
+                <UIcon
+                  name="i-lucide-alert-triangle"
+                  class="w-5 h-5 text-red-600"
+                />
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold">Delete Page</h3>
+                <p class="text-sm text-gray-500">
+                  This action cannot be undone.
+                </p>
+              </div>
+            </div>
+          </template>
+
+          <p class="text-gray-600 dark:text-gray-400">
+            You are about to delete <strong>{{ pageToDelete?.title }}</strong
+            >.
+          </p>
+
+          <template #footer>
+            <div class="flex justify-end gap-3">
+              <UButton
+                color="neutral"
+                variant="ghost"
+                :disabled="deleting"
+                @click="showDeleteModal = false"
+              >
+                Cancel
+              </UButton>
+              <UButton
+                color="error"
+                icon="i-lucide-trash"
+                :loading="deleting"
+                @click="deletePage"
+              >
+                Delete
+              </UButton>
+            </div>
+          </template>
+        </UCard>
       </template>
-    </Dialog>
+    </UModal>
   </div>
 </template>
-
-<style scoped>
-.docs-page {
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-}
-
-.page-title {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-  color: #0f172a;
-}
-
-.page-subtitle {
-  color: #64748b;
-  margin: 0.5rem 0 0 0;
-  font-size: 1rem;
-}
-
-/* Stats Grid matches User page */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-}
-
-.stat-card {
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  background: white;
-}
-
-.stat-item {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-}
-
-.stat-icon {
-  font-size: 2.5rem;
-  color: #3b82f6;
-  background: #eff6ff;
-  padding: 1rem;
-  border-radius: 1rem;
-}
-
-.stat-value {
-  font-size: 2rem;
-  font-weight: 700;
-  margin: 0;
-  color: #0f172a;
-  line-height: 1;
-}
-
-.stat-label {
-  color: #64748b;
-  margin: 0.25rem 0 0 0;
-  font-size: 0.875rem;
-}
-
-/* Loading & Empty States */
-.loading-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 4rem;
-  color: #64748b;
-  background: white;
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-.empty-state-card {
-  max-width: 600px;
-  margin: 2rem auto;
-}
-
-.empty-content {
-  text-align: center;
-  padding: 3rem 1.5rem;
-}
-
-.empty-icon {
-  font-size: 4rem;
-  color: #cbd5e1;
-  margin-bottom: 1.5rem;
-}
-
-/* Pages Grid */
-.pages-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
-}
-
-.page-card {
-  border-radius: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s, box-shadow 0.2s;
-  background: white;
-  height: 100%;
-}
-
-.page-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 1rem;
-}
-
-.category-badge {
-  background: #f1f5f9;
-  color: #475569;
-  padding: 0.25rem 0.75rem;
-  border-radius: 2rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.card-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #0f172a;
-  margin: 0 0 0.5rem 0;
-  line-height: 1.4;
-}
-
-.card-excerpt {
-  color: #64748b;
-  font-size: 0.875rem;
-  line-height: 1.6;
-  margin: 0 0 1.5rem 0;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  height: 2.8em; /* Approximate height for 2 lines */
-}
-
-.card-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  margin-bottom: 1.5rem;
-  padding-bottom: 1.5rem;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #64748b;
-  font-size: 0.875rem;
-}
-
-.slug-code {
-  font-family: monospace;
-  background: #f8fafc;
-  padding: 0.125rem 0.375rem;
-  border-radius: 0.25rem;
-  color: #3b82f6;
-  font-size: 0.8rem;
-}
-
-.card-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.action-btn-link {
-  text-decoration: none;
-}
-
-.w-full {
-  width: 100%;
-}
-
-/* Dialog Styling */
-.delete-content {
-  display: flex;
-  gap: 1.5rem;
-  padding: 1rem 0;
-}
-
-.warning-icon-wrapper {
-  flex-shrink: 0;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background: #fee2e2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.warning-icon {
-  font-size: 1.5rem;
-  color: #dc2626;
-}
-
-:deep(.p-card-content) {
-  padding: 1.5rem;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
-:deep(.p-dialog-header) {
-  border-bottom: 1px solid #e2e8f0;
-  padding: 1.5rem;
-}
-
-:deep(.p-dialog-content) {
-  padding: 1.5rem;
-}
-
-:deep(.p-dialog-footer) {
-  border-top: 1px solid #e2e8f0;
-  padding: 1rem 1.5rem;
-  background: #f8fafc;
-}
-</style>
