@@ -1,7 +1,7 @@
 <template>
   <div class="tokens-page">
     <div class="container mx-auto max-w-7xl px-6 py-12">
-      <div class="page-header fade-up">
+      <div class="page-header">
         <h1 class="page-title">Design Tokens</h1>
         <p class="page-subtitle">
           Design tokens are the visual design atoms of the design system. They
@@ -9,21 +9,25 @@
         </p>
       </div>
 
-      <EmptyState
+      <BaseEmptyState
         v-if="tokens.length === 0"
-        icon="i-lucide-palette"
+        icon="palette"
         title="No Tokens Yet"
         description="Get started by creating your first design token in the admin panel."
-        action-link="/admin/tokens"
-        action-text="Create Your First Token"
-        class="fade-up stagger-1"
-      />
+        class="fade-up"
+      >
+        <template #action>
+          <BaseButton to="/admin/tokens" variant="primary">
+            Create Your First Token
+          </BaseButton>
+        </template>
+      </BaseEmptyState>
 
       <div v-else class="tokens-content">
-        <AnimatedCard variant="elevated" class="stats-card fade-up stagger-1">
+        <BaseCard padding="large" class="stats-card">
           <template #header>
             <div class="card-header-title">
-              <UIcon name="i-lucide-bar-chart-3" />
+              <Icon name="lucide:bar-chart-3" />
               Token Overview
             </div>
           </template>
@@ -53,22 +57,21 @@
               @click="downloadTokens"
             />
           </template>
-        </AnimatedCard>
+        </BaseCard>
 
-        <div class="tabs-container fade-up stagger-2">
+        <div class="tabs-container">
           <UTabs v-model="activeTab" :items="tabItems" :content="false" />
           <div class="tab-content mt-4">
             <div v-if="activeTab === 0">
               <div v-if="colorTokens.length === 0" class="empty-tab">
-                <UIcon name="i-lucide-palette" />
+                <Icon name="lucide:palette" />
                 <p>No color tokens defined yet.</p>
               </div>
               <div v-else class="colors-grid">
                 <div
-                  v-for="(token, index) in colorTokens"
+                  v-for="token in colorTokens"
                   :key="token.name"
-                  class="color-card hover-lift"
-                  :class="`stagger-${(index % 3) + 1}`"
+                  class="color-card"
                 >
                   <div
                     class="color-swatch"
@@ -85,7 +88,7 @@
                     title="Copy value"
                     @click="copyToClipboard(token.value)"
                   >
-                    <UIcon name="i-lucide-copy" />
+                    <Icon name="lucide:copy" />
                   </button>
                 </div>
               </div>
@@ -93,15 +96,14 @@
 
             <div v-if="activeTab === 1">
               <div v-if="typographyTokens.length === 0" class="empty-tab">
-                <UIcon name="i-lucide-type" />
+                <Icon name="lucide:type" />
                 <p>No typography tokens defined yet.</p>
               </div>
               <div v-else class="typography-list">
                 <div
-                  v-for="(token, index) in typographyTokens"
+                  v-for="token in typographyTokens"
                   :key="token.name"
-                  class="typography-card hover-lift"
-                  :class="`stagger-${(index % 3) + 1}`"
+                  class="typography-card"
                 >
                   <div class="typo-details">
                     <div class="typo-name">{{ token.name }}</div>
@@ -132,15 +134,14 @@
 
             <div v-if="activeTab === 2">
               <div v-if="spacingTokens.length === 0" class="empty-tab">
-                <UIcon name="i-lucide-move" />
+                <Icon name="lucide:move" />
                 <p>No spacing tokens defined yet.</p>
               </div>
               <div v-else class="spacing-list">
                 <div
-                  v-for="(token, index) in spacingTokens"
+                  v-for="token in spacingTokens"
                   :key="token.name"
-                  class="spacing-item hover-lift"
-                  :class="`stagger-${(index % 3) + 1}`"
+                  class="spacing-item"
                 >
                   <div class="spacing-label">
                     <span class="spacing-name">{{ token.name }}</span>
@@ -151,7 +152,7 @@
                       class="spacing-fill"
                       :style="{
                         width: token.value,
-                        background: 'var(--gradient-primary)',
+                        background: 'var(--color-primary-500)',
                       }"
                     />
                   </div>
@@ -282,10 +283,7 @@ useHead({
   font-weight: var(--font-weight-extrabold);
   color: var(--color-text-primary);
   margin-bottom: 1rem;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  line-height: 1.2;
 }
 
 .page-subtitle {
@@ -330,10 +328,6 @@ useHead({
   font-weight: var(--font-weight-extrabold);
   color: var(--color-text-primary);
   margin-bottom: 0.5rem;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .stat-label {
@@ -380,20 +374,21 @@ useHead({
   border: 2px solid var(--color-border);
   border-radius: var(--radius-xl);
   overflow: hidden;
-  transition: all var(--transition-slow);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .color-card:hover {
   border-color: var(--color-primary-300);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
 }
 
 .color-swatch {
   width: 100%;
   height: 120px;
   background: var(--color-bg-200);
-  transition: all var(--transition-slow);
+  transition: height var(--transition-slow);
 }
 
 .color-card:hover .color-swatch {
@@ -429,7 +424,7 @@ useHead({
   height: 32px;
   border-radius: var(--radius-md);
   border: none;
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--color-surface);
   color: var(--color-text-primary);
   cursor: pointer;
   display: flex;
@@ -437,7 +432,9 @@ useHead({
   justify-content: center;
   opacity: 0;
   transform: translateY(-4px);
-  transition: all var(--transition-base);
+  transition:
+    opacity var(--transition-base),
+    transform var(--transition-base);
 }
 
 .color-card:hover .copy-btn {
@@ -446,7 +443,7 @@ useHead({
 }
 
 .copy-btn:hover {
-  background: white;
+  background: var(--color-bg);
   color: var(--color-primary-500);
 }
 
@@ -465,13 +462,14 @@ useHead({
   border: 2px solid var(--color-border);
   border-radius: var(--radius-xl);
   padding: 2rem;
-  transition: all var(--transition-slow);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .typography-card:hover {
   border-color: var(--color-primary-300);
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
 }
 
 .typo-details {
@@ -527,13 +525,14 @@ useHead({
   background: var(--color-bg-tertiary);
   border: 2px solid var(--color-border);
   border-radius: var(--radius-xl);
-  transition: all var(--transition-slow);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base);
 }
 
 .spacing-item:hover {
   border-color: var(--color-primary-300);
-  box-shadow: var(--shadow-lg);
-  transform: translateX(8px);
+  box-shadow: var(--shadow-md);
 }
 
 .spacing-label {
@@ -603,7 +602,6 @@ useHead({
 .dark .typography-card:hover,
 .dark .spacing-item:hover {
   border-color: var(--color-primary-400);
-  box-shadow: var(--shadow-lg), var(--dark-shadow-glow-sm);
 }
 
 .dark .typo-preview,

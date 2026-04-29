@@ -71,14 +71,12 @@ function handleLogout() {
         <UiThemeToggle />
 
         <div class="flex items-center gap-3">
-          <NuxtLink to="/admin">
-            <PremiumButton variant="secondary" size="sm">
-              Dashboard
-            </PremiumButton>
-          </NuxtLink>
-          <NuxtLink to="/login">
-            <PremiumButton variant="primary" size="sm"> Sign In </PremiumButton>
-          </NuxtLink>
+          <BaseButton to="/admin" variant="secondary" size="compact">
+            Dashboard
+          </BaseButton>
+          <BaseButton to="/login" variant="primary" size="compact">
+            Sign In
+          </BaseButton>
         </div>
       </div>
     </div>
@@ -90,12 +88,12 @@ function handleLogout() {
 
 <style scoped>
 .router-link-active {
-  color: var(--color-primary-500);
-  background: rgba(219, 60, 36, 0.08);
+  color: var(--color-primary-600);
+  background: rgba(232, 90, 58, 0.08);
 }
 
 .dark .router-link-active {
   color: var(--color-primary-400);
-  background: rgba(234, 138, 123, 0.15);
+  background: rgba(232, 90, 58, 0.15);
 }
 </style>

@@ -50,15 +50,9 @@ useHead({
 
 <template>
   <div class="ds-home">
-    <AnimatedGradientBackground class="hero-gradient">
+    <div class="hero-section">
       <div class="hero-content">
-        <div class="floating-shapes">
-          <div class="shape shape-1"/>
-          <div class="shape shape-2"/>
-          <div class="shape shape-3"/>
-        </div>
-
-        <div class="hero-text fade-up">
+        <div class="hero-text">
           <h1 class="hero-title">
             {{
               settings.home_hero?.title ||
@@ -75,35 +69,40 @@ useHead({
           </p>
 
           <div class="hero-actions">
-            <NuxtLink to="/docs/components" class="hero-cta primary">
-              <UIcon name="i-lucide-box"/>
-              <span>Explore Components</span>
-            </NuxtLink>
-            <NuxtLink to="/tokens" class="hero-cta secondary">
-              <UIcon name="i-lucide-palette"/>
-              <span>Design Tokens</span>
-            </NuxtLink>
+            <BaseButton
+              to="/docs/components"
+              variant="primary"
+              size="large"
+              icon-left="lucide:box"
+            >
+              Explore Components
+            </BaseButton>
+            <BaseButton
+              to="/tokens"
+              variant="secondary"
+              size="large"
+              icon-left="lucide:palette"
+            >
+              Design Tokens
+            </BaseButton>
           </div>
         </div>
       </div>
-    </AnimatedGradientBackground>
+    </div>
 
-    <main class="container mx-auto max-w-7xl px-6 py-20">
-      <AnimatedCard variant="elevated" class="quick-links-section">
+    <main class="ds-container">
+      <BaseCard class="quick-links-section" padding="xl">
         <template #header>
           <div class="card-header-title">
-            <UIcon name="i-lucide-zap"/>
+            <Icon name="lucide:zap" />
             Get Started
           </div>
         </template>
         <template #default>
           <div class="quick-links-grid">
-            <NuxtLink
-              to="/docs/components"
-              class="quick-link-item hover-lift stagger-1"
-            >
-              <div class="link-icon blue">
-                <UIcon name="i-lucide-layout-grid"/>
+            <NuxtLink to="/docs/components" class="quick-link-item">
+              <div class="link-icon primary">
+                <Icon name="lucide:layout-grid" />
               </div>
               <div class="link-content">
                 <h3 class="link-title">Components</h3>
@@ -111,9 +110,9 @@ useHead({
               </div>
             </NuxtLink>
 
-            <NuxtLink to="/tokens" class="quick-link-item hover-lift stagger-2">
-              <div class="link-icon indigo">
-                <UIcon name="i-lucide-palette"/>
+            <NuxtLink to="/tokens" class="quick-link-item">
+              <div class="link-icon secondary">
+                <Icon name="lucide:palette" />
               </div>
               <div class="link-content">
                 <h3 class="link-title">Design Tokens</h3>
@@ -121,9 +120,9 @@ useHead({
               </div>
             </NuxtLink>
 
-            <NuxtLink to="/admin" class="quick-link-item hover-lift stagger-3">
-              <div class="link-icon lavender">
-                <UIcon name="i-lucide-settings"/>
+            <NuxtLink to="/admin" class="quick-link-item">
+              <div class="link-icon neutral">
+                <Icon name="lucide:settings" />
               </div>
               <div class="link-content">
                 <h3 class="link-title">Admin</h3>
@@ -132,17 +131,12 @@ useHead({
             </NuxtLink>
           </div>
         </template>
-      </AnimatedCard>
+      </BaseCard>
 
-      <div
-        v-for="category in categories"
-        :key="category"
-        class="docs-section fade-up"
-        :class="`stagger-${Math.floor(Math.random() * 3) + 1}`"
-      >
+      <div v-for="category in categories" :key="category" class="docs-section">
         <h2 class="category-title">
           <span class="category-text">{{ category }}</span>
-          <div class="category-line"/>
+          <div class="category-line" />
         </h2>
 
         <div class="docs-grid">
@@ -150,17 +144,14 @@ useHead({
             v-for="page in pagesByCategory[category]"
             :key="page.slug"
             :to="`/docs/${page.slug}`"
-            class="doc-card hover-lift card-gradient-border"
+            class="doc-card"
           >
             <div class="doc-card-content">
               <div class="doc-icon-wrapper">
-                <UIcon name="i-lucide-file-text" class="text-xl"/>
+                <Icon name="lucide:file-text" class="text-xl" />
               </div>
               <div class="doc-info">
-                <h3
-                  class="doc-title"
-                  :class="`stagger-${(page.slug.length % 3) + 1}`"
-                >
+                <h3 class="doc-title">
                   {{ page.title }}
                 </h3>
                 <p class="doc-excerpt line-clamp-2">
@@ -174,7 +165,7 @@ useHead({
     </main>
 
     <footer class="footer">
-      <div class="container mx-auto max-w-7xl px-6">
+      <div class="ds-container">
         <div class="footer-content">
           <p class="footer-text">
             &copy; {{ new Date().getFullYear() }}
@@ -198,87 +189,12 @@ useHead({
   overflow-x: hidden;
 }
 
-/* Animated Gradient Background */
-.hero-gradient {
+/* Hero Section */
+.hero-section {
   position: relative;
   padding: 120px 0 100px;
   overflow: hidden;
-}
-
-.hero-gradient::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: var(--gradient-hero);
-  opacity: 1;
-  animation: gradient-shift 15s ease-in-out infinite alternate;
-}
-
-@keyframes gradient-shift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-    opacity: 0.8;
-  }
-  50% {
-    background-position: 100% 50%;
-    opacity: 1;
-  }
-}
-
-/* Floating Shapes */
-.floating-shapes {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.shape {
-  position: absolute;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.1);
-  filter: blur(60px);
-}
-
-.shape-1 {
-  width: 400px;
-  height: 400px;
-  top: -100px;
-  right: -100px;
-  background: radial-gradient(circle, rgba(219, 60, 36, 0.3), transparent);
-  animation: float 6s ease-in-out infinite;
-}
-
-.shape-2 {
-  width: 200px;
-  height: 200px;
-  top: 50%;
-  left: 10%;
-  background: radial-gradient(circle, rgba(231, 189, 24, 0.2), transparent);
-  animation: float 8s ease-in-out infinite reverse;
-}
-
-.shape-3 {
-  width: 150px;
-  height: 150px;
-  bottom: 20%;
-  right: 15%;
-  background: radial-gradient(circle, rgba(234, 138, 123, 0.25), transparent);
-  animation: float 7s ease-in-out infinite;
-}
-
-@keyframes float {
-  0%,
-  100% {
-    transform: translateY(0px) rotate(0deg);
-  }
-  33% {
-    transform: translateY(-30px) rotate(10deg);
-  }
-  66% {
-    transform: translateY(15px) rotate(-5deg);
-  }
+  background-color: var(--color-primary-500);
 }
 
 /* Hero Content */
@@ -294,7 +210,6 @@ useHead({
   font-weight: var(--font-weight-extrabold);
   line-height: 1.1;
   margin-bottom: 1.5rem;
-  text-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   animation: fade-up 0.8s var(--easing-out);
 }
 
@@ -304,7 +219,6 @@ useHead({
   opacity: 0.95;
   max-width: 700px;
   margin: 0 auto 2rem;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   animation: fade-up 1s var(--easing-out) 0.2s both;
 }
 
@@ -315,43 +229,6 @@ useHead({
   justify-content: center;
   flex-wrap: wrap;
   animation: fade-up 1.2s var(--easing-out) 0.4s both;
-}
-
-.hero-cta {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.75rem;
-  padding: 1rem 2rem;
-  border-radius: var(--radius-full);
-  font-weight: var(--font-weight-semibold);
-  font-size: 1.125rem;
-  color: white;
-  text-decoration: none;
-  transition: all var(--transition-slow);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-}
-
-.hero-cta:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
-}
-
-.hero-cta.primary {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-500) 0%,
-    var(--color-secondary-500) 100%
-  );
-}
-
-.hero-cta.secondary {
-  background: rgba(255, 255, 255, 0.2);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-}
-
-.hero-cta i {
-  font-size: 1.25rem;
 }
 
 /* Quick Links Section */
@@ -382,13 +259,15 @@ useHead({
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-xl);
   text-decoration: none;
-  transition: all var(--transition-slow);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
   border: 2px solid var(--color-border-light);
 }
 
 .quick-link-item:hover {
   border-color: var(--color-primary-200);
-  transform: translateY(-6px);
   box-shadow: var(--shadow-lg);
 }
 
@@ -401,25 +280,26 @@ useHead({
   justify-content: center;
   font-size: 1.5rem;
   color: white;
+  flex-shrink: 0;
 }
 
-.link-icon.blue {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+.link-icon.primary {
+  background: var(--color-primary-500);
 }
 
-.link-icon.indigo {
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+.link-icon.secondary {
+  background: var(--color-secondary-500);
 }
 
-.link-icon.lavender {
-  background: linear-gradient(135deg, #a5b4fc 0%, #9ca3af 100%);
+.link-icon.neutral {
+  background: var(--color-neutral-500);
 }
 
 .link-title {
   font-size: 1.25rem;
   font-weight: var(--font-weight-bold);
   color: var(--color-text-primary);
-  margin: 0 25rem 0.5rem 0;
+  margin: 0 0 0.5rem 0;
 }
 
 .link-description {
@@ -471,14 +351,18 @@ useHead({
   background: var(--color-bg-tertiary);
   border-radius: var(--radius-xl);
   text-decoration: none;
-  transition: all var(--transition-slow);
+  transition:
+    border-color var(--transition-base),
+    box-shadow var(--transition-base),
+    transform var(--transition-base);
   position: relative;
   overflow: hidden;
+  border: 1px solid var(--color-border-light);
 }
 
 .doc-card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-xl);
+  border-color: var(--color-primary-200);
+  box-shadow: var(--shadow-lg);
 }
 
 .doc-card-content {
@@ -492,15 +376,13 @@ useHead({
   width: 48px;
   height: 48px;
   border-radius: var(--radius-lg);
-  background: linear-gradient(
-    135deg,
-    var(--color-bg-200) 0%,
-    var(--color-bg-100) 100%
-  );
+  background: var(--color-bg-200);
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all var(--transition-base);
+  transition:
+    background var(--transition-base),
+    transform var(--transition-base);
 }
 
 .doc-card:hover .doc-icon-wrapper {
@@ -580,12 +462,15 @@ useHead({
   background: var(--dark-color-bg);
 }
 
+.dark .hero-section {
+  background: var(--color-primary-600);
+}
+
 .dark .hero-title,
 .dark .category-title,
 .dark .link-title,
 .dark .doc-title {
   color: var(--dark-color-text-primary);
-  text-shadow: none;
 }
 
 .dark .hero-subtitle,
@@ -602,24 +487,20 @@ useHead({
 
 .dark .quick-link-item:hover {
   border-color: var(--color-primary-400);
-  box-shadow: var(--shadow-xl), var(--dark-shadow-glow-sm);
+  box-shadow: var(--shadow-lg);
 }
 
 .dark .doc-card {
   background: var(--dark-color-surface);
-  border: none;
+  border-color: var(--dark-color-border);
 }
 
 .dark .doc-card:hover {
-  box-shadow: var(--shadow-xl), var(--dark-shadow-glow-sm);
+  box-shadow: var(--shadow-lg);
 }
 
 .dark .doc-icon-wrapper {
-  background: linear-gradient(
-    135deg,
-    var(--dark-color-bg-200) 0%,
-    var(--dark-color-bg-100) 100%
-  );
+  background: var(--dark-color-bg-200);
 }
 
 .dark .doc-icon-wrapper i {

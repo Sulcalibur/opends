@@ -1,0 +1,53 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - navigation [ref=e4]:
+      - generic [ref=e5]:
+        - link "OpenDS" [ref=e6] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e7]:
+            - img [ref=e9]
+            - generic [ref=e14]: OpenDS
+        - generic [ref=e15]:
+          - link "Docs" [ref=e16] [cursor=pointer]:
+            - /url: /docs
+            - text: Docs
+          - link "Components" [ref=e17] [cursor=pointer]:
+            - /url: /components
+            - text: Components
+          - link "Tokens" [ref=e18] [cursor=pointer]:
+            - /url: /tokens
+            - text: Tokens
+        - generic [ref=e19]:
+          - button "Search ⌘K" [ref=e20] [cursor=pointer]:
+            - generic [ref=e22]: Search
+            - generic [ref=e23]: ⌘K
+          - generic [ref=e24]:
+            - link "Dashboard" [ref=e25] [cursor=pointer]:
+              - /url: /admin
+            - link "Sign In" [ref=e26] [cursor=pointer]:
+              - /url: /login
+    - main [ref=e27]:
+      - generic [ref=e30]:
+        - heading "Failed to load component" [level=2] [ref=e32]
+        - paragraph [ref=e33]: "[GET] \"/api/components/button\": 404"
+        - link "Back to Components" [ref=e34] [cursor=pointer]:
+          - /url: /components
+          - text: Back to Components
+  - generic:
+    - img
+  - generic:
+    - generic:
+      - generic:
+        - button "Go to parent" [disabled]
+        - button "Open in editor"
+        - button "Close"
+  - generic [ref=e36]:
+    - button "Toggle Nuxt DevTools" [ref=e37] [cursor=pointer]:
+      - img [ref=e38]
+    - generic "Page load time" [ref=e41]:
+      - generic [ref=e42]: "45"
+      - generic [ref=e43]: ms
+    - button "Toggle Component Inspector" [ref=e45] [cursor=pointer]:
+      - img [ref=e46]
+  - region "Notifications (F8)":
+    - list

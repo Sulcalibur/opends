@@ -1,0 +1,1454 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenDS Design System Preview</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Outfit:wght@700;800&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        /* Base Tokens — Light Mode */
+        --primary: #e85a3a;
+        --primary-hover: #d14e30;
+        --secondary: #c9a227;
+        --background: #f6f5f3;
+        --surface: #ffffff;
+        --surface-elevated: #ffffff;
+        --text-primary: #1c1f24;
+        --text-secondary: #5a606e;
+        --border: #dddad5;
+        --border-focus: #e85a3a;
+        --neutral-100: #f6f5f3;
+        --neutral-200: #e8e6e2;
+        --neutral-300: #dddad5;
+        --neutral-400: #9a9590;
+        --neutral-500: #5a606e;
+        --neutral-600: #3a4049;
+        --neutral-700: #1c1f24;
+        --neutral-800: #0f1114;
+        --error: #dc2626;
+        --error-bg: #fef2f2;
+        --success: #16a34a;
+        --success-bg: #f0fdf4;
+
+        /* Typography */
+        --font-heading: "Outfit", sans-serif;
+        --font-body: "Plus Jakarta Sans", sans-serif;
+        --font-mono: "IBM Plex Mono", monospace;
+
+        /* Spacing */
+        --space-1: 4px;
+        --space-2: 8px;
+        --space-3: 12px;
+        --space-4: 16px;
+        --space-5: 24px;
+        --space-6: 32px;
+        --space-7: 48px;
+        --space-8: 64px;
+        --space-9: 96px;
+
+        /* Radius */
+        --radius-sm: 6px;
+        --radius-md: 8px;
+        --radius-lg: 12px;
+        --radius-pill: 9999px;
+
+        /* Shadows */
+        --shadow-card:
+          0 1px 3px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04);
+        --shadow-elevated:
+          0 4px 12px rgba(0, 0, 0, 0.1), 0 8px 24px rgba(0, 0, 0, 0.06);
+        --shadow-modal:
+          0 8px 32px rgba(0, 0, 0, 0.12), 0 16px 48px rgba(0, 0, 0, 0.08);
+        --shadow-focus: 0 0 0 3px rgba(232, 90, 58, 0.3);
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: var(--font-body);
+        font-size: 16px;
+        line-height: 1.5;
+        color: var(--text-primary);
+        background: var(--background);
+        -webkit-font-smoothing: antialiased;
+      }
+
+      .container {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: var(--space-5);
+      }
+
+      .page-header {
+        padding: var(--space-8) 0 var(--space-6);
+        border-bottom: 1px solid var(--border);
+        margin-bottom: var(--space-7);
+      }
+
+      .page-header h1 {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1.2;
+        color: var(--text-primary);
+        margin-bottom: var(--space-3);
+      }
+
+      .page-header p {
+        font-size: 1.125rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+      }
+
+      .section {
+        margin-bottom: var(--space-8);
+      }
+
+      .section-header {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-3);
+        margin-bottom: var(--space-5);
+        padding-bottom: var(--space-3);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .section-header h2 {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.5rem;
+        line-height: 1.2;
+      }
+
+      .section-header .token-name {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        font-weight: 400;
+      }
+
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--space-5);
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: var(--space-5);
+      }
+      .grid-4 {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--space-4);
+      }
+      .grid-6 {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: var(--space-4);
+      }
+
+      @media (max-width: 1024px) {
+        .grid-4 {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .grid-6 {
+          grid-template-columns: repeat(3, 1fr);
+        }
+      }
+      @media (max-width: 640px) {
+        .grid-2,
+        .grid-3,
+        .grid-4,
+        .grid-6 {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* Typography Section */
+      .type-sample {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-5);
+      }
+
+      .type-sample .label {
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+        margin-bottom: var(--space-3);
+      }
+
+      .font-heading-sample {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        font-size: clamp(2rem, 4vw, 3rem);
+        line-height: 1.2;
+        color: var(--text-primary);
+      }
+
+      .font-body-sample {
+        font-family: var(--font-body);
+        font-weight: 400;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: var(--text-secondary);
+      }
+
+      .font-mono-sample {
+        font-family: var(--font-mono);
+        font-weight: 400;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        color: var(--text-primary);
+        background: var(--neutral-100);
+        padding: var(--space-3);
+        border-radius: var(--radius-sm);
+      }
+
+      .type-scale {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-4);
+      }
+
+      .type-scale-row {
+        display: flex;
+        align-items: baseline;
+        gap: var(--space-4);
+        padding-bottom: var(--space-3);
+        border-bottom: 1px solid var(--neutral-200);
+      }
+
+      .type-scale-row:last-child {
+        border-bottom: none;
+      }
+
+      .type-scale-tag {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        min-width: 80px;
+      }
+
+      /* Color Swatches */
+      .swatch {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        overflow: hidden;
+      }
+
+      .swatch-color {
+        height: 80px;
+        width: 100%;
+      }
+
+      .swatch-info {
+        padding: var(--space-3);
+      }
+
+      .swatch-name {
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 0.875rem;
+        color: var(--text-primary);
+        margin-bottom: var(--space-1);
+      }
+
+      .swatch-hex {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+
+      /* Spacing Blocks */
+      .spacing-demo {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        margin-bottom: var(--space-2);
+      }
+
+      .spacing-block {
+        background: var(--primary);
+        border-radius: var(--radius-sm);
+        opacity: 0.8;
+      }
+
+      .spacing-label {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        min-width: 60px;
+      }
+
+      /* Radius */
+      .radius-demo {
+        display: flex;
+        align-items: center;
+        gap: var(--space-4);
+        margin-bottom: var(--space-3);
+      }
+
+      .radius-box {
+        width: 64px;
+        height: 64px;
+        background: var(--primary);
+      }
+
+      .radius-label {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+      }
+
+      /* Shadow */
+      .shadow-demo {
+        background: var(--surface);
+        border-radius: var(--radius-md);
+        padding: var(--space-5);
+        margin-bottom: var(--space-4);
+        text-align: center;
+      }
+
+      .shadow-label {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-top: var(--space-3);
+      }
+
+      /* Components */
+      .component-showcase {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-5);
+      }
+
+      .component-row {
+        display: flex;
+        align-items: center;
+        gap: var(--space-3);
+        flex-wrap: wrap;
+        margin-bottom: var(--space-4);
+        padding-bottom: var(--space-4);
+        border-bottom: 1px solid var(--neutral-200);
+      }
+
+      .component-row:last-child {
+        margin-bottom: 0;
+        padding-bottom: 0;
+        border-bottom: none;
+      }
+
+      .component-label {
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-secondary);
+        min-width: 100px;
+      }
+
+      /* Buttons */
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        height: 44px;
+        padding: 0 20px;
+        font-family: var(--font-body);
+        font-weight: 600;
+        font-size: 0.875rem;
+        border-radius: var(--radius-md);
+        border: none;
+        cursor: pointer;
+        transition: all 150ms ease;
+        text-decoration: none;
+      }
+
+      .btn-primary {
+        background: var(--primary);
+        color: #fff;
+      }
+      .btn-primary:hover {
+        background: var(--primary-hover);
+        transform: translateY(-1px);
+      }
+      .btn-primary:focus {
+        outline: none;
+        box-shadow: var(--shadow-focus);
+      }
+
+      .btn-secondary {
+        background: var(--surface);
+        color: var(--primary);
+        border: 1px solid var(--border);
+      }
+      .btn-secondary:hover {
+        border-color: var(--primary);
+      }
+      .btn-secondary:focus {
+        outline: none;
+        box-shadow: var(--shadow-focus);
+      }
+
+      .btn-ghost {
+        background: transparent;
+        color: var(--primary);
+      }
+      .btn-ghost:hover {
+        background: var(--neutral-100);
+      }
+      .btn-ghost:focus {
+        outline: none;
+        box-shadow: var(--shadow-focus);
+      }
+
+      .btn-disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        background: var(--primary);
+        color: #fff;
+      }
+
+      /* Inputs */
+      .input {
+        height: 44px;
+        padding: 0 12px;
+        font-family: var(--font-body);
+        font-size: 0.875rem;
+        color: var(--text-primary);
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        min-width: 240px;
+        transition: all 150ms ease;
+      }
+      .input::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.6;
+      }
+      .input:focus {
+        outline: none;
+        border-color: var(--border-focus);
+        box-shadow: var(--shadow-focus);
+      }
+
+      .input-error {
+        border-color: var(--error);
+        background: var(--error-bg);
+      }
+      .input-error:focus {
+        box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
+      }
+
+      .input-label {
+        display: block;
+        font-family: var(--font-body);
+        font-weight: 500;
+        font-size: 0.875rem;
+        color: var(--text-primary);
+        margin-bottom: var(--space-2);
+      }
+
+      .input-hint {
+        font-size: 0.75rem;
+        color: var(--text-secondary);
+        margin-top: var(--space-2);
+      }
+
+      .input-error-text {
+        font-size: 0.75rem;
+        color: var(--error);
+        margin-top: var(--space-2);
+      }
+
+      /* Card */
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-5);
+        box-shadow: var(--shadow-card);
+      }
+
+      .card-title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.125rem;
+        margin-bottom: var(--space-2);
+      }
+
+      .card-text {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        line-height: 1.6;
+      }
+
+      /* States */
+      .state-demo {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: var(--space-5);
+        text-align: center;
+      }
+
+      .state-icon {
+        width: 48px;
+        height: 48px;
+        margin: 0 auto var(--space-3);
+        color: var(--text-secondary);
+      }
+
+      .state-title {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.125rem;
+        margin-bottom: var(--space-2);
+      }
+
+      .state-desc {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        max-width: 360px;
+        margin: 0 auto var(--space-4);
+        line-height: 1.6;
+      }
+
+      .error-block {
+        background: var(--error-bg);
+        border-left: 4px solid var(--error);
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        padding: var(--space-4);
+        text-align: left;
+      }
+
+      .error-block h4 {
+        font-weight: 600;
+        color: var(--error);
+        margin-bottom: var(--space-2);
+      }
+
+      .error-block p {
+        color: var(--text-secondary);
+        font-size: 0.875rem;
+        margin-bottom: var(--space-3);
+      }
+
+      .success-block {
+        background: var(--success-bg);
+        border-left: 4px solid var(--success);
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        padding: var(--space-4);
+        text-align: left;
+      }
+
+      .success-block h4 {
+        font-weight: 600;
+        color: var(--success);
+        margin-bottom: var(--space-2);
+      }
+
+      /* Skeleton */
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          var(--neutral-200) 25%,
+          var(--neutral-100) 50%,
+          var(--neutral-200) 75%
+        );
+        background-size: 200% 100%;
+        border-radius: var(--radius-sm);
+        animation: shimmer 1.5s infinite;
+      }
+
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      /* Navigation demo */
+      .nav-demo {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-md);
+        padding: 0 var(--space-5);
+        height: 64px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .nav-brand {
+        font-family: var(--font-heading);
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--text-primary);
+      }
+
+      .nav-links {
+        display: flex;
+        gap: var(--space-5);
+      }
+
+      .nav-link {
+        font-family: var(--font-body);
+        font-weight: 500;
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 150ms ease;
+      }
+
+      .nav-link:hover,
+      .nav-link.active {
+        color: var(--primary);
+      }
+
+      .nav-link.active {
+        position: relative;
+      }
+
+      .nav-link.active::after {
+        content: "";
+        position: absolute;
+        bottom: -20px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--primary);
+      }
+
+      /* Toast */
+      .toast {
+        display: inline-flex;
+        align-items: center;
+        gap: var(--space-3);
+        padding: var(--space-3) var(--space-4);
+        background: var(--surface);
+        border-left: 4px solid var(--success);
+        border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        box-shadow: var(--shadow-elevated);
+        font-size: 0.875rem;
+      }
+
+      .toast-error {
+        border-left-color: var(--error);
+      }
+
+      /* Dark mode toggle */
+      .theme-toggle {
+        position: fixed;
+        top: var(--space-4);
+        right: var(--space-4);
+        z-index: 100;
+      }
+
+      .theme-btn {
+        width: 44px;
+        height: 44px;
+        border-radius: var(--radius-md);
+        border: 1px solid var(--border);
+        background: var(--surface);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.25rem;
+        transition: all 150ms ease;
+      }
+
+      .theme-btn:hover {
+        border-color: var(--primary);
+      }
+
+      /* Dark mode overrides */
+      body.dark {
+        --primary: #ff8a70;
+        --primary-hover: #ffa08a;
+        --secondary: #e8c44d;
+        --background: #15171a;
+        --surface: #1e2127;
+        --surface-elevated: #252a31;
+        --text-primary: #f0f1f5;
+        --text-secondary: #9aa3b2;
+        --border: #3a4049;
+        --border-focus: #ff8a70;
+        --neutral-100: #1e2127;
+        --neutral-200: #2a2e36;
+        --neutral-300: #3a4049;
+        --neutral-400: #6b7280;
+        --neutral-500: #9aa3b2;
+        --neutral-600: #b0b8c4;
+        --neutral-700: #f0f1f5;
+        --neutral-800: #ffffff;
+        --error-bg: rgba(220, 38, 38, 0.15);
+        --success-bg: rgba(22, 163, 74, 0.15);
+      }
+
+      body.dark .swatch {
+        background: var(--surface-elevated);
+      }
+      body.dark .type-sample {
+        background: var(--surface);
+      }
+      body.dark .component-showcase {
+        background: var(--surface);
+      }
+      body.dark .state-demo {
+        background: var(--surface);
+      }
+      body.dark .card {
+        background: var(--surface-elevated);
+      }
+      body.dark .input {
+        background: var(--surface-elevated);
+      }
+      body.dark .nav-demo {
+        background: var(--surface);
+      }
+
+      /* Utility */
+      .mb-2 {
+        margin-bottom: var(--space-2);
+      }
+      .mb-3 {
+        margin-bottom: var(--space-3);
+      }
+      .mb-4 {
+        margin-bottom: var(--space-4);
+      }
+      .text-secondary {
+        color: var(--text-secondary);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="theme-toggle">
+      <button
+        class="theme-btn"
+        onclick="document.body.classList.toggle('dark')"
+        aria-label="Toggle dark mode"
+      >
+        <span id="theme-icon">&#127769;</span>
+      </button>
+    </div>
+
+    <div class="container">
+      <header class="page-header">
+        <h1>OpenDS Design System</h1>
+        <p>
+          Self-hosted design system documentation platform. Tokens, components,
+          and patterns for building consistent, accessible interfaces.
+        </p>
+      </header>
+
+      <!-- Typography -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Typography</h2>
+          <span class="token-name">font-family</span>
+        </div>
+        <div class="grid-3">
+          <div class="type-sample">
+            <div class="label">Outfit 800</div>
+            <div class="font-heading-sample">OpenDS</div>
+          </div>
+          <div class="type-sample">
+            <div class="label">Plus Jakarta Sans 400</div>
+            <div class="font-body-sample">
+              Design tokens, components, and documentation for product teams.
+            </div>
+          </div>
+          <div class="type-sample">
+            <div class="label">IBM Plex Mono 400</div>
+            <div class="font-mono-sample">--color-primary: #E85A3A;</div>
+          </div>
+        </div>
+
+        <div class="type-sample" style="margin-top: var(--space-5)">
+          <div class="label">Type Scale</div>
+          <div class="type-scale">
+            <div class="type-scale-row">
+              <span class="type-scale-tag">H1</span>
+              <h1
+                style="
+                  font-family: var(--font-heading);
+                  font-weight: 800;
+                  font-size: clamp(2rem, 4vw, 3rem);
+                  line-height: 1.2;
+                "
+              >
+                Page Title
+              </h1>
+            </div>
+            <div class="type-scale-row">
+              <span class="type-scale-tag">H2</span>
+              <h2
+                style="
+                  font-family: var(--font-heading);
+                  font-weight: 700;
+                  font-size: 1.5rem;
+                  line-height: 1.2;
+                "
+              >
+                Section Heading
+              </h2>
+            </div>
+            <div class="type-scale-row">
+              <span class="type-scale-tag">H3</span>
+              <h3
+                style="
+                  font-family: var(--font-heading);
+                  font-weight: 700;
+                  font-size: 1.125rem;
+                  line-height: 1.3;
+                "
+              >
+                Card Title
+              </h3>
+            </div>
+            <div class="type-scale-row">
+              <span class="type-scale-tag">Body</span>
+              <p style="font-size: 1rem; line-height: 1.5">
+                Body text for paragraphs and descriptions. Comfortable reading
+                at 16px with 1.5 line-height.
+              </p>
+            </div>
+            <div class="type-scale-row">
+              <span class="type-scale-tag">Small</span>
+              <p
+                style="
+                  font-size: 0.875rem;
+                  line-height: 1.5;
+                  color: var(--text-secondary);
+                "
+              >
+                Secondary text, labels, captions, and metadata.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Color System -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Color Tokens</h2>
+          <span class="token-name">color.*</span>
+        </div>
+
+        <h3
+          style="
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: var(--space-3);
+          "
+        >
+          Brand
+        </h3>
+        <div class="grid-4">
+          <div class="swatch">
+            <div class="swatch-color" style="background: #e85a3a"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Primary</div>
+              <div class="swatch-hex">#E85A3A</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: #c9a227"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Secondary</div>
+              <div class="swatch-hex">#C9A227</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: #dc2626"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Error</div>
+              <div class="swatch-hex">#DC2626</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: #16a34a"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Success</div>
+              <div class="swatch-hex">#16A34A</div>
+            </div>
+          </div>
+        </div>
+
+        <h3
+          style="
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1rem;
+            margin: var(--space-6) 0 var(--space-3);
+          "
+        >
+          Surfaces & Text
+        </h3>
+        <div class="grid-4">
+          <div class="swatch">
+            <div class="swatch-color" style="background: #f6f5f3"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Background</div>
+              <div class="swatch-hex">#F6F5F3</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div
+              class="swatch-color"
+              style="
+                background: #ffffff;
+                border-bottom: 1px solid var(--border);
+              "
+            ></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Surface</div>
+              <div class="swatch-hex">#FFFFFF</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: #1c1f24"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Text Primary</div>
+              <div class="swatch-hex">#1C1F24</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: #5a606e"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">Text Secondary</div>
+              <div class="swatch-hex">#5A606E</div>
+            </div>
+          </div>
+        </div>
+
+        <h3
+          style="
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1rem;
+            margin: var(--space-6) 0 var(--space-3);
+          "
+        >
+          Neutral Scale
+        </h3>
+        <div class="grid-6">
+          <div class="swatch">
+            <div class="swatch-color" style="background: #f6f5f3"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">100</div>
+              <div class="swatch-hex">#F6F5F3</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: #e8e6e2"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">200</div>
+              <div class="swatch-hex">#E8E6E2</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: #dddad5"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">300</div>
+              <div class="swatch-hex">#DDDAD5</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: #9a9590"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">400</div>
+              <div class="swatch-hex">#9A9590</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: #5a606e"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">500</div>
+              <div class="swatch-hex">#5A606E</div>
+            </div>
+          </div>
+          <div class="swatch">
+            <div class="swatch-color" style="background: #3a4049"></div>
+            <div class="swatch-info">
+              <div class="swatch-name">600</div>
+              <div class="swatch-hex">#3A4049</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Spacing -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Spacing</h2>
+          <span class="token-name">space.*</span>
+        </div>
+        <div class="type-sample">
+          <div class="spacing-demo">
+            <span class="spacing-label">4px</span>
+            <div class="spacing-block" style="width: 4px; height: 4px"></div>
+          </div>
+          <div class="spacing-demo">
+            <span class="spacing-label">8px</span>
+            <div class="spacing-block" style="width: 8px; height: 8px"></div>
+          </div>
+          <div class="spacing-demo">
+            <span class="spacing-label">12px</span>
+            <div class="spacing-block" style="width: 12px; height: 12px"></div>
+          </div>
+          <div class="spacing-demo">
+            <span class="spacing-label">16px</span>
+            <div class="spacing-block" style="width: 16px; height: 16px"></div>
+          </div>
+          <div class="spacing-demo">
+            <span class="spacing-label">24px</span>
+            <div class="spacing-block" style="width: 24px; height: 24px"></div>
+          </div>
+          <div class="spacing-demo">
+            <span class="spacing-label">32px</span>
+            <div class="spacing-block" style="width: 32px; height: 32px"></div>
+          </div>
+          <div class="spacing-demo">
+            <span class="spacing-label">48px</span>
+            <div class="spacing-block" style="width: 48px; height: 48px"></div>
+          </div>
+          <div class="spacing-demo">
+            <span class="spacing-label">64px</span>
+            <div class="spacing-block" style="width: 64px; height: 64px"></div>
+          </div>
+          <div class="spacing-demo">
+            <span class="spacing-label">96px</span>
+            <div class="spacing-block" style="width: 64px; height: 64px"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Radius -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Radius</h2>
+          <span class="token-name">radius.*</span>
+        </div>
+        <div class="component-showcase">
+          <div class="radius-demo">
+            <div class="radius-box" style="border-radius: 6px"></div>
+            <span class="radius-label">6px — Small</span>
+          </div>
+          <div class="radius-demo">
+            <div class="radius-box" style="border-radius: 8px"></div>
+            <span class="radius-label">8px — Medium</span>
+          </div>
+          <div class="radius-demo">
+            <div class="radius-box" style="border-radius: 12px"></div>
+            <span class="radius-label">12px — Large</span>
+          </div>
+          <div class="radius-demo">
+            <div class="radius-box" style="border-radius: 9999px"></div>
+            <span class="radius-label">9999px — Pill</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Shadows -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Shadows</h2>
+          <span class="token-name">shadow.*</span>
+        </div>
+        <div class="grid-3">
+          <div class="shadow-demo" style="box-shadow: var(--shadow-card)">
+            <div style="font-weight: 600; margin-bottom: var(--space-2)">
+              Card
+            </div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary)">
+              Subtle depth for content containers
+            </div>
+            <div class="shadow-label">shadow-card</div>
+          </div>
+          <div class="shadow-demo" style="box-shadow: var(--shadow-elevated)">
+            <div style="font-weight: 600; margin-bottom: var(--space-2)">
+              Elevated
+            </div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary)">
+              Dropdowns, popovers, panels
+            </div>
+            <div class="shadow-label">shadow-elevated</div>
+          </div>
+          <div class="shadow-demo" style="box-shadow: var(--shadow-modal)">
+            <div style="font-weight: 600; margin-bottom: var(--space-2)">
+              Modal
+            </div>
+            <div style="font-size: 0.875rem; color: var(--text-secondary)">
+              Modals, dialogs, overlays
+            </div>
+            <div class="shadow-label">shadow-modal</div>
+          </div>
+        </div>
+        <div
+          class="shadow-demo"
+          style="
+            box-shadow: var(--shadow-focus);
+            margin-top: var(--space-4);
+            border: 2px solid var(--border-focus);
+          "
+        >
+          <div style="font-weight: 600; margin-bottom: var(--space-2)">
+            Focus Ring
+          </div>
+          <div style="font-size: 0.875rem; color: var(--text-secondary)">
+            Accessible focus indicator on interactive elements
+          </div>
+          <div class="shadow-label">shadow-focus</div>
+        </div>
+      </section>
+
+      <!-- Components -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Components</h2>
+          <span class="token-name">component.*</span>
+        </div>
+
+        <div class="component-showcase mb-4">
+          <div class="component-row">
+            <span class="component-label">Buttons</span>
+            <button class="btn btn-primary">Primary</button>
+            <button class="btn btn-secondary">Secondary</button>
+            <button class="btn btn-ghost">Ghost</button>
+            <button class="btn btn-disabled" disabled>Disabled</button>
+          </div>
+          <div class="component-row">
+            <span class="component-label">Inputs</span>
+            <div>
+              <label class="input-label">Token name</label>
+              <input
+                type="text"
+                class="input"
+                placeholder="e.g. color-primary"
+              />
+              <div class="input-hint">Use kebab-case for token names</div>
+            </div>
+            <div>
+              <label class="input-label">Value</label>
+              <input type="text" class="input input-error" value="#ZZZZZZ" />
+              <div class="input-error-text">Enter a valid hex color code</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="card">
+            <div class="card-title">Card Component</div>
+            <div class="card-text">
+              Cards use the surface token with a subtle border and card-level
+              shadow. Padding is consistently 24px.
+            </div>
+          </div>
+          <div>
+            <div class="nav-demo">
+              <span class="nav-brand">OpenDS</span>
+              <nav class="nav-links">
+                <a href="#" class="nav-link active">Tokens</a>
+                <a href="#" class="nav-link">Components</a>
+                <a href="#" class="nav-link">Docs</a>
+              </nav>
+            </div>
+            <div
+              style="
+                margin-top: var(--space-3);
+                font-size: 0.75rem;
+                color: var(--text-secondary);
+              "
+            >
+              Navigation — 64px height, surface background
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- States -->
+      <section class="section">
+        <div class="section-header">
+          <h2>States & Edge Cases</h2>
+          <span class="token-name">state.*</span>
+        </div>
+
+        <div class="grid-2">
+          <div class="state-demo">
+            <svg
+              class="state-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 2L2 7l10 5 10-5-10-5z" />
+              <path d="M2 17l10 5 10-5" />
+              <path d="M2 12l10 5 10-5" />
+            </svg>
+            <div class="state-title">No tokens yet</div>
+            <div class="state-desc">
+              Create your first design token to start building your design
+              system.
+            </div>
+            <button class="btn btn-primary">Create token</button>
+          </div>
+
+          <div class="state-demo">
+            <svg
+              class="state-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 6v6l4 2" />
+            </svg>
+            <div class="state-title">Loading tokens</div>
+            <div style="max-width: 200px; margin: 0 auto var(--space-4)">
+              <div
+                class="skeleton"
+                style="height: 12px; margin-bottom: 8px"
+              ></div>
+              <div
+                class="skeleton"
+                style="height: 12px; width: 80%; margin-bottom: 8px"
+              ></div>
+              <div class="skeleton" style="height: 12px; width: 60%"></div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-secondary)">
+              Skeleton screen with shimmer
+            </div>
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top: var(--space-5)">
+          <div class="error-block">
+            <h4>Failed to save token</h4>
+            <p>
+              We couldn't connect to the database. Your changes are safe locally
+              and will sync when the connection returns.
+            </p>
+            <button
+              class="btn btn-primary"
+              style="height: 36px; padding: 0 16px; font-size: 0.8125rem"
+            >
+              Retry
+            </button>
+          </div>
+
+          <div class="success-block">
+            <h4>Token created</h4>
+            <p>
+              "color-primary" has been added to your design system. You can now
+              use it in components.
+            </p>
+            <button
+              class="btn btn-ghost"
+              style="height: 36px; padding: 0 16px; font-size: 0.8125rem"
+            >
+              View token
+            </button>
+          </div>
+        </div>
+
+        <div
+          style="
+            margin-top: var(--space-5);
+            display: flex;
+            gap: var(--space-4);
+            flex-wrap: wrap;
+            align-items: center;
+          "
+        >
+          <div class="toast">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="color: var(--success)"
+            >
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+              <polyline points="22 4 12 14.01 9 11.01" />
+            </svg>
+            <span>Token created successfully</span>
+          </div>
+          <div class="toast toast-error">
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              style="color: var(--error)"
+            >
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="12" />
+              <line x1="12" y1="16" x2="12.01" y2="16" />
+            </svg>
+            <span>Failed to delete token</span>
+            <button
+              class="btn btn-ghost"
+              style="
+                height: 28px;
+                padding: 0 8px;
+                font-size: 0.75rem;
+                margin-left: var(--space-2);
+              "
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Accessibility Notes -->
+      <section class="section">
+        <div class="section-header">
+          <h2>Accessibility</h2>
+          <span class="token-name">a11y</span>
+        </div>
+        <div class="component-showcase">
+          <div class="component-row">
+            <span class="component-label">Focus</span>
+            <button
+              class="btn btn-primary"
+              style="box-shadow: var(--shadow-focus)"
+            >
+              Focused Button
+            </button>
+            <input
+              type="text"
+              class="input"
+              value="Focused input"
+              style="
+                box-shadow: var(--shadow-focus);
+                border-color: var(--border-focus);
+              "
+            />
+          </div>
+          <div class="component-row">
+            <span class="component-label">Touch</span>
+            <div
+              style="display: flex; gap: var(--space-2); align-items: center"
+            >
+              <div
+                style="
+                  width: 44px;
+                  height: 44px;
+                  background: var(--primary);
+                  border-radius: var(--radius-md);
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  color: white;
+                  font-size: 0.75rem;
+                  font-weight: 600;
+                "
+              >
+                44
+              </div>
+              <span style="font-size: 0.875rem; color: var(--text-secondary)"
+                >Minimum touch target: 44 &times; 44px</span
+              >
+            </div>
+          </div>
+          <div class="component-row">
+            <span class="component-label">Contrast</span>
+            <div style="display: flex; gap: var(--space-3)">
+              <div
+                style="
+                  background: var(--primary);
+                  color: #fff;
+                  padding: var(--space-2) var(--space-3);
+                  border-radius: var(--radius-sm);
+                  font-size: 0.875rem;
+                "
+              >
+                AAA on white
+              </div>
+              <div
+                style="
+                  background: var(--text-primary);
+                  color: var(--background);
+                  padding: var(--space-2) var(--space-3);
+                  border-radius: var(--radius-sm);
+                  font-size: 0.875rem;
+                "
+              >
+                AAA body text
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer
+        style="
+          text-align: center;
+          padding: var(--space-8) 0 var(--space-5);
+          border-top: 1px solid var(--border);
+          color: var(--text-secondary);
+          font-size: 0.875rem;
+        "
+      >
+        <p>
+          OpenDS Design System &middot; Built with Nuxt 4, NuxtUI v4, and
+          Tailwind CSS
+        </p>
+        <p style="margin-top: var(--space-2); font-size: 0.75rem">
+          Toggle dark mode with the button in the top-right corner
+        </p>
+      </footer>
+    </div>
+
+    <script>
+      const themeBtn = document.querySelector(".theme-btn");
+      const themeIcon = document.getElementById("theme-icon");
+      themeBtn.addEventListener("click", () => {
+        themeIcon.textContent = document.body.classList.contains("dark")
+          ? "&#127769;"
+          : "&#9728;&#65039;";
+      });
+    </script>
+  </body>
+</html>

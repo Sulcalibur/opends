@@ -1,0 +1,15 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - heading "500" [level=1] [ref=e3]
+    - heading "Server Error" [level=2] [ref=e4]
+    - paragraph [ref=e5]: Cannot find module './search/SearchDropdown.vue' imported from '/Users/sul/Dev/projects/opends-project/opends/.worktrees/opds-10-component-detail/app/components/NavBar.vue'
+  - status [ref=e6]
+  - iframe [ref=e7]:
+    - generic [ref=f1e3]: This content is blocked. Contact the site owner to fix the issue.
+  - iframe [ref=e8]:
+    - generic [ref=f2e2]:
+      - heading "500" [level=1] [ref=f2e3]
+      - heading "Server Error" [level=2] [ref=f2e4]
+      - paragraph [ref=f2e5]: Cannot find module './search/SearchDropdown.vue' imported from '/Users/sul/Dev/projects/opends-project/opends/.worktrees/opds-10-component-detail/app/components/NavBar.vue'
+  - button "Toggle detailed error view" [expanded] [ref=e9] [cursor=pointer]:
+    - generic [ref=e10]: Toggle detailed error view

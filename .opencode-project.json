@@ -1,0 +1,11 @@
+{
+  "$schema": "https://opencode.ai/project-config.json",
+  "directus": {
+    "url": "YOUR_CMS_URL",
+    "token": "YOUR_TOKEN"
+  },
+  "flowlu": {
+    "project": "YOUR_FLOWLU_PROJECT_NAME",
+    "project_reference": "YOUR_FLOWLU_PROJECT_ID"
+  }
+}
