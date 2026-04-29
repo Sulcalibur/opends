@@ -81,12 +81,12 @@
             </div>
 
             <div v-if="authStore.error" class="auth-error" role="alert">
-              <Icon name="i-lucide-x-circle" aria-hidden="true" />
+              <UIcon name="i-lucide-x-circle" aria-hidden="true" />
               <span>{{ authStore.error }}</span>
             </div>
 
             <div v-if="isFirstUser" class="first-user-notice" role="status">
-              <Icon name="i-lucide-info" aria-hidden="true" />
+              <UIcon name="i-lucide-info" aria-hidden="true" />
               <div>
                 <strong>First User Setup</strong>
                 <p>You'll become the administrator with full system access.</p>
@@ -101,7 +101,7 @@
               :loading="authStore.loading"
             >
               <template #icon>
-                <Icon name="i-lucide-user-plus" aria-hidden="true" />
+                <UIcon name="i-lucide-user-plus" aria-hidden="true" />
               </template>
               Create Account
             </PremiumButton>
@@ -121,14 +121,14 @@
                   class="social-button google"
                   aria-label="Sign in with Google"
                 >
-                  <Icon name="i-lucide-google" aria-hidden="true" />
+                  <UIcon name="i-lucide-google" aria-hidden="true" />
                 </button>
                 <button
                   type="button"
                   class="social-button github"
                   aria-label="Sign in with GitHub"
                 >
-                  <Icon name="i-lucide-github" aria-hidden="true" />
+                  <UIcon name="i-lucide-github" aria-hidden="true" />
                 </button>
               </div>
             </div>

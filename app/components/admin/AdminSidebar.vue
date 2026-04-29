@@ -8,7 +8,7 @@
       :title="isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'"
       @click="isCollapsed = !isCollapsed"
     >
-      <Icon
+      <UIcon
         :name="isCollapsed ? 'i-lucide-chevron-right' : 'i-lucide-chevron-left'"
       />
     </button>
@@ -37,7 +37,7 @@
             { 'justify-center': isCollapsed },
           ]"
         >
-          <Icon :name="item.icon" />
+          <UIcon :name="item.icon" />
           <span v-if="!isCollapsed">{{ item.label }}</span>
           <span class="glow" />
         </NuxtLink>

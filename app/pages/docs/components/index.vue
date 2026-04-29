@@ -29,7 +29,7 @@
         </div>
 
         <div v-if="loading" class="text-center py-12">
-          <Icon name="i-lucide-loader-2" class="animate-spin h-10 w-10" />
+          <UIcon name="i-lucide-loader-2" class="animate-spin h-10 w-10" />
         </div>
 
         <div
@@ -53,7 +53,7 @@
               <div
                 class="w-8 h-8 rounded-md bg-indigo-50 flex items-center justify-center text-indigo-600"
               >
-                <Icon name="i-lucide-box" />
+                <UIcon name="i-lucide-box" />
               </div>
               <h3 class="font-bold text-sm text-gray-900">
                 {{ component.name }}

@@ -60,7 +60,7 @@
             class="preview-image"
           />
           <div v-else class="preview-placeholder">
-            <Icon name="i-lucide-image" class="placeholder-icon" />
+            <UIcon name="i-lucide-image" class="placeholder-icon" />
             <span>No preview available</span>
           </div>
         </div>

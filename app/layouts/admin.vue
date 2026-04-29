@@ -11,7 +11,7 @@
               class="mobile-menu-toggle lg:hidden"
               @click="isMobileMenuOpen = !isMobileMenuOpen"
             >
-              <Icon name="i-lucide-menu" />
+              <UIcon name="i-lucide-menu" />
             </button>
           </div>
           <div class="header-right">
@@ -29,7 +29,7 @@
                     colorMode.value === 'dark' ? 'light' : 'dark'
                 "
               >
-                <Icon
+                <UIcon
                   :name="
                     colorMode.value === 'dark'
                       ? 'i-lucide-sun'
@@ -40,13 +40,13 @@
             </UTooltip>
             <UTooltip text="Notifications">
               <button class="header-action hover-lift">
-                <Icon name="i-lucide-bell" />
+                <UIcon name="i-lucide-bell" />
                 <span class="badge">3</span>
               </button>
             </UTooltip>
             <UTooltip text="Help">
               <button class="header-action hover-lift">
-                <Icon name="i-lucide-help-circle" />
+                <UIcon name="i-lucide-help-circle" />
               </button>
             </UTooltip>
           </div>

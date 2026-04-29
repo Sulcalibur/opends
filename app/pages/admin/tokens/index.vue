@@ -374,7 +374,7 @@ onMounted(async () => {
 
         <template #empty>
           <div class="text-center py-8 text-gray-500 dark:text-gray-400">
-            <Icon
+            <UIcon
               name="i-lucide-palette"
               class="text-3xl mx-auto mb-2 opacity-50"
             />

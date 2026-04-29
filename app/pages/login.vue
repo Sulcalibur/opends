@@ -63,7 +63,7 @@
             </div>
 
             <div v-if="authStore.error" class="auth-error" role="alert">
-              <Icon
+              <UIcon
                 name="i-lucide-x-circle"
                 class="h-5 w-5"
                 aria-hidden="true"
@@ -79,7 +79,7 @@
               :loading="authStore.loading"
             >
               <template #icon>
-                <Icon
+                <UIcon
                   name="i-lucide-log-in"
                   class="h-5 w-5"
                   aria-hidden="true"
@@ -105,7 +105,7 @@
                   class="social-button google"
                   aria-label="Sign in with Google"
                 >
-                  <Icon
+                  <UIcon
                     name="i-lucide-google"
                     class="h-5 w-5"
                     aria-hidden="true"
@@ -116,7 +116,7 @@
                   class="social-button github"
                   aria-label="Sign in with GitHub"
                 >
-                  <Icon
+                  <UIcon
                     name="i-lucide-github"
                     class="h-5 w-5"
                     aria-hidden="true"

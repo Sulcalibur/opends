@@ -108,7 +108,7 @@ const categories = [
             to="/admin/docs"
             class="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 flex items-center gap-2 transition-colors"
           >
-            <Icon name="i-lucide-arrow-left" />
+            <UIcon name="i-lucide-arrow-left" />
             Back to Docs
           </NuxtLink>
         </div>
@@ -229,7 +229,7 @@ const categories = [
               <p
                 class="font-semibold text-gray-600 dark:text-gray-300 mb-2 flex items-center gap-2"
               >
-                <Icon name="i-lucide-lightbulb" class="text-yellow-500" />
+                <UIcon name="i-lucide-lightbulb" class="text-yellow-500" />
                 Pro Tips
               </p>
               <ul

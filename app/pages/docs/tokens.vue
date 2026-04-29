@@ -19,7 +19,7 @@
             <div
               class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4 text-blue-600"
             >
-              <Icon name="i-lucide-palette" class="text-xl" />
+              <UIcon name="i-lucide-palette" class="text-xl" />
             </div>
             <h3 class="text-lg font-bold text-gray-900 mb-2">Colors</h3>
             <p class="text-gray-500 text-sm">
@@ -31,7 +31,7 @@
             <div
               class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center mb-4 text-green-600"
             >
-              <Icon name="i-lucide-type" class="text-xl" />
+              <UIcon name="i-lucide-type" class="text-xl" />
             </div>
             <h3 class="text-lg font-bold text-gray-900 mb-2">Typography</h3>
             <p class="text-gray-500 text-sm">
@@ -43,7 +43,7 @@
             <div
               class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mb-4 text-purple-600"
             >
-              <Icon name="i-lucide-arrow-left-right" class="text-xl" />
+              <UIcon name="i-lucide-arrow-left-right" class="text-xl" />
             </div>
             <h3 class="text-lg font-bold text-gray-900 mb-2">Spacing</h3>
             <p class="text-gray-500 text-sm">
@@ -54,7 +54,7 @@
 
         <!-- Loading -->
         <div v-if="loading" class="text-center py-12">
-          <Icon name="i-lucide-loader-2" class="animate-spin h-8 w-8 mx-auto" />
+          <UIcon name="i-lucide-loader-2" class="animate-spin h-8 w-8 mx-auto" />
           <p class="mt-4 text-gray-600">Loading design tokens...</p>
         </div>
 

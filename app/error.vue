@@ -12,11 +12,11 @@
         </p>
         <div class="flex gap-4 justify-center">
           <NuxtLink to="/" class="theme-btn-primary">
-            <Icon name="i-lucide-home" class="mr-2"/>
+            <UIcon name="i-lucide-home" class="mr-2"/>
             Go Home
           </NuxtLink>
           <NuxtLink to="/docs" class="px-6 py-3 rounded-lg font-medium border border-slate-300 hover:bg-slate-50 transition-colors inline-flex items-center">
-            <Icon name="i-lucide-book-open" class="mr-2"/>
+            <UIcon name="i-lucide-book-open" class="mr-2"/>
             View Documentation
           </NuxtLink>
         </div>

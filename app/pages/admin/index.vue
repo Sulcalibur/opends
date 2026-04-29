@@ -157,7 +157,7 @@ onMounted(() => {
           <div
             class="w-10 h-10 rounded-lg bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center"
           >
-            <Icon name="i-lucide-package" class="text-blue-500 text-xl" />
+            <UIcon name="i-lucide-package" class="text-blue-500 text-xl" />
           </div>
         </div>
       </UCard>
@@ -175,7 +175,7 @@ onMounted(() => {
           <div
             class="w-10 h-10 rounded-lg bg-purple-50 dark:bg-purple-900/20 flex items-center justify-center"
           >
-            <Icon name="i-lucide-palette" class="text-purple-500 text-xl" />
+            <UIcon name="i-lucide-palette" class="text-purple-500 text-xl" />
           </div>
         </div>
       </UCard>
@@ -193,7 +193,7 @@ onMounted(() => {
           <div
             class="w-10 h-10 rounded-lg bg-green-50 dark:bg-green-900/20 flex items-center justify-center"
           >
-            <Icon name="i-lucide-file-text" class="text-green-500 text-xl" />
+            <UIcon name="i-lucide-file-text" class="text-green-500 text-xl" />
           </div>
         </div>
       </UCard>
@@ -209,7 +209,7 @@ onMounted(() => {
           <div
             class="w-10 h-10 rounded-lg bg-orange-50 dark:bg-orange-900/20 flex items-center justify-center"
           >
-            <Icon name="i-lucide-users" class="text-orange-500 text-xl" />
+            <UIcon name="i-lucide-users" class="text-orange-500 text-xl" />
           </div>
         </div>
       </UCard>
@@ -230,7 +230,7 @@ onMounted(() => {
           <div
             class="w-10 h-10 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center group-hover:bg-blue-50 dark:group-hover:bg-blue-900/20 transition-colors"
           >
-            <Icon
+            <UIcon
               :name="action.icon"
               class="text-gray-500 dark:text-gray-400 group-hover:text-blue-500 transition-colors"
             />
@@ -243,7 +243,7 @@ onMounted(() => {
               {{ action.description }}
             </p>
           </div>
-          <Icon
+          <UIcon
             name="i-lucide-chevron-right"
             class="text-gray-300 dark:text-gray-600 group-hover:text-blue-500 transition-colors"
           />
@@ -281,7 +281,7 @@ onMounted(() => {
             <div
               class="w-8 h-8 rounded-lg bg-gray-50 dark:bg-gray-700 flex items-center justify-center flex-shrink-0"
             >
-              <Icon :name="activity.icon" :class="activity.iconColor" />
+              <UIcon :name="activity.icon" :class="activity.iconColor" />
             </div>
             <div class="flex-1 min-w-0">
               <p class="text-sm text-gray-900 dark:text-white">
@@ -297,7 +297,7 @@ onMounted(() => {
             v-if="activities.length === 0"
             class="text-center py-8 text-gray-500 dark:text-gray-400"
           >
-            <Icon
+            <UIcon
               name="i-lucide-clock"
               class="text-3xl mx-auto mb-2 opacity-50"
             />
@@ -344,7 +344,7 @@ onMounted(() => {
                 @click="newSearch = search"
               >
                 {{ search }}
-                <Icon
+                <UIcon
                   name="i-lucide-x"
                   class="ml-1 text-xs"
                   @click.stop="removeSearch(index)"

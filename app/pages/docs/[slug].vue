@@ -57,11 +57,11 @@ useHead({
           <NuxtLink to="/" class="hover:text-primary transition-colors">
             Home
           </NuxtLink>
-          <Icon name="i-lucide-chevron-right" class="w-4 h-4" />
+          <UIcon name="i-lucide-chevron-right" class="w-4 h-4" />
           <NuxtLink to="/docs" class="hover:text-primary transition-colors">
             Documentation
           </NuxtLink>
-          <Icon name="i-lucide-chevron-right" class="w-4 h-4" />
+          <UIcon name="i-lucide-chevron-right" class="w-4 h-4" />
           <span class="text-slate-900 dark:text-slate-100 font-medium">
             {{ page.title }}
           </span>
@@ -79,13 +79,13 @@ useHead({
 
         <div class="flex gap-6 flex-wrap">
           <UBadge color="info" variant="soft">
-            <Icon name="i-lucide-folder" class="w-3 h-3 mr-1" />
+            <UIcon name="i-lucide-folder" class="w-3 h-3 mr-1" />
             {{ page.category || "General" }}
           </UBadge>
           <span
             class="flex items-center gap-1.5 text-sm text-slate-500 dark:text-slate-400"
           >
-            <Icon name="i-lucide-clock" class="w-3.5 h-3.5" />
+            <UIcon name="i-lucide-clock" class="w-3.5 h-3.5" />
             Updated {{ new Date(page.updatedAt).toLocaleDateString() }}
           </span>
         </div>
@@ -110,7 +110,7 @@ useHead({
             to="/docs"
             class="inline-flex items-center gap-2 text-primary hover:gap-3 transition-all"
           >
-            <Icon name="i-lucide-arrow-left" class="w-4 h-4" />
+            <UIcon name="i-lucide-arrow-left" class="w-4 h-4" />
             Back to Documentation
           </NuxtLink>
         </div>

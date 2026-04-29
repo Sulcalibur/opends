@@ -158,7 +158,7 @@
               :key="refId"
               class="flex items-center gap-2 p-2 bg-gray-50 rounded"
             >
-              <Icon name="i-lucide-link" class="text-gray-500" />
+              <UIcon name="i-lucide-link" class="text-gray-500" />
               <code class="text-sm">{{ refId }}</code>
             </div>
           </div>

@@ -85,7 +85,7 @@ useHead({
           class="backdrop-blur-sm"
         >
           <template #leading>
-            <Icon name="i-lucide-plus-circle" class="w-5 h-5" />
+            <UIcon name="i-lucide-plus-circle" class="w-5 h-5" />
           </template>
           Create Documentation
         </UButton>
@@ -97,7 +97,7 @@ useHead({
       <div class="max-w-6xl mx-auto">
         <!-- Empty state -->
         <div v-if="pages.length === 0" class="text-center py-16">
-          <Icon
+          <UIcon
             name="i-lucide-book-open"
             class="w-16 h-16 mx-auto text-slate-300 dark:text-slate-600 mb-4"
           />
@@ -112,7 +112,7 @@ useHead({
           </p>
           <UButton to="/admin/docs" color="primary">
             <template #leading>
-              <Icon name="i-lucide-plus" class="w-4 h-4" />
+              <UIcon name="i-lucide-plus" class="w-4 h-4" />
             </template>
             Create First Doc
           </UButton>
@@ -150,7 +150,7 @@ useHead({
                   <div
                     class="w-12 h-12 rounded-lg bg-slate-100 dark:bg-slate-700 flex items-center justify-center mb-4 group-hover:bg-primary-500 group-hover:rotate-[-10deg] group-hover:scale-110 transition-all duration-300"
                   >
-                    <Icon
+                    <UIcon
                       name="i-lucide-file-text"
                       class="w-6 h-6 text-slate-400 group-hover:text-white transition-colors"
                     />
@@ -169,7 +169,7 @@ useHead({
                   <div
                     class="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-500"
                   >
-                    <Icon name="i-lucide-clock" class="w-3.5 h-3.5" />
+                    <UIcon name="i-lucide-clock" class="w-3.5 h-3.5" />
                     {{ new Date(page.updatedAt).toLocaleDateString() }}
                   </div>
                 </div>
@@ -181,7 +181,7 @@ useHead({
                   >
                     Read more
                   </span>
-                  <Icon
+                  <UIcon
                     name="i-lucide-arrow-right"
                     class="w-4 h-4 text-slate-400 group-hover:text-white group-hover:translate-x-1 transition-all"
                   />

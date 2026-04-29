@@ -69,7 +69,7 @@
           <div class="spec-header">
             <h3>Component Specification</h3>
             <UButton size="xs" variant="soft" @click="addProp">
-              <Icon name="i-lucide-plus" />
+              <UIcon name="i-lucide-plus" />
               Add Prop
             </UButton>
           </div>

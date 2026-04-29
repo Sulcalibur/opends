@@ -9,7 +9,7 @@
     }"
   >
     <div v-if="icon" class="input-icon">
-      <Icon :name="icon" class="h-5 w-5" aria-hidden="true" />
+      <UIcon :name="icon" class="h-5 w-5" aria-hidden="true" />
     </div>
 
     <input

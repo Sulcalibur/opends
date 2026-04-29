@@ -137,10 +137,10 @@ defineExpose({
 <template>
   <div class="milkdown-editor-wrapper relative">
     <div v-if="error" class="absolute inset-0 flex items-center justify-center text-red-500 bg-red-50 p-4 border border-red-200 rounded z-10">
-      <Icon name="i-lucide-triangle-alert" class="mr-2"/> {{ error }}
+      <UIcon name="i-lucide-triangle-alert" class="mr-2"/> {{ error }}
     </div>
     <div v-if="loading" class="absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-50 z-10">
-      <Icon name="i-lucide-loader-2" class="animate-spin mr-2"/> Loading editor...
+      <UIcon name="i-lucide-loader-2" class="animate-spin mr-2"/> Loading editor...
     </div>
     <div ref="editorRef" class="milkdown-editor" />
   </div>

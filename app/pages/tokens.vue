@@ -23,7 +23,7 @@
         <AnimatedCard variant="elevated" class="stats-card fade-up stagger-1">
           <template #header>
             <div class="card-header-title">
-              <Icon name="i-lucide-bar-chart-3" />
+              <UIcon name="i-lucide-bar-chart-3" />
               Token Overview
             </div>
           </template>
@@ -60,7 +60,7 @@
           <div class="tab-content mt-4">
             <div v-if="activeTab === 0">
               <div v-if="colorTokens.length === 0" class="empty-tab">
-                <Icon name="i-lucide-palette" />
+                <UIcon name="i-lucide-palette" />
                 <p>No color tokens defined yet.</p>
               </div>
               <div v-else class="colors-grid">
@@ -85,7 +85,7 @@
                     title="Copy value"
                     @click="copyToClipboard(token.value)"
                   >
-                    <Icon name="i-lucide-copy" />
+                    <UIcon name="i-lucide-copy" />
                   </button>
                 </div>
               </div>
@@ -93,7 +93,7 @@
 
             <div v-if="activeTab === 1">
               <div v-if="typographyTokens.length === 0" class="empty-tab">
-                <Icon name="i-lucide-type" />
+                <UIcon name="i-lucide-type" />
                 <p>No typography tokens defined yet.</p>
               </div>
               <div v-else class="typography-list">
@@ -132,7 +132,7 @@
 
             <div v-if="activeTab === 2">
               <div v-if="spacingTokens.length === 0" class="empty-tab">
-                <Icon name="i-lucide-move" />
+                <UIcon name="i-lucide-move" />
                 <p>No spacing tokens defined yet.</p>
               </div>
               <div v-else class="spacing-list">

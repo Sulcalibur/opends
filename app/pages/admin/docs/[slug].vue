@@ -113,7 +113,7 @@ const categories = [
             to="/admin/docs"
             class="text-sm text-gray-500 dark:text-gray-400 hover:text-blue-500 dark:hover:text-blue-400 flex items-center gap-2 transition-colors"
           >
-            <Icon name="i-lucide-arrow-left" />
+            <UIcon name="i-lucide-arrow-left" />
             Back to Docs
           </NuxtLink>
         </div>
@@ -156,7 +156,7 @@ const categories = [
       v-if="hasChanges && !saving"
       class="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 px-4 py-3 rounded-lg mb-6 flex items-center gap-2"
     >
-      <Icon name="i-lucide-info" />
+      <UIcon name="i-lucide-info" />
       <span>You have unsaved changes.</span>
     </div>
 

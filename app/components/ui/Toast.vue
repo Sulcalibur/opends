@@ -7,7 +7,7 @@
       @click="handleClick"
     >
       <div class="toast-icon">
-        <Icon v-if="icon" :name="icon" class="h-6 w-6" />
+        <UIcon v-if="icon" :name="icon" class="h-6 w-6" />
       </div>
 
       <div class="toast-content">
@@ -21,7 +21,7 @@
         :aria-label="'Close notification'"
         @click.stop="dismiss"
       >
-        <Icon name="i-lucide-x" />
+        <UIcon name="i-lucide-x" />
       </button>
 
       <div v-if="showProgress && progress" class="toast-progress">

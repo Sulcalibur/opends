@@ -2,7 +2,7 @@
   <div class="empty-state">
     <div class="empty-icon" :style="{ '--icon-color': iconColor }">
       <slot name="icon">
-        <Icon v-if="icon" :name="icon" class="h-12 w-12" />
+        <UIcon v-if="icon" :name="icon" class="h-12 w-12" />
       </slot>
     </div>
 

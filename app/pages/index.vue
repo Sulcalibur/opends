@@ -76,11 +76,11 @@ useHead({
 
           <div class="hero-actions">
             <NuxtLink to="/docs/components" class="hero-cta primary">
-              <Icon name="i-lucide-box"/>
+              <UIcon name="i-lucide-box"/>
               <span>Explore Components</span>
             </NuxtLink>
             <NuxtLink to="/tokens" class="hero-cta secondary">
-              <Icon name="i-lucide-palette"/>
+              <UIcon name="i-lucide-palette"/>
               <span>Design Tokens</span>
             </NuxtLink>
           </div>
@@ -92,7 +92,7 @@ useHead({
       <AnimatedCard variant="elevated" class="quick-links-section">
         <template #header>
           <div class="card-header-title">
-            <Icon name="i-lucide-zap"/>
+            <UIcon name="i-lucide-zap"/>
             Get Started
           </div>
         </template>
@@ -103,7 +103,7 @@ useHead({
               class="quick-link-item hover-lift stagger-1"
             >
               <div class="link-icon blue">
-                <Icon name="i-lucide-layout-grid"/>
+                <UIcon name="i-lucide-layout-grid"/>
               </div>
               <div class="link-content">
                 <h3 class="link-title">Components</h3>
@@ -113,7 +113,7 @@ useHead({
 
             <NuxtLink to="/tokens" class="quick-link-item hover-lift stagger-2">
               <div class="link-icon indigo">
-                <Icon name="i-lucide-palette"/>
+                <UIcon name="i-lucide-palette"/>
               </div>
               <div class="link-content">
                 <h3 class="link-title">Design Tokens</h3>
@@ -123,7 +123,7 @@ useHead({
 
             <NuxtLink to="/admin" class="quick-link-item hover-lift stagger-3">
               <div class="link-icon lavender">
-                <Icon name="i-lucide-settings"/>
+                <UIcon name="i-lucide-settings"/>
               </div>
               <div class="link-content">
                 <h3 class="link-title">Admin</h3>
@@ -154,7 +154,7 @@ useHead({
           >
             <div class="doc-card-content">
               <div class="doc-icon-wrapper">
-                <Icon name="i-lucide-file-text" class="text-xl"/>
+                <UIcon name="i-lucide-file-text" class="text-xl"/>
               </div>
               <div class="doc-info">
                 <h3

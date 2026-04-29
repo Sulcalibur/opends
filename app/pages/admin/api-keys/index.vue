@@ -20,7 +20,7 @@
       <UTable :data="apiKeys" :columns="columns" :loading="loading">
         <template #name-cell="{ row }">
           <div class="key-name">
-            <Icon name="i-lucide-key" class="text-gray-400" />
+            <UIcon name="i-lucide-key" class="text-gray-400" />
             <span>{{ row.original.name }}</span>
           </div>
         </template>
@@ -47,7 +47,7 @@
       </UTable>
 
       <div v-if="apiKeys.length === 0 && !loading" class="empty-state">
-        <Icon name="i-lucide-key" class="empty-icon" />
+        <UIcon name="i-lucide-key" class="empty-icon" />
         <h3>No API keys yet</h3>
         <p>Create your first API key to integrate with design tools</p>
         <UButton
@@ -92,7 +92,7 @@
     <UModal v-model:open="showSuccessDialog" title="API Key Created">
       <template #body>
         <div class="success-content">
-          <Icon name="i-lucide-check-circle" class="success-icon" />
+          <UIcon name="i-lucide-check-circle" class="success-icon" />
           <p>
             Your new API key has been created. Copy it now - you won't be able
             to see it again!
