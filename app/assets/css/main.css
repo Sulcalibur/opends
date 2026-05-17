@@ -56,6 +56,32 @@
   --ui-primary:           #FF6B4A;
 }
 
+/* =========================================================
+   Typography — declared directly so they win the cascade
+   regardless of which CSS variable resolves to what.
+   ========================================================= */
+html,
+body {
+  font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', system-ui, -apple-system, sans-serif;
+}
+code, pre, kbd, samp {
+  font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Also align the CSS variables so anything reading them gets the right values */
+:root {
+  --font-body:    'Inter', system-ui, -apple-system, sans-serif;
+  --font-heading: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-mono:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Alias for base.css which uses --font-family-body */
+  --font-family-body:    'Inter', system-ui, -apple-system, sans-serif;
+  --font-family-heading: 'Outfit', system-ui, -apple-system, sans-serif;
+  --font-family-mono:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
 /* OpenDS Custom Theme Extensions */
 
 :root {
