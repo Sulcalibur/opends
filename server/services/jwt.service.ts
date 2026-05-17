@@ -20,10 +20,14 @@ export interface TokenPair {
 export class JwtService {
     private static getSecret(): string {
         const secret = process.env.JWT_SECRET
-        if (!secret || secret === 'dev-secret-change-in-production') {
-            console.warn('[JWT] Using default secret - CHANGE THIS IN PRODUCTION!')
+        if (!secret) {
+            if (process.env.NODE_ENV === 'production') {
+                throw new Error('[JWT] JWT_SECRET environment variable is required in production')
+            }
+            console.warn('[JWT] JWT_SECRET not set — using insecure dev default')
+            return 'dev-secret-do-not-use-in-production'
         }
-        return secret || 'dev-secret-change-in-production'
+        return secret
     }
 
     /**

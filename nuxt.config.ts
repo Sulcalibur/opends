@@ -52,7 +52,7 @@ export default defineNuxtConfig({
     },
     // Server-only runtime config (private)
     dbUrl: process.env.DATABASE_URL || "postgresql://localhost/opends_dev",
-    jwtSecret: process.env.JWT_SECRET || "dev-secret-change-in-production",
+    jwtSecret: process.env.JWT_SECRET,
     jwtAccessExpire: process.env.JWT_ACCESS_EXPIRE || "15m",
     jwtRefreshExpire: process.env.JWT_REFRESH_EXPIRE || "7d",
     allowRegistration: process.env.ALLOW_REGISTRATION === "true",
