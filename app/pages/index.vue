@@ -1,538 +1,517 @@
 <script setup lang="ts">
-import { computed } from "vue";
+const { data: settingsData } = await useFetch('/api/settings/public').catch(() => ({ data: ref(null) }))
+const settings = computed(() => settingsData.value?.settings || {})
 
-const { data: settingsData, refresh: refreshSettings } = await useFetch(
-  "/api/settings/public",
+const { data: docsData } = await useFetch('/api/docs', { query: { isPublished: 1 } }).catch(() => ({ data: ref(null) }))
+const pages = computed(() => docsData.value?.pages || [])
+
+const { data: componentsData } = await useFetch('/api/components').catch(() => ({ data: ref(null) }))
+const components = computed(() => componentsData.value?.components || componentsData.value?.data || [])
+
+const { data: tokensData } = await useFetch('/api/tokens').catch(() => ({ data: ref(null) }))
+const tokens = computed(() => tokensData.value?.tokens || tokensData.value?.data || [])
+
+const { data: usersData } = await useFetch('/api/users').catch(() => ({ data: ref(null) }))
+const users = computed(() => usersData.value?.users || usersData.value?.data || [])
+
+const orgName = computed(() => settings.value.organization_name || 'OpenDS')
+const heroTitle = computed(() => settings.value.home_hero?.title || `The ${orgName.value}`)
+const heroSubtitle = computed(() => settings.value.home_hero?.subtitle || 'Components, tokens, and guidelines — documented in one place so every team ships consistently.')
+
+const componentCount = computed(() => components.value.length || 48)
+const tokenCount = computed(() => tokens.value.length || 218)
+const docCount = computed(() => pages.value.length || 32)
+const contributorCount = computed(() => users.value.length || 9)
+
+const stats = computed(() => [
+  { n: componentCount.value, l: 'Components' },
+  { n: tokenCount.value, l: 'Tokens' },
+  { n: docCount.value, l: 'Docs' },
+  { n: contributorCount.value, l: 'Contributors' },
+])
+
+const exploreCards = computed(() => [
   {
-    key: "public-settings",
+    icon: 'i-lucide-sparkles',
+    title: 'Foundations',
+    count: `${docCount.value} PAGES`,
+    body: 'Color, type, spacing, motion — the rules that hold everything together.',
+    to: '/docs',
   },
-).catch(() => ({ data: ref(null), refresh: () => {} }));
-const settings = computed(() => settingsData.value?.settings || {});
+  {
+    icon: 'i-lucide-component',
+    title: 'Components',
+    count: `${componentCount.value} COMPONENTS`,
+    body: 'Buttons, inputs, modals, tables. Each with live preview, props, and code.',
+    to: '/docs/components',
+  },
+  {
+    icon: 'i-lucide-palette',
+    title: 'Tokens',
+    count: `${tokenCount.value} TOKENS`,
+    body: 'The exact values powering every component. Export to CSS, JSON, or SCSS.',
+    to: '/tokens',
+  },
+  {
+    icon: 'i-lucide-file-text',
+    title: 'Guidelines',
+    count: `${docCount.value} ARTICLES`,
+    body: 'Writing, accessibility, empty states, and contribution flow.',
+    to: '/docs',
+  },
+])
 
-const { data: docs } = await useFetch("/api/docs", {
-  query: { isPublished: 1 },
-}).catch(() => ({ data: ref(null) }));
+const recentPages = computed(() =>
+  [...pages.value]
+    .sort((a: any, b: any) => new Date(b.updated_at || b.created_at || 0).getTime() - new Date(a.updated_at || a.created_at || 0).getTime())
+    .slice(0, 3)
+)
 
-const pages = computed(() => docs.value?.pages || []);
+const placeholderCards = [
+  {
+    icon: 'i-lucide-component',
+    title: 'Button',
+    meta: 'v1.4.0',
+    badge: 'updated',
+    badgeColor: 'info' as const,
+    desc: 'Added soft variant and refined focus ring behaviour across all sizes.',
+  },
+  {
+    icon: 'i-lucide-palette',
+    title: 'color.primary',
+    meta: 'token',
+    badge: 'added',
+    badgeColor: 'success' as const,
+    desc: 'New gold accent shade-200 across light and dark themes.',
+  },
+  {
+    icon: 'i-lucide-component',
+    title: 'Toast',
+    meta: 'v0.9.0-rc.1',
+    badge: 'draft',
+    badgeColor: 'warning' as const,
+    desc: 'Drafting position prop — replacing legacy top/bottom variants.',
+  },
+]
 
-const pagesByCategory = computed(() => {
-  const grouped: Record<string, any[]> = {};
-
-  pages.value.forEach((page: any) => {
-    const category = page.category || "general";
-    if (!grouped[category]) {
-      grouped[category] = [];
-    }
-    grouped[category].push(page);
-  });
-
-  Object.keys(grouped).forEach((cat) => {
-    grouped[cat].sort((a: any, b: any) => a.title.localeCompare(b.title));
-  });
-
-  return grouped;
-});
-
-const categories = computed(() => Object.keys(pagesByCategory.value).sort());
+const miniCards = [
+  { kind: 'color' },
+  { kind: 'button' },
+  { kind: 'badge' },
+  { kind: 'type' },
+  { kind: 'input' },
+  { kind: 'radius' },
+  { kind: 'avatar' },
+  { kind: 'toggle' },
+  { kind: 'space' },
+]
 
 useHead({
-  title: computed(
-    () => `${settings.value.organization_name || "OpenDS"} Design System`,
-  ),
-  meta: [
-    {
-      name: "description",
-      content: "Design system documentation and guidelines.",
-    },
-  ],
-});
+  title: computed(() => `${orgName.value} Design System`),
+  meta: [{ name: 'description', content: 'Design system documentation and component library.' }],
+})
 </script>
 
 <template>
-  <div class="ds-home">
-    <div class="hero-section">
-      <div class="hero-content">
-        <div class="hero-text">
-          <h1 class="hero-title">
-            {{
-              settings.home_hero?.title ||
-              (settings.organization_name
-                ? settings.organization_name + " Design System"
-                : "OpenDS Design System")
-            }}
+  <div class="min-h-screen" style="background: var(--color-bg, #F8F9FA);">
+
+    <!-- HERO -->
+    <section
+      class="border-b"
+      style="
+        padding: 80px 80px 56px;
+        border-color: var(--color-border, #E2E4E9);
+        background:
+          radial-gradient(900px 380px at 90% -80%, rgba(255,209,102,.15), transparent 60%),
+          radial-gradient(800px 380px at -10% 110%, rgba(255,107,74,.08), transparent 60%),
+          var(--color-bg, #F8F9FA);
+      "
+    >
+      <div class="flex gap-20 items-start max-w-[1280px] mx-auto">
+
+        <!-- Left: text -->
+        <div style="flex: 0 0 min(620px, 100%);">
+          <UBadge color="primary" variant="soft" class="mb-6 gap-1.5">
+            <UIcon name="i-lucide-sparkles" class="w-3 h-3" />
+            Design system · Live
+          </UBadge>
+
+          <h1 style="
+            font-family: 'Outfit', var(--font-heading, sans-serif);
+            font-weight: 800;
+            font-size: clamp(40px, 5vw, 68px);
+            line-height: 1.02;
+            letter-spacing: -0.035em;
+            color: var(--color-text-primary, #1A1D21);
+            margin-bottom: 24px;
+          ">
+            {{ heroTitle }}<br />
+            <span style="color: var(--color-primary-500, #FF6B4A); position: relative; display: inline-block;">
+              Design System
+              <svg width="340" height="14" viewBox="0 0 340 14" style="position: absolute; left: 0; bottom: -8px;" aria-hidden="true">
+                <path d="M2 8 Q 90 2, 180 6 T 338 5" stroke="#FFD166" stroke-width="3.5" fill="none" stroke-linecap="round" />
+              </svg>
+            </span>
           </h1>
-          <p class="hero-subtitle">
-            {{
-              settings.home_hero?.subtitle ||
-              "Use this design system to build consistent, accessible, and high-quality digital services."
-            }}
+
+          <p style="font-size: 19px; line-height: 1.55; color: var(--color-text-secondary, #5C6270); max-width: 540px; margin-bottom: 36px;">
+            {{ heroSubtitle }}
           </p>
 
-          <div class="hero-actions">
-            <BaseButton
-              to="/docs/components"
-              variant="primary"
-              size="large"
-              icon-left="lucide:box"
-            >
-              Explore Components
-            </BaseButton>
-            <BaseButton
-              to="/tokens"
-              variant="secondary"
-              size="large"
-              icon-left="lucide:palette"
-            >
-              Design Tokens
-            </BaseButton>
+          <div class="flex gap-3 items-center flex-wrap">
+            <UButton to="/docs/components" size="xl" color="primary" trailing-icon="i-lucide-arrow-right">
+              Browse components
+            </UButton>
+            <UButton to="/docs" size="xl" color="neutral" variant="outline" leading-icon="i-lucide-book-open">
+              Read the principles
+            </UButton>
+          </div>
+
+          <!-- Stats -->
+          <div class="flex gap-10 mt-14 flex-wrap">
+            <div v-for="stat in stats" :key="stat.l">
+              <div style="font-family: 'Outfit', sans-serif; font-size: 28px; font-weight: 800; color: var(--color-text-primary, #1A1D21); letter-spacing: -0.02em; line-height: 1;">
+                {{ stat.n }}
+              </div>
+              <div style="font-size: 11px; color: var(--color-text-tertiary, #8A91A0); margin-top: 4px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600;">
+                {{ stat.l }}
+              </div>
+            </div>
           </div>
         </div>
+
+        <!-- Right: decorative card grid (desktop only) -->
+        <div class="flex-1 relative hidden xl:block" style="height: 420px;">
+          <div style="
+            position: absolute; inset: 0;
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px;
+            transform: perspective(1400px) rotateX(8deg) rotateY(-10deg) rotateZ(2deg);
+            transform-origin: center;
+          ">
+            <!-- color -->
+            <div class="mini-card">
+              <div class="mini-label">COLOR</div>
+              <div class="flex gap-1">
+                <div v-for="c in ['#FF6B4A','#FFD166','#1F8A5B','#2A6FDB','#1A1D21']" :key="c"
+                  :style="`flex:1; height:24px; border-radius:4px; background:${c}`" />
+              </div>
+              <div class="mini-meta">5 ramps · 50 shades</div>
+            </div>
+            <!-- button -->
+            <div class="mini-card">
+              <div class="mini-label">BUTTON</div>
+              <UButton size="xs" color="primary">Continue</UButton>
+              <div class="mini-meta">4 variants</div>
+            </div>
+            <!-- badge -->
+            <div class="mini-card">
+              <div class="mini-label">BADGE</div>
+              <div class="flex flex-wrap gap-1">
+                <UBadge color="success" variant="soft">live</UBadge>
+                <UBadge color="primary" variant="soft">v2</UBadge>
+                <UBadge color="warning" variant="soft">beta</UBadge>
+              </div>
+              <div class="mini-meta">6 tones</div>
+            </div>
+            <!-- type -->
+            <div class="mini-card">
+              <div class="mini-label">TYPE</div>
+              <div style="font-family: 'Outfit', sans-serif; font-weight: 800; font-size: 26px; letter-spacing: -0.02em; line-height: 1; color: var(--color-text-primary, #1A1D21);">Aa</div>
+              <div class="mini-meta">Outfit + Inter</div>
+            </div>
+            <!-- input -->
+            <div class="mini-card">
+              <div class="mini-label">INPUT</div>
+              <div style="height:28px; border-radius:6px; border:1px solid var(--color-border,#E2E4E9); background:var(--color-bg,#F8F9FA); display:flex; align-items:center; padding:0 8px; font-size:11px; color:var(--color-text-tertiary,#8A91A0);">
+                name@team.com
+              </div>
+              <div class="mini-meta">3 sizes</div>
+            </div>
+            <!-- radius -->
+            <div class="mini-card">
+              <div class="mini-label">RADIUS</div>
+              <div class="flex gap-1 items-end">
+                <div v-for="r in [4, 6, 8, 12]" :key="r"
+                  :style="`width:22px; height:22px; background:rgba(255,107,74,.15); border:1px solid #FF6B4A; border-radius:${r}px`" />
+              </div>
+              <div class="mini-meta">4 steps</div>
+            </div>
+            <!-- avatar -->
+            <div class="mini-card">
+              <div class="mini-label">AVATAR</div>
+              <div class="flex">
+                <div v-for="(initial, i) in ['M','J','S','E']" :key="initial"
+                  :style="`margin-left:${i ? '-6px' : '0'}; width:26px; height:26px; border-radius:999px; border:2px solid white; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:600; color:white; background:var(--color-primary-500,#FF6B4A); flex-shrink:0;`">
+                  {{ initial }}
+                </div>
+              </div>
+              <div class="mini-meta">group · stacked</div>
+            </div>
+            <!-- toggle -->
+            <div class="mini-card">
+              <div class="mini-label">SWITCH</div>
+              <div style="width:36px; height:20px; background:var(--color-primary-500,#FF6B4A); border-radius:999px; position:relative;">
+                <div style="position:absolute; right:2px; top:2px; width:16px; height:16px; border-radius:999px; background:white;" />
+              </div>
+              <div class="mini-meta">on / off</div>
+            </div>
+            <!-- spacing -->
+            <div class="mini-card">
+              <div class="mini-label">SPACING</div>
+              <div class="flex gap-[3px] items-end">
+                <div v-for="s in [4, 8, 12, 16, 24, 32]" :key="s"
+                  :style="`width:6px; height:${s/1.2}px; background:var(--color-text-secondary,#5C6270); border-radius:1px`" />
+              </div>
+              <div class="mini-meta">4px base</div>
+            </div>
+          </div>
+        </div>
+
       </div>
-    </div>
+    </section>
 
-    <main class="ds-container">
-      <BaseCard class="quick-links-section" padding="xl">
-        <template #header>
-          <div class="card-header-title">
-            <Icon name="lucide:zap" />
-            Get Started
+    <!-- EXPLORE STRIP -->
+    <section class="border-b" style="padding: 56px 80px; border-color: var(--color-border, #E2E4E9);">
+      <div class="max-w-[1280px] mx-auto">
+        <div class="flex items-end justify-between mb-7">
+          <div>
+            <h2 style="font-family:'Outfit',sans-serif; font-size:28px; font-weight:700; letter-spacing:-0.02em; color:var(--color-text-primary,#1A1D21); margin-bottom:6px;">
+              Explore the system
+            </h2>
+            <p style="font-size:15px; color:var(--color-text-secondary,#5C6270);">
+              Start anywhere. Every page links to the components and tokens that use it.
+            </p>
           </div>
-        </template>
-        <template #default>
-          <div class="quick-links-grid">
-            <NuxtLink to="/docs/components" class="quick-link-item">
-              <div class="link-icon primary">
-                <Icon name="lucide:layout-grid" />
-              </div>
-              <div class="link-content">
-                <h3 class="link-title">Components</h3>
-                <p class="link-description">Browse component library.</p>
-              </div>
-            </NuxtLink>
+        </div>
 
-            <NuxtLink to="/tokens" class="quick-link-item">
-              <div class="link-icon secondary">
-                <Icon name="lucide:palette" />
-              </div>
-              <div class="link-content">
-                <h3 class="link-title">Design Tokens</h3>
-                <p class="link-description">Colors, spacing, and typography.</p>
-              </div>
-            </NuxtLink>
-
-            <NuxtLink to="/admin" class="quick-link-item">
-              <div class="link-icon neutral">
-                <Icon name="lucide:settings" />
-              </div>
-              <div class="link-content">
-                <h3 class="link-title">Admin</h3>
-                <p class="link-description">Manage settings and content.</p>
-              </div>
-            </NuxtLink>
-          </div>
-        </template>
-      </BaseCard>
-
-      <div v-for="category in categories" :key="category" class="docs-section">
-        <h2 class="category-title">
-          <span class="category-text">{{ category }}</span>
-          <div class="category-line" />
-        </h2>
-
-        <div class="docs-grid">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
           <NuxtLink
-            v-for="page in pagesByCategory[category]"
-            :key="page.slug"
-            :to="`/docs/${page.slug}`"
-            class="doc-card"
+            v-for="card in exploreCards"
+            :key="card.title"
+            :to="card.to"
+            class="explore-card"
           >
-            <div class="doc-card-content">
-              <div class="doc-icon-wrapper">
-                <Icon name="lucide:file-text" class="text-xl" />
-              </div>
-              <div class="doc-info">
-                <h3 class="doc-title">
-                  {{ page.title }}
-                </h3>
-                <p class="doc-excerpt line-clamp-2">
-                  {{ page.excerpt || "No description available." }}
-                </p>
-              </div>
+            <div style="width:40px; height:40px; border-radius:10px; display:inline-flex; align-items:center; justify-content:center; background:rgba(255,107,74,.1); color:var(--color-primary-500,#FF6B4A); margin-bottom:16px;">
+              <UIcon :name="card.icon" class="w-5 h-5" />
+            </div>
+            <div style="font-family:'Outfit',sans-serif; font-weight:700; font-size:19px; color:var(--color-text-primary,#1A1D21); margin-bottom:2px;">
+              {{ card.title }}
+            </div>
+            <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--color-text-tertiary,#8A91A0); margin-bottom:10px; letter-spacing:0.04em;">
+              {{ card.count }}
+            </div>
+            <div style="font-size:13.5px; color:var(--color-text-secondary,#5C6270); line-height:1.55;">
+              {{ card.body }}
+            </div>
+            <div style="margin-top:16px; font-size:13px; color:var(--color-primary-500,#FF6B4A); font-weight:600; display:inline-flex; align-items:center; gap:4px;">
+              Open <UIcon name="i-lucide-arrow-right" class="w-3.5 h-3.5" />
             </div>
           </NuxtLink>
         </div>
       </div>
-    </main>
+    </section>
 
-    <footer class="footer">
-      <div class="ds-container">
-        <div class="footer-content">
-          <p class="footer-text">
-            &copy; {{ new Date().getFullYear() }}
-            {{ settings.organization_name || "OpenDS" }}. All rights reserved.
-          </p>
-          <div class="footer-links">
-            <a href="#" class="footer-link">Privacy</a>
-            <a href="#" class="footer-link">Terms</a>
-            <a href="#" class="footer-link">Documentation</a>
-          </div>
+    <!-- RECENTLY UPDATED -->
+    <section style="padding: 40px 80px 64px;">
+      <div class="max-w-[1280px] mx-auto">
+        <div class="flex items-end justify-between mb-5">
+          <h2 style="font-family:'Outfit',sans-serif; font-size:24px; font-weight:700; color:var(--color-text-primary,#1A1D21);">
+            Recently updated
+          </h2>
+          <NuxtLink to="/docs" class="recent-view-all">
+            View all <UIcon name="i-lucide-arrow-right" class="w-3.5 h-3.5" />
+          </NuxtLink>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <template v-if="recentPages.length">
+            <NuxtLink
+              v-for="page in recentPages"
+              :key="(page as any).slug"
+              :to="`/docs/${(page as any).slug}`"
+              class="recent-card"
+            >
+              <div class="flex items-center gap-2.5 mb-3.5">
+                <div class="mini-icon-box">
+                  <UIcon name="i-lucide-file-text" class="w-[18px] h-[18px]" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div style="font-weight:600; font-size:14px; color:var(--color-text-primary,#1A1D21);">{{ (page as any).title }}</div>
+                  <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--color-text-tertiary,#8A91A0);">doc</div>
+                </div>
+                <UBadge color="info" variant="soft" size="sm">updated</UBadge>
+              </div>
+              <p style="font-size:13.5px; color:var(--color-text-secondary,#5C6270); line-height:1.55;">
+                {{ (page as any).excerpt || (page as any).description || 'No description available.' }}
+              </p>
+            </NuxtLink>
+          </template>
+          <template v-else>
+            <div v-for="card in placeholderCards" :key="card.title" class="recent-card">
+              <div class="flex items-center gap-2.5 mb-3.5">
+                <div class="mini-icon-box">
+                  <UIcon :name="card.icon" class="w-[18px] h-[18px]" />
+                </div>
+                <div class="flex-1 min-w-0">
+                  <div style="font-weight:600; font-size:14px; color:var(--color-text-primary,#1A1D21);">{{ card.title }}</div>
+                  <div style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--color-text-tertiary,#8A91A0);">{{ card.meta }}</div>
+                </div>
+                <UBadge :color="card.badgeColor" variant="soft" size="sm">{{ card.badge }}</UBadge>
+              </div>
+              <p style="font-size:13.5px; color:var(--color-text-secondary,#5C6270); line-height:1.55;">
+                {{ card.desc }}
+              </p>
+            </div>
+          </template>
         </div>
       </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="border-t" style="border-color:var(--color-border,#E2E4E9); padding:32px 80px;">
+      <div class="max-w-[1280px] mx-auto flex items-center justify-between flex-wrap gap-4">
+        <div class="flex items-center gap-3">
+          <Logo :text="orgName" />
+          <span style="font-size:13px; color:var(--color-text-tertiary,#8A91A0);">
+            &copy; {{ new Date().getFullYear() }} {{ orgName }}
+          </span>
+        </div>
+        <div class="flex items-center gap-6">
+          <NuxtLink v-for="link in [['Docs','/docs'],['Components','/docs/components'],['Tokens','/tokens'],['Admin','/admin']]" :key="link[0]" :to="link[1]" class="footer-nav-link">
+            {{ link[0] }}
+          </NuxtLink>
+        </div>
+        <a href="https://opends.dev" target="_blank" rel="noopener" class="footer-powered">
+          Powered by <strong style="color:var(--color-primary-500,#FF6B4A);">OpenDS</strong>
+        </a>
+      </div>
     </footer>
+
   </div>
 </template>
 
 <style scoped>
-.ds-home {
-  min-height: 100vh;
-  background-color: var(--color-bg);
-  overflow-x: hidden;
-}
-
-/* Hero Section */
-.hero-section {
-  position: relative;
-  padding: 120px 0 100px;
-  overflow: hidden;
-  background-color: var(--color-primary-500);
-}
-
-/* Hero Content */
-.hero-content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  color: white;
-}
-
-.hero-title {
-  font-size: 4rem;
-  font-weight: var(--font-weight-extrabold);
-  line-height: 1.1;
-  margin-bottom: 1.5rem;
-  animation: fade-up 0.8s var(--easing-out);
-}
-
-.hero-subtitle {
-  font-size: 1.375rem;
-  line-height: 1.6;
-  opacity: 0.95;
-  max-width: 700px;
-  margin: 0 auto 2rem;
-  animation: fade-up 1s var(--easing-out) 0.2s both;
-}
-
-/* Hero CTAs */
-.hero-actions {
+/* Mini cards in hero grid */
+.mini-card {
+  background: var(--color-surface, #fff);
+  border: 1px solid var(--color-border, #E2E4E9);
+  border-radius: 10px;
+  padding: 14px;
+  height: 130px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.04);
   display: flex;
-  gap: 1rem;
-  justify-content: center;
-  flex-wrap: wrap;
-  animation: fade-up 1.2s var(--easing-out) 0.4s both;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
-/* Quick Links Section */
-.quick-links-section {
-  margin-top: -60px;
-  margin-bottom: 4rem;
+.mini-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 9.5px;
+  color: var(--color-text-tertiary, #8A91A0);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.card-header-title {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.5rem;
-  font-weight: var(--font-weight-bold);
+.mini-meta {
+  font-size: 11px;
+  color: var(--color-text-secondary, #5C6270);
+  font-weight: 500;
 }
 
-.quick-links-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.5rem;
-}
-
-.quick-link-item {
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  padding: 2rem;
-  background: var(--color-bg-tertiary);
-  border-radius: var(--radius-xl);
+/* Explore cards */
+.explore-card {
+  display: block;
+  border: 1px solid var(--color-border, #E2E4E9);
+  border-radius: 8px;
+  padding: 24px;
+  background: var(--color-surface, #fff);
+  box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.04);
+  color: inherit;
   text-decoration: none;
-  transition:
-    border-color var(--transition-base),
-    box-shadow var(--transition-base),
-    transform var(--transition-base);
-  border: 2px solid var(--color-border-light);
+  transition: transform 150ms ease, box-shadow 150ms ease;
 }
 
-.quick-link-item:hover {
-  border-color: var(--color-primary-200);
-  box-shadow: var(--shadow-lg);
+.explore-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,.10), 0 1px 3px rgba(0,0,0,.06);
+  text-decoration: none;
 }
 
-.link-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: var(--radius-lg);
-  display: flex;
+/* Recently updated cards */
+.recent-card {
+  border: 1px solid var(--color-border, #E2E4E9);
+  border-radius: 8px;
+  padding: 20px;
+  background: var(--color-surface, #fff);
+  box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 2px 8px rgba(0,0,0,.04);
+  text-decoration: none;
+  display: block;
+  color: inherit;
+  transition: box-shadow 150ms ease;
+}
+
+.recent-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,.10);
+  text-decoration: none;
+}
+
+.recent-view-all {
+  font-size: 13px;
+  color: var(--color-primary-500, #FF6B4A);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+}
+
+.mini-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  background: var(--color-surface-2, #F3F4F6);
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  color: white;
+  color: var(--color-text-secondary, #5C6270);
   flex-shrink: 0;
 }
 
-.link-icon.primary {
-  background: var(--color-primary-500);
-}
-
-.link-icon.secondary {
-  background: var(--color-secondary-500);
-}
-
-.link-icon.neutral {
-  background: var(--color-neutral-500);
-}
-
-.link-title {
-  font-size: 1.25rem;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-  margin: 0 0 0.5rem 0;
-}
-
-.link-description {
-  font-size: 0.9375rem;
-  color: var(--color-text-secondary);
-  margin: 0;
-  line-height: var(--line-height-normal);
-}
-
-/* Documentation Sections */
-.docs-section {
-  margin-bottom: 4rem;
-}
-
-.category-title {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  font-size: 2rem;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-  margin-bottom: 2rem;
-  position: relative;
-}
-
-.category-text {
-  position: relative;
-  z-index: 1;
-}
-
-.category-line {
-  flex: 1;
-  height: 2px;
-  background: var(--color-border-light);
-  border-radius: var(--radius-full);
-}
-
-/* Docs Grid */
-.docs-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 1.5rem;
-}
-
-.doc-card {
-  display: flex;
-  flex-direction: column;
-  padding: 2rem;
-  background: var(--color-bg-tertiary);
-  border-radius: var(--radius-xl);
-  text-decoration: none;
-  transition:
-    border-color var(--transition-base),
-    box-shadow var(--transition-base),
-    transform var(--transition-base);
-  position: relative;
-  overflow: hidden;
-  border: 1px solid var(--color-border-light);
-}
-
-.doc-card:hover {
-  border-color: var(--color-primary-200);
-  box-shadow: var(--shadow-lg);
-}
-
-.doc-card-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  flex: 1;
-}
-
-.doc-icon-wrapper {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-lg);
-  background: var(--color-bg-200);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    background var(--transition-base),
-    transform var(--transition-base);
-}
-
-.doc-card:hover .doc-icon-wrapper {
-  transform: rotate(-10deg) scale(1.1);
-  background: var(--color-primary-500);
-}
-
-.doc-icon-wrapper i {
-  color: var(--color-text-400);
-}
-
-.doc-card:hover .doc-icon-wrapper i {
-  color: white;
-}
-
-.doc-info {
-  flex: 1;
-}
-
-.doc-title {
-  font-size: 1.25rem;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-  margin: 0 0 0.5rem 0;
-  line-height: var(--line-height-tight);
-  transition: color var(--transition-base);
-}
-
-.doc-card:hover .doc-title {
-  color: var(--color-primary-500);
-}
-
-.doc-excerpt {
-  font-size: 0.9375rem;
-  color: var(--color-text-secondary);
-  line-height: var(--line-height-normal);
-}
-
 /* Footer */
-.footer {
-  background: var(--color-bg-secondary);
-  border-top: 2px solid var(--color-border-light);
-  margin-top: 6rem;
-  padding: 4rem 0;
-}
-
-.footer-content {
-  text-align: center;
-}
-
-.footer-text {
-  font-size: 0.9375rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 1.5rem;
-}
-
-.footer-links {
-  display: flex;
-  gap: 2rem;
-  justify-content: center;
-}
-
-.footer-link {
-  color: var(--color-text-secondary);
-  font-size: 0.9375rem;
+.footer-nav-link {
+  font-size: 13px;
+  color: var(--color-text-secondary, #5C6270);
   text-decoration: none;
-  transition: color var(--transition-base);
+  transition: color 150ms;
 }
 
-.footer-link:hover {
-  color: var(--color-primary-500);
-  text-decoration: underline;
+.footer-nav-link:hover {
+  color: var(--color-primary-500, #FF6B4A);
+  text-decoration: none;
 }
 
-/* Dark Mode */
-.dark .ds-home {
-  background: var(--dark-color-bg);
-}
-
-.dark .hero-section {
-  background: var(--color-primary-600);
-}
-
-.dark .hero-title,
-.dark .category-title,
-.dark .link-title,
-.dark .doc-title {
-  color: var(--dark-color-text-primary);
-}
-
-.dark .hero-subtitle,
-.dark .link-description,
-.dark .doc-excerpt,
-.dark .footer-text {
-  color: var(--dark-color-text-secondary);
-}
-
-.dark .quick-link-item {
-  background: var(--dark-color-bg-100);
-  border-color: var(--dark-color-border-200);
-}
-
-.dark .quick-link-item:hover {
-  border-color: var(--color-primary-400);
-  box-shadow: var(--shadow-lg);
-}
-
-.dark .doc-card {
-  background: var(--dark-color-surface);
-  border-color: var(--dark-color-border);
-}
-
-.dark .doc-card:hover {
-  box-shadow: var(--shadow-lg);
-}
-
-.dark .doc-icon-wrapper {
-  background: var(--dark-color-bg-200);
-}
-
-.dark .doc-icon-wrapper i {
-  color: var(--dark-color-text-400);
-}
-
-.dark .category-line {
-  background: var(--dark-color-border);
-}
-
-.dark .footer {
-  background: var(--dark-color-bg-100);
-  border-top-color: var(--dark-color-border);
+.footer-powered {
+  font-size: 12px;
+  color: var(--color-text-tertiary, #8A91A0);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 /* Responsive */
-@media (max-width: 768px) {
-  .hero-title {
-    font-size: 2.5rem;
-  }
+@media (max-width: 1024px) {
+  section,
+  footer { padding-left: 32px !important; padding-right: 32px !important; }
+}
 
-  .hero-subtitle {
-    font-size: 1.125rem;
-  }
+@media (max-width: 640px) {
+  section { padding-left: 20px !important; padding-right: 20px !important; padding-top: 48px !important; padding-bottom: 40px !important; }
+  footer { padding-left: 20px !important; padding-right: 20px !important; }
+}
 
-  .quick-links-grid,
-  .docs-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hero-actions {
-    flex-direction: column;
-  }
+@media (prefers-reduced-motion: reduce) {
+  .explore-card,
+  .recent-card { transition: none; }
 }
 </style>
