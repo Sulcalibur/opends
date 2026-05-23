@@ -3,20 +3,20 @@
     <!-- Logo Area -->
     <div class="h-16 flex items-center px-6 border-b border-gray-100">
       <div class="flex items-center gap-2 text-indigo-600">
-        <i class="pi pi-box text-xl"/>
+        <UIcon name="i-lucide-box" class="text-xl" />
         <span class="font-bold text-lg tracking-tight text-gray-900">OpenDS</span>
       </div>
     </div>
 
     <!-- Navigation -->
     <nav class="flex-1 overflow-y-auto py-6 px-3 space-y-1">
-      <router-link 
-        to="/admin" 
+      <router-link
+        to="/admin"
         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
         active-class="bg-indigo-50 text-indigo-700"
         :class="[$route.path === '/admin' ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
       >
-        <i class="pi pi-home" :class="[$route.path === '/admin' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']"/>
+        <UIcon name="i-lucide-home" :class="[$route.path === '/admin' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']" />
         Overview
       </router-link>
 
@@ -24,53 +24,53 @@
         Design System
       </div>
 
-       <router-link
-         to="/admin/tokens"
-         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
-         active-class="bg-indigo-50 text-indigo-700"
-         :class="[$route.path === '/admin/tokens' ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
-       >
-         <i class="pi pi-palette" :class="[$route.path === '/admin/tokens' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']"/>
-         Token Editor
-       </router-link>
+      <router-link
+        to="/admin/tokens"
+        class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
+        active-class="bg-indigo-50 text-indigo-700"
+        :class="[$route.path === '/admin/tokens' ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
+      >
+        <UIcon name="i-lucide-palette" :class="[$route.path === '/admin/tokens' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']" />
+        Token Editor
+      </router-link>
 
-       <router-link
-         to="/admin/components"
-         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
-         active-class="bg-indigo-50 text-indigo-700"
-         :class="[$route.path === '/admin/components' ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
-       >
-         <i class="pi pi-box" :class="[$route.path === '/admin/components' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']"/>
-         Component Manager
-       </router-link>
+      <router-link
+        to="/admin/components"
+        class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
+        active-class="bg-indigo-50 text-indigo-700"
+        :class="[$route.path === '/admin/components' ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
+      >
+        <UIcon name="i-lucide-box" :class="[$route.path === '/admin/components' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']" />
+        Component Manager
+      </router-link>
 
-       <router-link
-         to="/admin/codegen"
-         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
-         active-class="bg-indigo-50 text-indigo-700"
-         :class="[$route.path === '/admin/codegen' ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
-       >
-         <i class="pi pi-code" :class="[$route.path === '/admin/codegen' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']"/>
-         Code Generator
-       </router-link>
+      <router-link
+        to="/admin/codegen"
+        class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
+        active-class="bg-indigo-50 text-indigo-700"
+        :class="[$route.path === '/admin/codegen' ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
+      >
+        <UIcon name="i-lucide-code-2" :class="[$route.path === '/admin/codegen' ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']" />
+        Code Generator
+      </router-link>
 
-      <router-link 
-        to="/components" 
+      <router-link
+        to="/components"
         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
         active-class="bg-indigo-50 text-indigo-700"
         :class="[$route.path.startsWith('/components') ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
       >
-        <i class="pi pi-box" :class="[$route.path.startsWith('/components') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']"/>
+        <UIcon name="i-lucide-box" :class="[$route.path.startsWith('/components') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']" />
         Components
       </router-link>
-      
-      <router-link 
-        to="/docs" 
+
+      <router-link
+        to="/docs"
         class="flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-md transition-colors group"
         active-class="bg-indigo-50 text-indigo-700"
         :class="[$route.path.startsWith('/docs') ? '' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900']"
       >
-        <i class="pi pi-book" :class="[$route.path.startsWith('/docs') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']"/>
+        <UIcon name="i-lucide-book" :class="[$route.path.startsWith('/docs') ? 'text-indigo-600' : 'text-gray-400 group-hover:text-gray-500']" />
         Documentation
       </router-link>
     </nav>
@@ -86,8 +86,11 @@
           <p class="text-xs text-gray-500 truncate">admin@opends.local</p>
         </div>
       </div>
-      <button class="w-full flex items-center justify-center gap-2 px-3 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" @click="logout">
-        <i class="pi pi-sign-out"/>
+      <button
+        class="w-full flex items-center justify-center gap-2 px-3 py-2 border border-gray-300 shadow-sm text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+        @click="logout"
+      >
+        <UIcon name="i-lucide-log-out" />
         Sign Out
       </button>
     </div>
@@ -95,7 +98,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
 import { useAuthStore } from '@/app/stores/auth'
 import { useRouter } from 'vue-router'
 

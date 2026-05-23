@@ -11,12 +11,12 @@
               <h1 class="text-3xl font-bold text-gray-900 mb-2">Design Tokens</h1>
               <p class="text-gray-600">Manage your design system tokens with hierarchical relationships and references.</p>
             </div>
-            <Button
-              label="Create Token"
-              icon="pi pi-plus"
-              severity="primary"
+            <UButton
+              icon="i-lucide-plus"
               @click="showCreateDialog = true"
-            />
+            >
+              Create Token
+            </UButton>
           </div>
         </div>
 
@@ -25,11 +25,11 @@
           <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-              <Dropdown
+              <USelect
                 v-model="filters.category"
                 :options="categoryOptions"
-                option-label="label"
-                option-value="value"
+                label-key="label"
+                value-key="value"
                 placeholder="All Categories"
                 class="w-full"
                 @change="loadTokens"
@@ -37,7 +37,7 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Search</label>
-              <InputText
+              <UInput
                 v-model="filters.search"
                 placeholder="Search tokens..."
                 class="w-full"
@@ -46,168 +46,160 @@
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-              <Dropdown
+              <USelect
                 v-model="filters.type"
                 :options="typeOptions"
-                option-label="label"
-                option-value="value"
+                label-key="label"
+                value-key="value"
                 placeholder="All Types"
                 class="w-full"
                 @change="loadTokens"
               />
             </div>
             <div class="flex items-end">
-              <Button
-                label="Clear Filters"
-                severity="secondary"
-                outlined
+              <UButton
+                variant="outline"
+                color="neutral"
                 @click="clearFilters"
-              />
+              >
+                Clear Filters
+              </UButton>
             </div>
           </div>
         </div>
 
         <!-- Loading -->
         <div v-if="loading" class="text-center py-12">
-          <ProgressSpinner />
+          <div class="animate-spin inline-block"><UIcon name="i-lucide-loader-2" class="text-4xl text-gray-400" /></div>
           <p class="mt-4 text-gray-600">Loading tokens...</p>
         </div>
 
         <!-- Tokens Table -->
         <div v-else class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <DataTable
-            :value="tokens"
-            :paginator="true"
-            :rows="20"
-            :total-records="totalTokens"
-            class="p-datatable-sm"
-            @page="onPage"
+          <UTable
+            :columns="tableColumns"
+            :rows="tokens"
           >
-            <Column field="name" header="Name" style="width: 15%">
-              <template #body="slotProps">
-                <div class="flex items-center gap-2">
-                  <Badge
-                    :value="slotProps.data.category"
-                    severity="info"
-                    class="text-xs"
-                  />
-                  <code class="text-sm">{{ slotProps.data.name }}</code>
-                </div>
-              </template>
-            </Column>
-
-            <Column field="type" header="Type" style="width: 10%">
-              <template #body="slotProps">
-                <Badge
-                  :value="slotProps.data.type"
-                  :severity="getTypeSeverity(slotProps.data.type)"
-                  class="text-xs"
+            <template #name-data="{ row }">
+              <div class="flex items-center gap-2">
+                <UBadge :label="row.category" color="info" class="text-xs" />
+                <code class="text-sm">{{ row.name }}</code>
+              </div>
+            </template>
+            <template #type-data="{ row }">
+              <UBadge :label="row.type" :color="getTypeSeverity(row.type)" class="text-xs" />
+            </template>
+            <template #value-data="{ row }">
+              <div class="font-mono text-sm bg-gray-50 px-2 py-1 rounded max-w-xs truncate">
+                {{ formatValue(row.value) }}
+              </div>
+            </template>
+            <template #path-data="{ row }">
+              <code class="text-xs bg-gray-100 px-2 py-1 rounded">{{ row.path }}</code>
+            </template>
+            <template #description-data="{ row }">
+              <span class="text-sm text-gray-600 truncate max-w-xs block">{{ row.description || '-' }}</span>
+            </template>
+            <template #actions-data="{ row }">
+              <div class="flex gap-2">
+                <UButton
+                  icon="i-lucide-pencil"
+                  color="info"
+                  size="sm"
+                  variant="outline"
+                  @click="editToken(row)"
                 />
-              </template>
-            </Column>
+                <UButton
+                  icon="i-lucide-trash-2"
+                  color="error"
+                  size="sm"
+                  variant="outline"
+                  @click="confirmDelete(row)"
+                />
+              </div>
+            </template>
+          </UTable>
 
-            <Column field="value" header="Value" style="width: 25%">
-              <template #body="slotProps">
-                <div class="font-mono text-sm bg-gray-50 px-2 py-1 rounded max-w-xs truncate">
-                  {{ formatValue(slotProps.data.value) }}
-                </div>
-              </template>
-            </Column>
-
-            <Column field="path" header="Path" style="width: 20%">
-              <template #body="slotProps">
-                <code class="text-xs bg-gray-100 px-2 py-1 rounded">{{ slotProps.data.path }}</code>
-              </template>
-            </Column>
-
-            <Column field="description" header="Description">
-              <template #body="slotProps">
-                <span class="text-sm text-gray-600 truncate max-w-xs block">
-                  {{ slotProps.data.description || '-' }}
-                </span>
-              </template>
-            </Column>
-
-            <Column header="Actions" style="width: 15%">
-              <template #body="slotProps">
-                <div class="flex gap-2">
-                  <Button
-                    icon="pi pi-pencil"
-                    severity="info"
-                    size="small"
-                    outlined
-                    @click="editToken(slotProps.data)"
-                  />
-                  <Button
-                    icon="pi pi-trash"
-                    severity="danger"
-                    size="small"
-                    outlined
-                    @click="confirmDelete(slotProps.data)"
-                  />
-                </div>
-              </template>
-            </Column>
-          </DataTable>
+          <!-- Pagination -->
+          <div class="p-4 border-t border-gray-200 flex justify-between items-center">
+            <span class="text-sm text-gray-600">Total: {{ totalTokens }} tokens</span>
+            <div class="flex gap-2">
+              <UButton
+                size="sm"
+                variant="outline"
+                color="neutral"
+                :disabled="currentPage === 1"
+                @click="onPage(currentPage - 2)"
+              >
+                Previous
+              </UButton>
+              <UButton
+                size="sm"
+                variant="outline"
+                color="neutral"
+                :disabled="currentPage * pageSize >= totalTokens"
+                @click="onPage(currentPage)"
+              >
+                Next
+              </UButton>
+            </div>
+          </div>
         </div>
 
         <!-- Create/Edit Token Dialog -->
-        <Dialog
-          v-model:visible="showCreateDialog"
-          :header="editingToken ? 'Edit Token' : 'Create Token'"
-          modal
-          class="p-fluid"
-          style="width: 600px"
+        <UModal
+          v-model="showCreateDialog"
+          :title="editingToken ? 'Edit Token' : 'Create Token'"
         >
           <div class="space-y-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Name *</label>
-              <InputText
+              <UInput
                 v-model="tokenForm.name"
                 placeholder="token-name"
-                :class="{ 'p-invalid': errors.name }"
+                :class="{ 'ring-red-500': errors.name }"
               />
-              <small v-if="errors.name" class="p-error">{{ errors.name }}</small>
+              <small v-if="errors.name" class="text-red-500 text-sm">{{ errors.name }}</small>
             </div>
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Category *</label>
-              <Dropdown
+              <USelect
                 v-model="tokenForm.category"
                 :options="categoryOptions"
-                option-label="label"
-                option-value="value"
+                label-key="label"
+                value-key="value"
                 placeholder="Select category"
-                :class="{ 'p-invalid': errors.category }"
+                :class="{ 'ring-red-500': errors.category }"
               />
-              <small v-if="errors.category" class="p-error">{{ errors.category }}</small>
+              <small v-if="errors.category" class="text-red-500 text-sm">{{ errors.category }}</small>
             </div>
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Type</label>
-              <Dropdown
+              <USelect
                 v-model="tokenForm.type"
                 :options="typeOptions"
-                option-label="label"
-                option-value="value"
+                label-key="label"
+                value-key="value"
                 placeholder="Select type"
               />
             </div>
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Value *</label>
-              <Textarea
+              <UTextarea
                 v-model="tokenForm.value"
                 placeholder="Token value (JSON)"
-                rows="3"
-                :class="{ 'p-invalid': errors.value }"
+                :rows="3"
+                :class="{ 'ring-red-500': errors.value }"
               />
-              <small v-if="errors.value" class="p-error">{{ errors.value }}</small>
+              <small v-if="errors.value" class="text-red-500 text-sm">{{ errors.value }}</small>
             </div>
 
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-              <InputText
+              <UInput
                 v-model="tokenForm.description"
                 placeholder="Optional description"
               />
@@ -215,7 +207,7 @@
 
             <div v-if="tokenForm.type === 'reference'">
               <label class="block text-sm font-medium text-gray-700 mb-1">References</label>
-              <InputText
+              <UInput
                 v-model="tokenForm.referencesText"
                 placeholder="Referenced token IDs (comma-separated)"
               />
@@ -223,23 +215,35 @@
           </div>
 
           <template #footer>
-            <Button
-              label="Cancel"
-              severity="secondary"
-              outlined
-              @click="showCreateDialog = false"
-            />
-            <Button
-              :label="editingToken ? 'Update' : 'Create'"
-              severity="primary"
-              :loading="saving"
-              @click="saveToken"
-            />
+            <div class="flex gap-2 justify-end">
+              <UButton
+                variant="outline"
+                color="neutral"
+                @click="showCreateDialog = false"
+              >
+                Cancel
+              </UButton>
+              <UButton
+                :label="editingToken ? 'Update' : 'Create'"
+                :loading="saving"
+                @click="saveToken"
+              >
+                {{ editingToken ? 'Update' : 'Create' }}
+              </UButton>
+            </div>
           </template>
-        </Dialog>
+        </UModal>
 
-        <!-- Delete Confirmation -->
-        <ConfirmDialog />
+        <!-- Delete Confirmation Modal -->
+        <UModal v-model="showDeleteConfirm" title="Delete Token">
+          <p class="text-gray-600">Are you sure you want to delete the token "{{ tokenToDelete?.name }}"?</p>
+          <template #footer>
+            <div class="flex gap-2 justify-end">
+              <UButton variant="outline" color="neutral" @click="showDeleteConfirm = false">Cancel</UButton>
+              <UButton color="error" @click="doDelete">Delete</UButton>
+            </div>
+          </template>
+        </UModal>
       </div>
     </main>
   </div>
@@ -247,18 +251,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import { useConfirm } from 'primevue/useconfirm'
-import InputText from 'primevue/inputtext'
-import Textarea from 'primevue/textarea'
-import Dropdown from 'primevue/dropdown'
-import Button from 'primevue/button'
-import Dialog from 'primevue/dialog'
-import DataTable from 'primevue/datatable'
-import Column from 'primevue/column'
-import ProgressSpinner from 'primevue/progressspinner'
-import Badge from 'primevue/badge'
-import ConfirmDialog from 'primevue/confirmdialog'
+import { useToast } from '#imports'
 import AdminSidebar from '@/app/components/admin/AdminSidebar.vue'
 import type { DesignToken } from '@/utils/tokenUtils'
 
@@ -268,7 +261,6 @@ declare global {
   }
 }
 
-const confirm = useConfirm()
 const toast = useToast()
 
 // State
@@ -277,7 +269,9 @@ const loading = ref(false)
 const saving = ref(false)
 const totalTokens = ref(0)
 const showCreateDialog = ref(false)
+const showDeleteConfirm = ref(false)
 const editingToken = ref<DesignToken | null>(null)
+const tokenToDelete = ref<DesignToken | null>(null)
 
 // Filters
 const filters = reactive({
@@ -296,13 +290,21 @@ const tokenForm = reactive({
   referencesText: ''
 })
 
-
-
 const errors = reactive({
   name: '',
   category: '',
   value: ''
 })
+
+// Table columns
+const tableColumns = [
+  { key: 'name', label: 'Name' },
+  { key: 'type', label: 'Type' },
+  { key: 'value', label: 'Value' },
+  { key: 'path', label: 'Path' },
+  { key: 'description', label: 'Description' },
+  { key: 'actions', label: 'Actions' }
+]
 
 // Options
 const categoryOptions = [
@@ -320,7 +322,6 @@ const typeOptions = [
   { label: 'Alias', value: 'alias' }
 ]
 
-// Computed
 const currentPage = ref(1)
 const pageSize = 20
 
@@ -347,10 +348,9 @@ async function loadTokens() {
   } catch {
     console.error('Failed to load tokens')
     toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'Failed to load tokens',
-      life: 3000
+      title: 'Error',
+      description: 'Failed to load tokens',
+      color: 'error'
     })
   } finally {
     loading.value = false
@@ -358,7 +358,6 @@ async function loadTokens() {
 }
 
 function debouncedSearch() {
-  // Simple debounced search
   clearTimeout(window.searchTimeout)
   window.searchTimeout = setTimeout(() => {
     currentPage.value = 1
@@ -374,8 +373,8 @@ function clearFilters() {
   loadTokens()
 }
 
-function onPage(event: { page: number }) {
-  currentPage.value = event.page + 1
+function onPage(page: number) {
+  currentPage.value = page + 1
   loadTokens()
 }
 
@@ -389,21 +388,21 @@ function editToken(token: DesignToken) {
   tokenForm.referencesText = token.references ? token.references.join(', ') : ''
   showCreateDialog.value = true
 
-  // Clear errors
   Object.keys(errors).forEach(key => {
-    errors[key] = ''
+    errors[key as keyof typeof errors] = ''
   })
 }
 
 function confirmDelete(token: DesignToken) {
-  confirm.require({
-    message: `Are you sure you want to delete the token "${token.name}"?`,
-    header: 'Delete Token',
-    icon: 'pi pi-exclamation-triangle',
-    rejectClass: 'p-button-secondary p-button-outlined',
-    acceptClass: 'p-button-danger',
-    accept: () => deleteToken(token)
-  })
+  tokenToDelete.value = token
+  showDeleteConfirm.value = true
+}
+
+async function doDelete() {
+  if (!tokenToDelete.value) return
+  await deleteToken(tokenToDelete.value)
+  showDeleteConfirm.value = false
+  tokenToDelete.value = null
 }
 
 async function deleteToken(token: DesignToken) {
@@ -414,10 +413,9 @@ async function deleteToken(token: DesignToken) {
 
     if (response.ok) {
       toast.add({
-        severity: 'success',
-        summary: 'Success',
-        detail: 'Token deleted successfully',
-        life: 3000
+        title: 'Success',
+        description: 'Token deleted successfully',
+        color: 'success'
       })
       loadTokens()
     } else {
@@ -425,21 +423,18 @@ async function deleteToken(token: DesignToken) {
     }
   } catch {
     toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'Failed to delete token',
-      life: 3000
+      title: 'Error',
+      description: 'Failed to delete token',
+      color: 'error'
     })
   }
 }
 
 async function saveToken() {
-  // Clear errors
   Object.keys(errors).forEach(key => {
-    errors[key] = ''
+    errors[key as keyof typeof errors] = ''
   })
 
-  // Validate form
   if (!tokenForm.name.trim()) {
     errors.name = 'Name is required'
     return
@@ -455,7 +450,6 @@ async function saveToken() {
     return
   }
 
-  // Parse value from text
   let parsedValueToSave
   try {
     parsedValueToSave = JSON.parse(tokenForm.value)
@@ -464,7 +458,6 @@ async function saveToken() {
     return
   }
 
-  // Parse references
   let references: string[] | undefined
   if (tokenForm.type === 'reference' && tokenForm.referencesText.trim()) {
     references = tokenForm.referencesText.split(',').map(s => s.trim()).filter(Boolean)
@@ -498,10 +491,9 @@ async function saveToken() {
 
     if (response.ok) {
       toast.add({
-        severity: editingToken.value ? 'success' : 'success',
-        summary: 'Success',
-        detail: `Token ${editingToken.value ? 'updated' : 'created'} successfully`,
-        life: 3000
+        title: 'Success',
+        description: `Token ${editingToken.value ? 'updated' : 'created'} successfully`,
+        color: 'success'
       })
 
       showCreateDialog.value = false
@@ -513,10 +505,9 @@ async function saveToken() {
     }
   } catch (error) {
     toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: error.message,
-      life: 3000
+      title: 'Error',
+      description: (error as Error).message,
+      color: 'error'
     })
   } finally {
     saving.value = false
@@ -533,7 +524,7 @@ function resetForm() {
   tokenForm.referencesText = ''
 
   Object.keys(errors).forEach(key => {
-    errors[key] = ''
+    errors[key as keyof typeof errors] = ''
   })
 }
 
@@ -544,14 +535,12 @@ function formatValue(value: string | number | Record<string, unknown> | null): s
   return JSON.stringify(value)
 }
 
-
-
 function getTypeSeverity(type: string): string {
   switch (type) {
     case 'value': return 'success'
     case 'reference': return 'info'
     case 'alias': return 'warning'
-    default: return 'secondary'
+    default: return 'neutral'
   }
 }
 </script>

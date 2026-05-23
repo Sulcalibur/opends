@@ -10,26 +10,26 @@
         </div>
 
         <div class="mb-6 flex flex-col md:flex-row gap-4">
-          <span class="relative flex-1 max-w-md">
-            <i class="pi pi-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-            <InputText
+          <div class="relative flex-1 max-w-md">
+            <UIcon name="i-lucide-search" class="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <UInput
               v-model="searchQuery"
               placeholder="Search components..."
               class="w-full pl-10"
             />
-          </span>
-          <Dropdown
+          </div>
+          <USelect
             v-model="selectedCategory"
             :options="categoryOptions"
-            optionLabel="label"
-            optionValue="value"
+            label-key="label"
+            value-key="value"
             placeholder="Category"
             class="w-48"
           />
         </div>
 
         <div v-if="loading" class="text-center py-12">
-          <ProgressSpinner style="width: 40px; height: 40px" />
+          <div class="animate-spin inline-block"><UIcon name="i-lucide-loader-2" class="text-4xl text-gray-400" /></div>
         </div>
 
         <div
@@ -50,7 +50,7 @@
               <div
                 class="w-8 h-8 rounded-md bg-indigo-50 flex items-center justify-center text-indigo-600"
               >
-                <i class="pi pi-box"></i>
+                <UIcon name="i-lucide-box" />
               </div>
               <h3 class="font-bold text-sm text-gray-900">{{ component.name }}</h3>
             </div>
@@ -66,9 +66,7 @@
               <span class="text-[10px] font-mono text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded">
                 {{ component.props?.length || 0 }} props
               </span>
-              <span class="text-indigo-600 text-xs font-medium group-hover:underline"
-                >View Details -></span
-              >
+              <span class="text-indigo-600 text-xs font-medium">View Details -></span>
             </div>
           </div>
         </div>
@@ -76,13 +74,9 @@
     </main>
 
     <!-- Component Detail Dialog -->
-    <Dialog
-      v-model:visible="showComponentDialog"
-      modal
-      :header="selectedComponent ? selectedComponent.name : 'Details'"
-      :style="{ width: '800px', maxWidth: '90vw' }"
-      class="p-dialog-simple"
-      :draggable="false"
+    <UModal
+      v-model="showComponentDialog"
+      :title="selectedComponent ? selectedComponent.name : 'Details'"
     >
       <div v-if="selectedComponent" class="py-2 space-y-6">
         <p class="text-gray-600 text-sm leading-relaxed">{{ selectedComponent.description }}</p>
@@ -103,15 +97,12 @@
                 <tr v-for="prop in selectedComponent.props" :key="prop.name">
                   <td class="px-4 py-3 font-mono text-indigo-600 font-medium">{{ prop.name }}</td>
                   <td class="px-4 py-3 text-gray-600 font-mono text-xs">{{ prop.type }}</td>
-                  <td class="px-4 py-3 text-gray-500 font-mono text-xs">
-                    {{ prop.default || '-' }}
-                  </td>
+                  <td class="px-4 py-3 text-gray-500 font-mono text-xs">{{ prop.default || '-' }}</td>
                   <td class="px-4 py-3">
                     <span
                       v-if="prop.required"
                       class="text-[10px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded"
-                      >YES</span
-                    >
+                    >YES</span>
                     <span v-else class="text-[10px] font-bold text-gray-400">NO</span>
                   </td>
                 </tr>
@@ -127,74 +118,70 @@
           </div>
         </div>
       </div>
-    </Dialog>
+    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
-  import { ref, computed, onMounted } from 'vue'
-  import { useRouter } from 'vue-router'
-  import Button from 'primevue/button'
-  import InputText from 'primevue/inputtext'
-  import Dropdown from 'primevue/dropdown'
-  import ProgressSpinner from 'primevue/progressspinner'
-  import Dialog from 'primevue/dialog'
-  import axios from 'axios'
-  import type { ComponentSpec } from '@/design-system/storage'
+import { ref, computed, onMounted } from 'vue'
+import { useRouter } from 'vue-router'
+import axios from 'axios'
+import type { ComponentSpec } from '@/design-system/storage'
+import ViewerSidebar from '@/app/components/ViewerSidebar.vue'
 
-  const router = useRouter()
+const router = useRouter()
 
-  const searchQuery = ref('')
-  const selectedCategory = ref<string | null>(null)
-  const loading = ref(true)
-  const components = ref<ComponentSpec[]>([])
-  const selectedComponent = ref<ComponentSpec | null>(null)
-  const showComponentDialog = ref(false)
+const searchQuery = ref('')
+const selectedCategory = ref<string | null>(null)
+const loading = ref(true)
+const components = ref<ComponentSpec[]>([])
+const selectedComponent = ref<ComponentSpec | null>(null)
+const showComponentDialog = ref(false)
 
-  const categoryOptions = [
-    { label: 'All Categories', value: null },
-    { label: 'Buttons', value: 'button' },
-    { label: 'Forms', value: 'form' },
-    { label: 'Navigation', value: 'navigation' },
-    { label: 'Layout', value: 'layout' }
-  ]
+const categoryOptions = [
+  { label: 'All Categories', value: null },
+  { label: 'Buttons', value: 'button' },
+  { label: 'Forms', value: 'form' },
+  { label: 'Navigation', value: 'navigation' },
+  { label: 'Layout', value: 'layout' }
+]
 
-  const filteredComponents = computed(() => {
-    let filtered = components.value
-    if (searchQuery.value.trim()) {
-      const query = searchQuery.value.toLowerCase()
-      filtered = filtered.filter(
-        c => c.name.toLowerCase().includes(query) || c.description?.toLowerCase().includes(query)
-      )
-    }
-    if (selectedCategory.value) {
-      filtered = filtered.filter(c => c.name.toLowerCase().includes(selectedCategory.value!))
-    }
-    return filtered
-  })
-
-  function viewComponent(component: ComponentSpec) {
-    selectedComponent.value = component
-    showComponentDialog.value = true
+const filteredComponents = computed(() => {
+  let filtered = components.value
+  if (searchQuery.value.trim()) {
+    const query = searchQuery.value.toLowerCase()
+    filtered = filtered.filter(
+      c => c.name.toLowerCase().includes(query) || c.description?.toLowerCase().includes(query)
+    )
   }
-
-  async function loadComponents() {
-    try {
-      loading.value = true
-      components.value = []
-      const response = await axios.get('/api/components-public')
-      if (response.data.success) {
-        components.value = response.data.data
-      }
-    } catch (error) {
-      console.error('Error loading components:', error)
-      components.value = []
-    } finally {
-      loading.value = false
-    }
+  if (selectedCategory.value) {
+    filtered = filtered.filter(c => c.name.toLowerCase().includes(selectedCategory.value!))
   }
+  return filtered
+})
 
-  onMounted(() => {
-    loadComponents()
-  })
+function viewComponent(component: ComponentSpec) {
+  selectedComponent.value = component
+  showComponentDialog.value = true
+}
+
+async function loadComponents() {
+  try {
+    loading.value = true
+    components.value = []
+    const response = await axios.get('/api/components-public')
+    if (response.data.success) {
+      components.value = response.data.data
+    }
+  } catch (error) {
+    console.error('Error loading components:', error)
+    components.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  loadComponents()
+})
 </script>

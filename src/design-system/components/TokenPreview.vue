@@ -31,13 +31,12 @@
 
     <!-- Default -->
     <div v-else class="w-6 h-6 bg-gray-200 rounded flex items-center justify-center">
-      <i class="pi pi-tag text-xs text-gray-500"/>
+      <UIcon name="i-lucide-tag" class="text-xs text-gray-500" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps } from 'vue'
 import type { DesignToken } from '@/design-system/storage'
 
 defineProps<{

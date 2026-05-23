@@ -10,25 +10,25 @@
             <p class="text-gray-600">Manage and organize your design system components.</p>
           </div>
           <div class="flex gap-4">
-            <Button icon="pi pi-plus" label="Add Component" class="p-button-primary" @click="$router.push('/admin/codegen')" />
-            <Button icon="pi pi-code" label="Generate Code" class="p-button-secondary" @click="$router.push('/admin/codegen')" />
+            <UButton icon="i-lucide-plus" @click="$router.push('/admin/codegen')">Add Component</UButton>
+            <UButton icon="i-lucide-code-2" color="neutral" variant="outline" @click="$router.push('/admin/codegen')">Generate Code</UButton>
           </div>
         </div>
 
         <!-- Search and Filter -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <div class="flex gap-4 items-center">
-            <InputText
+            <UInput
               v-model="searchQuery"
               placeholder="Search components..."
               class="flex-1"
-              icon="pi pi-search"
+              icon="i-lucide-search"
             />
-            <Dropdown
+            <USelect
               v-model="selectedCategory"
               :options="categoryOptions"
-              option-label="label"
-              option-value="value"
+              label-key="label"
+              value-key="value"
               placeholder="All Categories"
               class="w-48"
             />
@@ -45,17 +45,20 @@
             <div class="flex items-start justify-between mb-4">
               <div class="flex-1">
                 <h3 class="font-semibold text-gray-900 mb-1">{{ component.name }}</h3>
-                <Badge :value="component.category" class="text-xs" />
+                <UBadge :label="component.category" class="text-xs" />
               </div>
               <div class="flex gap-2 ml-4">
-                <Button
-                  icon="pi pi-pencil"
-                  class="p-button-text p-button-sm"
+                <UButton
+                  icon="i-lucide-pencil"
+                  variant="ghost"
+                  size="sm"
                   @click="editComponent(component)"
                 />
-                <Button
-                  icon="pi pi-trash"
-                  class="p-button-text p-button-danger p-button-sm"
+                <UButton
+                  icon="i-lucide-trash-2"
+                  variant="ghost"
+                  color="error"
+                  size="sm"
                   @click="confirmDelete(component)"
                 />
               </div>
@@ -75,17 +78,15 @@
           <!-- Empty State -->
           <div v-if="filteredComponents.length === 0" class="col-span-full">
             <div class="text-center py-12">
-              <i class="pi pi-box text-4xl text-gray-400 mb-4"/>
+              <UIcon name="i-lucide-box" class="text-4xl text-gray-400 mb-4" />
               <h3 class="text-lg font-medium text-gray-900 mb-2">No components found</h3>
               <p class="text-gray-500 mb-4">
                 {{ searchQuery || selectedCategory ? 'Try adjusting your search filters.' : 'Get started by adding your first component.' }}
               </p>
-              <Button label="Add First Component" class="p-button-primary" @click="showCreateDialog = true" />
+              <UButton @click="showCreateDialog = true">Add First Component</UButton>
             </div>
           </div>
         </div>
-
-        <!-- Component creation and editing features coming soon -->
       </div>
     </main>
   </div>
@@ -93,15 +94,11 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useToast } from 'primevue/usetoast'
-import Button from 'primevue/button'
-import Badge from 'primevue/badge'
+import { useToast } from '#imports'
 import AdminSidebar from '@/app/components/admin/AdminSidebar.vue'
 import axios from 'axios'
 
 const toast = useToast()
-
-
 
 // State
 const loading = ref(false)
@@ -153,10 +150,9 @@ const loadComponents = async () => {
     components.value = response.data
   } catch {
     toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'Failed to load components',
-      life: 3000
+      title: 'Error',
+      description: 'Failed to load components',
+      color: 'error'
     })
   } finally {
     loading.value = false
@@ -164,18 +160,12 @@ const loadComponents = async () => {
 }
 
 const editComponent = (component: Component) => {
-  // TODO: Implement edit functionality
   console.log('Edit component', component)
 }
 
 const confirmDelete = (component: Component) => {
-  // TODO: Implement delete confirmation
   console.log('Delete component', component)
 }
-
-
-
-
 
 // Lifecycle
 onMounted(() => {

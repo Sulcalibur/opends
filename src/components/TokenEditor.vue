@@ -13,7 +13,7 @@
           :style="{ backgroundColor: colorValue }"
         />
         <div>
-          <InputText
+          <UInput
             v-model="colorValue"
             placeholder="#000000"
             class="w-32"
@@ -54,17 +54,17 @@
         <div v-if="isFontFamily" class="grid grid-cols-3 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Family</label>
-            <Dropdown
+            <USelect
               v-model="fontFamily"
               :options="fontOptions"
-              option-label="label"
-              option-value="value"
+              label-key="label"
+              value-key="value"
               class="w-full"
             />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Size</label>
-            <InputText
+            <UInput
               v-model="fontSize"
               placeholder="16px"
               class="w-full"
@@ -72,11 +72,11 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Weight</label>
-            <Dropdown
+            <USelect
               v-model="fontWeight"
               :options="weightOptions"
-              option-label="label"
-              option-value="value"
+              label-key="label"
+              value-key="value"
               class="w-full"
             />
           </div>
@@ -84,7 +84,7 @@
 
         <div v-else>
           <label class="block text-sm font-medium text-gray-700 mb-1">Value</label>
-          <InputText
+          <UInput
             v-model="typographyValue"
             :placeholder="getTypographyPlaceholder()"
             class="w-full"
@@ -99,20 +99,20 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Visual Preview</label>
           <div class="flex items-center gap-4">
-            <div class="w-4 h-16 bg-blue-500 rounded"/>
+            <div class="w-4 h-16 bg-blue-500 rounded" />
             <div
               class="h-16 bg-blue-100 border-2 border-blue-200 rounded flex items-center justify-center"
               :style="{ width: spacingValue }"
             >
               <span class="text-xs text-blue-800 font-mono">{{ spacingValue }}</span>
             </div>
-            <div class="w-4 h-16 bg-blue-500 rounded"/>
+            <div class="w-4 h-16 bg-blue-500 rounded" />
           </div>
         </div>
 
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Value</label>
-          <InputText
+          <UInput
             v-model="spacingValue"
             placeholder="1rem"
             class="w-48"
@@ -122,14 +122,15 @@
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Presets</label>
           <div class="flex gap-2 flex-wrap">
-            <Button
+            <UButton
               v-for="preset in spacingPresets"
               :key="preset"
-              :label="preset"
-              size="small"
-              outlined
+              size="sm"
+              variant="outline"
               @click="spacingValue = preset"
-            />
+            >
+              {{ preset }}
+            </UButton>
           </div>
         </div>
       </div>
@@ -140,10 +141,10 @@
       <div class="space-y-4">
         <div>
           <label class="block text-sm font-medium text-gray-700 mb-1">Value</label>
-          <Textarea
+          <UTextarea
             v-model="genericValue"
             :placeholder="getGenericPlaceholder()"
-            rows="3"
+            :rows="3"
             class="w-full"
           />
         </div>
@@ -156,7 +157,7 @@
               :key="refId"
               class="flex items-center gap-2 p-2 bg-gray-50 rounded"
             >
-              <i class="pi pi-link text-gray-500"/>
+              <UIcon name="i-lucide-link" class="text-gray-500" />
               <code class="text-sm">{{ refId }}</code>
             </div>
           </div>
@@ -171,15 +172,11 @@
 
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
-import InputText from 'primevue/inputtext'
-import Textarea from 'primevue/textarea'
-import Dropdown from 'primevue/dropdown'
-import Button from 'primevue/button'
 import type { DesignToken } from '@/utils/tokenUtils'
 
 interface Props {
   token: DesignToken
-  modelValue: any
+  modelValue: unknown
 }
 
 const props = defineProps<Props>()
@@ -190,7 +187,6 @@ const typographyValue = ref(JSON.stringify(props.token.value, null, 2))
 const spacingValue = ref(typeof props.token.value === 'string' ? props.token.value : '1rem')
 const genericValue = ref(JSON.stringify(props.token.value, null, 2))
 
-// Presets
 const colorPresets = [
   '#000000', '#ffffff', '#f3f4f6', '#6b7280', '#3b82f6',
   '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'
@@ -217,10 +213,9 @@ const weightOptions = [
   { label: 'Bold', value: '700' }
 ]
 
-// Computed
 const isFontFamily = computed(() => {
   return props.token.name.toLowerCase().includes('font') &&
-         props.token.name.toLowerCase().includes('family')
+    props.token.name.toLowerCase().includes('family')
 })
 
 const fontFamily = computed({
@@ -238,7 +233,7 @@ const fontFamily = computed({
 const fontSize = computed({
   get: () => {
     if (props.token.name.toLowerCase().includes('size')) {
-      return props.token.value
+      return props.token.value as string
     }
     return ''
   },
@@ -250,7 +245,7 @@ const fontSize = computed({
 const fontWeight = computed({
   get: () => {
     if (props.token.name.toLowerCase().includes('weight')) {
-      return props.token.value
+      return props.token.value as string
     }
     return '400'
   },
@@ -272,7 +267,6 @@ const typographyStyles = computed(() => {
   return {}
 })
 
-// Watchers
 watch(colorValue, (newValue) => {
   if (props.token.category === 'color') {
     emit('update:modelValue', newValue)
@@ -303,14 +297,13 @@ watch(genericValue, (newValue) => {
   }
 })
 
-// Methods
 function updateColorValue() {
   if (props.token.category === 'color') {
     emit('update:modelValue', colorValue.value)
   }
 }
 
-function updateTypography(type: string, value: string) {
+function updateTypography(_type: string, value: string) {
   if (props.token.category === 'typography') {
     emit('update:modelValue', value)
   }

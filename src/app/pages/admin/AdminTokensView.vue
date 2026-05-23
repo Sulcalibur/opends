@@ -9,7 +9,7 @@
             <h1 class="text-3xl font-bold text-gray-900 mb-2">Token Editor</h1>
             <p class="text-gray-600">Manage and edit design tokens.</p>
           </div>
-          <Button icon="pi pi-plus" label="Add Token" class="p-button-primary" @click="showAddDialog = true" />
+          <UButton icon="i-lucide-plus" @click="showAddDialog = true">Add Token</UButton>
         </div>
 
         <!-- File Upload Section -->
@@ -32,26 +32,28 @@
             </div>
 
             <div class="flex gap-4">
-              <Button
+              <UButton
                 :loading="extracting"
                 :disabled="!selectedFile"
-                icon="pi pi-upload"
-                label="Extract Tokens"
-                class="p-button-primary"
+                icon="i-lucide-upload"
                 @click="extractFromFile"
-              />
-              <Button
+              >
+                Extract Tokens
+              </UButton>
+              <UButton
                 :disabled="!selectedFile"
-                icon="pi pi-times"
-                label="Clear"
-                class="p-button-secondary"
+                icon="i-lucide-x"
+                color="neutral"
+                variant="outline"
                 @click="clearFile"
-              />
+              >
+                Clear
+              </UButton>
             </div>
 
             <div v-if="extractionResult" class="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
               <div class="flex">
-                <i class="pi pi-check-circle text-green-400"/>
+                <UIcon name="i-lucide-check-circle" class="text-green-400" />
                 <div class="ml-3">
                   <h3 class="text-sm font-medium text-green-800">Extraction Successful</h3>
                   <div class="mt-2 text-sm text-green-700">
@@ -64,12 +66,14 @@
                     </ul>
                   </div>
                   <div class="mt-3">
-                    <Button
-                      icon="pi pi-save"
-                      label="Save to Database"
-                      class="p-button-sm p-button-success"
+                    <UButton
+                      icon="i-lucide-save"
+                      size="sm"
+                      color="success"
                       @click="saveExtractedTokens"
-                    />
+                    >
+                      Save to Database
+                    </UButton>
                   </div>
                 </div>
               </div>
@@ -81,10 +85,8 @@
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Manual Token Creation</h2>
           <p class="text-sm text-gray-600 mb-4">Manual token creation form coming soon. For now, upload token files to get started.</p>
-          <Button disabled icon="pi pi-plus" label="Add Token Manually" class="p-button-secondary" />
+          <UButton disabled icon="i-lucide-plus" color="neutral" variant="outline">Add Token Manually</UButton>
         </div>
-
-        <!-- Manual token creation form will be added here -->
 
         <!-- Token List -->
         <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
@@ -93,7 +95,7 @@
           </div>
 
           <div v-if="tokens.length === 0" class="text-center py-12">
-            <i class="pi pi-inbox text-4xl text-gray-400 mb-4"/>
+            <UIcon name="i-lucide-inbox" class="text-4xl text-gray-400 mb-4" />
             <h3 class="text-lg font-medium text-gray-900 mb-2">No tokens yet</h3>
             <p class="text-gray-500 mb-4">Upload a token file or add tokens manually to get started.</p>
           </div>
@@ -124,7 +126,7 @@
                       :style="{ width: token.value }"
                     />
                     <div v-else class="w-8 h-8 bg-gray-200 rounded flex items-center justify-center">
-                      <i class="pi pi-tag text-xs text-gray-500"/>
+                      <UIcon name="i-lucide-tag" class="text-xs text-gray-500" />
                     </div>
                   </div>
 
@@ -138,14 +140,17 @@
 
                 <!-- Actions -->
                 <div class="flex gap-2">
-                  <Button
-                    icon="pi pi-pencil"
-                    class="p-button-text p-button-sm"
+                  <UButton
+                    icon="i-lucide-pencil"
+                    variant="ghost"
+                    size="sm"
                     @click="editToken(token)"
                   />
-                  <Button
-                    icon="pi pi-trash"
-                    class="p-button-text p-button-danger p-button-sm"
+                  <UButton
+                    icon="i-lucide-trash-2"
+                    variant="ghost"
+                    color="error"
+                    size="sm"
                     @click="confirmDelete(token)"
                   />
                 </div>
@@ -153,22 +158,28 @@
             </div>
           </div>
         </div>
-
-        <!-- Token management interface will be added here -->
       </div>
     </main>
+
+    <!-- Delete Confirmation Modal -->
+    <UModal v-model="showDeleteConfirm" title="Delete Token">
+      <p class="text-gray-600">Are you sure you want to delete token "{{ tokenToDelete?.name }}"?</p>
+      <template #footer>
+        <div class="flex gap-2 justify-end">
+          <UButton variant="ghost" color="neutral" @click="showDeleteConfirm = false">Cancel</UButton>
+          <UButton color="error" @click="doDelete">Delete</UButton>
+        </div>
+      </template>
+    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { useConfirm } from 'primevue/useconfirm'
-import { useToast } from 'primevue/usetoast'
-import Button from 'primevue/button'
+import { useToast } from '#imports'
 import AdminSidebar from '@/app/components/admin/AdminSidebar.vue'
 import designSystemStorage, { type DesignToken } from '@/design-system/storage'
 
-const confirm = useConfirm()
 const toast = useToast()
 
 // State
@@ -176,6 +187,8 @@ const loading = ref(false)
 const saving = ref(false)
 const extracting = ref(false)
 const showAddDialog = ref(false)
+const showDeleteConfirm = ref(false)
+const tokenToDelete = ref<DesignToken | null>(null)
 const editingToken = ref<DesignToken | null>(null)
 const selectedFile = ref<File | null>(null)
 const extractionResult = ref<DesignToken[]>([])
@@ -200,10 +213,9 @@ const loadTokens = async () => {
   } catch (error) {
     console.error('Error loading tokens:', error)
     toast.add({
-      severity: 'error',
-      summary: 'Error',
-      detail: 'Failed to load tokens',
-      life: 3000
+      title: 'Error',
+      description: 'Failed to load tokens',
+      color: 'error'
     })
   } finally {
     loading.value = false
@@ -216,33 +228,31 @@ const editToken = (token: DesignToken) => {
   showAddDialog.value = true
 }
 
-
 const confirmDelete = (token: DesignToken) => {
-  confirm.require({
-    message: `Are you sure you want to delete token "${token.name}"?`,
-    header: 'Delete Token',
-    icon: 'pi pi-exclamation-triangle',
-    rejectClass: 'p-button-text',
-    accept: async () => {
-      try {
-        await designSystemStorage.deleteToken(token.id!)
-        toast.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'Token deleted successfully',
-          life: 3000
-        })
-        await loadTokens()
-      } catch {
-        toast.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Failed to delete token',
-          life: 3000
-        })
-      }
-    }
-  })
+  tokenToDelete.value = token
+  showDeleteConfirm.value = true
+}
+
+const doDelete = async () => {
+  if (!tokenToDelete.value) return
+  try {
+    await designSystemStorage.deleteToken(tokenToDelete.value.id!)
+    toast.add({
+      title: 'Success',
+      description: 'Token deleted successfully',
+      color: 'success'
+    })
+    await loadTokens()
+  } catch {
+    toast.add({
+      title: 'Error',
+      description: 'Failed to delete token',
+      color: 'error'
+    })
+  } finally {
+    showDeleteConfirm.value = false
+    tokenToDelete.value = null
+  }
 }
 
 const formatValue = (value: string | number | Record<string, unknown> | null): string => {
@@ -281,18 +291,16 @@ const extractFromFile = async () => {
 
     extractionResult.value = extractedTokens
     toast.add({
-      severity: 'success',
-      summary: 'Extraction Complete',
-      detail: `Successfully extracted ${extractedTokens.length} tokens`,
-      life: 3000
+      title: 'Extraction Complete',
+      description: `Successfully extracted ${extractedTokens.length} tokens`,
+      color: 'success'
     })
   } catch (error) {
     console.error('Extraction error:', error)
     toast.add({
-      severity: 'error',
-      summary: 'Extraction Failed',
-      detail: error.message || 'Failed to extract tokens from file',
-      life: 5000
+      title: 'Extraction Failed',
+      description: (error as Error).message || 'Failed to extract tokens from file',
+      color: 'error'
     })
   } finally {
     extracting.value = false
@@ -301,35 +309,28 @@ const extractFromFile = async () => {
 
 // Resolve token references
 const resolveTokenReferences = (value: string, allTokens: DesignToken[]) => {
-  // Create a map of token names to their resolved values
   const tokenMap: Record<string, string> = {}
 
-  // First pass: resolve simple tokens without references
   for (const token of allTokens) {
     if (typeof token.value === 'string' && !token.value.includes('{')) {
-      // Assuming name format "set/tokenName"
       const parts = token.name.split('/')
       if (parts.length > 1) {
-        tokenMap[parts[1]] = token.value 
+        tokenMap[parts[1]] = token.value
       }
     }
   }
 
-  // Second pass: resolve references
   const resolveValue = (val: string): string => {
     const refRegex = /\{([^}]+)\}/g
     return val.replace(refRegex, (match, ref) => {
       const resolved = tokenMap[ref]
-      return resolved || match // Keep original if can't resolve
+      return resolved || match
     })
   }
 
-  // Third pass: evaluate math expressions
   const evaluateMath = (expr: string): string => {
     try {
-      // Replace references first
       let resolved = resolveValue(expr)
-      // Simple math evaluation (only safe operations)
       resolved = resolved.replace(/(\d+(?:\.\d+)?)\s*([+\-*/])\s*(\d+(?:\.\d+)?)/g, (match, a, op, b) => {
         const numA = parseFloat(a)
         const numB = parseFloat(b)
@@ -343,59 +344,45 @@ const resolveTokenReferences = (value: string, allTokens: DesignToken[]) => {
       })
       return resolved
     } catch {
-      return expr // Return original if evaluation fails
+      return expr
     }
   }
 
   return evaluateMath(value)
 }
 
-// Extract tokens from JSON data (inline implementation)
 const extractTokensFromData = (data: Record<string, unknown>) => {
   const extractedTokens: DesignToken[] = []
 
   if (data.tokens && Array.isArray(data.tokens)) {
-    // Already processed format
     return data.tokens as DesignToken[]
   }
 
-  // First pass: extract all tokens
   const rawTokens: DesignToken[] = []
   for (const [setName, tokens] of Object.entries(data)) {
-    if (setName.startsWith('$')) continue // Skip metadata
+    if (setName.startsWith('$')) continue
     if (typeof tokens !== 'object' || tokens === null) continue
 
     for (const [name, tokenData] of Object.entries(tokens as Record<string, unknown>)) {
       const token = tokenData as Record<string, unknown>
-      // Simplified extraction logic for demo
       const value = typeof token.$value === 'string' ? token.$value : String(token.$value || '')
-      
+
       rawTokens.push({
-        id: crypto.randomUUID(), // Generate temporary ID
+        id: crypto.randomUUID(),
         name: `${setName}/${name}`,
         value: value,
         type: (token.$type as DesignToken['type']) || 'other',
         category: mapTokenType(token.$type as string),
         description: (token.$description as string) || '',
-        // set: setName, // 'set' is not in DesignToken type, ignoring
-        // tokenName: name // ignoring extra prop
       })
     }
   }
 
-  // Second pass: resolve references and create final tokens
   for (const token of rawTokens) {
     let processedValue: string | Record<string, unknown> = token.value as string
 
-    // Resolve references
     if (typeof processedValue === 'string') {
       processedValue = resolveTokenReferences(processedValue, rawTokens)
-    }
-
-    // Create proper value structure based on category for public display
-    if (token.category === 'typography') {
-      // Logic for typography object creation...
-      // For now keeping it simple to satisfy types
     }
 
     extractedTokens.push({
@@ -433,18 +420,16 @@ const saveExtractedTokens = async () => {
     await loadTokens()
 
     toast.add({
-      severity: 'success',
-      summary: 'Tokens Saved',
-      detail: 'All extracted tokens have been saved to the database',
-      life: 3000
+      title: 'Tokens Saved',
+      description: 'All extracted tokens have been saved to the database',
+      color: 'success'
     })
   } catch (error) {
     console.error('Error saving tokens:', error)
     toast.add({
-      severity: 'error',
-      summary: 'Save Failed',
-      detail: 'Failed to save extracted tokens',
-      life: 3000
+      title: 'Save Failed',
+      description: 'Failed to save extracted tokens',
+      color: 'error'
     })
   } finally {
     saving.value = false
@@ -456,9 +441,3 @@ onMounted(() => {
   loadTokens()
 })
 </script>
-
-<style scoped>
-:deep(.p-datatable .p-datatable-tbody > tr > td) {
-  padding: 0.75rem;
-}
-</style>

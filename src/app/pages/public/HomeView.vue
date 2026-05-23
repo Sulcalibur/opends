@@ -24,21 +24,21 @@
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div class="bg-white p-6 rounded-lg shadow-lg border">
             <div class="flex items-center gap-4 mb-4">
-              <i class="pi pi-sync text-blue-500 text-2xl"></i>
+              <UIcon name="i-lucide-refresh-cw" class="text-blue-500 text-2xl" />
               <span class="font-bold text-xl">Design Tool Integration</span>
             </div>
             <p class="text-slate-600">Connect to Penpot or Figma and sync your design files automatically.</p>
           </div>
           <div class="bg-white p-6 rounded-lg shadow-lg border">
             <div class="flex items-center gap-4 mb-4">
-              <i class="pi pi-palette text-green-500 text-2xl"></i>
+              <UIcon name="i-lucide-palette" class="text-green-500 text-2xl" />
               <span class="font-bold text-xl">Design Token Management</span>
             </div>
             <p class="text-slate-600">Manage colors, typography, spacing, and other design tokens in one place.</p>
           </div>
           <div class="bg-white p-6 rounded-lg shadow-lg border">
             <div class="flex items-center gap-4 mb-4">
-              <i class="pi pi-code text-purple-500 text-2xl"></i>
+              <UIcon name="i-lucide-code-2" class="text-purple-500 text-2xl" />
               <span class="font-bold text-xl">Component Documentation</span>
             </div>
             <p class="text-slate-600">Generate beautiful documentation for your components with live examples.</p>

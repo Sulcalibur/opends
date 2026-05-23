@@ -6,56 +6,51 @@
         <p class="text-gray-700 text-xl">Sign in to manage your design system</p>
       </div>
 
-      <Card class="login-card shadow-2xl border-none">
-        <template #content>
-          <div class="login-form p-4">
-            <div class="mb-8 text-center">
-              <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-50 mb-4">
-                <i class="pi pi-lock text-primary text-3xl"/>
-              </div>
-              <h2 class="text-2xl font-bold text-slate-900">Admin Access</h2>
-            </div>
-
-            <div class="field mb-6">
-              <label for="password" class="block mb-2 font-semibold text-slate-700">
-                Password
-              </label>
-              <Password 
-                id="password"
-                v-model="password" 
-                :feedback="false" 
-                toggle-mask
-                class="w-full"
-                input-class="w-full p-inputtext-lg"
-                placeholder="Enter your admin password"
-                @keyup.enter="handleLogin"
-              />
-            </div>
-
-            <div class="flex align-items-center justify-between mb-8">
-              <div class="flex align-items-center gap-2">
-                <Checkbox 
-                  id="remember" 
-                  v-model="rememberMe" 
-                  binary 
-                />
-                <label for="remember" class="text-slate-600 cursor-pointer select-none">Remember me</label>
-              </div>
-              <a href="#" class="font-semibold hover:underline" @click.prevent="showHelp">
-                Need help?
-              </a>
-            </div>
-
-            <Button 
-              label="Sign In" 
-              severity="primary" 
-              class="w-full p-button-lg font-bold"
-              :loading="loading"
-              @click="handleLogin"
-            />
+      <div class="login-card bg-white rounded-2xl shadow-2xl p-8">
+        <div class="mb-8 text-center">
+          <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary-50 mb-4">
+            <UIcon name="i-lucide-lock" class="text-primary text-3xl" />
           </div>
-        </template>
-      </Card>
+          <h2 class="text-2xl font-bold text-slate-900">Admin Access</h2>
+        </div>
+
+        <div class="field mb-6">
+          <label for="password" class="block mb-2 font-semibold text-slate-700">
+            Password
+          </label>
+          <UInput
+            id="password"
+            v-model="password"
+            type="password"
+            class="w-full"
+            size="lg"
+            placeholder="Enter your admin password"
+            @keyup.enter="handleLogin"
+          />
+        </div>
+
+        <div class="flex items-center justify-between mb-8">
+          <div class="flex items-center gap-2">
+            <UCheckbox
+              id="remember"
+              v-model="rememberMe"
+            />
+            <label for="remember" class="text-slate-600 cursor-pointer select-none">Remember me</label>
+          </div>
+          <a href="#" class="font-semibold hover:underline" @click.prevent="showHelp">
+            Need help?
+          </a>
+        </div>
+
+        <UButton
+          class="w-full font-bold"
+          size="lg"
+          :loading="loading"
+          @click="handleLogin"
+        >
+          Sign In
+        </UButton>
+      </div>
 
       <div class="login-footer mt-8">
         <p class="text-gray-600 text-center text-sm font-medium">
@@ -65,17 +60,11 @@
     </div>
 
     <!-- Help Dialog -->
-    <Dialog 
-      v-model:visible="showHelpDialog" 
-      modal 
-      header="Login Help"
-      :style="{ width: '500px' }"
-      class="p-dialog-modern"
-    >
-      <div class="flex flex-column gap-6 py-2">
+    <UModal v-model="showHelpDialog" title="Login Help">
+      <div class="flex flex-col gap-6 py-2">
         <div class="flex gap-4">
           <div class="w-12 h-12 flex items-center justify-center rounded-full bg-blue-50 flex-shrink-0">
-            <i class="pi pi-info-circle text-primary text-xl"/>
+            <UIcon name="i-lucide-info" class="text-primary text-xl" />
           </div>
           <div>
             <p class="font-bold text-lg mb-2 text-slate-900">Admin Password Setup</p>
@@ -89,8 +78,8 @@
         </div>
 
         <div class="flex gap-4">
-           <div class="w-12 h-12 flex items-center justify-center rounded-full bg-green-50 flex-shrink-0">
-            <i class="pi pi-key text-green-600 text-xl"/>
+          <div class="w-12 h-12 flex items-center justify-center rounded-full bg-green-50 flex-shrink-0">
+            <UIcon name="i-lucide-key" class="text-green-600 text-xl" />
           </div>
           <div>
             <p class="font-bold text-lg mb-2 text-slate-900">Generating a Hash</p>
@@ -105,28 +94,23 @@
       </div>
 
       <template #footer>
-        <Button 
-          label="Close" 
-          severity="secondary" 
-          text
+        <UButton
+          variant="ghost"
           class="font-bold"
           @click="showHelpDialog = false"
-        />
+        >
+          Close
+        </UButton>
       </template>
-    </Dialog>
+    </UModal>
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useToast } from 'primevue/usetoast'
+import { useToast } from '#imports'
 import { useAuthStore } from '@/app/stores/auth'
-import Card from 'primevue/card'
-import Button from 'primevue/button'
-import Password from 'primevue/password'
-import Checkbox from 'primevue/checkbox'
-import Dialog from 'primevue/dialog'
 
 const router = useRouter()
 const toast = useToast()
@@ -141,10 +125,9 @@ const version = '0.1.0'
 async function handleLogin() {
   if (!password.value.trim()) {
     toast.add({
-      severity: 'warn',
-      summary: 'Password Required',
-      detail: 'Please enter the admin password',
-      life: 3000
+      title: 'Password Required',
+      description: 'Please enter the admin password',
+      color: 'warning'
     })
     return
   }
@@ -153,33 +136,30 @@ async function handleLogin() {
 
   try {
     const success = await authStore.login(password.value)
-    
+
     if (success) {
       toast.add({
-        severity: 'success',
-        summary: 'Login Successful',
-        detail: 'Welcome to OpenDS Admin',
-        life: 3000
+        title: 'Login Successful',
+        description: 'Welcome to OpenDS Admin',
+        color: 'success'
       })
-      
+
       // Redirect to admin dashboard
       router.push('/admin')
     } else {
       toast.add({
-        severity: 'error',
-        summary: 'Login Failed',
-        detail: 'Invalid password. Please try again.',
-        life: 3000
+        title: 'Login Failed',
+        description: 'Invalid password. Please try again.',
+        color: 'error'
       })
       password.value = ''
     }
   } catch (error) {
     console.error('Login error:', error)
     toast.add({
-      severity: 'error',
-      summary: 'Login Error',
-      detail: 'An error occurred during login. Please try again.',
-      life: 3000
+      title: 'Login Error',
+      description: 'An error occurred during login. Please try again.',
+      color: 'error'
     })
   } finally {
     loading.value = false
@@ -203,30 +183,6 @@ function showHelp() {
 
 .login-container {
   width: 100%;
-  max-width: 480px; /* Slightly wider for modern feel */
-}
-
-.login-card {
-  background: rgba(255, 255, 255, 0.98);
-  border-radius: 24px; /* Larger radius */
-  backdrop-filter: blur(10px);
-}
-
-:deep(.p-password-input) {
-  width: 100%;
-  padding: 1rem; /* Larger inputs */
-  border-radius: 0.75rem;
-}
-
-:deep(.p-password) {
-  width: 100%;
-}
-
-:deep(.p-card-body) {
-  padding: 2rem; /* More whitespace */
-}
-
-:deep(.p-dialog-content) {
-  padding: 0 1.5rem 1.5rem 1.5rem;
+  max-width: 480px;
 }
 </style>

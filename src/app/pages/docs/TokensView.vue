@@ -14,7 +14,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
           <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div class="w-12 h-12 bg-blue-50 rounded-lg flex items-center justify-center mb-4 text-blue-600">
-              <i class="pi pi-palette text-xl"/>
+              <UIcon name="i-lucide-palette" class="text-xl" />
             </div>
             <h3 class="text-lg font-bold text-gray-900 mb-2">Colors</h3>
             <p class="text-gray-500 text-sm">Primary, secondary, and semantic color tokens.</p>
@@ -22,7 +22,7 @@
 
           <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div class="w-12 h-12 bg-green-50 rounded-lg flex items-center justify-center mb-4 text-green-600">
-              <i class="pi pi-font text-xl"/>
+              <UIcon name="i-lucide-type" class="text-xl" />
             </div>
             <h3 class="text-lg font-bold text-gray-900 mb-2">Typography</h3>
             <p class="text-gray-500 text-sm">Font families, sizes, weights, and line heights.</p>
@@ -30,7 +30,7 @@
 
           <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
             <div class="w-12 h-12 bg-purple-50 rounded-lg flex items-center justify-center mb-4 text-purple-600">
-              <i class="pi pi-arrows-h text-xl"/>
+              <UIcon name="i-lucide-arrows-left-right" class="text-xl" />
             </div>
             <h3 class="text-lg font-bold text-gray-900 mb-2">Spacing</h3>
             <p class="text-gray-500 text-sm">Consistent spacing scales and measurements.</p>
@@ -39,7 +39,7 @@
 
         <!-- Loading -->
         <div v-if="loading" class="text-center py-12">
-          <ProgressSpinner />
+          <div class="animate-spin inline-block"><UIcon name="i-lucide-loader-2" class="text-4xl text-gray-400" /></div>
           <p class="mt-4 text-gray-600">Loading design tokens...</p>
         </div>
 
@@ -81,7 +81,7 @@
               >
                 <div class="flex justify-between items-center mb-2">
                   <code class="text-sm bg-gray-100 px-2 py-1 rounded">{{ token.key }}</code>
-                  <Badge :value="token.category" severity="info" />
+                  <UBadge :label="token.category || ''" color="info" />
                 </div>
                 <div :style="getTypographyStyle(token)" class="mb-2">
                   The quick brown fox jumps over the lazy dog
@@ -128,8 +128,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import ProgressSpinner from 'primevue/progressspinner'
-import Badge from 'primevue/badge'
 import DocsSidebar from '@/app/components/DocsSidebar.vue'
 
 interface Token {
@@ -161,7 +159,6 @@ onMounted(async () => {
 
 async function loadTokens() {
   try {
-    // Try API first
     try {
       const response = await fetch('/api/tokens')
       if (response.ok) {
@@ -173,17 +170,13 @@ async function loadTokens() {
       console.log('API not available, using mock data')
     }
 
-    // Comprehensive mock data for testing
     tokens.value = [
-      // Colors
       { key: '--color-primary', value: '#3b82f6', category: 'color', description: 'Primary brand color' },
       { key: '--color-primary-hover', value: '#2563eb', category: 'color', description: 'Primary hover state' },
       { key: '--color-secondary', value: '#6b7280', category: 'color', description: 'Secondary color' },
       { key: '--color-success', value: '#10b981', category: 'color', description: 'Success state color' },
       { key: '--color-warning', value: '#f59e0b', category: 'color', description: 'Warning state color' },
       { key: '--color-danger', value: '#ef4444', category: 'color', description: 'Error/danger color' },
-
-      // Typography
       { key: '--font-family', value: 'Inter, system-ui, sans-serif', category: 'typography', description: 'Primary font family' },
       { key: '--font-size-xs', value: '0.75rem', category: 'typography', description: 'Extra small text' },
       { key: '--font-size-sm', value: '0.875rem', category: 'typography', description: 'Small text' },
@@ -197,8 +190,6 @@ async function loadTokens() {
       { key: '--line-height-tight', value: '1.25', category: 'typography', description: 'Tight line height' },
       { key: '--line-height-normal', value: '1.5', category: 'typography', description: 'Normal line height' },
       { key: '--line-height-relaxed', value: '1.75', category: 'typography', description: 'Relaxed line height' },
-
-      // Spacing
       { key: '--space-1', value: '0.25rem', category: 'spacing', description: 'Extra small space (4px)' },
       { key: '--space-2', value: '0.5rem', category: 'spacing', description: 'Small space (8px)' },
       { key: '--space-3', value: '0.75rem', category: 'spacing', description: 'Medium small space (12px)' },
@@ -207,14 +198,10 @@ async function loadTokens() {
       { key: '--space-8', value: '2rem', category: 'spacing', description: 'Extra large space (32px)' },
       { key: '--space-12', value: '3rem', category: 'spacing', description: '2XL space (48px)' },
       { key: '--space-16', value: '4rem', category: 'spacing', description: '3XL space (64px)' },
-
-      // Borders
       { key: '--border-radius-sm', value: '0.25rem', category: 'border', description: 'Small border radius' },
       { key: '--border-radius-md', value: '0.375rem', category: 'border', description: 'Medium border radius' },
       { key: '--border-radius-lg', value: '0.5rem', category: 'border', description: 'Large border radius' },
       { key: '--border-radius-xl', value: '0.75rem', category: 'border', description: 'Extra large border radius' },
-
-      // Shadows
       { key: '--shadow-sm', value: '0 1px 2px 0 rgba(0, 0, 0, 0.05)', category: 'shadow', description: 'Small shadow' },
       { key: '--shadow-md', value: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', category: 'shadow', description: 'Medium shadow' },
       { key: '--shadow-lg', value: '0 10px 15px -3px rgba(0, 0, 0, 0.1)', category: 'shadow', description: 'Large shadow' },
@@ -223,7 +210,6 @@ async function loadTokens() {
 
   } catch (error) {
     console.error('Failed to load tokens:', error)
-    // Minimal fallback data
     tokens.value = [
       { key: '--color-primary', value: '#3b82f6', category: 'color' },
       { key: '--font-family', value: 'Inter, sans-serif', category: 'typography' }

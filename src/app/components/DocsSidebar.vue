@@ -5,7 +5,7 @@
       <div class="p-6 border-b border-gray-200">
         <router-link to="/docs" class="flex items-center space-x-2">
           <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-            <i class="pi pi-book text-white text-sm"/>
+            <UIcon name="i-lucide-book" class="text-white text-sm" />
           </div>
           <span class="font-bold text-gray-900">OpenDS Docs</span>
         </router-link>
@@ -20,12 +20,11 @@
               class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
               :class="$route.name === 'docs' ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-50'"
             >
-              <i class="pi pi-home mr-3"/>
+              <UIcon name="i-lucide-home" class="mr-3" />
               Overview
             </router-link>
           </li>
 
-          <!-- Documentation links temporarily disabled -->
           <li class="mt-6">
             <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
               Documentation
@@ -34,14 +33,14 @@
 
           <li>
             <span class="flex items-center px-3 py-2 text-sm text-gray-400">
-              <i class="pi pi-box mr-3"/>
+              <UIcon name="i-lucide-box" class="mr-3" />
               Components (Coming Soon)
             </span>
           </li>
 
           <li>
             <span class="flex items-center px-3 py-2 text-sm text-gray-400">
-              <i class="pi pi-palette mr-3"/>
+              <UIcon name="i-lucide-palette" class="mr-3" />
               Design Tokens (Coming Soon)
             </span>
           </li>
@@ -58,7 +57,7 @@
               to="/admin"
               class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors text-gray-700 hover:bg-gray-50"
             >
-              <i class="pi pi-cog mr-3"/>
+              <UIcon name="i-lucide-settings" class="mr-3" />
               Admin Dashboard
             </router-link>
           </li>
@@ -68,7 +67,7 @@
               to="/admin/components"
               class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors text-gray-700 hover:bg-gray-50"
             >
-              <i class="pi pi-box mr-3"/>
+              <UIcon name="i-lucide-box" class="mr-3" />
               Manage Components
             </router-link>
           </li>
@@ -78,7 +77,7 @@
               to="/admin/tokens"
               class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors text-gray-700 hover:bg-gray-50"
             >
-              <i class="pi pi-palette mr-3"/>
+              <UIcon name="i-lucide-palette" class="mr-3" />
               Manage Tokens
             </router-link>
           </li>

@@ -11,9 +11,9 @@
 
       <!-- Navigation Links -->
       <div class="hidden md:flex items-center gap-8">
-        <router-link 
-          v-for="link in links" 
-          :key="link.path" 
+        <router-link
+          v-for="link in links"
+          :key="link.path"
           :to="link.path"
           class="text-sm font-semibold text-slate-500 hover:text-slate-900 transition-colors py-2 border-b-2 border-transparent hover:border-slate-900"
           active-class="text-slate-900 border-slate-900"
@@ -25,14 +25,14 @@
       <!-- Actions -->
       <div class="flex items-center gap-4">
         <div v-if="authStore.isAuthenticated" class="flex items-center gap-4">
-           <router-link to="/admin">
-            <Button label="Dashboard" severity="secondary" size="small" class="font-bold" />
-           </router-link>
-           <Button icon="pi pi-sign-out" text rounded severity="secondary" size="small" @click="handleLogout" />
+          <router-link to="/admin">
+            <UButton color="neutral" variant="outline" size="sm" class="font-bold">Dashboard</UButton>
+          </router-link>
+          <UButton icon="i-lucide-log-out" variant="ghost" color="neutral" size="sm" @click="handleLogout" />
         </div>
         <div v-else>
           <router-link to="/login">
-            <Button label="Sign In" severity="primary" size="small" class="font-bold px-6" rounded />
+            <UButton size="sm" class="font-bold px-6">Sign In</UButton>
           </router-link>
         </div>
       </div>
@@ -45,7 +45,6 @@ import { computed, ref } from 'vue'
 import { useAuthStore } from '@/app/stores/auth'
 import { useRouter } from 'vue-router'
 import { useFetch } from '#imports'
-import Button from 'primevue/button'
 
 const authStore = useAuthStore()
 const router = useRouter()
@@ -70,7 +69,6 @@ function handleLogout() {
 
 <style scoped>
 .navbar {
-  /* Ensure it sits on top */
   position: sticky;
   top: 0;
 }

@@ -4,11 +4,11 @@
       <!-- Framework Selector -->
       <div class="control-group">
         <label class="control-label">Framework:</label>
-        <Dropdown
+        <USelect
           v-model="selectedFramework"
           :options="frameworkOptions"
-          option-label="label"
-          option-value="value"
+          label-key="label"
+          value-key="value"
           class="control-select"
         />
       </div>
@@ -18,7 +18,7 @@
         <label class="control-label">{{ prop.name }}:</label>
 
         <!-- String/Number inputs -->
-        <InputText
+        <UInput
           v-if="prop.type === 'string' || prop.type === 'number'"
           v-model="propValues[prop.name]"
           :type="prop.type === 'number' ? 'number' : 'text'"
@@ -27,14 +27,14 @@
         />
 
         <!-- Boolean toggle -->
-        <InputSwitch
+        <USwitch
           v-else-if="prop.type === 'boolean'"
           v-model="propValues[prop.name]"
           class="control-switch"
         />
 
         <!-- Select for predefined options -->
-        <Dropdown
+        <USelect
           v-else-if="prop.type === 'select' && prop.options"
           v-model="propValues[prop.name]"
           :options="prop.options"
@@ -42,7 +42,7 @@
         />
 
         <!-- Default text input -->
-        <InputText
+        <UInput
           v-else
           v-model="propValues[prop.name]"
           :placeholder="prop.default || prop.name"
@@ -53,7 +53,7 @@
       <!-- Responsive Toggle -->
       <div class="control-group">
         <label class="control-label">Responsive:</label>
-        <InputSwitch v-model="responsiveMode" class="control-switch" />
+        <USwitch v-model="responsiveMode" class="control-switch" />
       </div>
     </div>
 
@@ -63,13 +63,13 @@
         <div class="preview-content">
           <!-- Loading state -->
           <div v-if="loading" class="component-placeholder">
-            <i class="pi pi-spin pi-spinner text-4xl text-gray-400 mb-4"/>
+            <div class="animate-spin inline-block mb-4"><UIcon name="i-lucide-loader-2" class="text-4xl text-gray-400" /></div>
             <p class="text-gray-600">Loading component...</p>
           </div>
 
           <!-- Error state -->
           <div v-else-if="error" class="component-placeholder">
-            <i class="pi pi-exclamation-triangle text-4xl text-red-400 mb-4"/>
+            <UIcon name="i-lucide-alert-triangle" class="text-4xl text-red-400 mb-4" />
             <h3 class="text-lg font-semibold text-red-900">Error</h3>
             <p class="text-red-600">{{ error }}</p>
           </div>
@@ -88,8 +88,8 @@
               ]"
               :disabled="propValues.disabled || propValues.loading"
             >
-              <i v-if="propValues.loading" class="pi pi-spin pi-spinner mr-2"/>
-              <i v-if="propValues.icon && !propValues.loading" :class="`pi pi-${propValues.icon} mr-2`"/>
+              <div v-if="propValues.loading" class="animate-spin inline-block mr-2"><UIcon name="i-lucide-loader-2" /></div>
+              <UIcon v-if="propValues.icon && !propValues.loading" :name="`i-lucide-${propValues.icon}`" class="mr-2" />
               <slot>{{ componentName }}</slot>
             </button>
 
@@ -107,7 +107,7 @@
 
             <!-- Default placeholder -->
             <div v-else class="component-placeholder">
-              <i class="pi pi-box text-4xl text-gray-400 mb-4"/>
+              <UIcon name="i-lucide-box" class="text-4xl text-gray-400 mb-4" />
               <h3 class="text-lg font-semibold text-gray-900">{{ componentName }}</h3>
               <p class="text-gray-600">Component preview not available</p>
             </div>
@@ -120,13 +120,14 @@
     <div class="playground-code">
       <div class="code-header">
         <h4 class="font-semibold text-gray-900">Generated Code</h4>
-        <Button
-          icon="pi pi-copy"
-          size="small"
-          outlined
-          label="Copy"
+        <UButton
+          icon="i-lucide-copy"
+          size="sm"
+          variant="outline"
           @click="copyCode"
-        />
+        >
+          Copy
+        </UButton>
       </div>
       <pre class="code-content"><code>{{ generatedCode }}</code></pre>
     </div>
@@ -134,11 +135,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted } from 'vue'
-import Dropdown from 'primevue/dropdown'
-import InputText from 'primevue/inputtext'
-import InputSwitch from 'primevue/inputswitch'
-import Button from 'primevue/button'
+import { ref, computed, onMounted } from 'vue'
 
 interface Props {
   component: string
@@ -152,26 +149,23 @@ const props = withDefaults(defineProps<Props>(), {
 const componentName = props.component
 const selectedFramework = ref('vue')
 const responsiveMode = ref(false)
-const propValues = ref<Record<string, any>>({})
-const componentProps = ref<any[]>([])
+const propValues = ref<Record<string, unknown>>({})
+const componentProps = ref<Record<string, unknown>[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 const inputValue = ref('Sample text')
 
-// Framework options
 const frameworkOptions = [
   { label: 'Vue 3', value: 'vue' },
   { label: 'React', value: 'react' },
   { label: 'Svelte', value: 'svelte' }
 ]
 
-// Fetch component data from API
 const fetchComponentData = async () => {
   try {
     loading.value = true
     error.value = null
 
-    // Try to fetch from API, fallback to mock data
     try {
       const response = await fetch(`/api/components/${props.component}`)
       if (response.ok) {
@@ -185,13 +179,11 @@ const fetchComponentData = async () => {
       console.warn('API fetch failed, using mock data:', apiError)
     }
 
-    // Fallback to mock data
     const mockData = getMockComponentData(props.component)
 
     if (mockData) {
       componentProps.value = mockData.props || []
     } else {
-      // Fallback to basic props
       componentProps.value = [
         { name: 'variant', type: 'string', default: 'primary', options: ['primary', 'secondary', 'outline'] },
         { name: 'size', type: 'string', default: 'medium', options: ['small', 'medium', 'large'] },
@@ -206,9 +198,8 @@ const fetchComponentData = async () => {
   }
 }
 
-// Mock component data (in production, this comes from the database)
 const getMockComponentData = (componentName: string) => {
-  const mockComponents: Record<string, any> = {
+  const mockComponents: Record<string, { props: Record<string, unknown>[] }> = {
     'Button': {
       props: [
         { name: 'variant', type: 'string', default: 'primary', options: ['primary', 'secondary', 'outline', 'ghost'] },
@@ -231,24 +222,21 @@ const getMockComponentData = (componentName: string) => {
   return mockComponents[componentName] || null
 }
 
-// Initialize prop values
 onMounted(async () => {
   await fetchComponentData()
   componentProps.value.forEach(prop => {
-    propValues.value[prop.name] = prop.default !== undefined ? prop.default : ''
+    propValues.value[(prop.name as string)] = prop.default !== undefined ? prop.default : ''
   })
 })
 
-// Generated code based on framework and props
 const generatedCode = computed(() => {
-
   const propsStr = Object.entries(propValues.value)
     .filter(([_, value]) => value !== undefined && value !== '')
     .map(([key, value]) => {
       if (typeof value === 'boolean') {
         return selectedFramework.value === 'vue' ? `:${key}="${value}"` : `${key}={${value}}`
       } else if (typeof value === 'string') {
-        return selectedFramework.value === 'vue' ? `${key}="${value}"` : `${key}="${value}"`
+        return `${key}="${value}"`
       }
       return `${key}={${JSON.stringify(value)}}`
     })
@@ -257,13 +245,10 @@ const generatedCode = computed(() => {
   switch (selectedFramework.value) {
     case 'vue':
       return `<${componentName} ${propsStr}>\n  <!-- Content -->\n</${componentName}>`
-
     case 'react':
       return `<${componentName} ${propsStr}>\n  {/* Content */}\n</${componentName}>`
-
     case 'svelte':
       return `<${componentName} ${propsStr}>\n  <!-- Content -->\n</${componentName}>`
-
     default:
       return `<!-- Component: ${componentName} -->`
   }
@@ -271,7 +256,6 @@ const generatedCode = computed(() => {
 
 const copyCode = () => {
   navigator.clipboard.writeText(generatedCode.value)
-  // Could show a toast notification here
 }
 </script>
 
@@ -343,18 +327,6 @@ const copyCode = () => {
   padding: 2rem;
 }
 
-.props-display {
-  margin-top: 1rem;
-  text-align: left;
-}
-
-.props-display pre {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 4px;
-  font-size: 0.75rem;
-}
-
 .playground-code {
   background: #1f2937;
   color: #f9fafb;
@@ -377,7 +349,6 @@ const copyCode = () => {
   line-height: 1.5;
 }
 
-/* Component Preview Styles */
 .component-preview {
   display: flex;
   align-items: center;
@@ -385,7 +356,6 @@ const copyCode = () => {
   min-height: 120px;
 }
 
-/* OpenDS Button Styles */
 .opends-button {
   display: inline-flex;
   align-items: center;
@@ -462,7 +432,6 @@ const copyCode = () => {
   cursor: wait;
 }
 
-/* OpenDS Input Styles */
 .opends-input {
   width: 100%;
   padding: 0.5rem 0.75rem;
