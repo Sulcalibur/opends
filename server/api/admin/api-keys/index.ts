@@ -30,15 +30,21 @@ export default defineEventHandler(async (event: H3Event) => {
     return {
       success: true,
       data: {
-        keys: keysResult.keys.map((key) => ({
-          id: key.id,
-          name: key.name,
-          scope: Array.isArray(key.scope) ? key.scope : JSON.parse(key.scope),
-          createdAt: key.created_at,
-          lastUsedAt: key.last_used_at,
-          expiresAt: key.expires_at,
-          keyPreview: `${key.id.substring(0, 8)}...${key.id.substring(key.id.length - 4)}`,
-        })),
+        keys: keysResult.keys
+          .filter((key) => key.id != null)
+          .map((key) => ({
+            id: key.id,
+            name: key.name,
+            scope: Array.isArray(key.scope)
+              ? key.scope
+              : typeof key.scope === 'string'
+                ? JSON.parse(key.scope)
+                : [],
+            createdAt: key.created_at,
+            lastUsedAt: key.last_used_at,
+            expiresAt: key.expires_at,
+            keyPreview: `${key.id!.substring(0, 8)}...${key.id!.substring(key.id!.length - 4)}`,
+          })),
         count: keysResult.total,
       },
     };
@@ -54,6 +60,7 @@ export default defineEventHandler(async (event: H3Event) => {
 
     const keyData = await McpApiKeyRepository.create({
       user_id: userId,
+      key_hash: keyHash,
       name: name || `MCP Key ${new Date().toISOString()}`,
       scope: Array.isArray(scope) ? scope : ["read:tokens", "read:components"], // Default read-only scope
       expires_at: expiresAt ? new Date(expiresAt) : null,

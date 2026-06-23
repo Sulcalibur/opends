@@ -1,107 +1,70 @@
+<script setup lang="ts">
+const route = useRoute()
+
+const pageTitle = computed(() => {
+  const path = route.path
+  if (path === '/admin') return 'Dashboard'
+  if (path.includes('components')) return 'Components'
+  if (path.includes('tokens')) return 'Design Tokens'
+  if (path.includes('docs')) return 'Documentation'
+  if (path.includes('users')) return 'Users & Roles'
+  if (path.includes('settings')) return 'Settings'
+  if (path.includes('api-keys')) return 'API Keys'
+  if (path.includes('visibility')) return 'Visibility & Access'
+  if (path.includes('activity')) return 'Activity'
+  return 'Admin'
+})
+</script>
+
 <template>
   <div class="admin-layout">
-    <AdminSidebar />
+    <AdminSidebar
+      :active="
+        route.path.includes('components') ? 'components'
+        : route.path.includes('tokens') ? 'tokens'
+        : route.path.includes('docs') ? 'docs'
+        : route.path.includes('users') ? 'users'
+        : route.path.includes('settings') ? 'settings'
+        : route.path.includes('visibility') ? 'visibility'
+        : 'dashboard'
+      "
+    />
 
-    <main class="admin-main">
-      <header class="admin-header backdrop-blur">
-        <div class="header-content">
-          <div class="header-left">
-            <h1 class="page-title">{{ pageTitle }}</h1>
-            <button
-              class="mobile-menu-toggle lg:hidden"
-              @click="isMobileMenuOpen = !isMobileMenuOpen"
-            >
-              <UIcon name="i-lucide-menu" />
-            </button>
+    <div class="admin-main">
+      <!-- Header -->
+      <header class="admin-header">
+        <div class="admin-header-content">
+          <div class="admin-header-left">
+            <h1 class="admin-page-title">{{ pageTitle }}</h1>
           </div>
-          <div class="header-right">
-            <UTooltip
-              :text="
-                colorMode.value === 'dark'
-                  ? 'Switch to light mode'
-                  : 'Switch to dark mode'
-              "
-            >
-              <button
-                class="theme-toggle hover-lift"
-                @click="
-                  colorMode.preference =
-                    colorMode.value === 'dark' ? 'light' : 'dark'
-                "
-              >
-                <UIcon
-                  :name="
-                    colorMode.value === 'dark'
-                      ? 'i-lucide-sun'
-                      : 'i-lucide-moon'
-                  "
-                />
-              </button>
-            </UTooltip>
-            <UTooltip text="Notifications">
-              <button class="header-action hover-lift">
-                <UIcon name="i-lucide-bell" />
-                <span class="badge">3</span>
-              </button>
-            </UTooltip>
-            <UTooltip text="Help">
-              <button class="header-action hover-lift">
-                <UIcon name="i-lucide-help-circle" />
-              </button>
-            </UTooltip>
+          <div class="admin-header-right">
+            <button class="admin-header-btn" @click="colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark'">
+              <UIcon :name="colorMode.value === 'dark' ? 'i-lucide-sun' : 'i-lucide-moon'" class="size-4" />
+            </button>
+            <button class="admin-header-btn">
+              <UIcon name="i-lucide-bell" class="size-4" />
+            </button>
           </div>
         </div>
       </header>
 
-      <div class="page-content">
+      <!-- Content -->
+      <main class="admin-content">
         <slot />
-      </div>
-    </main>
-
-    <Teleport to="body">
-      <Transition name="slide">
-        <div
-          v-if="isMobileMenuOpen"
-          class="mobile-overlay"
-          @click="isMobileMenuOpen = false"
-        />
-      </Transition>
-    </Teleport>
+      </main>
+    </div>
   </div>
 </template>
 
-<script setup lang="ts">
-const route = useRoute();
-const colorMode = useColorMode();
-
-const isMobileMenuOpen = ref(false);
-
-const pageTitle = computed(() => {
-  const path = route.path;
-  if (path === "/admin") return "Dashboard";
-  if (path.includes("components")) return "Components";
-  if (path.includes("tokens")) return "Design Tokens";
-  if (path.includes("/admin/docs")) return "Documentation";
-  if (path.includes("users")) return "Users";
-  if (path.includes("settings")) return "Settings";
-  if (path.includes("api-keys")) return "API Keys";
-  if (path.includes("codegen")) return "Code Generator";
-  return "Admin";
-});
-
-onMounted(() => {
-  if (typeof window !== "undefined") {
-    document.body.classList.add("admin-page");
-  }
-});
+<script lang="ts">
+const colorMode = useColorMode()
 </script>
 
 <style scoped>
 .admin-layout {
   display: flex;
-  min-height: 100vh;
-  background: var(--color-bg-50);
-  transition: background var(--transition-slow);
+  height: 100vh;
+  background: var(--bg);
 }
 
 .admin-main {
@@ -110,274 +73,81 @@ onMounted(() => {
   flex-direction: column;
   min-width: 0;
   overflow: hidden;
-  margin-left: 280px;
-  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-:deep(.is-collapsed) + .admin-main {
-  margin-left: 80px;
 }
 
 .admin-header {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 1px solid var(--color-border-light);
-  transition: all var(--transition-base);
+  display: flex;
+  align-items: center;
+  height: 60px;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+  flex-shrink: 0;
 }
 
-.header-content {
+.admin-header-content {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1.5rem 2rem;
-  gap: 1rem;
+  width: 100%;
 }
 
-.header-left {
+.admin-header-left {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex: 1;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.page-title {
-  font-size: 1.875rem;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
+.admin-page-title {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  color: var(--text);
   margin: 0;
-  background: var(--gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  transition: all var(--transition-base);
 }
 
-.mobile-menu-toggle {
-  display: none;
-  width: 40px;
-  height: 40px;
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--color-border);
-  background: var(--color-bg-tertiary);
-  color: var(--color-text-primary);
+.admin-header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.admin-header-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--r-input);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--text-secondary);
   cursor: pointer;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-base);
+  transition: all var(--duration-micro);
+}
+.admin-header-btn:hover {
+  color: var(--text);
+  background: var(--surface-2);
 }
 
-.mobile-menu-toggle:hover {
-  border-color: var(--color-primary-300);
-  background: var(--color-bg-200);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.header-right {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.theme-toggle {
-  width: 42px;
-  height: 42px;
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--color-border);
-  background: var(--color-bg-200);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-base);
-}
-
-.theme-toggle:hover {
-  border-color: var(--color-primary-300);
-  background: var(--color-bg-300);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.theme-toggle :deep(.iconify) {
-  font-size: 1.25rem;
-  transition: transform var(--transition-base);
-}
-
-.theme-toggle:hover :deep(.iconify) {
-  transform: rotate(20deg);
-}
-
-.header-action {
-  position: relative;
-  width: 42px;
-  height: 42px;
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--color-border);
-  background: var(--color-bg-200);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all var(--transition-base);
-}
-
-.header-action:hover {
-  border-color: var(--color-primary-300);
-  background: var(--color-bg-300);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
-}
-
-.header-action :deep(.iconify) {
-  font-size: 1.125rem;
-}
-
-.badge {
-  position: absolute;
-  top: -4px;
-  right: -4px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--color-error-500);
-  color: white;
-  font-size: 0.625rem;
-  font-weight: var(--font-weight-bold);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid var(--color-bg);
-  animation: pulse 2s ease-in-out infinite;
-}
-
-@keyframes pulse {
-  0%,
-  100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
-}
-
-.page-content {
+.admin-content {
   flex: 1;
   overflow-y: auto;
-  padding: 2rem;
-  animation: fade-in 0.5s var(--easing-out);
+  padding: 28px;
 }
 
-.mobile-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-  z-index: 35;
-  transition: opacity 0.3s;
+/* ── Tablet (≤834px) ────────────────────────────────────── */
+@media (max-width: 834px) {
+  .admin-content { padding: 20px; }
+  .admin-header { padding: 0 20px; }
+  .admin-page-title { font-size: 17px; }
 }
 
-.dark .admin-layout {
-  background: var(--dark-color-bg-900);
-}
-
-.dark .admin-header {
-  background: rgba(21, 22, 30, 0.9);
-  border-bottom-color: var(--dark-color-border);
-}
-
-.dark .page-title {
-  background: var(--dark-gradient-primary);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.dark .mobile-menu-toggle,
-.dark .theme-toggle,
-.dark .header-action {
-  background: var(--dark-color-bg-200);
-  border-color: var(--dark-color-border);
-  color: var(--dark-color-text-primary);
-}
-
-.dark .mobile-menu-toggle:hover,
-.dark .theme-toggle:hover,
-.dark .header-action:hover {
-  background: var(--dark-color-bg-100);
-  border-color: var(--color-primary-400);
-  box-shadow: var(--shadow-md), var(--dark-shadow-glow-sm);
-}
-
-.dark .badge {
-  background: var(--color-error-400);
-  border-color: var(--dark-color-bg-900);
-}
-
-.dark .page-content {
-  background: var(--dark-color-bg);
-}
-
-@media (max-width: 1024px) {
-  .admin-main {
-    margin-left: 80px;
-  }
-
-  :deep(.is-collapsed) + .admin-main {
-    margin-left: 80px;
-  }
-}
-
-@media (max-width: 768px) {
-  .admin-main {
-    margin-left: 0;
-  }
-
-  :deep(.is-collapsed) + .admin-main {
-    margin-left: 0;
-  }
-
-  .mobile-menu-toggle {
-    display: flex;
-  }
-
-  .page-title {
-    font-size: 1.5rem;
-  }
-
-  .header-content {
-    padding: 1rem 1.5rem;
-  }
-
-  .page-content {
-    padding: 1.5rem;
-  }
-}
-
-@keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.slide-enter-active,
-.slide-leave-active {
-  transition: opacity 0.3s;
-}
-
-.slide-enter-from,
-.slide-leave-to {
-  opacity: 0;
+/* ── Mobile (≤640px) ────────────────────────────────────── */
+@media (max-width: 640px) {
+  .admin-content { padding: 16px; }
+  .admin-header { padding: 0 16px; height: 52px; }
+  .admin-page-title { font-size: 16px; }
 }
 </style>

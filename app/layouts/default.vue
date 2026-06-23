@@ -1,26 +1,25 @@
 <template>
-  <div class="default-layout">
-    <NavBar />
-    <main class="main-content">
+  <div class="public-layout">
+    <DocsHeader />
+    <main class="public-main">
       <slot />
     </main>
+    <DocsFooter />
   </div>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+</script>
 
 <style scoped>
-.default-layout {
+.public-layout {
+  display: flex;
+  flex-direction: column;
   min-height: 100vh;
-  background: var(--color-bg);
-  transition: background var(--transition-slow);
+  background: var(--bg);
 }
 
-.main-content {
-  min-height: calc(100vh - 80px);
-}
-
-.dark .default-layout {
-  background: var(--dark-color-bg);
+.public-main {
+  flex: 1;
 }
 </style>

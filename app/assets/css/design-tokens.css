@@ -1,98 +1,167 @@
+/* ============================================================
+   OpenDS Design Tokens — single source of truth
+   Derived from design-reference/ (Claude Design handoff)
+   Matches the CSS variable contract in design-preview/components/primitives.jsx
+   ============================================================ */
+
+/* ── Typography ───────────────────────────────────────────── */
 :root {
-  /* Typography */
-  --font-heading: 'Outfit', system-ui, -apple-system, sans-serif;
-  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --f-display: 'Outfit', system-ui, -apple-system, sans-serif;
+  --f-body:    'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --f-mono:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --font-weight-regular: 400;
-  --font-weight-medium: 500;
-  --font-weight-semibold: 600;
-  --font-weight-bold: 700;
+  --fw-regular:  400;
+  --fw-medium:   500;
+  --fw-semibold: 600;
+  --fw-bold:     700;
+  --fw-extrabold: 800;
 
-  --line-height-tight: 1.2;
-  --line-height-normal: 1.5;
-  --line-height-relaxed: 1.7;
+  --lh-tight:   1.2;
+  --lh-normal:  1.5;
+  --lh-relaxed: 1.7;
 
-  --letter-spacing-tight: -0.02em;
-  --letter-spacing-normal: 0;
-  --letter-spacing-wide: 0.04em;
+  --ls-tight:  -0.02em;
+  --ls-normal:  0;
+  --ls-wide:    0.04em;
+}
 
-  /* Colors */
-  --color-primary: #FF6B4A;
-  --color-primary-hover: #E85A3A;
-  --color-primary-active: #c44a2d;
-  --color-primary-subtle: rgba(255, 107, 74, 0.10);
-  --color-primary-500: #FF6B4A;
-  --color-primary-600: #E85A3A;
-
-  --color-secondary: #C9A227;
-  --color-secondary-hover: #B39122;
-  --color-secondary-active: #9E7F1E;
-  --color-secondary-subtle: rgba(201, 162, 39, 0.08);
-
-  --color-background: #F6F5F3;
-  --color-surface: #FFFFFF;
-  --color-surface-elevated: #FFFFFF;
-
-  --color-text-primary: #1C1F24;
-  --color-text-secondary: #5A606E;
-  --color-text-inverse: #FFFFFF;
-  --color-text-muted: #8A8580;
-
-  --color-border: #DDDAD5;
-  --color-border-subtle: #E8E6E3;
-  --color-border-focus: #E85A3A;
-
-  --color-error: #C9372D;
-  --color-error-subtle: rgba(201, 55, 45, 0.08);
-  --color-success: #2D8A4E;
-  --color-success-subtle: rgba(45, 138, 78, 0.08);
-  --color-warning: #D4A017;
-  --color-warning-subtle: rgba(212, 160, 23, 0.08);
-
-  /* Neutral Scale */
-  --neutral-100: #F5F4F2;
-  --neutral-200: #E8E6E3;
-  --neutral-300: #DDDAD5;
-  --neutral-400: #B0ABA5;
-  --neutral-500: #8A8580;
-  --neutral-600: #5A5652;
-  --neutral-700: #3D3A37;
-  --neutral-800: #1C1F24;
-
-  /* Spacing */
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 20px;
-  --space-6: 24px;
-  --space-8: 32px;
+/* ── Spacing (4px base unit) ──────────────────────────────── */
+:root {
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
   --space-10: 40px;
   --space-12: 48px;
   --space-16: 64px;
   --space-20: 80px;
   --space-24: 96px;
+}
 
-  /* Border Radius */
-  --radius-sm: 6px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-full: 9999px;
+/* ── Border Radius ────────────────────────────────────────── */
+:root {
+  --r-input: 6px;   /* inputs, badges, tags */
+  --r-btn:   8px;   /* buttons, cards */
+  --r-card:  12px;  /* modals, panels, dialogs */
+  --r-full:  9999px;
+}
 
-  /* Shadows (static only, no glassmorphism) */
-  --shadow-card: 0 1px 3px rgba(28, 31, 36, 0.06), 0 1px 2px rgba(28, 31, 36, 0.04);
-  --shadow-elevated: 0 4px 6px rgba(28, 31, 36, 0.05), 0 2px 4px rgba(28, 31, 36, 0.03);
-  --shadow-modal: 0 10px 15px rgba(28, 31, 36, 0.08), 0 4px 6px rgba(28, 31, 36, 0.04);
-  --shadow-focus: 0 0 0 3px rgba(232, 90, 58, 0.25);
+/* ── Shadows (static only — no glassmorphism, no glow) ───── */
+:root {
+  --shadow-card:     0 1px 3px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.10);
+  --shadow-modal:    0 8px 24px rgba(0,0,0,0.12);
+  --shadow-focus:    0 0 0 3px rgba(255,107,74,0.30);
+}
 
-  /* Motion */
-  --duration-micro: 150ms;
+/* ── Motion ───────────────────────────────────────────────── */
+:root {
+  --duration-micro:      150ms;
   --duration-structural: 250ms;
-  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-quart:      cubic-bezier(0.25, 1, 0.5, 1);
+}
 
-  /* Z-Index */
+/* ── Z-Index ──────────────────────────────────────────────── */
+:root {
   --z-dropdown: 100;
-  --z-modal: 200;
-  --z-toast: 300;
+  --z-modal:    200;
+  --z-toast:    300;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   LIGHT THEME
+   ═══════════════════════════════════════════════════════════ */
+:root,
+.light {
+  color-scheme: light;
+
+  /* Brand */
+  --primary:         #FF6B4A;  /* Sweet Salmon */
+  --primary-soft:    rgba(255,107,74,0.10);
+  --text-on-primary: #FFFFFF;
+
+  --secondary:       #FFD166;  /* Light Gold */
+  --secondary-soft:  rgba(255,209,102,0.12);
+
+  /* Surfaces */
+  --bg:          #F8F9FA;
+  --bg-elevated: #FFFFFF;
+  --surface:     #FFFFFF;
+  --surface-2:   #F3F4F6;
+
+  /* Text */
+  --text:           #1A1D21;
+  --text-secondary: #5C6270;
+  --text-tertiary:  #8A91A0;
+
+  /* Borders */
+  --border:        #E2E4E9;
+  --border-strong: #C8CBD2;
+
+  /* Semantic */
+  --success:       #1F8A5B;
+  --success-soft:  rgba(31,138,91,0.10);
+
+  --warning:       #D4A017;
+  --warning-soft:  rgba(212,160,23,0.10);
+
+  --danger:        #C9372D;
+  --danger-soft:   rgba(201,55,45,0.10);
+
+  --info:          #2A6FDB;
+  --info-soft:     rgba(42,111,219,0.10);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   DARK THEME
+   ═══════════════════════════════════════════════════════════ */
+.dark {
+  color-scheme: dark;
+
+  /* Brand — slightly lighter for contrast on dark backgrounds */
+  --primary:         #FF8A70;
+  --primary-soft:    rgba(255,138,112,0.12);
+  --text-on-primary: #1A1D21;
+
+  --secondary:       #FFE099;
+  --secondary-soft:  rgba(255,224,153,0.10);
+
+  /* Surfaces */
+  --bg:          #1A1D21;
+  --bg-elevated: #1F2228;
+  --surface:     #252830;
+  --surface-2:   #2A2E37;
+
+  /* Text */
+  --text:           #F0F1F5;
+  --text-secondary: #9AA3B2;
+  --text-tertiary:  #6B7280;
+
+  /* Borders */
+  --border:        #3E4551;
+  --border-strong: #555B68;
+
+  /* Semantic — slightly lighter for dark readability */
+  --success:       #3CB878;
+  --success-soft:  rgba(60,184,120,0.12);
+
+  --warning:       #E5B628;
+  --warning-soft:  rgba(229,182,40,0.12);
+
+  --danger:        #E0554D;
+  --danger-soft:   rgba(224,85,77,0.12);
+
+  --info:          #4D8FF0;
+  --info-soft:     rgba(77,143,240,0.12);
+}
+
+/* ── Respect reduced motion ───────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-micro:      0ms;
+    --duration-structural: 0ms;
+  }
 }

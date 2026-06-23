@@ -1,0 +1,126 @@
+/* OpenDS — Design tokens */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root,
+.ds-light {
+  /* Brand */
+  --primary: #FF6B4A;
+  --primary-hover: #E85A3A;
+  --primary-soft: rgba(255, 107, 74, 0.10);
+  --primary-soft-2: rgba(255, 107, 74, 0.18);
+  --secondary: #FFD166;
+  --secondary-soft: rgba(255, 209, 102, 0.20);
+
+  /* Surfaces */
+  --bg: #F8F9FA;
+  --bg-elevated: #FFFFFF;
+  --surface: #FFFFFF;
+  --surface-2: #F3F4F6;
+  --surface-3: #EDEEF1;
+
+  /* Text */
+  --text: #1A1D21;
+  --text-secondary: #5C6270;
+  --text-tertiary: #8A91A0;
+  --text-on-primary: #FFFFFF;
+
+  /* Borders */
+  --border: #E2E4E9;
+  --border-strong: #CDD0D7;
+
+  /* Status */
+  --success: #1F8A5B;
+  --success-soft: rgba(31, 138, 91, 0.10);
+  --warning: #B97309;
+  --warning-soft: rgba(255, 209, 102, 0.25);
+  --danger: #D14343;
+  --danger-soft: rgba(209, 67, 67, 0.10);
+  --info: #2A6FDB;
+  --info-soft: rgba(42, 111, 219, 0.10);
+
+  /* Shadows */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-elev: 0 4px 12px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-pop: 0 12px 28px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.06);
+  --focus-ring: 0 0 0 3px rgba(255,107,74,0.30);
+
+  /* Radii */
+  --r-input: 6px;
+  --r-btn: 8px;
+  --r-card: 8px;
+  --r-modal: 12px;
+
+  /* Type */
+  --f-display: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+  --f-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --f-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+.ds-dark {
+  --primary: #FF8A70;
+  --primary-hover: #FF9C85;
+  --primary-soft: rgba(255, 138, 112, 0.14);
+  --primary-soft-2: rgba(255, 138, 112, 0.22);
+  --secondary: #FFE099;
+  --secondary-soft: rgba(255, 224, 153, 0.16);
+
+  --bg: #1A1D21;
+  --bg-elevated: #252830;
+  --surface: #252830;
+  --surface-2: #2E323B;
+  --surface-3: #383D47;
+
+  --text: #F0F1F5;
+  --text-secondary: #9AA3B2;
+  --text-tertiary: #6B7280;
+  --text-on-primary: #1A1D21;
+
+  --border: #3E4551;
+  --border-strong: #4B5263;
+
+  --success: #34C28C;
+  --success-soft: rgba(52, 194, 140, 0.14);
+  --warning: #FFD166;
+  --warning-soft: rgba(255, 209, 102, 0.16);
+  --danger: #F08585;
+  --danger-soft: rgba(240, 133, 133, 0.14);
+  --info: #6BA3F5;
+  --info-soft: rgba(107, 163, 245, 0.14);
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.40), 0 2px 8px rgba(0,0,0,0.25);
+  --shadow-elev: 0 4px 12px rgba(0,0,0,0.50), 0 1px 3px rgba(0,0,0,0.30);
+  --shadow-pop: 0 12px 28px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.30);
+  --focus-ring: 0 0 0 3px rgba(255,138,112,0.36);
+}
+
+/* Reset-ish, scoped */
+.ds {
+  font-family: var(--f-body);
+  color: var(--text);
+  background: var(--bg);
+  font-feature-settings: 'cv11','ss01','ss03';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+.ds *,
+.ds *::before,
+.ds *::after {
+  box-sizing: border-box;
+}
+.ds button { font-family: inherit; }
+.ds h1,.ds h2,.ds h3,.ds h4,.ds h5 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  margin: 0;
+  color: var(--text);
+}
+.ds h1 { font-weight: 800; letter-spacing: -0.025em; }
+.ds p { margin: 0; }
+.ds code, .ds pre { font-family: var(--f-mono); }
+.ds a { color: var(--primary); text-decoration: none; }
+.ds a:hover { text-decoration: underline; }
+
+/* Scrollbars hidden inside fixed artboards (cleaner) */
+.ds-screen { font-family: var(--f-body); color: var(--text); background: var(--bg); width: 100%; height: 100%; overflow: hidden; position: relative; }

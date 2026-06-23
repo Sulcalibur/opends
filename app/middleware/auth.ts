@@ -4,14 +4,13 @@
  */
 
 export default defineNuxtRouteMiddleware((to, from) => {
+    // Skip auth check during SSR — localStorage is not available on the server.
+    // Client-side hydration will re-run the middleware and redirect if needed.
+    if (import.meta.server) return
+
     const authStore = useAuthStore()
+    authStore.initialize()
 
-    // Initialize auth state
-    if (import.meta.client) {
-        authStore.initialize()
-    }
-
-    // If user is not authenticated, redirect to login
     if (!authStore.isAuthenticated) {
         return navigateTo('/login')
     }

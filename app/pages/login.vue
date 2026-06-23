@@ -1,413 +1,521 @@
+<script setup lang="ts">
+definePageMeta({ layout: 'centered' })
+
+const { data: settingsData } = await useFetch('/api/settings/public').catch(() => ({ data: ref(null) }))
+const settings = computed(() => settingsData.value?.settings || {})
+const orgName = computed(() => settings.value.organization_name || 'Design System')
+
+const email = ref('')
+const password = ref('')
+const rememberMe = ref(true)
+const error = ref('')
+const loading = ref(false)
+
+async function handleLogin() {
+  if (!email.value || !password.value) {
+    error.value = 'Please enter your email and password.'
+    return
+  }
+  loading.value = true
+  error.value = ''
+
+  try {
+    const response = await $fetch<{
+      success: boolean
+      data: { user: any; tokens: { accessToken: string; refreshToken: string } }
+    }>('/api/auth/login', {
+      method: 'POST',
+      body: { email: email.value, password: password.value },
+    })
+
+    if (response.success && response.data?.tokens) {
+      const auth = useAuthStore()
+      auth.saveAuth(response.data.tokens.accessToken, response.data.tokens.refreshToken, response.data.user)
+      await navigateTo('/admin')
+    }
+  } catch {
+    error.value = 'Something went wrong. Please try again.'
+  } finally {
+    loading.value = false
+  }
+}
+
+useHead({ title: `Sign in — ${orgName.value}` })
+</script>
+
 <template>
-  <div class="auth-page">
-    <div class="auth-container">
-      <div class="auth-card">
-        <div class="card-header">
-          <div class="logo-wrapper">
-            <div class="logo">{{ orgInitial }}</div>
+  <div class="login-screen">
+    <!-- Left: form -->
+    <div class="login-form-panel">
+      <div class="login-header">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="28" height="28" rx="7" fill="var(--primary)" />
+          <path d="M10 11.5C10 9.567 11.567 8 13.5 8h5C20.433 8 22 9.567 22 11.5v9c0 1.933-1.567 3.5-3.5 3.5h-5A3.5 3.5 0 0 1 10 20.5z" stroke="white" stroke-width="2.2"/>
+          <circle cx="16" cy="16" r="1.7" fill="white"/>
+        </svg>
+        <span class="login-brand-name">OpenDS</span>
+        <UBadge color="neutral" variant="soft" size="xs">v0.2 · self-hosted</UBadge>
+      </div>
+
+      <div class="login-form-body">
+        <h1 class="login-title">Welcome back</h1>
+        <p class="login-subtitle">Sign in to your {{ orgName }} workspace.</p>
+
+        <!-- OAuth buttons -->
+        <div class="login-oauth">
+          <UButton variant="outline" size="xl" block>
+            <template #leading>
+              <UIcon name="i-lucide-github" class="size-4" />
+            </template>
+            Continue with GitHub
+          </UButton>
+          <UButton variant="outline" size="xl" block>
+            <template #leading>
+              <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
+                <path fill="#4285F4" d="M15.5 8.2c0-.5 0-1-.1-1.5H8v2.9h4.2c-.2 1-.7 1.8-1.6 2.4v2h2.6c1.5-1.4 2.3-3.4 2.3-5.8z"/>
+                <path fill="#34A853" d="M8 16c2.2 0 4-.7 5.3-2l-2.6-2c-.7.5-1.6.8-2.7.8-2.1 0-3.8-1.4-4.5-3.3H.9v2C2.2 14.1 4.9 16 8 16z"/>
+                <path fill="#FBBC04" d="M3.5 9.5c-.2-.5-.3-1-.3-1.5s.1-1 .3-1.5v-2H.9C.3 5.7 0 6.8 0 8s.3 2.3.9 3.5l2.6-2z"/>
+                <path fill="#EA4335" d="M8 3.2c1.2 0 2.3.4 3.1 1.2l2.3-2.3C12 .9 10.2 0 8 0 4.9 0 2.2 1.9.9 4.5l2.6 2C4.2 4.6 5.9 3.2 8 3.2z"/>
+              </svg>
+            </template>
+            Continue with Google
+          </UButton>
+        </div>
+
+        <div class="login-divider">
+          <span class="login-divider-line" />
+          <span class="login-divider-text">or</span>
+          <span class="login-divider-line" />
+        </div>
+
+        <!-- Email/password -->
+        <form class="login-fields" @submit.prevent="handleLogin">
+          <div class="field">
+            <label class="field-label" for="email">Email</label>
+            <UInput
+              id="email"
+              v-model="email"
+              type="email"
+              placeholder="you@team.co"
+              size="xl"
+              icon="i-lucide-mail"
+              autocomplete="email"
+            />
           </div>
+
+          <div class="field">
+            <div class="field-label-row">
+              <label class="field-label" for="password">Password</label>
+              <NuxtLink to="/forgot-password" class="field-extra">Forgot?</NuxtLink>
+            </div>
+            <UInput
+              id="password"
+              v-model="password"
+              type="password"
+              placeholder="••••••••••"
+              size="xl"
+              icon="i-lucide-lock"
+              autocomplete="current-password"
+            />
+          </div>
+
+          <label class="remember-row">
+            <span class="remember-check" :class="{ checked: rememberMe }" @click="rememberMe = !rememberMe">
+              <UIcon v-if="rememberMe" name="i-lucide-check" class="size-3" />
+            </span>
+            Keep me signed in for 30 days
+          </label>
+
+          <div v-if="error" class="login-error">
+            <UIcon name="i-lucide-alert-circle" class="size-4" />
+            {{ error }}
+          </div>
+
+          <UButton type="submit" size="xl" block :loading="loading" class="login-submit-btn">
+            Sign in
+          </UButton>
+        </form>
+
+        <div class="login-footer-text">
+          New to {{ orgName }}?
+          <NuxtLink to="/register">Request access →</NuxtLink>
         </div>
-        <div class="card-content">
-          <h1 id="auth-title" class="auth-title">Welcome back!</h1>
-          <p class="auth-subtitle">Sign in to continue</p>
+      </div>
 
-          <form
-            class="auth-form"
-            aria-labelledby="auth-title"
-            @submit.prevent="handleLogin"
-          >
-            <div class="form-group">
-              <BaseInput
-                id="email"
-                v-model="email"
-                type="email"
-                label="Email Address"
-                placeholder="name@company.com"
-                left-icon="mail"
-                :error="emailError"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <div class="password-field-wrapper">
-                <BaseInput
-                  id="password"
-                  v-model="password"
-                  :type="showPassword ? 'text' : 'password'"
-                  label="Password"
-                  placeholder="Enter password"
-                  left-icon="lock"
-                  :error="passwordError"
-                  required
-                />
-                <button
-                  type="button"
-                  class="toggle-password"
-                  :aria-label="showPassword ? 'Hide password' : 'Show password'"
-                  :aria-pressed="showPassword"
-                  @click="showPassword = !showPassword"
-                >
-                  <i
-                    :class="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'"
-                    aria-hidden="true"
-                  />
-                </button>
-              </div>
-            </div>
-
-            <div v-if="authStore.error" class="auth-error" role="alert">
-              <Icon
-                name="i-lucide-x-circle"
-                class="h-5 w-5 text-error-500"
-                aria-hidden="true"
-              />
-              <span>{{ authStore.error }}</span>
-            </div>
-
-            <BaseButton
-              type="submit"
-              variant="primary"
-              size="large"
-              class="auth-button"
-              :loading="authStore.loading"
-              icon-left="log-in"
-            >
-              Sign In
-            </BaseButton>
-
-            <div class="form-footer">
-              <div class="form-links">
-                <NuxtLink to="/register" class="form-link">
-                  Create account
-                </NuxtLink>
-                <a href="#" class="form-link">Forgot password?</a>
-              </div>
-            </div>
-
-            <div class="social-login">
-              <p class="social-title">Or continue with</p>
-              <div class="social-buttons">
-                <button
-                  type="button"
-                  class="social-button"
-                  aria-label="Sign in with Google"
-                >
-                  <Icon
-                    name="i-lucide-google"
-                    class="h-5 w-5"
-                    aria-hidden="true"
-                  />
-                </button>
-                <button
-                  type="button"
-                  class="social-button"
-                  aria-label="Sign in with GitHub"
-                >
-                  <Icon
-                    name="i-lucide-github"
-                    class="h-5 w-5"
-                    aria-hidden="true"
-                  />
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
+      <div class="login-footer-meta">
+        <span>&copy; 2026 {{ orgName }}</span>
+        <span class="footer-meta-links">
+          <span>Privacy</span><span>Terms</span><span>Status</span>
+        </span>
       </div>
     </div>
 
-    <div class="auth-footer">
-      <p>{{ orgName }} v0.2.0 • Powered by Nessie Design Engine</p>
+    <!-- Right: brand panel -->
+    <div class="login-brand-panel">
+      <!-- Mock preview card -->
+      <div class="brand-preview-card-wrap">
+        <div class="brand-preview-card">
+          <div class="brand-preview-chrome">
+            <span class="chrome-dot" style="background: #FF6B4A" />
+            <span class="chrome-dot" style="background: #FFD166" />
+            <span class="chrome-dot" style="background: #3E4551" />
+            <span class="chrome-url">lumen.opends.dev/components/button</span>
+          </div>
+          <div class="brand-preview-body">
+            <div class="brand-preview-sidebar">
+              <div class="sidebar-active-item">Button</div>
+              <div>Checkbox</div><div>Input</div><div>Select</div>
+            </div>
+            <div class="brand-preview-content">
+              <div class="brand-preview-title">Button</div>
+              <div class="brand-preview-desc">Triggers an action or event.</div>
+              <div class="brand-preview-demo">
+                <span class="brand-preview-btn">Save changes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="brand-tag">
+        <UBadge color="primary" variant="soft" size="xs" :ui="{ base: 'bg-[rgba(255,107,74,.18)] text-[#FFB8A3]' }">
+          <UIcon name="i-lucide-sparkles" class="size-3" /> v0.2.0
+        </UBadge>
+      </div>
+
+      <div class="brand-message">
+        <div class="brand-headline">One source of truth for everything {{ orgName }} ships.</div>
+        <div class="brand-description">
+          OpenDS hosts your design system docs, tokens, and component reference — self-hosted, open-source, deployed in minutes.
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-interface PublicSettingsResponse {
-  settings: {
-    organization_name?: string;
-  };
-}
-
-const { data: settingsData } = useFetch<PublicSettingsResponse>(
-  "/api/settings/public",
-  {
-    server: false,
-  },
-);
-const settings = computed(() => settingsData.value?.settings || {});
-
-const orgName = computed(() => settings.value.organization_name || "OpenDS");
-const orgInitial = computed(() => orgName.value.substring(0, 2).toUpperCase());
-
-const authStore = useAuthStore();
-const router = useRouter();
-
-const email = ref("");
-const password = ref("");
-const showPassword = ref(false);
-const emailError = ref("");
-const passwordError = ref("");
-
-async function handleLogin() {
-  emailError.value = "";
-  passwordError.value = "";
-
-  if (!email.value) {
-    emailError.value = "Email is required";
-    return;
-  }
-  if (!password.value) {
-    passwordError.value = "Password is required";
-    return;
-  }
-
-  const success = await authStore.login(email.value, password.value);
-  if (success) {
-    router.push("/admin");
-  }
-}
-</script>
-
 <style scoped>
-.auth-page {
+.login-screen {
+  display: flex;
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--color-bg-50);
-  padding: 2rem;
-  font-family: var(--font-family-body);
 }
 
-.auth-container {
-  width: 100%;
-  max-width: 480px;
-}
-
-.auth-card {
-  background: var(--color-bg-50);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-card);
-  padding: 3rem;
-}
-
-.card-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.logo-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-}
-
-.logo {
-  width: 72px;
-  height: 72px;
-  background: var(--color-primary-500);
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: var(--font-weight-extrabold);
-  font-size: 2rem;
-}
-
-.auth-title {
-  font-size: 2.5rem;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-  text-align: center;
-  margin-bottom: 0.5rem;
-  line-height: 1.2;
-}
-
-.auth-subtitle {
-  font-size: 1.125rem;
-  color: var(--color-text-secondary);
-  text-align: center;
-  margin-bottom: 2.5rem;
-}
-
-.auth-form {
+/* ── Left form panel ────────────────────────────────────── */
+.login-form-panel {
+  flex: 0 0 540px;
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  padding: 40px 64px;
+  background: var(--bg-elevated);
 }
 
-.form-group {
-  position: relative;
-}
-
-.password-field-wrapper {
-  position: relative;
-}
-
-.toggle-password {
-  position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  background: transparent;
-  border: none;
-  color: var(--color-text-400);
-  cursor: pointer;
+.login-header {
   display: flex;
   align-items: center;
+  gap: 10px;
+}
+
+.login-brand-name {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.login-form-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  transition: color var(--transition-base);
-  z-index: 10;
+  max-width: 380px;
 }
 
-.toggle-password:hover {
-  color: var(--color-primary-500);
+.login-title {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin-bottom: 8px;
+  color: var(--text);
 }
 
-.auth-error {
+.login-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.login-oauth {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.login-divider {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
-  background: var(--color-error-50);
-  border-radius: var(--radius-md);
-  animation: slide-down 0.3s var(--easing-out);
+  gap: 12px;
+  margin: 24px 0;
 }
 
-.auth-error span {
-  font-size: 0.9375rem;
-  color: var(--color-error-600);
+.login-divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
 }
 
-.auth-button {
-  width: 100%;
-  margin-top: 0.5rem;
+.login-divider-text {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
 }
 
-.form-footer {
-  text-align: center;
-  margin-top: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--color-border-light);
-}
-
-.form-links {
+/* Fields */
+.login-fields {
   display: flex;
-  justify-content: center;
-  gap: 1.5rem;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.form-link {
-  color: var(--color-primary-600);
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.field-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.field-extra {
+  font-size: 12px;
+  color: var(--primary);
+  font-weight: 600;
   text-decoration: none;
-  font-weight: var(--font-weight-semibold);
-  font-size: 1rem;
-  transition: color var(--transition-base);
 }
 
-.form-link:hover {
-  color: var(--color-primary-700);
-  text-decoration: underline;
-}
-
-.social-login {
-  text-align: center;
-  margin-top: 1.5rem;
-}
-
-.social-title {
-  font-size: 0.9375rem;
-  color: var(--color-text-secondary);
-  margin-bottom: 1rem;
-}
-
-.social-buttons {
+.remember-row {
   display: flex;
-  gap: 1rem;
-  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  cursor: pointer;
+  margin-top: 4px;
 }
 
-.social-button {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-md);
-  border: 2px solid var(--color-border);
-  background: var(--color-bg-50);
-  color: var(--color-text-primary);
-  font-size: 1.25rem;
-  cursor: pointer;
+.remember-check {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1px solid var(--border-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--duration-micro);
+}
+.remember-check.checked {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: white;
+}
+
+.login-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-radius: var(--r-input);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.login-submit-btn {
+  margin-top: 12px;
+}
+
+.login-footer-text {
+  margin-top: 32px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+.login-footer-text a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-footer-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.footer-meta-links {
+  display: inline-flex;
+  gap: 12px;
+}
+
+/* ── Right brand panel ──────────────────────────────────── */
+.login-brand-panel {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255,209,102,.25), transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(255,107,74,.20), transparent 50%),
+    #1A1D21;
+  padding: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brand-preview-card-wrap {
+  position: absolute;
+  top: 80px;
+  right: -120px;
+  width: 720px;
+  transform: rotate(-4deg);
+}
+
+.brand-preview-card {
+  background: #252830;
+  border: 1px solid #3E4551;
+  border-radius: 12px;
+  padding: 18px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+
+.brand-preview-chrome {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #3E4551;
+}
+
+.chrome-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+}
+
+.chrome-url {
+  margin-left: 12px;
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: #9AA3B2;
+}
+
+.brand-preview-body {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 16px;
+  font-size: 12px;
+}
+
+.brand-preview-sidebar {
+  color: #9AA3B2;
+  font-size: 11px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-top: 4px;
+}
+
+.sidebar-active-item {
+  color: #FF8A70;
+  font-weight: 600;
+}
+
+.brand-preview-title {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 24px;
+  color: #F0F1F5;
+  margin-bottom: 4px;
+  letter-spacing: -0.02em;
+}
+
+.brand-preview-desc {
+  font-size: 11px;
+  color: #9AA3B2;
+  margin-bottom: 14px;
+}
+
+.brand-preview-demo {
+  background: #1A1D21;
+  border-radius: 8px;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition:
-    border-color var(--transition-base),
-    transform var(--transition-base),
-    box-shadow var(--transition-base);
 }
 
-.social-button:hover {
-  border-color: var(--color-primary-300);
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-sm);
+.brand-preview-btn {
+  background: #FF8A70;
+  color: #1A1D21;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
 }
 
-.auth-footer {
-  text-align: center;
-  margin-top: 2rem;
+.brand-tag {
+  z-index: 1;
 }
 
-.auth-footer p {
-  font-size: 0.875rem;
-  color: var(--color-text-tertiary);
+.brand-message {
+  z-index: 1;
 }
 
-.dark .auth-page {
-  background: var(--color-bg-900);
+.brand-headline {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: white;
+  margin-bottom: 12px;
 }
 
-.dark .auth-card {
-  background: var(--color-bg-800);
-  border-color: var(--color-border);
+.brand-description {
+  font-size: 14.5px;
+  color: #9AA3B2;
+  max-width: 420px;
+  line-height: 1.55;
 }
 
-.dark .logo {
-  background: var(--color-primary-400);
+/* ── Tablet (≤834px) ────────────────────────────────────── */
+@media (max-width: 834px) {
+  .login-form-panel { flex: 0 0 440px; padding: 32px 40px; }
+  .brand-preview-card-wrap { width: 480px; right: -80px; }
+  .brand-headline { font-size: 28px; }
 }
 
-.dark .auth-title,
-.dark .auth-error span {
-  color: var(--color-text-primary);
-}
-
-.dark .auth-subtitle,
-.dark .social-title {
-  color: var(--color-text-secondary);
-}
-
-.dark .social-button {
-  background: var(--color-bg-700);
-  border-color: var(--color-border-200);
-  color: var(--color-text-primary);
-}
-
-.dark .social-button:hover {
-  border-color: var(--color-primary-400);
-}
-
-@keyframes slide-down {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* ── Mobile (≤640px) ────────────────────────────────────── */
+@media (max-width: 640px) {
+  .login-screen { flex-direction: column; }
+  .login-form-panel { flex: none; padding: 28px 24px; min-height: 100vh; }
+  .login-brand-panel { display: none; }
+  .login-title { font-size: 28px; }
+  .login-form-body { max-width: none; }
 }
 </style>

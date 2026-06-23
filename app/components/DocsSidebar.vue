@@ -1,102 +1,223 @@
+<script setup lang="ts">
+defineProps<{
+  active?: string
+}>()
+</script>
+
 <template>
-  <aside class="fixed left-0 top-0 h-full w-64 bg-white border-r border-gray-200 z-10">
-    <div class="flex flex-col h-full">
-      <!-- Header -->
-      <div class="p-6 border-b border-gray-200">
-        <router-link to="/docs" class="flex items-center space-x-2">
-          <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center">
-            <UIcon name="i-lucide-book-open" class="text-white text-sm"/>
-          </div>
-          <span class="font-bold text-gray-900">OpenDS Docs</span>
-        </router-link>
-      </div>
+  <aside class="docs-sidebar">
+    <!-- Getting Started -->
+    <div class="sidebar-section">Getting Started</div>
+    <NuxtLink to="/docs" class="nav-item" :class="{ active: active === 'intro' }">
+      <UIcon name="i-lucide-sparkles" class="size-4" />
+      Introduction
+    </NuxtLink>
+    <NuxtLink to="/docs/installation" class="nav-item">
+      <UIcon name="i-lucide-zap" class="size-4" />
+      Installation
+    </NuxtLink>
+    <NuxtLink to="/docs/theming" class="nav-item">
+      <UIcon name="i-lucide-book" class="size-4" />
+      Theming
+    </NuxtLink>
+    <NuxtLink to="/docs/contributing" class="nav-item">
+      <UIcon name="i-lucide-layers" class="size-4" />
+      Contributing
+    </NuxtLink>
 
-      <!-- Navigation -->
-      <nav class="flex-1 p-4">
-        <ul class="space-y-1">
-          <li>
-            <router-link
-              to="/docs"
-              class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors"
-              :class="$route.name === 'docs' ? 'bg-indigo-50 text-indigo-700' : 'text-gray-700 hover:bg-gray-50'"
-            >
-              <UIcon name="i-lucide-home" class="mr-3"/>
-              Overview
-            </router-link>
-          </li>
+    <!-- Foundations -->
+    <div class="sidebar-section">Foundations</div>
+    <NuxtLink to="/tokens" class="nav-item" :class="{ active: active === 'color' }">
+      <UIcon name="i-lucide-palette" class="size-4" />
+      Color
+    </NuxtLink>
+    <NuxtLink to="/tokens" class="nav-item">
+      <UIcon name="i-lucide-type" class="size-4" />
+      Typography
+    </NuxtLink>
+    <NuxtLink to="/tokens" class="nav-item">
+      <UIcon name="i-lucide-ruler" class="size-4" />
+      Spacing
+    </NuxtLink>
+    <NuxtLink to="/tokens" class="nav-item">
+      <UIcon name="i-lucide-box" class="size-4" />
+      Radius &amp; Shadow
+    </NuxtLink>
+    <NuxtLink to="/tokens" class="nav-item">
+      <UIcon name="i-lucide-sliders-horizontal" class="size-4" />
+      Motion
+    </NuxtLink>
 
-          <!-- Documentation links temporarily disabled -->
-          <li class="mt-6">
-            <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Documentation
-            </div>
-          </li>
+    <!-- Components -->
+    <div class="sidebar-section">Components</div>
+    <NuxtLink to="/docs/components" class="nav-item">Overview</NuxtLink>
+    <div class="nav-subgroup">
+      <div class="nav-subtitle">Inputs</div>
+      <NuxtLink to="/docs/components/button" class="nav-item indent" :class="{ active: active === 'button' }">Button</NuxtLink>
+      <NuxtLink to="/docs/components/checkbox" class="nav-item indent">Checkbox</NuxtLink>
+      <NuxtLink to="/docs/components/input" class="nav-item indent">Input</NuxtLink>
+      <NuxtLink to="/docs/components/radio-group" class="nav-item indent">Radio Group</NuxtLink>
+      <NuxtLink to="/docs/components/select" class="nav-item indent">Select</NuxtLink>
+      <NuxtLink to="/docs/components/switch" class="nav-item indent">Switch</NuxtLink>
+      <NuxtLink to="/docs/components/textarea" class="nav-item indent">Textarea</NuxtLink>
 
-          <li>
-            <span class="flex items-center px-3 py-2 text-sm text-gray-400">
-              <UIcon name="i-lucide-box" class="mr-3"/>
-              Components (Coming Soon)
-            </span>
-          </li>
+      <div class="nav-subtitle">Display</div>
+      <NuxtLink to="/docs/components/avatar" class="nav-item indent">Avatar</NuxtLink>
+      <NuxtLink to="/docs/components/badge" class="nav-item indent">Badge</NuxtLink>
+      <NuxtLink to="/docs/components/card" class="nav-item indent">Card</NuxtLink>
+      <NuxtLink to="/docs/components/table" class="nav-item indent">Table</NuxtLink>
+      <NuxtLink to="/docs/components/tooltip" class="nav-item indent">Tooltip</NuxtLink>
 
-          <li>
-            <span class="flex items-center px-3 py-2 text-sm text-gray-400">
-              <UIcon name="i-lucide-palette" class="mr-3"/>
-              Design Tokens (Coming Soon)
-            </span>
-          </li>
+      <div class="nav-subtitle">Overlay</div>
+      <NuxtLink to="/docs/components/dialog" class="nav-item indent">Dialog</NuxtLink>
+      <NuxtLink to="/docs/components/drawer" class="nav-item indent">Drawer</NuxtLink>
+      <NuxtLink to="/docs/components/popover" class="nav-item indent">Popover</NuxtLink>
+      <NuxtLink to="/docs/components/toast" class="nav-item indent">Toast</NuxtLink>
+    </div>
 
-          <!-- Admin section - only visible when authenticated -->
-          <li v-if="authStore.isAuthenticated" class="mt-6">
-            <div class="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Administration
-            </div>
-          </li>
+    <!-- Patterns -->
+    <div class="sidebar-section">Patterns</div>
+    <NuxtLink to="/docs/patterns/forms" class="nav-item">
+      <UIcon name="i-lucide-file-text" class="size-4" />
+      Forms
+    </NuxtLink>
+    <NuxtLink to="/docs/patterns/empty-states" class="nav-item">
+      <UIcon name="i-lucide-file-text" class="size-4" />
+      Empty States
+    </NuxtLink>
+    <NuxtLink to="/docs/patterns/loading" class="nav-item">
+      <UIcon name="i-lucide-file-text" class="size-4" />
+      Loading &amp; Errors
+    </NuxtLink>
 
-          <li v-if="authStore.isAuthenticated">
-            <router-link
-              to="/admin"
-              class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors text-gray-700 hover:bg-gray-50"
-            >
-              <UIcon name="i-lucide-settings" class="mr-3"/>
-              Admin Dashboard
-            </router-link>
-          </li>
+    <!-- Internal -->
+    <div class="sidebar-section">Internal · Team</div>
+    <NuxtLink to="/docs/internal/brand-voice" class="nav-item faint">
+      <UIcon name="i-lucide-users" class="size-4" />
+      Brand voice
+      <UIcon name="i-lucide-lock" class="size-3 ml-auto text-[var(--text-tertiary)]" />
+    </NuxtLink>
+    <NuxtLink to="/docs/internal/playbook" class="nav-item faint">
+      <UIcon name="i-lucide-users" class="size-4" />
+      Contributor playbook
+      <UIcon name="i-lucide-lock" class="size-3 ml-auto text-[var(--text-tertiary)]" />
+    </NuxtLink>
+    <NuxtLink to="/docs/internal/token-roadmap" class="nav-item faint">
+      <UIcon name="i-lucide-users" class="size-4" />
+      Token roadmap
+      <UIcon name="i-lucide-lock" class="size-3 ml-auto text-[var(--text-tertiary)]" />
+    </NuxtLink>
 
-          <li v-if="authStore.isAuthenticated">
-            <router-link
-              to="/admin/components"
-              class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors text-gray-700 hover:bg-gray-50"
-            >
-              <UIcon name="i-lucide-box" class="mr-3"/>
-              Manage Components
-            </router-link>
-          </li>
-
-          <li v-if="authStore.isAuthenticated">
-            <router-link
-              to="/admin/tokens"
-              class="flex items-center px-3 py-2 text-sm font-medium rounded-lg transition-colors text-gray-700 hover:bg-gray-50"
-            >
-              <UIcon name="i-lucide-palette" class="mr-3"/>
-              Manage Tokens
-            </router-link>
-          </li>
-        </ul>
-      </nav>
-
-      <!-- Footer -->
-      <div class="p-4 border-t border-gray-200">
-        <div class="text-xs text-gray-500 text-center">
-          OpenDS v0.2.0
-        </div>
-      </div>
+    <div class="sidebar-hint">
+      3 pages need sign-in.
+      <NuxtLink to="/login" class="sidebar-hint-link">Sign in →</NuxtLink>
     </div>
   </aside>
 </template>
 
-<script setup lang="ts">
-import { useAuthStore } from '../stores/auth'
+<style scoped>
+.docs-sidebar {
+  width: 268px;
+  flex-shrink: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg);
+  overflow-y: auto;
+  padding: 12px 8px 24px;
+}
 
-const authStore = useAuthStore()
-</script>
+.sidebar-section {
+  padding: 14px 14px 6px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: background 0.12s, color 0.12s;
+}
+.nav-item:hover {
+  background: var(--surface-2);
+  color: var(--text);
+}
+.nav-item.active {
+  font-weight: 600;
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+.nav-item.active :deep(svg) {
+  color: var(--primary);
+}
+.nav-item :deep(svg) {
+  color: var(--text-tertiary);
+}
+
+.nav-item.indent {
+  padding-left: 22px;
+}
+
+.nav-item.faint {
+  color: var(--text-tertiary);
+}
+
+.nav-subgroup {
+  padding-left: 6px;
+}
+
+.nav-subtitle {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-tertiary);
+  padding: 8px 10px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.sidebar-hint {
+  margin: 8px 12px 4px;
+  padding: 8px 10px;
+  background: var(--surface-2);
+  border-radius: 6px;
+  font-size: 11.5px;
+  color: var(--text-tertiary);
+  line-height: 1.45;
+}
+
+.sidebar-hint-link {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+/* ── Tablet (≤834px) ────────────────────────────────────── */
+@media (max-width: 834px) {
+  .docs-sidebar { width: 220px; padding: 10px 6px 24px; }
+  .nav-item { font-size: 13px; padding: 6px 8px; }
+  .sidebar-section { padding: 10px 10px 4px; }
+}
+
+/* ── Mobile (≤640px) ────────────────────────────────────── */
+@media (max-width: 640px) {
+  .docs-sidebar {
+    position: fixed;
+    top: 52px;
+    left: 0;
+    bottom: 0;
+    z-index: var(--z-dropdown);
+    width: 280px;
+    transform: translateX(-100%);
+    transition: transform var(--duration-structural) var(--ease-out-quart);
+  }
+  .docs-sidebar.open { transform: translateX(0); }
+}
+</style>

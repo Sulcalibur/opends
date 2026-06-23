@@ -3,7 +3,7 @@
  * Database operations for MCP API key management
  */
 
-import { createHash, randomBytes } from "node:crypto";
+import { createHash, randomBytes, randomUUID } from "node:crypto";
 import getDatabase from "../utils/db";
 
 export interface McpApiKey {
@@ -22,6 +22,7 @@ export interface CreateMcpKeyData {
   user_id: string;
   name: string;
   scope: string[];
+  key_hash: string;
   expires_at?: Date;
 }
 
@@ -48,20 +49,24 @@ export class McpApiKeyRepository {
    */
   static async create(data: CreateMcpKeyData): Promise<McpApiKey> {
     const db = getDatabase();
-    const key = this.generateKey();
-    const keyHash = this.hashKey(key);
+    const id = randomUUID();
 
-    const result = await db.query<McpApiKey>(
-      `INSERT INTO mcp_api_keys (user_id, key_hash, name, scope, expires_at)
-       VALUES ($1, $2, $3, $4, $5)
-       RETURNING *`,
+    await db.query(
+      `INSERT INTO mcp_api_keys (id, user_id, key_hash, name, scope, expires_at)
+       VALUES ($1, $2, $3, $4, $5, $6)`,
       [
+        id,
         data.user_id,
-        keyHash,
+        data.key_hash,
         data.name,
         JSON.stringify(data.scope),
         data.expires_at || null,
       ],
+    );
+
+    const result = await db.query<McpApiKey>(
+      'SELECT * FROM mcp_api_keys WHERE id = $1',
+      [id],
     );
 
     return result.rows[0];

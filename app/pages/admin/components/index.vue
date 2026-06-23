@@ -62,7 +62,7 @@
               :src="component.preview_url"
               alt="Preview"
               class="w-full h-full object-cover"
-            />
+            >
             <UIcon
               v-else
               name="i-lucide-image"

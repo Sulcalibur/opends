@@ -1,4 +1,5 @@
 import { extractApiKey, validateApiKey, getAuthError } from "../../utils/auth";
+import tokenRepository from "../../repositories/token.repository";
 
 export default defineEventHandler(async (event) => {
   const apiKey = extractApiKey(event);
@@ -14,13 +15,54 @@ export default defineEventHandler(async (event) => {
   }
 
   const body = await readBody(event);
-  const { colors, typography, spacing } = body;
+  const { colors = [], typography = [], spacing = [] } = body || {};
+
+  // Reshape Penpot plugin arrays into importTokens format:
+  // { "color.primary-500": { category: "color", value: "#3b82f6" } }
+  const tokensData: Record<string, { category: string; value: unknown; description?: string }> = {};
+
+  for (const token of colors) {
+    const name = token.name || `color-${token.id}`;
+    tokensData[name] = {
+      category: 'color',
+      value: token.value,
+      description: token.description || undefined,
+    };
+  }
+
+  for (const token of typography) {
+    const name = token.name || `typography-${token.id}`;
+    tokensData[name] = {
+      category: 'typography',
+      value: {
+        fontFamily: token.fontFamily,
+        fontSize: token.fontSize,
+        fontWeight: token.fontWeight,
+        lineHeight: token.lineHeight,
+      },
+      description: token.description || undefined,
+    };
+  }
+
+  for (const token of spacing) {
+    const name = token.name || `spacing-${token.id}`;
+    tokensData[name] = {
+      category: 'spacing',
+      value: token.value,
+      description: token.description || undefined,
+    };
+  }
+
+  // Persist tokens to database
+  const result = await tokenRepository.importTokens(tokensData, 'penpot-plugin');
 
   return {
     success: true,
-    processed:
-      (colors?.length || 0) +
-      (typography?.length || 0) +
-      (spacing?.length || 0),
+    data: {
+      synced: result.imported,
+      skipped: result.skipped,
+      failed: result.errors.length,
+      errors: result.errors.length > 0 ? result.errors : undefined,
+    },
   };
 });

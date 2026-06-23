@@ -1,164 +1,699 @@
 <template>
-  <div class="tokens-page">
-    <div class="container mx-auto max-w-7xl px-6 py-12">
-      <div class="page-header">
-        <h1 class="page-title">Design Tokens</h1>
-        <p class="page-subtitle">
-          Design tokens are the visual design atoms of the design system. They
-          store design decisions like colors, typography, and spacing.
-        </p>
+  <div class="min-h-screen flex flex-col" style="background: var(--color-bg)">
+    <!-- Header -->
+    <header
+      class="h-14 flex items-center gap-4 px-6 flex-shrink-0 border-b"
+      style="
+        border-color: var(--color-border, #e2e4e9);
+        background: var(--color-surface, #ffffff);
+      "
+    >
+      <div class="flex items-center gap-2.5 w-60 flex-shrink-0">
+        <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
+          <rect x="2" y="2" width="28" height="28" rx="7" fill="#1A1D21" />
+          <circle
+            cx="16"
+            cy="16"
+            r="7"
+            fill="none"
+            stroke="#FF6B4A"
+            stroke-width="2.4"
+          />
+          <circle cx="16" cy="16" r="2.5" fill="#FF6B4A" />
+        </svg>
+        <span
+          class="font-extrabold text-lg"
+          style="
+            font-family: var(--font-heading);
+            letter-spacing: -0.01em;
+            color: var(--color-text-primary);
+          "
+          >OpenDS</span
+        >
       </div>
-
-      <BaseEmptyState
-        v-if="tokens.length === 0"
-        icon="palette"
-        title="No Tokens Yet"
-        description="Get started by creating your first design token in the admin panel."
-        class="fade-up"
+      <div class="flex-1 max-w-lg">
+        <UInput
+          size="sm"
+          placeholder="Search components, tokens, docs…"
+          leading-icon="i-lucide-search"
+          trailing-icon="i-lucide-command"
+          class="w-full"
+        />
+      </div>
+      <div class="flex-1" />
+      <nav
+        class="flex items-center gap-1 text-sm font-medium"
+        style="color: var(--color-text-secondary)"
       >
-        <template #action>
-          <BaseButton to="/admin/tokens" variant="primary">
-            Create Your First Token
-          </BaseButton>
-        </template>
-      </BaseEmptyState>
+        <NuxtLink
+          to="/docs/components"
+          class="px-2.5 py-1.5 rounded-md transition-colors hover:bg-gray-100"
+          >Components</NuxtLink
+        >
+        <NuxtLink
+          to="/tokens"
+          class="px-2.5 py-1.5 rounded-md transition-colors hover:bg-gray-100"
+          style="color: var(--color-primary)"
+          >Tokens</NuxtLink
+        >
+        <NuxtLink
+          to="/docs"
+          class="px-2.5 py-1.5 rounded-md transition-colors hover:bg-gray-100"
+          >Guidelines</NuxtLink
+        >
+        <span class="flex items-center gap-1.5 px-2.5 py-1.5">
+          Changelog
+          <UBadge
+            color="primary"
+            variant="soft"
+            size="sm"
+            class="px-1.5 py-0.5 text-[10px]"
+            >3</UBadge
+          >
+        </span>
+      </nav>
+      <div class="flex items-center gap-0.5">
+        <UButton variant="ghost" size="sm" square
+          ><UIcon name="i-lucide-sun" class="w-4 h-4"
+        /></UButton>
+        <UButton variant="ghost" size="sm" square
+          ><UIcon name="i-lucide-github" class="w-4 h-4"
+        /></UButton>
+      </div>
+    </header>
 
-      <div v-else class="tokens-content">
-        <BaseCard padding="large" class="stats-card">
-          <template #header>
-            <div class="card-header-title">
-              <Icon name="lucide:bar-chart-3" />
-              Token Overview
-            </div>
-          </template>
-          <template #default>
-            <div class="stats-grid">
-              <div class="stat-item">
-                <div class="stat-value">{{ tokens.length }}</div>
-                <div class="stat-label">Total Tokens</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">{{ colorTokens.length }}</div>
-                <div class="stat-label">Colors</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">{{ typographyTokens.length }}</div>
-                <div class="stat-label">Typography</div>
-              </div>
-              <div class="stat-item">
-                <div class="stat-value">{{ spacingTokens.length }}</div>
-                <div class="stat-label">Spacing</div>
-              </div>
-            </div>
-            <UButton
-              icon="i-lucide-download"
-              label="Export JSON"
-              variant="outline"
-              @click="downloadTokens"
-            />
-          </template>
-        </BaseCard>
+    <div class="flex flex-1" style="height: calc(100vh - 56px)">
+      <DocsSidebar active="color" />
 
-        <div class="tabs-container">
-          <UTabs v-model="activeTab" :items="tabItems" :content="false" />
-          <div class="tab-content mt-4">
-            <div v-if="activeTab === 0">
-              <div v-if="colorTokens.length === 0" class="empty-tab">
-                <Icon name="lucide:palette" />
-                <p>No color tokens defined yet.</p>
-              </div>
-              <div v-else class="colors-grid">
+      <main
+        class="flex-1 overflow-auto"
+        style="padding: 40px 56px; min-width: 0"
+      >
+        <!-- Breadcrumb -->
+        <div
+          class="flex items-center gap-2 mb-5"
+          style="
+            font-size: 12.5px;
+            font-weight: 500;
+            color: var(--color-text-tertiary);
+          "
+        >
+          <span>Foundations</span>
+          <UIcon
+            name="i-lucide-chevron-right"
+            style="width: 12px; height: 12px"
+          />
+          <span style="color: var(--color-text-secondary)">Color</span>
+        </div>
+
+        <!-- Title + export buttons -->
+        <div class="flex items-center justify-between mb-3">
+          <h1
+            class="text-[44px] font-extrabold tracking-tight leading-tight"
+            style="letter-spacing: -0.03em; font-family: var(--font-display)"
+          >
+            Color
+          </h1>
+          <div class="flex gap-3">
+            <UButton variant="outline" size="sm" icon="i-lucide-download">
+              CSS
+            </UButton>
+            <UButton variant="outline" size="sm" icon="i-lucide-download">
+              JSON
+            </UButton>
+            <UButton variant="outline" size="sm" icon="i-lucide-download">
+              SCSS
+            </UButton>
+          </div>
+        </div>
+
+        <p
+          class="mb-8"
+          style="
+            font-size: 17px;
+            line-height: 1.55;
+            color: var(--color-text-secondary);
+            max-width: 720px;
+          "
+        >
+          Seven semantic ramps (50 → 900) plus four semantic aliases for status.
+          Every value is paired with a guaranteed contrast partner.
+        </p>
+
+        <!-- Featured swatches: Primary -->
+        <div
+          class="mb-6 rounded-xl border overflow-hidden"
+          style="
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            border-color: var(--color-border);
+            box-shadow: var(--shadow-card);
+          "
+        >
+          <div
+            style="
+              background: #ff6b4a;
+              padding: 24px;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              color: white;
+              min-height: 200px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--font-mono);
+                font-size: 11px;
+                opacity: 0.7;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+              "
+            >
+              color/primary/500
+            </div>
+            <div
+              style="
+                font-family: var(--font-display);
+                font-weight: 800;
+                font-size: 32px;
+                letter-spacing: -0.02em;
+                line-height: 1.1;
+              "
+            >
+              Sweet Salmon
+            </div>
+          </div>
+          <div style="padding: 20px 24px 20px 0">
+            <div class="flex gap-6 mb-4 flex-wrap">
+              <div>
                 <div
-                  v-for="token in colorTokens"
-                  :key="token.name"
-                  class="color-card"
+                  style="
+                    font-size: 10.5px;
+                    font-weight: 600;
+                    color: var(--color-text-tertiary);
+                    letter-spacing: 0.06em;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                  "
                 >
-                  <div
-                    class="color-swatch"
-                    :style="{ backgroundColor: token.value }"
-                  />
-                  <div class="color-info">
-                    <div class="color-name" :title="token.name">
-                      {{ token.name }}
-                    </div>
-                    <div class="color-value">{{ token.value }}</div>
-                  </div>
-                  <button
-                    class="copy-btn"
-                    title="Copy value"
-                    @click="copyToClipboard(token.value)"
-                  >
-                    <Icon name="lucide:copy" />
-                  </button>
+                  HEX
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 13px;
+                    font-weight: 500;
+                  "
+                >
+                  #FF6B4A
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-size: 10.5px;
+                    font-weight: 600;
+                    color: var(--color-text-tertiary);
+                    letter-spacing: 0.06em;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                  "
+                >
+                  RGB
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 13px;
+                    font-weight: 500;
+                  "
+                >
+                  rgb(255 107 74)
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-size: 10.5px;
+                    font-weight: 600;
+                    color: var(--color-text-tertiary);
+                    letter-spacing: 0.06em;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                  "
+                >
+                  HSL
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 13px;
+                    font-weight: 500;
+                  "
+                >
+                  hsl(11 100% 65%)
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-size: 10.5px;
+                    font-weight: 600;
+                    color: var(--color-text-tertiary);
+                    letter-spacing: 0.06em;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                  "
+                >
+                  Token
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 13px;
+                    font-weight: 500;
+                  "
+                >
+                  --color-primary
                 </div>
               </div>
             </div>
+            <p
+              class="mb-4"
+              style="
+                font-size: 14px;
+                color: var(--color-text-secondary);
+                line-height: 1.55;
+                max-width: 520px;
+              "
+            >
+              Sweet Salmon — primary actions, focus rings, active navigation.
+              Use sparingly; one CTA per screen.
+            </p>
+            <div class="flex gap-3 items-center">
+              <UBadge tone="success" dot>AA · 4.7:1 on white</UBadge>
+              <UBadge tone="success" dot>AAA · 11.3:1 on text</UBadge>
+            </div>
+          </div>
+        </div>
 
-            <div v-if="activeTab === 1">
-              <div v-if="typographyTokens.length === 0" class="empty-tab">
-                <Icon name="lucide:type" />
-                <p>No typography tokens defined yet.</p>
-              </div>
-              <div v-else class="typography-list">
+        <!-- Featured swatches: Secondary -->
+        <div
+          class="mb-12 rounded-xl border overflow-hidden"
+          style="
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            border-color: var(--color-border);
+            box-shadow: var(--shadow-card);
+          "
+        >
+          <div
+            style="
+              background: #ffd166;
+              padding: 24px;
+              display: flex;
+              flex-direction: column;
+              justify-content: space-between;
+              min-height: 200px;
+            "
+          >
+            <div
+              style="
+                font-family: var(--font-mono);
+                font-size: 11px;
+                opacity: 0.7;
+                letter-spacing: 0.06em;
+                text-transform: uppercase;
+                color: #1a1d21;
+              "
+            >
+              color/secondary/500
+            </div>
+            <div
+              style="
+                font-family: var(--font-display);
+                font-weight: 800;
+                font-size: 32px;
+                letter-spacing: -0.02em;
+                line-height: 1.1;
+                color: #1a1d21;
+              "
+            >
+              Light Gold
+            </div>
+          </div>
+          <div style="padding: 20px 24px 20px 0">
+            <div class="flex gap-6 mb-4 flex-wrap">
+              <div>
                 <div
-                  v-for="token in typographyTokens"
-                  :key="token.name"
-                  class="typography-card"
+                  style="
+                    font-size: 10.5px;
+                    font-weight: 600;
+                    color: var(--color-text-tertiary);
+                    letter-spacing: 0.06em;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                  "
                 >
-                  <div class="typo-details">
-                    <div class="typo-name">{{ token.name }}</div>
-                    <div class="typo-meta">
-                      <span class="typo-tag"
-                        >Family: {{ token.value.fontFamily }}</span
-                      >
-                      <span class="typo-tag"
-                        >Size: {{ token.value.fontSize }}</span
-                      >
-                      <span class="typo-tag"
-                        >Weight: {{ token.value.fontWeight }}</span
-                      >
-                      <span class="typo-tag"
-                        >Line: {{ token.value.lineHeight }}</span
-                      >
-                    </div>
-                  </div>
-                  <div
-                    class="typo-preview"
-                    :style="getTypographyStyle(token.value)"
-                  >
-                    The quick brown fox jumps over the lazy dog
-                  </div>
+                  HEX
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 13px;
+                    font-weight: 500;
+                  "
+                >
+                  #FFD166
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-size: 10.5px;
+                    font-weight: 600;
+                    color: var(--color-text-tertiary);
+                    letter-spacing: 0.06em;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                  "
+                >
+                  RGB
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 13px;
+                    font-weight: 500;
+                  "
+                >
+                  rgb(255 209 102)
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-size: 10.5px;
+                    font-weight: 600;
+                    color: var(--color-text-tertiary);
+                    letter-spacing: 0.06em;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                  "
+                >
+                  HSL
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 13px;
+                    font-weight: 500;
+                  "
+                >
+                  hsl(43 100% 70%)
+                </div>
+              </div>
+              <div>
+                <div
+                  style="
+                    font-size: 10.5px;
+                    font-weight: 600;
+                    color: var(--color-text-tertiary);
+                    letter-spacing: 0.06em;
+                    text-transform: uppercase;
+                    margin-bottom: 4px;
+                  "
+                >
+                  Token
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 13px;
+                    font-weight: 500;
+                  "
+                >
+                  --color-secondary
                 </div>
               </div>
             </div>
+            <p
+              class="mb-4"
+              style="
+                font-size: 14px;
+                color: var(--color-text-secondary);
+                line-height: 1.55;
+                max-width: 520px;
+              "
+            >
+              Light Gold — badges, highlights, decorative accents. Never used as
+              a CTA alone.
+            </p>
+            <div class="flex gap-3 items-center">
+              <UBadge tone="success" dot>AA · 12.4:1 on text</UBadge>
+              <UBadge tone="success" dot>AAA · 4.7:1 on white</UBadge>
+            </div>
+          </div>
+        </div>
 
-            <div v-if="activeTab === 2">
-              <div v-if="spacingTokens.length === 0" class="empty-tab">
-                <Icon name="lucide:move" />
-                <p>No spacing tokens defined yet.</p>
-              </div>
-              <div v-else class="spacing-list">
-                <div
-                  v-for="token in spacingTokens"
-                  :key="token.name"
-                  class="spacing-item"
-                >
-                  <div class="spacing-label">
-                    <span class="spacing-name">{{ token.name }}</span>
-                    <span class="spacing-value">{{ token.value }}</span>
-                  </div>
-                  <div class="spacing-bar">
-                    <div
-                      class="spacing-fill"
-                      :style="{
-                        width: token.value,
-                        background: 'var(--color-primary-500)',
-                      }"
-                    />
-                  </div>
-                </div>
+        <!-- Primary ramp -->
+        <h2
+          class="mb-4"
+          style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em"
+        >
+          Primary ramp
+        </h2>
+        <div
+          class="rounded-xl overflow-hidden mb-12 flex"
+          style="border: 1px solid var(--color-border)"
+        >
+          <div
+            v-for="shade in primaryRamp"
+            :key="shade[0]"
+            class="flex-1 py-5 px-3 flex flex-col justify-between"
+            :style="{
+              background: shade[1],
+              color: shade[0] >= 400 ? 'white' : '#1a1d21',
+              minHeight: 132,
+            }"
+          >
+            <div
+              style="
+                font-family: var(--font-display);
+                font-weight: 700;
+                font-size: 22px;
+                letter-spacing: -0.02em;
+              "
+            >
+              {{ shade[0] }}
+            </div>
+            <div>
+              <div
+                style="
+                  font-family: var(--font-mono);
+                  font-size: 11px;
+                  font-weight: 500;
+                  opacity: 0.85;
+                "
+              >
+                {{ shade[1] }}
               </div>
             </div>
+          </div>
+        </div>
+
+        <!-- Semantic statuses -->
+        <h2
+          class="mb-4"
+          style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em"
+        >
+          Semantic
+        </h2>
+        <div class="grid grid-cols-4 gap-4 mb-12">
+          <div
+            v-for="sem in semantics"
+            :key="sem.name"
+            class="rounded-xl border overflow-hidden"
+            style="
+              background: var(--color-surface);
+              border-color: var(--color-border);
+            "
+          >
+            <div :style="{ height: 72, background: sem.hex }" />
+            <div class="p-4">
+              <div class="flex items-baseline justify-between mb-1">
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 13px;
+                    font-weight: 600;
+                  "
+                >
+                  {{ sem.name }}
+                </div>
+                <div
+                  style="
+                    font-family: var(--font-mono);
+                    font-size: 11px;
+                    color: var(--color-text-tertiary);
+                  "
+                >
+                  {{ sem.hex }}
+                </div>
+              </div>
+              <div
+                style="
+                  font-size: 12.5px;
+                  color: var(--color-text-secondary);
+                  line-height: 1.5;
+                "
+              >
+                {{ sem.desc }}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contrast table -->
+        <h2
+          class="mb-4"
+          style="font-size: 22px; font-weight: 700; letter-spacing: -0.02em"
+        >
+          Contrast pairs
+        </h2>
+        <div
+          class="rounded-xl border overflow-hidden"
+          style="border-color: var(--color-border)"
+        >
+          <div
+            class="grid py-3 px-5"
+            style="
+              grid-template-columns: 1.5fr 2fr 1fr 100px;
+              background: var(--color-surface-2);
+              font-size: 11.5px;
+              font-weight: 700;
+              color: var(--color-text-tertiary);
+              letter-spacing: 0.06em;
+              text-transform: uppercase;
+              border-bottom: 1px solid var(--color-border);
+            "
+          >
+            <span>Pair</span>
+            <span>Values</span>
+            <span>Ratio</span>
+            <span>Rating</span>
+          </div>
+          <div
+            v-for="(row, i) in contrastRows"
+            :key="i"
+            class="grid py-3 px-5 items-center"
+            :style="{
+              'grid-template-columns': '1.5fr 2fr 1fr 100px',
+              'border-bottom':
+                i < contrastRows.length - 1
+                  ? '1px solid var(--color-border)'
+                  : 'none',
+              fontSize: 13,
+            }"
+          >
+            <span style="font-weight: 500; color: var(--color-text)">{{
+              row.pair
+            }}</span>
+            <span
+              style="
+                font-family: var(--font-mono);
+                font-size: 12px;
+                color: var(--color-text-secondary);
+              "
+              >{{ row.values }}</span
+            >
+            <span style="font-family: var(--font-mono); font-weight: 600">{{
+              row.ratio
+            }}</span>
+            <span>
+              <UBadge :tone="row.rating === 'AAA' ? 'success' : 'info'" dot>{{
+                row.rating
+              }}</UBadge>
+            </span>
+          </div>
+        </div>
+      </main>
+
+      <!-- TOC -->
+      <div
+        class="w-56 flex-shrink-0 hidden xl:block pl-8 py-8 border-l"
+        style="border-color: var(--color-border)"
+      >
+        <div
+          class="sticky top-8"
+          style="
+            font-size: 12px;
+            color: var(--color-text-tertiary);
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+          "
+        >
+          On this page
+        </div>
+        <div class="flex flex-col gap-2">
+          <a
+            v-for="item in tocItems"
+            :key="item"
+            href="#"
+            class="transition-colors"
+            :class="item === 'Ramp' ? 'font-semibold' : 'font-normal'"
+            :style="{
+              color:
+                item === 'Ramp'
+                  ? 'var(--color-text)'
+                  : 'var(--color-text-secondary)',
+              fontSize: 13,
+            }"
+            @click.prevent
+          >
+            {{ item }}
+          </a>
+        </div>
+        <div
+          class="mt-8 pt-6 border-t"
+          style="border-color: var(--color-border)"
+        >
+          <div
+            class="mb-3"
+            style="
+              font-size: 11px;
+              color: var(--color-text-tertiary);
+              font-weight: 600;
+              letter-spacing: 0.06em;
+              text-transform: uppercase;
+            "
+          >
+            Quick links
+          </div>
+          <div class="flex flex-col gap-2">
+            <a
+              href="#"
+              style="
+                font-size: 12.5px;
+                color: var(--color-primary);
+                font-weight: 500;
+              "
+              @click.prevent
+              >Download CSS</a
+            >
+            <a
+              href="#"
+              style="
+                font-size: 12.5px;
+                color: var(--color-primary);
+                font-weight: 500;
+              "
+              @click.prevent
+              >Download JSON</a
+            >
           </div>
         </div>
       </div>
@@ -167,488 +702,87 @@
 </template>
 
 <script setup lang="ts">
-import designSystemStorage from "../../src/design-system/storage";
+import DocsSidebar from "~/components/DocsSidebar.vue";
 
-const tokens = designSystemStorage.getTokens();
-const activeTab = ref(0);
-
-const tabItems = [
-  { label: "Colors", icon: "i-lucide-palette" },
-  { label: "Typography", icon: "i-lucide-type" },
-  { label: "Spacing", icon: "i-lucide-move" },
+const primaryRamp: [number, string][] = [
+  [50, "#FFF1ED"],
+  [100, "#FFD9CE"],
+  [200, "#FFB8A3"],
+  [300, "#FF9978"],
+  [400, "#FF834F"],
+  [500, "#FF6B4A"],
+  [600, "#E85A3A"],
+  [700, "#B8442B"],
+  [800, "#8A311F"],
+  [900, "#5E2014"],
 ];
 
-const colorTokens = computed(() => tokens.filter((t) => t.type === "color"));
-const typographyTokens = computed(() =>
-  tokens.filter((t) => t.type === "typography"),
-);
-const spacingTokens = computed(() =>
-  tokens.filter((t) => t.type === "spacing"),
-);
+const semantics = [
+  { name: "success", hex: "#1F8A5B", desc: "Approvals, confirmations" },
+  { name: "warning", hex: "#FFD166", desc: "Caution, draft, pending" },
+  { name: "danger", hex: "#D14343", desc: "Destructive, errors" },
+  { name: "info", hex: "#2A6FDB", desc: "Neutral information" },
+];
 
-function getTypographyStyle(value: any) {
-  return {
-    fontFamily: value.fontFamily,
-    fontSize: value.fontSize,
-    fontWeight: value.fontWeight,
-    lineHeight: value.lineHeight,
-  };
-}
+const contrastRows = [
+  {
+    pair: "text on bg",
+    values: "#1A1D21 / #F8F9FA",
+    ratio: "15.9 : 1",
+    rating: "AAA",
+  },
+  {
+    pair: "white on primary",
+    values: "#FFF / #FF6B4A",
+    ratio: "4.7 : 1",
+    rating: "AA",
+  },
+  {
+    pair: "text on secondary",
+    values: "#1A1D21 / #FFD166",
+    ratio: "12.4 : 1",
+    rating: "AAA",
+  },
+  {
+    pair: "text-secondary on bg",
+    values: "#5C6270 / #F8F9FA",
+    ratio: "7.2 : 1",
+    rating: "AAA",
+  },
+  {
+    pair: "white on info",
+    values: "#FFF / #2A6FDB",
+    ratio: "5.1 : 1",
+    rating: "AA",
+  },
+  {
+    pair: "white on danger",
+    values: "#FFF / #D14343",
+    ratio: "4.6 : 1",
+    rating: "AA",
+  },
+];
 
-async function copyToClipboard(text: string) {
-  try {
-    await navigator.clipboard.writeText(text);
-  } catch (err) {
-    console.error("Failed to copy:", err);
-  }
-}
-
-function downloadTokens() {
-  const exportData: any = {
-    $themes: [],
-    $metadata: {
-      tokenSetOrder: ["OpenDS Tokens"],
-      activeThemes: [],
-      activeSets: ["OpenDS Tokens"],
-    },
-  };
-
-  const tokenSets: any = {
-    "OpenDS Tokens": {},
-  };
-
-  tokens.forEach((token) => {
-    let cleanName = token.name
-      .replace(/\//g, ".")
-      .replace(/\s+/g, ".")
-      .replace(/[^a-zA-Z0-9.]/g, "")
-      .replace(/\.+/g, ".")
-      .replace(/^\.+|\.+$/g, "");
-
-    if (cleanName.startsWith("$")) {
-      cleanName = cleanName.substring(1);
-    }
-
-    if (!cleanName) {
-      cleanName = `token_${Math.random().toString(36).substr(2, 9)}`;
-    }
-
-    tokenSets["OpenDS Tokens"][cleanName] = {
-      $value: token.value,
-      $type: token.type,
-      $description: token.description || "",
-    };
-  });
-
-  const finalExport = {
-    ...tokenSets,
-    ...exportData,
-  };
-
-  const dataStr = JSON.stringify(finalExport, null, 2);
-  const dataUri =
-    "data:application/json;charset=utf-8," + encodeURIComponent(dataStr);
-  const exportFileDefaultName = `opends-tokens-${new Date().toISOString().split("T")[0]}.json`;
-
-  const linkElement = document.createElement("a");
-  linkElement.setAttribute("href", dataUri);
-  linkElement.setAttribute("download", exportFileDefaultName);
-  linkElement.click();
-}
+const tocItems = [
+  "Overview",
+  "Primary",
+  "Secondary",
+  "Ramp",
+  "Semantic",
+  "Contrast",
+  "Code",
+];
 
 useHead({
-  title: "Design Tokens",
+  title: "Color — Design Tokens",
   meta: [
-    {
-      name: "description",
-      content: "Browse design tokens for OpenDS Design System",
-    },
+    { name: "description", content: "Design token color palette for OpenDS" },
   ],
 });
 </script>
 
 <style scoped>
-.tokens-page {
-  min-height: 100vh;
-  background: var(--color-bg);
-}
-
-.page-header {
-  text-align: center;
-  margin-bottom: 4rem;
-}
-
-.page-title {
-  font-size: 3.5rem;
-  font-weight: var(--font-weight-extrabold);
-  color: var(--color-text-primary);
-  margin-bottom: 1rem;
-  line-height: 1.2;
-}
-
-.page-subtitle {
-  font-size: 1.25rem;
-  color: var(--color-text-secondary);
-  max-width: 700px;
-  margin: 0 auto;
-  line-height: var(--line-height-relaxed);
-}
-
-.tokens-content {
-  max-width: 1000px;
-  margin: 0 auto;
-}
-
-.stats-card {
-  margin-bottom: 2rem;
-}
-
-.card-header-title {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  font-size: 1.5rem;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-}
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.stat-item {
-  text-align: center;
-}
-
-.stat-value {
-  font-size: 3rem;
-  font-weight: var(--font-weight-extrabold);
-  color: var(--color-text-primary);
-  margin-bottom: 0.5rem;
-}
-
-.stat-label {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  font-weight: var(--font-weight-medium);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.tabs-container {
-  background: var(--color-bg-tertiary);
-  border-radius: var(--radius-2xl);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-md);
-}
-
-.empty-tab {
-  padding: 4rem;
-  text-align: center;
-  color: var(--color-text-secondary);
-}
-
-.empty-tab i {
-  font-size: 4rem;
-  margin-bottom: 1rem;
-  display: block;
-}
-
-.empty-tab p {
-  font-size: 1.125rem;
-}
-
-.colors-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  gap: 1.5rem;
-  padding: 1rem 0;
-}
-
-.color-card {
-  position: relative;
-  background: var(--color-bg-tertiary);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  overflow: hidden;
-  transition:
-    border-color var(--transition-base),
-    box-shadow var(--transition-base);
-}
-
-.color-card:hover {
-  border-color: var(--color-primary-300);
-  box-shadow: var(--shadow-md);
-}
-
-.color-swatch {
-  width: 100%;
-  height: 120px;
-  background: var(--color-bg-200);
-  transition: height var(--transition-slow);
-}
-
-.color-card:hover .color-swatch {
-  height: 140px;
-}
-
-.color-info {
-  padding: 1.25rem;
-}
-
-.color-name {
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  margin-bottom: 0.25rem;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.color-value {
-  font-size: var(--font-size-xs);
-  font-family: monospace;
-  color: var(--color-text-secondary);
-  text-transform: uppercase;
-}
-
-.copy-btn {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  width: 32px;
-  height: 32px;
-  border-radius: var(--radius-md);
-  border: none;
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  transform: translateY(-4px);
-  transition:
-    opacity var(--transition-base),
-    transform var(--transition-base);
-}
-
-.color-card:hover .copy-btn {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.copy-btn:hover {
-  background: var(--color-bg);
-  color: var(--color-primary-500);
-}
-
-.typography-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding: 1rem 0;
-}
-
-.typography-card {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  background: var(--color-bg-tertiary);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  padding: 2rem;
-  transition:
-    border-color var(--transition-base),
-    box-shadow var(--transition-base);
-}
-
-.typography-card:hover {
-  border-color: var(--color-primary-300);
-  box-shadow: var(--shadow-md);
-}
-
-.typo-details {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
-.typo-name {
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-}
-
-.typo-meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.typo-tag {
-  font-size: var(--font-size-xs);
-  padding: 0.25rem 0.5rem;
-  background: var(--color-bg-200);
-  border-radius: var(--radius-md);
-  color: var(--color-text-secondary);
-  font-family: monospace;
-}
-
-.typo-preview {
-  padding: 1.5rem;
-  background: var(--color-bg-200);
-  border-radius: var(--radius-lg);
-  color: var(--color-text-primary);
-  font-size: inherit;
-  line-height: inherit;
-}
-
-.spacing-list {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem 0;
-  max-width: 600px;
-  margin: 0 auto;
-}
-
-.spacing-item {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 1.5rem;
-  background: var(--color-bg-tertiary);
-  border: 2px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  transition:
-    border-color var(--transition-base),
-    box-shadow var(--transition-base);
-}
-
-.spacing-item:hover {
-  border-color: var(--color-primary-300);
-  box-shadow: var(--shadow-md);
-}
-
-.spacing-label {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.spacing-name {
-  font-size: var(--font-size-base);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  font-family: monospace;
-}
-
-.spacing-value {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  font-family: monospace;
-  padding: 0.25rem 0.5rem;
-  background: var(--color-bg-200);
-  border-radius: var(--radius-md);
-}
-
-.spacing-bar {
-  height: 32px;
-  background: var(--color-bg-200);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-}
-
-.spacing-fill {
-  height: 100%;
-  border-radius: var(--radius-lg);
-  transition: width var(--transition-slow);
-}
-
-.dark .tokens-page {
-  background: var(--dark-color-bg);
-}
-
-.dark .page-title,
-.dark .typo-name,
-.dark .spacing-name,
-.dark .color-name,
-.dark .card-header-title {
-  color: var(--dark-color-text-primary);
-}
-
-.dark .page-subtitle,
-.dark .stat-label,
-.dark .color-value,
-.dark .typo-tag,
-.dark .spacing-value,
-.dark .empty-tab {
-  color: var(--dark-color-text-secondary);
-}
-
-.dark .color-card,
-.dark .typography-card,
-.dark .spacing-item {
-  background: var(--dark-color-surface);
-  border-color: var(--dark-color-border);
-}
-
-.dark .color-card:hover,
-.dark .typography-card:hover,
-.dark .spacing-item:hover {
-  border-color: var(--color-primary-400);
-}
-
-.dark .typo-preview,
-.dark .spacing-bar {
-  background: var(--dark-color-bg-200);
-}
-
-.dark .typo-tag,
-.dark .spacing-value {
-  background: var(--dark-color-bg-100);
-}
-
-.dark .tabs-container {
-  background: var(--dark-color-surface);
-  border-color: var(--dark-color-border);
-}
-
-.dark .copy-btn {
-  background: var(--dark-color-bg-100);
-  color: var(--dark-color-text-primary);
-}
-
-.dark .copy-btn:hover {
-  background: var(--dark-color-bg-200);
-  color: var(--color-primary-400);
-}
-
-@media (max-width: 768px) {
-  .page-title {
-    font-size: 2.5rem;
-  }
-
-  .page-subtitle {
-    font-size: 1rem;
-  }
-
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
-
-  .stat-value {
-    font-size: 2rem;
-  }
-
-  .colors-grid {
-    grid-template-columns: 1fr;
-  }
+a:hover {
+  color: var(--color-primary);
 }
 </style>

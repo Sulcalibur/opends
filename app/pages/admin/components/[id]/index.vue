@@ -58,7 +58,7 @@
             :src="component.preview_url"
             :alt="component.name"
             class="preview-image"
-          />
+          >
           <div v-else class="preview-placeholder">
             <UIcon name="i-lucide-image" class="placeholder-icon" />
             <span>No preview available</span>

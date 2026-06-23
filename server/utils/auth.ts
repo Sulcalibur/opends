@@ -62,17 +62,16 @@ export async function requireAuth(event: H3Event): Promise<string> {
   
   const token = authHeader.startsWith('Bearer ') ? authHeader.substring(7) : authHeader
   
-  const db = getDatabase()
-  const result = await db.query<{ user_id: string }>('SELECT user_id FROM sessions WHERE access_token = $1', [token])
-  
-  if (result.rows.length === 0) {
+  try {
+    const { default: JwtService } = await import('../services/jwt.service')
+    const payload = JwtService.verify(token)
+    return payload.userId
+  } catch {
     throw createError({
       statusCode: 401,
       statusMessage: 'Invalid token'
     })
   }
-  
-  return result.rows[0].user_id
 }
 
 export async function requireRole(event: H3Event, role: string): Promise<void> {

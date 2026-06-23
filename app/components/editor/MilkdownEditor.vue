@@ -1,170 +1,140 @@
 <script setup lang="ts">
-/**
- * Milkdown Editor Component
- * A WYSIWYG markdown editor for documentation pages
- * Uses Crepe for batteries-included experience
- */
-import { ref, onMounted, onUnmounted, watch, nextTick } from 'vue'
 import { Crepe } from '@milkdown/crepe'
-import '@milkdown/crepe/theme/common/style.css'
-import '@milkdown/crepe/theme/frame.css'
+import { Milkdown, MilkdownProvider, useEditor } from '@milkdown/vue'
+import { replaceAll } from '@milkdown/kit/utils'
 
-interface Props {
-  modelValue?: string
-  placeholder?: string
-  readonly?: boolean
-}
-
-const props = withDefaults(defineProps<Props>(), {
-  modelValue: '',
-  placeholder: 'Start writing your documentation...',
-  readonly: false
-})
+const props = defineProps<{
+  modelValue: string
+}>()
 
 const emit = defineEmits<{
   'update:modelValue': [value: string]
 }>()
 
-const editorRef = ref<HTMLDivElement | null>(null)
-const error = ref<string | null>(null)
-const loading = ref(true)
-let crepe: Crepe | null = null
-let isReady = false
-let updateTimeout: ReturnType<typeof setTimeout> | null = null
+const content = ref(props.modelValue)
 
-onMounted(async () => {
-  if (!editorRef.value) {
-    error.value = 'Editor container not found'
-    loading.value = false
-    return
-  }
-
-  await nextTick()
-
-  try {
-    // Ensure defaultValue is always a string
-    const initialValue = props.modelValue || ''
-    
-    crepe = new Crepe({
-      root: editorRef.value,
-      defaultValue: initialValue,
-      featureConfigs: {
-        [Crepe.Feature.Placeholder]: {
-          text: props.placeholder
-        }
-      }
-    })
-
-    // Create the editor
-    await crepe.create()
-    
-    // Wait a bit more to ensure full initialization
-    await new Promise(resolve => setTimeout(resolve, 100))
-    
-    // Mark as ready
-    isReady = true
-    loading.value = false
-
-    // Set up a polling mechanism to detect content changes
-    // This is safer than relying on the listener which may fire too early
-    const checkForChanges = () => {
-      if (!isReady || !crepe) return
-      
-      try {
-        const currentContent = crepe.getMarkdown()
-        if (currentContent !== props.modelValue) {
-          emit('update:modelValue', currentContent)
-        }
-      } catch (e) {
-        // Silently ignore - editor might not be fully ready yet
-      }
-      
-      // Continue polling
-      if (isReady) {
-        updateTimeout = setTimeout(checkForChanges, 500)
-      }
-    }
-    
-    // Start polling after a short delay
-    setTimeout(checkForChanges, 500)
-    
-  } catch (e: any) {
-    console.error('Failed to initialize Milkdown editor:', e)
-    error.value = `Failed to load editor: ${e.message}`
-    loading.value = false
-    isReady = false
-  }
+watch(() => props.modelValue, (val) => {
+  if (val !== content.value) content.value = val
 })
 
-// Watch for external modelValue changes
-watch(() => props.modelValue, (newValue) => {
-  if (!crepe || !isReady || loading.value || error.value) return
-  
-  try {
-    const current = crepe.getMarkdown()
-    if (newValue !== current) {
-      // @ts-ignore
-      if (typeof crepe.setMarkdown === 'function') {
-        // @ts-ignore
-        crepe.setMarkdown(newValue || '')
-      }
-    }
-  } catch (e) {
-    console.warn('Error updating editor content:', e)
-  }
+watch(content, (val) => {
+  emit('update:modelValue', val)
+})
+
+const editor = useEditor((root) => {
+  const crepe = new Crepe({
+    root,
+    defaultValue: content.value,
+  })
+
+  crepe.editor.onMarkdownUpdated((_, markdown) => {
+    content.value = markdown
+  })
+
+  return crepe
 })
 
 onUnmounted(() => {
-  isReady = false
-  if (updateTimeout) {
-    clearTimeout(updateTimeout)
-  }
-  crepe?.destroy()
-})
-
-defineExpose({
-  getMarkdown: () => {
-    if (!isReady || !crepe) return ''
-    try {
-      return crepe.getMarkdown()
-    } catch {
-      return ''
-    }
-  }
+  editor.value?.destroy()
 })
 </script>
 
 <template>
-  <div class="milkdown-editor-wrapper relative">
-    <div v-if="error" class="absolute inset-0 flex items-center justify-center text-red-500 bg-red-50 p-4 border border-red-200 rounded z-10">
-      <UIcon name="i-lucide-triangle-alert" class="mr-2"/> {{ error }}
-    </div>
-    <div v-if="loading" class="absolute inset-0 flex items-center justify-center text-gray-400 bg-gray-50 z-10">
-      <UIcon name="i-lucide-loader-2" class="animate-spin mr-2"/> Loading editor...
-    </div>
-    <div ref="editorRef" class="milkdown-editor" />
-  </div>
+  <MilkdownProvider>
+    <Milkdown />
+  </MilkdownProvider>
 </template>
 
-<style scoped>
-.milkdown-editor-wrapper {
-  width: 100%;
-  min-height: 500px;
-  /* Fallback border */
-  border: 1px solid #e2e8f0; 
-  border-radius: 8px;
-  background: white;
-  position: relative;
+<style>
+/* Milkdown styles — unscoped so they apply to the editor DOM */
+.milkdown {
+  min-height: 300px;
 }
 
-.milkdown-editor {
-  min-height: 500px;
-  height: 100%;
+.milkdown .editor {
+  padding: 40px 64px 80px;
+  max-width: 760px;
+  margin: 0 auto;
+  outline: none;
+  font-family: var(--f-body);
+  font-size: 16px;
+  line-height: 1.7;
+  color: var(--text);
 }
 
-/* Dark mode support */
-:root.dark .milkdown-editor-wrapper {
-  border-color: var(--surface-border, #374151);
-  background: var(--surface-card, #1f2937);
+.milkdown .editor h1 {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 36px;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  margin: 0 0 16px;
+  color: var(--text);
+}
+
+.milkdown .editor h2 {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 26px;
+  letter-spacing: -0.02em;
+  margin: 40px 0 12px;
+  color: var(--text);
+}
+
+.milkdown .editor h3 {
+  font-family: var(--f-display);
+  font-weight: 600;
+  font-size: 20px;
+  margin: 32px 0 8px;
+  color: var(--text);
+}
+
+.milkdown .editor p {
+  margin: 0 0 16px;
+}
+
+.milkdown .editor code {
+  font-family: var(--f-mono);
+  font-size: 0.875em;
+  background: var(--surface-2);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.milkdown .editor pre {
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: 16px;
+  overflow-x: auto;
+  margin: 16px 0;
+}
+
+.milkdown .editor pre code {
+  background: none;
+  padding: 0;
+}
+
+.milkdown .editor blockquote {
+  border-left: 4px solid var(--primary);
+  padding-left: 16px;
+  margin: 16px 0;
+  color: var(--text-tertiary);
+  font-style: italic;
+}
+
+.milkdown .editor ul,
+.milkdown .editor ol {
+  padding-left: 24px;
+  margin: 0 0 16px;
+}
+
+.milkdown .editor li {
+  margin-bottom: 4px;
+}
+
+.milkdown .editor a {
+  color: var(--primary);
+  text-decoration: underline;
 }
 </style>

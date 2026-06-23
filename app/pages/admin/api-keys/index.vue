@@ -25,14 +25,14 @@
           </div>
         </template>
         <template #key-cell="{ row }">
-          <code class="key-value">{{ row.original.key }}</code>
+          <code class="key-value">{{ row.original.keyPreview }}</code>
         </template>
         <template #createdAt-cell="{ row }">
           {{ formatDate(row.original.createdAt) }}
         </template>
         <template #lastUsed-cell="{ row }">
           {{
-            row.original.lastUsed ? formatDate(row.original.lastUsed) : "Never"
+            row.original.lastUsedAt ? formatDate(row.original.lastUsedAt) : "Never"
           }}
         </template>
         <template #actions-cell="{ row }">
@@ -157,16 +157,16 @@ const toast = useToast();
 interface ApiKey {
   id: string;
   name: string;
-  key: string;
+  keyPreview: string;
   createdAt: string;
-  lastUsed: string | null;
+  lastUsedAt: string | null;
 }
 
 const columns = [
   { accessorKey: "name", header: "Name" },
-  { accessorKey: "key", header: "API Key" },
+  { accessorKey: "keyPreview", header: "API Key" },
   { accessorKey: "createdAt", header: "Created" },
-  { accessorKey: "lastUsed", header: "Last Used" },
+  { accessorKey: "lastUsedAt", header: "Last Used" },
   { id: "actions", header: "Actions" },
 ];
 
@@ -196,7 +196,7 @@ async function fetchApiKeys() {
     toast.add({
       color: 'error',
       title: 'Error',
-      description: 'Failed to load API keys',
+      description: error?.data?.message || error?.message || 'Failed to load API keys',
     });
   } finally {
     loading.value = false;

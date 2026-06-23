@@ -54,7 +54,7 @@ const modelValue = defineModel<string>({ default: "" });
             ? 'border-[var(--color-error)] bg-[var(--color-error-subtle)]'
             : 'focus:border-[var(--color-border-focus)]',
         ]"
-      />
+      >
       <Icon
         v-if="iconRight"
         :name="`i-lucide-${iconRight}`"

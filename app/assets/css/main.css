@@ -1,6 +1,14 @@
-/* OpenDS - Tailwind CSS v4 + Nuxt UI v4 */
+/* OpenDS — main CSS entry point
+   Tailwind CSS v4 + Nuxt UI v4 + Design Token System */
 
-/* Sweet Salmon color scale — maps to NuxtUI color="primary" */
+/* ── Design Token System (must come first) ────────────────── */
+@import "./design-tokens.css";
+
+/* ── Tailwind + Nuxt UI ──────────────────────────────────── */
+@import "tailwindcss";
+@import "@nuxt/ui";
+
+/* ── Salmon color scale — required by NuxtUI (maps to primary) ── */
 @theme {
   --color-salmon-50:  #fff7f5;
   --color-salmon-100: #ffe8e2;
@@ -15,32 +23,28 @@
   --color-salmon-950: #44180d;
 }
 
-@import "tailwindcss";
-@import "@nuxt/ui";
-
 /* Source directories for Tailwind to scan */
 @source "../components";
 @source "../pages";
 @source "../layouts";
 @source "../composables";
 
-/* Import Design Token System */
-@import "./design-tokens.css";
-
-/* Import Base Styles & Reset */
+/* ── Foundation ──────────────────────────────────────────── */
 @import "./base.css";
 
-/* Import Animation Library */
+/* ── Theme ───────────────────────────────────────────────── */
+@import "./dark-mode.css";
 @import "./animations.css";
 
-/* Import Dark Mode System */
-@import "./dark-mode.css";
+/* ── Milkdown editor styles ──────────────────────────────── */
+@import "@milkdown/crepe/theme/common/style.css";
+@import "@milkdown/crepe/theme/frame.css";
 
-/* =========================================================
+/* ============================================================
    NuxtUI primary color override — Sweet Salmon #FF6B4A
-   These target the --ui-color-primary-* variables that
-   NuxtUI components (UButton, UBadge, etc.) read directly.
-   ========================================================= */
+   Maps design token values to NuxtUI's internal variable system
+   so UButton, UBadge, etc. render correctly.
+   ============================================================ */
 :root {
   --ui-color-primary-50:  #fff7f5;
   --ui-color-primary-100: #ffe8e2;
@@ -56,12 +60,26 @@
   --ui-primary:           #FF6B4A;
 }
 
-/* =========================================================
-   Typography — declared directly so they win the cascade
-   regardless of which CSS variable resolves to what.
-   ========================================================= */
-html,
-body {
+/* Dark mode primary overrides for NuxtUI */
+.dark {
+  --ui-color-primary-50:  #44180d;
+  --ui-color-primary-100: #7d301d;
+  --ui-color-primary-200: #9e3c24;
+  --ui-color-primary-300: #c44a2d;
+  --ui-color-primary-400: #E85A3A;
+  --ui-color-primary-500: #FF8A70;
+  --ui-color-primary-600: #ff9e88;
+  --ui-color-primary-700: #ffb2a0;
+  --ui-color-primary-800: #ffc6b8;
+  --ui-color-primary-900: #ffdad0;
+  --ui-color-primary-950: #fff0eb;
+  --ui-primary:           #FF8A70;
+}
+
+/* ============================================================
+   Base typography — declared directly to win the cascade
+   ============================================================ */
+html, body {
   font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 h1, h2, h3, h4, h5, h6 {
@@ -71,242 +89,65 @@ code, pre, kbd, samp {
   font-family: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
-/* Also align the CSS variables so anything reading them gets the right values */
+/* ── Legacy variable aliases for existing code compatibility ── */
 :root {
-  --font-body:    'Inter', system-ui, -apple-system, sans-serif;
-  --font-heading: 'Outfit', system-ui, -apple-system, sans-serif;
-  --font-mono:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  /* Alias for base.css which uses --font-family-body */
-  --font-family-body:    'Inter', system-ui, -apple-system, sans-serif;
-  --font-family-heading: 'Outfit', system-ui, -apple-system, sans-serif;
-  --font-family-mono:    'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-}
+  --font-heading:    var(--f-display);
+  --font-body:       var(--f-body);
+  --font-mono:       var(--f-mono);
+  --font-family-body:    var(--f-body);
+  --font-family-heading: var(--f-display);
+  --font-family-mono:    var(--f-mono);
 
-/* OpenDS Custom Theme Extensions */
+  --color-primary:        var(--primary);
+  --color-primary-hover:  var(--ui-color-primary-600);
+  --color-primary-500:    var(--primary);
+  --color-primary-600:    var(--ui-color-primary-600);
 
-:root {
-  /* Legacy compatibility variables */
-  --primary-color: var(--color-primary-500);
-  --primary-color-hover: var(--color-primary-400);
-  --secondary-color: var(--color-secondary-500);
-  --border-radius: var(--radius-lg);
-  --font-heading: var(--font-family-heading);
-  --font-body: var(--font-family-body);
+  --color-secondary:      var(--secondary);
 
-  /* GDS Specific variables */
-  --gds-focus-color: var(--color-light-gold-500);
-  --gds-text-color: var(--color-text-primary);
+  --color-background:     var(--bg);
+  --color-surface:        var(--surface);
+
+  --color-text-primary:   var(--text);
+  --color-text-secondary: var(--text-secondary);
+  --color-text-inverse:   var(--text-on-primary);
+
+  --color-border:         var(--border);
+  --color-border-focus:   var(--primary);
+
+  --color-error:          var(--danger);
+  --color-success:        var(--success);
+  --color-warning:        var(--warning);
+
+  --radius-sm:  var(--r-input);
+  --radius-md:  var(--r-btn);
+  --radius-lg:  var(--r-card);
+  --radius-full: var(--r-full);
 }
 
 body {
   font-family: var(--font-body);
-  color: var(--color-text-primary);
-  background-color: var(--color-background);
+  color: var(--text);
+  background-color: var(--bg);
   -webkit-font-smoothing: antialiased;
-  line-height: var(--line-height-normal);
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-heading);
-  font-weight: 700;
-  line-height: 1.25;
-  color: var(--gds-text-color);
+  font-weight: var(--fw-bold);
+  line-height: var(--lh-tight);
+  color: var(--text);
 }
 
-/* Links - Default Style */
 a {
-  color: var(--primary-color);
+  color: var(--primary);
   text-decoration: none;
-  transition: all 0.2s;
 }
-
 a:hover {
-  color: var(--primary-color-hover);
-  text-decoration: underline;
+  color: var(--ui-color-primary-600);
 }
 
-/* Standard Focus */
 :focus-visible {
-  outline: 2px solid var(--primary-color);
+  outline: 2px solid var(--primary);
   outline-offset: 2px;
-}
-
-/* Layout Utilities */
-.ds-container {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 0 1rem;
-}
-
-/* Phase Banner (GDS Pattern) */
-.ds-phase-banner {
-  padding: 0.75rem 0;
-  border-bottom: 2px solid #b1b4b6;
-  font-size: 1rem;
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-}
-
-.ds-phase-tag {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 2px 8px;
-  font-weight: 700;
-  font-size: 0.875rem;
-  letter-spacing: 1px;
-}
-
-/* GDS / MOJ Link Style */
-[data-theme-preset="govuk"] a,
-[data-theme-preset="moj"] a {
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.1em;
-  text-decoration: underline;
-}
-
-[data-theme-preset="govuk"] a:hover,
-[data-theme-preset="moj"] a:hover {
-  text-decoration-thickness: 3px;
-  text-decoration-color: var(--gds-text-color, black);
-  background-color: var(--gds-focus-color);
-  color: var(--gds-text-color, black);
-  box-shadow:
-    0 -2px var(--gds-focus-color),
-    0 4px var(--gds-text-color, black);
-}
-
-/* Accessible Focus State - Only for GDS/MOJ */
-[data-theme-preset="govuk"] :focus,
-[data-theme-preset="moj"] :focus {
-  outline: 3px solid var(--gds-focus-color) !important;
-  outline-offset: 0 !important;
-  background-color: var(--gds-focus-color) !important;
-  color: #0b0c0c !important;
-  box-shadow:
-    0 -2px var(--gds-focus-color),
-    0 4px #0b0c0c !important;
-}
-
-/* Theme Button Primary */
-.theme-btn-primary {
-  background-color: var(--primary-color) !important;
-  border-color: var(--primary-color) !important;
-  color: white !important;
-  border-radius: var(--border-radius) !important;
-  font-weight: 600 !important;
-  padding: 0.75rem 1.5rem !important;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  text-decoration: none !important;
-  transition: all 0.2s;
-  border-width: 1px;
-  border-style: solid;
-}
-
-.theme-btn-primary:hover {
-  background-color: var(--primary-color-hover) !important;
-  border-color: var(--primary-color-hover) !important;
-  transform: translateY(-1px);
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.1),
-    0 2px 4px -1px rgba(0, 0, 0, 0.06);
-}
-
-/* GDS Button Overrides */
-[data-theme-preset="govuk"] .theme-btn-primary,
-[data-theme-preset="moj"] .theme-btn-primary {
-  border-bottom: 3px solid rgba(0, 0, 0, 0.4) !important;
-  box-shadow: 0 2px 0 rgba(0, 0, 0, 0) !important;
-}
-
-[data-theme-preset="govuk"] .theme-btn-primary:hover,
-[data-theme-preset="moj"] .theme-btn-primary:hover {
-  background-color: var(--primary-color-hover) !important;
-  transform: translateY(1px);
-  box-shadow: none !important;
-}
-
-[data-theme-preset="govuk"] .theme-btn-primary:active,
-[data-theme-preset="moj"] .theme-btn-primary:active {
-  transform: translateY(2px);
-  border-bottom: none !important;
-  margin-top: 3px;
-  margin-bottom: -3px;
-}
-
-/* -------------------------------------------------------------------------- */
-/*  THEME PRESET OVERRIDES                                                    */
-/* -------------------------------------------------------------------------- */
-
-/* 1. SOFT MINT (Friendly, Round, Pastel) */
-[data-theme-preset="soft"] {
-  --primary-color-hover: #059669;
-}
-
-[data-theme-preset="soft"] .bg-white,
-[data-theme-preset="soft"] input,
-[data-theme-preset="soft"] .theme-btn-primary {
-  border-radius: 16px !important;
-  box-shadow:
-    0 10px 25px -5px rgba(16, 185, 129, 0.1),
-    0 8px 10px -6px rgba(16, 185, 129, 0.1);
-  border: 1px solid rgba(16, 185, 129, 0.2);
-}
-
-[data-theme-preset="soft"] h1,
-[data-theme-preset="soft"] h2,
-[data-theme-preset="soft"] h3 {
-  letter-spacing: -0.02em;
-  color: #334155;
-}
-
-/* 2. CYBER GREEN (Tech, Mono, Sharp, Neon) */
-[data-theme-preset="tech"] {
-  --font-heading: "Space Grotesk", monospace;
-  --font-body: "IBM Plex Sans", sans-serif;
-}
-
-[data-theme-preset="tech"] * {
-  border-radius: 0px !important;
-}
-
-[data-theme-preset="tech"] .theme-btn-primary {
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  border: 2px solid var(--primary-color) !important;
-  background: transparent !important;
-  color: var(--primary-color) !important;
-}
-
-[data-theme-preset="tech"] .theme-btn-primary:hover {
-  background: var(--primary-color) !important;
-  color: black !important;
-  box-shadow: var(--shadow-md);
-}
-
-/* 3. CLASSIC NOIR (Serif, Elegant, Minimal) */
-[data-theme-preset="elegant"] {
-  --font-heading: "Playfair Display", serif;
-  --font-body: "Lora", serif;
-}
-
-[data-theme-preset="elegant"] .theme-btn-primary {
-  background-color: #0f172a !important;
-  border-radius: 2px !important;
-  font-family: var(--font-heading);
-  font-weight: 400 !important;
-  letter-spacing: 0.05em;
-  padding: 0.75rem 2rem !important;
-}
-
-[data-theme-preset="elegant"] h1 {
-  font-style: italic;
 }

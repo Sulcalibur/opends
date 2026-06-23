@@ -135,6 +135,11 @@ class UniversalDatabase {
     async query<T = unknown>(text: string, params?: unknown[]): Promise<{ rows: T[]; rowCount: number }> {
         const start = Date.now()
 
+        // Auto-reconnect if connection was dropped (e.g. Nuxt HMR rebuild)
+        if (this.type === 'sqlite' && !this.sqliteDb) {
+            await this.connect()
+        }
+
         try {
             let result: { rows: T[]; rowCount: number }
 

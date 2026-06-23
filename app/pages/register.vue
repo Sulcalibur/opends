@@ -1,471 +1,286 @@
+<script setup lang="ts">
+definePageMeta({ layout: 'centered' })
+
+const { data: settingsData } = await useFetch('/api/settings/public').catch(() => ({ data: ref(null) }))
+const settings = computed(() => settingsData.value?.settings || {})
+const orgName = computed(() => settings.value.organization_name || 'Design System')
+
+const name = ref('')
+const email = ref('')
+const password = ref('')
+const confirmPassword = ref('')
+const error = ref('')
+const loading = ref(false)
+
+async function handleRegister() {
+  if (!name.value || !email.value || !password.value) {
+    error.value = 'Please fill in all fields.'
+    return
+  }
+  if (password.value !== confirmPassword.value) {
+    error.value = 'Passwords do not match.'
+    return
+  }
+  loading.value = true
+  error.value = ''
+
+  try {
+    const { data, error: regError } = await useFetch('/api/auth/register', {
+      method: 'POST',
+      body: { name: name.value, email: email.value, password: password.value },
+    })
+
+    if (regError.value) {
+      error.value = regError.value?.data?.message || 'Registration failed.'
+      loading.value = false
+      return
+    }
+
+    await navigateTo('/login?registered=true')
+  } catch {
+    error.value = 'Something went wrong. Please try again.'
+  } finally {
+    loading.value = false
+  }
+}
+
+useHead({ title: `Create account — ${orgName.value}` })
+</script>
+
 <template>
-  <div class="auth-page">
-    <div class="auth-container">
-      <div class="auth-card">
-        <div class="card-header">
-          <div class="logo-wrapper">
-            <div class="logo">
-              {{ orgInitial }}
-            </div>
+  <div class="register-screen">
+    <!-- Left: form -->
+    <div class="register-form-panel">
+      <div class="register-header">
+        <svg width="28" height="28" viewBox="0 0 32 32" fill="none" aria-hidden="true">
+          <rect x="2" y="2" width="28" height="28" rx="7" fill="var(--primary)" />
+          <path d="M10 11.5C10 9.567 11.567 8 13.5 8h5C20.433 8 22 9.567 22 11.5v9c0 1.933-1.567 3.5-3.5 3.5h-5A3.5 3.5 0 0 1 10 20.5z" stroke="white" stroke-width="2.2"/>
+          <circle cx="16" cy="16" r="1.7" fill="white"/>
+        </svg>
+        <span class="register-brand-name">OpenDS</span>
+        <UBadge color="neutral" variant="soft" size="xs">v0.2 · self-hosted</UBadge>
+      </div>
+
+      <div class="register-form-body">
+        <h1 class="register-title">Create your account</h1>
+        <p class="register-subtitle">Join the {{ orgName }} design system.</p>
+
+        <form class="register-fields" @submit.prevent="handleRegister">
+          <div class="field">
+            <label class="field-label" for="name">Full name</label>
+            <UInput id="name" v-model="name" placeholder="Mira Quinn" size="xl" icon="i-lucide-user" autocomplete="name" />
           </div>
+
+          <div class="field">
+            <label class="field-label" for="email">Email</label>
+            <UInput id="email" v-model="email" type="email" placeholder="you@team.co" size="xl" icon="i-lucide-mail" autocomplete="email" />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="password">Password</label>
+            <UInput id="password" v-model="password" type="password" placeholder="At least 8 characters" size="xl" icon="i-lucide-lock" autocomplete="new-password" />
+          </div>
+
+          <div class="field">
+            <label class="field-label" for="confirm">Confirm password</label>
+            <UInput id="confirm" v-model="confirmPassword" type="password" placeholder="Re-enter your password" size="xl" icon="i-lucide-lock" autocomplete="new-password" />
+          </div>
+
+          <div v-if="error" class="register-error">
+            <UIcon name="i-lucide-alert-circle" class="size-4" />
+            {{ error }}
+          </div>
+
+          <UButton type="submit" size="xl" block :loading="loading" class="register-submit-btn">
+            Create account
+          </UButton>
+        </form>
+
+        <div class="register-footer-text">
+          Already have an account?
+          <NuxtLink to="/login">Sign in →</NuxtLink>
         </div>
-        <div class="card-content">
-          <h1 id="auth-title" class="auth-title">Create Account</h1>
-          <p class="auth-subtitle">Join us to build beautiful design systems</p>
+      </div>
 
-          <form
-            class="auth-form"
-            aria-labelledby="auth-title"
-            @submit.prevent="handleRegister"
-          >
-            <div class="form-group">
-              <BaseInput
-                id="name"
-                v-model="name"
-                type="text"
-                label="Full Name"
-                placeholder="John Doe"
-                left-icon="user"
-                :error="nameError"
-                required
-              />
-            </div>
+      <div class="register-footer-meta">
+        <span>&copy; 2026 {{ orgName }}</span>
+        <span class="footer-meta-links">
+          <span>Privacy</span><span>Terms</span>
+        </span>
+      </div>
+    </div>
 
-            <div class="form-group">
-              <BaseInput
-                id="email"
-                v-model="email"
-                type="email"
-                label="Email Address"
-                placeholder="name@company.com"
-                left-icon="mail"
-                :error="emailError"
-                required
-              />
-            </div>
-
-            <div class="form-group">
-              <div class="password-field-wrapper">
-                <BaseInput
-                  id="password"
-                  v-model="password"
-                  :type="showPassword ? 'text' : 'password'"
-                  label="Password"
-                  placeholder="Create a secure password"
-                  left-icon="lock"
-                  :error="passwordError"
-                  required
-                />
-                <button
-                  type="button"
-                  class="toggle-password"
-                  :aria-label="showPassword ? 'Hide password' : 'Show password'"
-                  :aria-pressed="showPassword"
-                  @click="showPassword = !showPassword"
-                >
-                  <Icon
-                    :name="showPassword ? 'lucide:eye-off' : 'lucide:eye'"
-                    aria-hidden="true"
-                  />
-                </button>
-              </div>
-              <small v-if="!passwordError" class="password-hint">
-                Min 8 characters, uppercase, lowercase, and number
-              </small>
-            </div>
-
-            <BaseError
-              v-if="authStore.error"
-              :message="authStore.error"
-              role="alert"
-            />
-
-            <div v-if="isFirstUser" class="first-user-notice" role="status">
-              <Icon name="lucide:info" aria-hidden="true" />
-              <div>
-                <strong>First User Setup</strong>
-                <p>You'll become the administrator with full system access.</p>
-              </div>
-            </div>
-
-            <BaseButton
-              type="submit"
-              variant="primary"
-              size="large"
-              class="auth-button"
-              :loading="authStore.loading"
-              icon-left="user-plus"
-            >
-              Create Account
-            </BaseButton>
-
-            <div class="form-footer">
-              <div class="form-links">
-                <span>Already have an account?</span>
-                <NuxtLink to="/login" class="form-link"> Sign in </NuxtLink>
-              </div>
-            </div>
-
-            <div class="social-login">
-              <p class="social-title">Or continue with</p>
-              <div class="social-buttons">
-                <button
-                  type="button"
-                  class="social-button"
-                  aria-label="Sign in with Google"
-                >
-                  <Icon name="lucide:google" aria-hidden="true" />
-                </button>
-                <button
-                  type="button"
-                  class="social-button"
-                  aria-label="Sign in with GitHub"
-                >
-                  <Icon name="lucide:github" aria-hidden="true" />
-                </button>
-              </div>
-            </div>
-          </form>
+    <!-- Right: brand panel -->
+    <div class="register-brand-panel">
+      <div class="brand-tag">
+        <UBadge color="primary" variant="soft" size="xs" :ui="{ base: 'bg-[rgba(255,107,74,.18)] text-[#FFB8A3]' }">
+          <UIcon name="i-lucide-sparkles" class="size-3" /> v0.2.0
+        </UBadge>
+      </div>
+      <div class="brand-message">
+        <div class="brand-headline">Your team's single source of truth starts here.</div>
+        <div class="brand-description">
+          Document components, manage tokens, and share guidelines — all in one self-hosted place.
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<script setup lang="ts">
-interface PublicSettingsResponse {
-  settings: {
-    organization_name?: string;
-  };
-}
-
-const { data: settingsData } = await useFetch<PublicSettingsResponse>(
-  "/api/settings/public",
-);
-const settings = computed(() => settingsData.value?.settings || {});
-
-const orgName = computed(() => settings.value.organization_name || "OpenDS");
-const orgInitial = computed(() => orgName.value.substring(0, 2).toUpperCase());
-
-const authStore = useAuthStore();
-const router = useRouter();
-
-const name = ref("");
-const email = ref("");
-const password = ref("");
-const showPassword = ref(false);
-const nameError = ref("");
-const emailError = ref("");
-const passwordError = ref("");
-const isFirstUser = ref(false);
-
-onMounted(async () => {
-  try {
-    const response = await $fetch("/api/auth/status");
-    isFirstUser.value = (response as any)?.isFirstUser || false;
-  } catch {
-    isFirstUser.value = false;
-  }
-});
-
-async function handleRegister() {
-  nameError.value = "";
-  emailError.value = "";
-  passwordError.value = "";
-
-  if (!name.value) {
-    nameError.value = "Name is required";
-    return;
-  }
-  if (!email.value) {
-    emailError.value = "Email is required";
-    return;
-  }
-  if (!password.value) {
-    passwordError.value = "Password is required";
-    return;
-  }
-  if (password.value.length < 8) {
-    passwordError.value = "Password must be at least 8 characters";
-    return;
-  }
-
-  const success = await authStore.register(
-    email.value,
-    password.value,
-    name.value,
-  );
-
-  if (success) {
-    router.push("/admin");
-  }
-}
-</script>
-
 <style scoped>
-.auth-page {
+.register-screen {
+  display: flex;
   min-height: 100vh;
+}
+
+/* ── Left form ───────────────────────────────────────────── */
+.register-form-panel {
+  flex: 0 0 540px;
+  display: flex;
+  flex-direction: column;
+  padding: 40px 64px;
+  background: var(--bg-elevated);
+}
+
+.register-header {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: var(--color-bg);
-  padding: 2rem;
-  font-family: var(--font-family-body);
+  gap: 10px;
 }
 
-.auth-container {
-  width: 100%;
+.register-brand-name {
+  font-family: var(--f-display);
+  font-weight: 800;
+  font-size: 18px;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.register-form-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 380px;
+}
+
+.register-title {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.05;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.register-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 32px;
+}
+
+.register-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.register-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-radius: var(--r-input);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.register-submit-btn {
+  margin-top: 8px;
+}
+
+.register-footer-text {
+  margin-top: 32px;
+  font-size: 13px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+.register-footer-text a {
+  color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-footer-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--text-tertiary);
+}
+
+.footer-meta-links {
+  display: inline-flex;
+  gap: 12px;
+}
+
+/* ── Right brand panel ──────────────────────────────────── */
+.register-brand-panel {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(255,107,74,.25), transparent 50%),
+    radial-gradient(circle at 70% 70%, rgba(255,209,102,.20), transparent 50%),
+    #1A1D21;
+  padding: 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brand-tag { z-index: 1; }
+
+.brand-message { z-index: 1; }
+
+.brand-headline {
+  font-family: var(--f-display);
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: white;
+  margin-bottom: 12px;
   max-width: 480px;
 }
 
-.auth-card {
-  background: var(--color-surface);
-  border-radius: var(--radius-xl);
-  border: 1px solid var(--color-border);
-  box-shadow: var(--shadow-md);
-  padding: 3rem;
+.brand-description {
+  font-size: 14.5px;
+  color: #9AA3B2;
+  max-width: 420px;
+  line-height: 1.55;
 }
 
-.card-header {
-  text-align: center;
-  margin-bottom: 2rem;
-}
-
-.logo-wrapper {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 1.5rem;
-}
-
-.logo {
-  width: 72px;
-  height: 72px;
-  background: var(--color-primary-500);
-  border-radius: var(--radius-lg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-weight: var(--font-weight-extrabold);
-  font-size: 2rem;
-  box-shadow: var(--shadow-sm);
-}
-
-.auth-title {
-  font-size: 2.5rem;
-  font-weight: var(--font-weight-bold);
-  color: var(--color-text-primary);
-  text-align: center;
-  margin-bottom: 0.5rem;
-  line-height: 1.2;
-}
-
-.auth-subtitle {
-  font-size: 1.125rem;
-  color: var(--color-text-secondary);
-  text-align: center;
-  margin-bottom: 2.5rem;
-}
-
-.auth-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-}
-
-.form-group {
-  position: relative;
-}
-
-.password-field-wrapper {
-  position: relative;
-}
-
-.toggle-password {
-  position: absolute;
-  right: 0.75rem;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 40px;
-  height: 40px;
-  background: transparent;
-  border: none;
-  color: var(--color-text-400);
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: color var(--transition-base);
-}
-
-.toggle-password:hover {
-  color: var(--color-primary-500);
-}
-
-.password-hint {
-  display: block;
-  font-size: var(--font-size-xs);
-  color: var(--color-text-400);
-  margin-top: var(--space-1);
-  line-height: var(--line-height-normal);
-}
-
-.first-user-notice {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.75rem;
-  padding: 1rem;
-  background: var(--color-bg-200);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--color-border);
-}
-
-.first-user-notice strong {
-  display: block;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary);
-  margin-bottom: var(--space-0-5);
-}
-
-.first-user-notice p {
-  font-size: var(--font-size-xs);
-  color: var(--color-text-secondary);
-  margin: 0;
-  line-height: var(--line-height-normal);
-}
-
-.auth-button {
-  width: 100%;
-  padding: 1rem !important;
-  margin-top: 1rem;
-}
-
-.form-footer {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--color-border-light);
-}
-
-.form-links {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.form-links span {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-}
-
-.form-link {
-  color: var(--color-primary-500);
-  text-decoration: none;
-  font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
-  transition: color var(--transition-base);
-}
-
-.form-link:hover {
-  color: var(--color-primary-400);
-  text-decoration: underline;
-}
-
-.social-login {
-  text-align: center;
-  margin-top: 2rem;
-}
-
-.social-title {
-  font-size: var(--font-size-sm);
-  color: var(--color-text-secondary);
-  margin-bottom: 1rem;
-}
-
-.social-buttons {
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.social-button {
-  width: 48px;
-  height: 48px;
-  border-radius: var(--radius-lg);
-  border: 2px solid var(--color-border);
-  background: var(--color-surface);
-  color: var(--color-text-primary);
-  font-size: 1.25rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition:
-    border-color var(--transition-base),
-    transform var(--transition-fast);
-}
-
-.social-button:hover {
-  border-color: var(--color-primary-300);
-  transform: translateY(-2px);
-}
-
-.dark .auth-page {
-  background: var(--dark-color-bg);
-}
-
-.dark .auth-card {
-  background: var(--dark-color-surface);
-  border-color: var(--dark-color-border);
-  box-shadow: var(--dark-shadow-md);
-}
-
-.dark .logo {
-  background: var(--color-primary-400);
-  box-shadow: var(--dark-shadow-sm);
-}
-
-.dark .auth-title,
-.dark .first-user-notice strong {
-  color: var(--dark-color-text-primary);
-}
-
-.dark .auth-subtitle,
-.dark .social-title,
-.dark .form-links span,
-.dark .password-hint,
-.dark .first-user-notice p {
-  color: var(--dark-color-text-secondary);
-}
-
-.dark .social-button {
-  background: var(--dark-color-surface);
-  border-color: var(--dark-color-border);
-  color: var(--dark-color-text-primary);
-}
-
-.dark .social-button:hover {
-  border-color: var(--color-primary-400);
-}
-
-.dark .first-user-notice {
-  background: var(--dark-color-bg-100);
-  border-color: var(--dark-color-border);
-}
-
-.dark .form-footer {
-  border-color: var(--dark-color-border);
-}
-
+/* ── Mobile (≤640px) ────────────────────────────────────── */
 @media (max-width: 640px) {
-  .auth-card {
-    padding: 2rem 1.5rem;
-  }
-  .auth-title {
-    font-size: 2rem;
-  }
+  .register-screen { flex-direction: column; }
+  .register-form-panel { flex: none; padding: 28px 24px; min-height: 100vh; }
+  .register-brand-panel { display: none; }
+  .register-title { font-size: 28px; }
+  .register-form-body { max-width: none; }
 }
 </style>

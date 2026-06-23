@@ -169,11 +169,11 @@ function getTypeColor(
 <template>
   <UModal
     :open="modelValue"
-    @update:open="modelValue = $event"
     class="search-modal"
     :ui="{
       content: 'w-full max-w-2xl max-h-[80vh] overflow-hidden',
     }"
+    @update:open="modelValue = $event"
   >
     <template #content>
       <div @keydown="handleKeydown">

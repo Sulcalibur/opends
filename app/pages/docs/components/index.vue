@@ -1,215 +1,319 @@
+<script setup lang="ts">
+const searchQuery = ref('')
+const selectedFilter = ref('All')
+
+const components = ref([
+  { name: 'Button', status: 'approved', tags: ['inputs', 'action'], v: '1.4.0', desc: 'Triggers an action or event. Six variants from primary CTA to inline link.' },
+  { name: 'Input', status: 'approved', tags: ['inputs', 'form'], v: '1.2.1', desc: 'Single-line text field for short-form data entry.' },
+  { name: 'Select', status: 'approved', tags: ['inputs', 'form'], v: '1.1.0', desc: 'Dropdown selection from a predefined list of options.' },
+  { name: 'Checkbox', status: 'approved', tags: ['inputs', 'form'], v: '1.0.2', desc: 'Binary toggle for selecting one or more options.' },
+  { name: 'Badge', status: 'approved', tags: ['display', 'status'], v: '1.3.0', desc: 'Small label for status, counts, or categorization.' },
+  { name: 'Card', status: 'approved', tags: ['display', 'layout'], v: '1.2.0', desc: 'Container for grouping related content and actions.' },
+  { name: 'Modal', status: 'approved', tags: ['overlay'], v: '1.1.1', desc: 'Overlay dialog for focused tasks or confirmations.' },
+  { name: 'Toast', status: 'draft', tags: ['overlay', 'feedback'], v: '0.9.0', desc: 'Brief notification that appears and dismisses automatically.' },
+  { name: 'Table', status: 'approved', tags: ['display', 'data'], v: '1.0.0', desc: 'Structured data display with sortable columns.' },
+  { name: 'Avatar', status: 'approved', tags: ['display'], v: '1.1.0', desc: 'User representation with image, initials, or fallback.' },
+  { name: 'Tooltip', status: 'approved', tags: ['overlay'], v: '1.0.1', desc: 'Contextual hint on hover or focus.' },
+  { name: 'Tabs', status: 'approved', tags: ['navigation'], v: '1.0.0', desc: 'Organize content into switchable panels.' },
+])
+
+const statusTone: Record<string, 'success' | 'warning' | 'neutral'> = {
+  approved: 'success',
+  draft: 'warning',
+  deprecated: 'neutral',
+}
+
+const filteredComponents = computed(() =>
+  components.value.filter((c) => {
+    if (searchQuery.value && !c.name.toLowerCase().includes(searchQuery.value.toLowerCase())) return false
+    if (selectedFilter.value === 'Approved' && c.status !== 'approved') return false
+    if (selectedFilter.value === 'Draft' && c.status !== 'draft') return false
+    if (selectedFilter.value === 'Deprecated' && c.status !== 'deprecated') return false
+    return true
+  }),
+)
+
+useHead({ title: 'Components — Design System' })
+</script>
+
 <template>
-  <div class="min-h-screen bg-gray-50 flex">
-    <ViewerSidebar />
+  <div class="components-page">
+    <DocsSidebar active="button" />
 
-    <main class="flex-1 ml-64 p-8">
-      <div class="max-w-7xl mx-auto">
-        <div class="mb-8">
-          <h1 class="text-3xl font-bold text-gray-900 mb-2">Components</h1>
-          <p class="text-gray-600">
-            Reusable building blocks for your application.
-          </p>
-        </div>
+    <main class="components-main">
+      <!-- Breadcrumbs -->
+      <div class="breadcrumbs">
+        <NuxtLink to="/docs">Docs</NuxtLink>
+        <UIcon name="i-lucide-chevron-right" class="size-3" />
+        <span class="breadcrumb-current">Components</span>
+      </div>
 
-        <div class="mb-6 flex flex-col md:flex-row gap-4">
-          <span class="relative flex-1 max-w-md">
-            <UInput
-              v-model="searchQuery"
-              placeholder="Search components..."
-              icon="i-lucide-search"
-              class="w-full"
-            />
-          </span>
-          <USelect
-            v-model="selectedCategory"
-            :items="categoryOptions"
-            placeholder="Category"
-            class="w-48"
-          />
-        </div>
+      <h1 class="page-title">Components</h1>
+      <p class="page-subtitle">{{ components.length }} components across inputs, display, overlay, and navigation.</p>
 
-        <div v-if="loading" class="text-center py-12">
-          <UIcon name="i-lucide-loader-2" class="animate-spin h-10 w-10" />
-        </div>
-
-        <div
-          v-else-if="filteredComponents.length === 0"
-          class="text-center py-12 border-2 border-dashed border-gray-200 rounded-lg"
-        >
-          <p class="text-gray-500">No components found.</p>
-        </div>
-
-        <div
-          v-else
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"
-        >
-          <div
-            v-for="component in filteredComponents"
-            :key="component.name"
-            class="bg-white rounded-lg border border-gray-200 shadow-sm p-4 hover:border-indigo-300 hover:shadow-md transition-all cursor-pointer flex flex-col h-full"
-            @click="viewComponent(component)"
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <UInput
+          v-model="searchQuery"
+          size="sm"
+          placeholder="Search components…"
+          icon="i-lucide-search"
+          class="toolbar-search"
+        />
+        <div class="toolbar-filters">
+          <button
+            v-for="f in ['All','Approved','Draft','Deprecated']"
+            :key="f"
+            class="filter-chip"
+            :class="{ active: selectedFilter === f }"
+            @click="selectedFilter = f"
           >
-            <div class="flex items-center gap-3 mb-3">
-              <div
-                class="w-8 h-8 rounded-md bg-indigo-50 flex items-center justify-center text-indigo-600"
-              >
-                <UIcon name="i-lucide-box" />
-              </div>
-              <h3 class="font-bold text-sm text-gray-900">
-                {{ component.name }}
-              </h3>
-            </div>
-
-            <p
-              v-if="component.description"
-              class="text-xs text-gray-500 mb-4 line-clamp-2 flex-grow"
-            >
-              {{ component.description }}
-            </p>
-
-            <div
-              class="flex items-center justify-between mt-auto pt-3 border-t border-gray-50"
-            >
-              <span
-                class="text-[10px] font-mono text-gray-400 bg-gray-50 px-1.5 py-0.5 rounded"
-              >
-                {{ component.props?.length || 0 }} props
-              </span>
-              <span
-                class="text-indigo-600 text-xs font-medium group-hover:underline"
-                >View Details -></span
-              >
-            </div>
-          </div>
+            {{ f }}
+          </button>
         </div>
+      </div>
+
+      <!-- Status tabs -->
+      <div class="status-tabs">
+        <button
+          v-for="[label, count, active] in [
+            ['All', components.length, selectedFilter === 'All'],
+            ['Approved', components.filter(c => c.status === 'approved').length, selectedFilter === 'Approved'],
+            ['Draft', components.filter(c => c.status === 'draft').length, selectedFilter === 'Draft'],
+            ['Deprecated', components.filter(c => c.status === 'deprecated').length, selectedFilter === 'Deprecated'],
+          ]"
+          :key="label as string"
+          class="status-tab"
+          :class="{ active }"
+          @click="selectedFilter = label as string"
+        >
+          {{ label }}
+          <span class="status-count">{{ count }}</span>
+        </button>
+      </div>
+
+      <!-- Grid -->
+      <div class="component-grid">
+        <NuxtLink
+          v-for="c in filteredComponents"
+          :key="c.name"
+          :to="`/docs/components/${c.name.toLowerCase()}`"
+          class="component-card"
+        >
+          <div class="card-glyph">
+            <span v-if="c.name === 'Button'" class="glyph-btn">Btn</span>
+            <span v-else-if="c.name === 'Input'" class="glyph-input">abc</span>
+            <span v-else-if="c.name === 'Select'" class="glyph-select">▼</span>
+            <span v-else-if="c.name === 'Checkbox'" class="glyph-check">☑</span>
+            <span v-else-if="c.name === 'Badge'" class="glyph-badge">●</span>
+            <span v-else-if="c.name === 'Card'" class="glyph-card">▢</span>
+            <span v-else-if="c.name === 'Modal'" class="glyph-modal">⏹</span>
+            <span v-else-if="c.name === 'Toast'" class="glyph-toast">◉</span>
+            <span v-else-if="c.name === 'Table'" class="glyph-table">≡</span>
+            <span v-else-if="c.name === 'Avatar'" class="glyph-avatar">◐</span>
+            <span v-else-if="c.name === 'Tooltip'" class="glyph-tooltip">◌</span>
+            <span v-else-if="c.name === 'Tabs'" class="glyph-tabs">▬</span>
+            <span v-else class="glyph-default">◆</span>
+          </div>
+          <div class="card-info">
+            <div class="card-name">
+              {{ c.name }}
+              <UBadge :color="statusTone[c.status]" variant="soft" size="xs">{{ c.status }}</UBadge>
+            </div>
+            <div class="card-tags">
+              <span v-for="t in c.tags" :key="t" class="card-tag">{{ t }}</span>
+            </div>
+            <div class="card-desc">{{ c.desc }}</div>
+            <div class="card-meta">v{{ c.v }}</div>
+          </div>
+        </NuxtLink>
       </div>
     </main>
 
-    <!-- Component Detail Dialog -->
-    <UModal
-      v-model:open="showComponentDialog"
-      :title="selectedComponent ? selectedComponent.name : 'Details'"
-      :ui="{ content: 'w-[800px] max-w-[90vw]' }"
-    >
-      <template #body>
-        <div v-if="selectedComponent" class="py-2 space-y-6">
-          <p class="text-gray-600 text-sm leading-relaxed">
-            {{ selectedComponent.description }}
-          </p>
-
-          <div v-if="selectedComponent.props?.length">
-            <h4 class="text-sm font-bold text-gray-900 mb-3">Props</h4>
-            <div class="border rounded-lg overflow-hidden border-gray-200">
-              <table class="w-full text-sm text-left">
-                <thead
-                  class="bg-gray-50 text-xs text-gray-500 uppercase font-medium"
-                >
-                  <tr>
-                    <th class="px-4 py-2">Name</th>
-                    <th class="px-4 py-2">Type</th>
-                    <th class="px-4 py-2">Default</th>
-                    <th class="px-4 py-2">Required</th>
-                  </tr>
-                </thead>
-                <tbody class="divide-y divide-gray-100">
-                  <tr v-for="prop in selectedComponent.props" :key="prop.name">
-                    <td class="px-4 py-3 font-mono text-indigo-600 font-medium">
-                      {{ prop.name }}
-                    </td>
-                    <td class="px-4 py-3 text-gray-600 font-mono text-xs">
-                      {{ prop.type }}
-                    </td>
-                    <td class="px-4 py-3 text-gray-500 font-mono text-xs">
-                      {{ prop.default || "-" }}
-                    </td>
-                    <td class="px-4 py-3">
-                      <span
-                        v-if="prop.required"
-                        class="text-[10px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded"
-                        >YES</span
-                      >
-                      <span v-else class="text-[10px] font-bold text-gray-400"
-                        >NO</span
-                      >
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-          <div v-if="selectedComponent.examples?.length">
-            <h4 class="text-sm font-bold text-gray-900 mb-3">Example</h4>
-            <div
-              class="bg-gray-50 rounded-lg p-4 overflow-x-auto border border-gray-200"
-            >
-              <pre class="text-xs text-gray-800 font-mono">{{
-                selectedComponent.examples[0]
-              }}</pre>
-            </div>
-          </div>
-        </div>
-      </template>
-    </UModal>
+    <DocsToc :items="['Overview', 'Inputs', 'Display', 'Overlay']" active="Overview" />
   </div>
 </template>
 
-<script setup lang="ts">
-import { ref, computed, onMounted } from "vue";
-import designSystemStorage from "../../../../src/design-system/storage";
-import type { ComponentSpec } from "../../../../src/design-system/storage";
-import ViewerSidebar from "../../../components/ViewerSidebar.vue";
-
-const searchQuery = ref("");
-const selectedCategory = ref<string | null>(null);
-const loading = ref(true);
-const components = ref<ComponentSpec[]>([]);
-const selectedComponent = ref<ComponentSpec | null>(null);
-const showComponentDialog = ref(false);
-
-const categoryOptions = [
-  { label: "All Categories", value: null },
-  { label: "Buttons", value: "button" },
-  { label: "Forms", value: "form" },
-  { label: "Navigation", value: "navigation" },
-  { label: "Layout", value: "layout" },
-];
-
-const filteredComponents = computed(() => {
-  let filtered = components.value;
-  if (searchQuery.value.trim()) {
-    const query = searchQuery.value.toLowerCase();
-    filtered = filtered.filter(
-      (c) =>
-        c.name.toLowerCase().includes(query) ||
-        c.description?.toLowerCase().includes(query),
-    );
-  }
-  if (selectedCategory.value) {
-    filtered = filtered.filter((c) =>
-      c.name.toLowerCase().includes(selectedCategory.value!),
-    );
-  }
-  return filtered;
-});
-
-function viewComponent(component: ComponentSpec) {
-  selectedComponent.value = component;
-  showComponentDialog.value = true;
+<style scoped>
+.components-page {
+  background: var(--bg);
 }
 
-async function loadComponents() {
-  try {
-    loading.value = true;
-    components.value = designSystemStorage.getComponents();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    loading.value = false;
-  }
+.components-page {
+  display: flex;
+  min-height: calc(100vh - 56px - 57px);
 }
 
-onMounted(() => {
-  loadComponents();
-});
-</script>
+.components-main {
+  flex: 1;
+  overflow-y: auto;
+  padding: 40px 56px;
+  min-width: 0;
+}
+
+.breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12.5px;
+  color: var(--text-tertiary);
+  margin-bottom: 16px;
+}
+.breadcrumbs a { color: var(--text-tertiary); text-decoration: none; }
+.breadcrumbs a:hover { color: var(--text); }
+.breadcrumb-current { color: var(--text-secondary); }
+
+.page-title {
+  font-size: 36px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  margin-bottom: 8px;
+}
+
+.page-subtitle {
+  font-size: 15px;
+  color: var(--text-secondary);
+  margin-bottom: 24px;
+}
+
+/* Toolbar */
+.toolbar {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.toolbar-search {
+  width: 300px;
+}
+
+.toolbar-filters {
+  display: flex;
+  gap: 6px;
+}
+
+.filter-chip {
+  padding: 6px 12px;
+  font-size: 12.5px;
+  font-weight: 600;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all var(--duration-micro);
+}
+.filter-chip.active {
+  background: var(--primary);
+  color: white;
+}
+
+/* Status tabs */
+.status-tabs {
+  display: flex;
+  gap: 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.status-tab {
+  padding: 12px 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-secondary);
+  border: none;
+  background: none;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.status-tab.active {
+  font-weight: 600;
+  color: var(--text);
+  border-bottom-color: var(--primary);
+}
+
+.status-count {
+  font-size: 11px;
+  color: var(--text-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Grid */
+.component-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+
+.component-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-card);
+  padding: 20px;
+  box-shadow: var(--shadow-card);
+  text-decoration: none;
+  transition: border-color var(--duration-micro), box-shadow var(--duration-micro);
+}
+.component-card:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-elevated);
+}
+
+.card-glyph {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 14px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-secondary);
+}
+
+.card-name {
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-tags {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.card-tag {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-tertiary);
+  padding: 2px 6px;
+  background: var(--surface-2);
+  border-radius: 4px;
+}
+
+.card-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.card-meta {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+</style>
