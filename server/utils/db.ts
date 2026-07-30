@@ -416,15 +416,38 @@ function parseDatabaseConfig(url: string = ''): DbConfig {
 }
 
 /**
- * Get database instance
+ * Get database instance.
+ * In PocketBase mode, returns a no-op wrapper so existing code doesn't crash.
  */
 export function getDatabase(): UniversalDatabase {
+    // PocketBase mode — return no-op database to prevent SQLite crashes
+    if (process.env.POCKETBASE_URL || process.env.SKIP_DATABASE_INIT === 'true') {
+        return createNoopDatabase()
+    }
+
     if (!db) {
         const url = process.env.DATABASE_URL
         const config = parseDatabaseConfig(url)
         db = new UniversalDatabase(config)
     }
     return db
+}
+
+/**
+ * No-op database for PocketBase mode.
+ * All queries return empty results — data comes from PocketBase instead.
+ */
+function createNoopDatabase(): UniversalDatabase {
+    return {
+        type: 'sqlite',
+        query: async () => ({ rows: [], rowCount: 0 }),
+        connect: async () => {},
+        close: async () => {},
+        healthCheck: async () => ({ connected: false, error: 'PocketBase mode — SQLite disabled' }),
+        getStats: () => null,
+        getClient: async () => null,
+        transaction: async <T>(cb: any) => cb(async () => ({ rows: [], rowCount: 0 })),
+    } as unknown as UniversalDatabase
 }
 
 /**
