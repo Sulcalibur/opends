@@ -1,6 +1,8 @@
 /**
- * API Composable
- * Provides authenticated API calls with automatic token injection
+ * API Composable — PocketBase-backed
+ *
+ * Auth is handled by the pb_auth httpOnly cookie, which the browser
+ * sends automatically on same-origin requests. No manual token injection needed.
  */
 
 interface RequestOptions {
@@ -10,14 +12,9 @@ interface RequestOptions {
 }
 
 export function useApi() {
-  const authStore = useAuthStore();
   const config = useRuntimeConfig();
-
   const apiBase = config.public.apiBase || "/api";
 
-  /**
-   * Make authenticated API request
-   */
   async function request<T = any>(
     url: string,
     options: RequestOptions = {},
@@ -27,24 +24,21 @@ export function useApi() {
       ...options.headers,
     };
 
-    // Add auth token if available
-    if (authStore.accessToken) {
-      headers.Authorization = `Bearer ${authStore.accessToken}`;
-    }
+    // pb_auth cookie is sent automatically — no manual Authorization header
 
     try {
       const response = await $fetch<T>(`${apiBase}${url}`, {
         method: options.method || "GET",
         headers,
         body: options.body,
+        credentials: 'include', // Ensure cookies are sent
       });
 
       return response;
     } catch (error: any) {
-      // Handle 401 - token expired
       if (error.statusCode === 401) {
-        authStore.logout();
-        navigateTo("/login");
+        const authStore = useAuthStore();
+        await authStore.logout();
       }
 
       throw error;

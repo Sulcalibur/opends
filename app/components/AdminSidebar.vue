@@ -5,6 +5,10 @@ defineProps<{
 
 const auth = useAuthStore()
 const user = computed(() => auth.user)
+
+function handleLogout() {
+  auth.logout()
+}
 </script>
 
 <template>
@@ -101,7 +105,7 @@ const user = computed(() => auth.user)
         <div class="sidebar-user-name">{{ user?.name || 'Admin' }}</div>
         <div class="sidebar-user-role">Admin</div>
       </div>
-      <button class="sidebar-logout" title="Sign out" @click="auth.logout()">
+      <button class="sidebar-logout" title="Sign out" @click="handleLogout">
         <UIcon name="i-lucide-log-out" class="size-4" />
       </button>
     </div>

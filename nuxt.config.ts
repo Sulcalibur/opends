@@ -56,6 +56,10 @@ export default defineNuxtConfig({
     jwtAccessExpire: process.env.JWT_ACCESS_EXPIRE || "15m",
     jwtRefreshExpire: process.env.JWT_REFRESH_EXPIRE || "7d",
     allowRegistration: process.env.ALLOW_REGISTRATION === "true",
+    // PocketBase (spike — replaces SQLite for auth + data)
+    pocketbaseUrl: process.env.POCKETBASE_URL || "http://localhost:8090",
+    // Skip SQLite init when using PocketBase
+    skipDatabaseInit: process.env.SKIP_DATABASE_INIT === "true" || !!process.env.POCKETBASE_URL,
   },
   routeRules: {
     "/": { ssr: false },

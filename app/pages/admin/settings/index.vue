@@ -14,7 +14,7 @@ async function saveSettings() {
   try {
     await $fetch('/api/settings', {
       method: 'PUT',
-      headers: { Authorization: `Bearer ${auth.accessToken}` },
+      headers: {},
       body: { organization_name: orgName.value, allow_registration: allowRegistration.value },
     })
     saved.value = true
@@ -61,7 +61,7 @@ useHead({ title: 'Settings — Admin' })
       </div>
 
       <div class="settings-actions">
-        <UButton @click="saveSettings" :class="{ 'opacity-50': saved }">
+        <UButton :class="{ 'opacity-50': saved }" @click="saveSettings">
           {{ saved ? 'Saved' : 'Save changes' }}
         </UButton>
       </div>

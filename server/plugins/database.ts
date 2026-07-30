@@ -7,6 +7,14 @@ import { initializeDatabase, closeDatabase } from '../utils/db'
 import { runMigrations } from '../utils/migrations'
 
 export default defineNitroPlugin(async (nitroApp) => {
+    const config = useRuntimeConfig()
+
+    // Skip SQLite/Postgres init when using PocketBase
+    if (config.skipDatabaseInit || process.env.POCKETBASE_URL) {
+        console.log('[Server] PocketBase mode — skipping SQLite/Postgres database init')
+        return
+    }
+
     console.log('[Server] Initializing database connection...')
 
     try {

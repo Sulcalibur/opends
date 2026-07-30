@@ -25,18 +25,14 @@ async function handleRegister() {
   error.value = ''
 
   try {
-    const { data, error: regError } = await useFetch('/api/auth/register', {
-      method: 'POST',
-      body: { name: name.value, email: email.value, password: password.value },
-    })
+    const auth = useAuthStore()
+    const success = await auth.register(email.value, password.value, name.value)
 
-    if (regError.value) {
-      error.value = regError.value?.data?.message || 'Registration failed.'
-      loading.value = false
-      return
+    if (success) {
+      await navigateTo('/login?registered=true')
+    } else {
+      error.value = auth.error || 'Registration failed.'
     }
-
-    await navigateTo('/login?registered=true')
   } catch {
     error.value = 'Something went wrong. Please try again.'
   } finally {

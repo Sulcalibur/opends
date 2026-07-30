@@ -20,18 +20,13 @@ async function handleLogin() {
   error.value = ''
 
   try {
-    const response = await $fetch<{
-      success: boolean
-      data: { user: any; tokens: { accessToken: string; refreshToken: string } }
-    }>('/api/auth/login', {
-      method: 'POST',
-      body: { email: email.value, password: password.value },
-    })
+    const auth = useAuthStore()
+    const success = await auth.login(email.value, password.value)
 
-    if (response.success && response.data?.tokens) {
-      const auth = useAuthStore()
-      auth.saveAuth(response.data.tokens.accessToken, response.data.tokens.refreshToken, response.data.user)
+    if (success) {
       await navigateTo('/admin')
+    } else {
+      error.value = auth.error || 'Invalid email or password.'
     }
   } catch {
     error.value = 'Something went wrong. Please try again.'

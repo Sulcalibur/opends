@@ -185,9 +185,7 @@ async function fetchApiKeys() {
   loading.value = true;
   try {
     const response = await $fetch<{ success: boolean; data?: { keys: ApiKey[]; count: number } }>('/api/admin/api-keys', {
-      headers: {
-        Authorization: `Bearer ${useAuthStore().accessToken}`,
-      },
+      headers: {},
     });
     if (response.success && response.data) {
       apiKeys.value = response.data.keys || [];
@@ -217,9 +215,7 @@ async function createKey() {
   try {
     const response = await $fetch<{ success: boolean; data?: { key: string; keyId: string; message: string } }>('/api/admin/api-keys', {
       method: 'POST',
-      headers: {
-        Authorization: `Bearer ${useAuthStore().accessToken}`,
-      },
+      headers: {},
       body: { name: newKeyName.value },
     });
 
@@ -253,9 +249,7 @@ async function deleteKey() {
   try {
     await $fetch(`/api/admin/api-keys/${deletingKey.value.id}`, {
       method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${useAuthStore().accessToken}`,
-      },
+      headers: {},
     });
 
     toast.add({
