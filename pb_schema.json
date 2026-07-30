@@ -1,0 +1,92 @@
+{
+  "description": "OpenDS collection schema for PocketBase. Run once to set up.",
+  "collections": {
+    "users": {
+      "note": "Built-in PocketBase collection. We add a custom 'role' field.",
+      "fields_add": [
+        { "name": "role", "type": "select", "options": ["admin", "editor", "viewer"], "default": "editor" }
+      ]
+    },
+    "components": {
+      "name": "components",
+      "type": "base",
+      "fields": [
+        { "name": "name", "type": "text", "required": true },
+        { "name": "slug", "type": "text", "required": true, "unique": true },
+        { "name": "description", "type": "text" },
+        { "name": "category", "type": "select", "options": ["inputs", "display", "overlay", "layout", "feedback"] },
+        { "name": "version", "type": "text", "default": "1.0.0" },
+        { "name": "status", "type": "select", "options": ["draft", "approved", "deprecated"], "default": "draft" },
+        { "name": "spec", "type": "json", "note": "Full component spec: variants, props, slots, events, code examples" },
+        { "name": "tags", "type": "json", "default": "[]" }
+      ],
+      "listRule": "",
+      "viewRule": "", 
+      "createRule": "@request.auth.role = 'admin' || @request.auth.role = 'editor'",
+      "updateRule": "@request.auth.role = 'admin' || @request.auth.role = 'editor'",
+      "deleteRule": "@request.auth.role = 'admin'"
+    },
+    "tokens": {
+      "name": "tokens",
+      "type": "base",
+      "fields": [
+        { "name": "name", "type": "text", "required": true },
+        { "name": "category", "type": "select", "options": ["color", "typography", "spacing", "radius", "shadow", "motion"] },
+        { "name": "path", "type": "text", "note": "e.g. color.primary.500" },
+        { "name": "value", "type": "text", "required": true },
+        { "name": "theme", "type": "select", "options": ["light", "dark", "both"], "default": "both" },
+        { "name": "description", "type": "text" },
+        { "name": "usage_count", "type": "number", "default": 0 }
+      ],
+      "listRule": "",
+      "viewRule": "",
+      "createRule": "@request.auth.role = 'admin' || @request.auth.role = 'editor'",
+      "updateRule": "@request.auth.role = 'admin' || @request.auth.role = 'editor'",
+      "deleteRule": "@request.auth.role = 'admin'"
+    },
+    "docs": {
+      "name": "docs",
+      "type": "base",
+      "fields": [
+        { "name": "title", "type": "text", "required": true },
+        { "name": "slug", "type": "text", "required": true, "unique": true },
+        { "name": "content", "type": "editor", "note": "Markdown content rendered by Milkdown" },
+        { "name": "is_published", "type": "bool", "default": false },
+        { "name": "author", "type": "relation", "collection": "users" }
+      ],
+      "listRule": "is_published = true || @request.auth.role = 'admin' || @request.auth.role = 'editor'",
+      "viewRule": "is_published = true || @request.auth.role = 'admin' || @request.auth.role = 'editor'",
+      "createRule": "@request.auth.role = 'admin' || @request.auth.role = 'editor'",
+      "updateRule": "@request.auth.role = 'admin' || @request.auth.role = 'editor'",
+      "deleteRule": "@request.auth.role = 'admin'"
+    },
+    "settings": {
+      "name": "settings",
+      "type": "base",
+      "fields": [
+        { "name": "key", "type": "text", "required": true, "unique": true },
+        { "name": "value", "type": "json", "note": "Arbitrary JSON: string, number, object, array" }
+      ],
+      "listRule": "",
+      "viewRule": "",
+      "createRule": "@request.auth.role = 'admin'",
+      "updateRule": "@request.auth.role = 'admin'",
+      "deleteRule": "@request.auth.role = 'admin'"
+    },
+    "api_keys": {
+      "name": "api_keys",
+      "type": "base",
+      "fields": [
+        { "name": "name", "type": "text", "required": true },
+        { "name": "key_hash", "type": "text", "required": true, "unique": true, "hidden": true },
+        { "name": "scopes", "type": "json", "default": "[]" },
+        { "name": "last_used", "type": "date" }
+      ],
+      "listRule": "@request.auth.role = 'admin'",
+      "viewRule": "@request.auth.role = 'admin'",
+      "createRule": "@request.auth.role = 'admin'",
+      "updateRule": "@request.auth.role = 'admin'",
+      "deleteRule": "@request.auth.role = 'admin'"
+    }
+  }
+}

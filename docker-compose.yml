@@ -1,53 +1,51 @@
+# PocketBase adds auth, database, and real-time as a single binary
+# OpenDS Nuxt app becomes the custom frontend over PocketBase's API
 version: '3.8'
 
 services:
-  # PostgreSQL Database
-  postgres:
-    image: postgres:16-alpine
-    container_name: opends-postgres
+  # PocketBase — auth, database, file storage, real-time
+  pocketbase:
+    image: ghcr.io/muchobien/pocketbase:latest
+    container_name: opends-pocketbase
     restart: unless-stopped
-    environment:
-      POSTGRES_DB: opends
-      POSTGRES_USER: opends
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-opends}
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
     ports:
-      - '5432:5432'
+      - '8090:8090'
+    volumes:
+      - pocketbase_data:/pb_data
+      - ./pb_migrations:/pb_migrations
+    environment:
+      # Auto-create admin on first run
+      PB_ADMIN_EMAIL: ${PB_ADMIN_EMAIL:-admin@opends.local}
+      PB_ADMIN_PASSWORD: ${PB_ADMIN_PASSWORD:-admin}
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U opends']
+      test: ['CMD', 'wget', '-q', '--spider', 'http://localhost:8090/api/health']
       interval: 10s
       timeout: 5s
       retries: 5
 
-  # OpenDS Application
+  # OpenDS Application — custom admin UI, MCP, code gen, search
   opends:
     build: .
     container_name: opends-app
     restart: unless-stopped
     depends_on:
-      postgres:
+      pocketbase:
         condition: service_healthy
     ports:
       - '3000:3000'
     environment:
-      # Database
-      DATABASE_URL: postgresql://opends:${POSTGRES_PASSWORD:-opends}@postgres:5432/opends
-      
+      # PocketBase connection
+      POCKETBASE_URL: http://pocketbase:8090
+
       # Application
       NODE_ENV: ${NODE_ENV:-production}
       PORT: 3000
       HOST: 0.0.0.0
-      
-      # Security
-      JWT_SECRET: ${JWT_SECRET:-dev-secret-change-in-production}
-      JWT_ACCESS_EXPIRE: ${JWT_ACCESS_EXPIRE:-15m}
-      JWT_REFRESH_EXPIRE: ${JWT_REFRESH_EXPIRE:-7d}
-      
+
       # Registration
       ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-true}
-      
-      # Optional: Default admin user
+
+      # Optional: Default admin user (PocketBase handles auth, but seed data)
       ADMIN_EMAIL: ${ADMIN_EMAIL:-}
       ADMIN_PASSWORD: ${ADMIN_PASSWORD:-}
     volumes:
@@ -60,7 +58,7 @@ services:
       start_period: 40s
 
 volumes:
-  postgres_data:
+  pocketbase_data:
     driver: local
   app_data:
     driver: local
