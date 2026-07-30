@@ -131,6 +131,7 @@ class UniversalDatabase {
 
     /**
      * Execute a query (works for SQLite, PostgreSQL, and D1)
+     * Includes HMR-resilient auto-reconnect for SQLite
      */
     async query<T = unknown>(text: string, params?: unknown[]): Promise<{ rows: T[]; rowCount: number }> {
         const start = Date.now()
@@ -158,12 +159,32 @@ class UniversalDatabase {
 
             return result
         } catch (error) {
+            // HMR resilience: if SQLite connection is broken, reconnect and retry once
+            if (this.type === 'sqlite') {
+                const msg = error instanceof Error ? error.message : String(error)
+                const isConnectionError = /database.*closed|SQLITE_MISUSE|not connected/i.test(msg)
+
+                if (isConnectionError && this._retryCount === 0) {
+                    console.warn('[DB] SQLite connection lost (HMR rebuild?), reconnecting...')
+                    this.sqliteDb = null
+                    this._retryCount = 1
+                    try {
+                        await this.connect()
+                        return await this.query(text, params)
+                    } finally {
+                        this._retryCount = 0
+                    }
+                }
+            }
+
             console.error('[DB] Query error:', error)
             console.error('[DB] Query:', text)
             console.error('[DB] Params:', params)
             throw error
         }
     }
+
+    private _retryCount = 0
 
     /**
      * SQLite query execution

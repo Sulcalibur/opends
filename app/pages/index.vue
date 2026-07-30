@@ -69,7 +69,7 @@ useHead({
           </UBadge>
 
           <h1 class="hero-title">
-            {{ heroTitle }}<br />
+            {{ heroTitle }}<br >
             <span class="hero-accent">
               Design System
               <svg class="hero-underline" width="380" height="14" viewBox="0 0 380 14" aria-hidden="true">
@@ -106,7 +106,7 @@ useHead({
             <div class="mini-card">
               <div class="mini-label">COLOR</div>
               <div class="mini-swatches">
-                <span v-for="c in ['#FF6B4A','#FFD166','#1F8A5B','#2A6FDB','#1A1D21']" :key="c" class="mini-swatch" :style="{ background: c }" />
+                <span v-for="c in ['#CC4128','#FFD166','#1F8A5B','#2A6FDB','#1A1D21']" :key="c" class="mini-swatch" :style="{ background: c }" />
               </div>
               <div class="mini-caption">5 ramps · 50 shades</div>
             </div>

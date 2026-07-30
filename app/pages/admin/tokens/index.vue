@@ -53,7 +53,7 @@ const tokens: TokenRow[] = [
   [200, '#FFC4B5', ['--border-primary'], 7],
   [300, '#FFA590', [], 2],
   [400, '#FF8770', [], 5],
-  [500, '#FF6B4A', ['--primary', '--color-primary-500'], 48],
+  [500, '#CC4128', ['--primary', '--color-primary-500'], 48],
   [600, '#E85A3A', ['--primary-hover', '--color-primary-600'], 12],
   [700, '#C44A2D', [], 3],
   [800, '#9E3C24', [], 1],
@@ -65,7 +65,7 @@ const selectedTokenIndex = ref(4) // 500
 const selectedToken = computed(() => tokens[selectedTokenIndex.value])
 
 const editName = ref('color.primary.500')
-const editValue = ref('#FF6B4A')
+const editValue = ref('#CC4128')
 const editDesc = ref('Sweet Salmon — primary CTAs, focus rings, active navigation. Use sparingly; one CTA per screen.')
 
 function selectGroup(group: TokenGroup) {
@@ -133,7 +133,7 @@ onMounted(async () => {
         tokens.length = 0
         tokens.push(...colorTokens.map((t: any) => ({
           shade: parseInt(t.name?.split('.').pop()) || 0,
-          value: typeof t.value === 'string' ? t.value : (t.value?.hex || t.value?.value || '#FF6B4A'),
+          value: typeof t.value === 'string' ? t.value : (t.value?.hex || t.value?.value || '#CC4128'),
           aliases: t.aliases || t.alias ? [t.aliases || t.alias] : [],
           used: t.usage_count || 0,
         })))
@@ -215,7 +215,7 @@ useHead({ title: 'Tokens — Admin' })
         <!-- Token table -->
         <div class="token-table">
           <div class="token-table-head">
-            <span></span><span>Name</span><span>Value</span><span>Aliases</span><span>Used</span><span></span>
+            <span/><span>Name</span><span>Value</span><span>Aliases</span><span>Used</span><span/>
           </div>
 
           <div
@@ -239,7 +239,7 @@ useHead({ title: 'Tokens — Admin' })
       </main>
 
       <!-- Right: Properties panel -->
-      <aside class="tokens-props" v-if="selectedToken">
+      <aside v-if="selectedToken" class="tokens-props">
         <div class="props-header">Properties</div>
 
         <div class="props-preview">

@@ -16,10 +16,10 @@
             cy="16"
             r="7"
             fill="none"
-            stroke="#FF6B4A"
+            stroke="#CC4128"
             stroke-width="2.4"
           />
-          <circle cx="16" cy="16" r="2.5" fill="#FF6B4A" />
+          <circle cx="16" cy="16" r="2.5" fill="#CC4128" />
         </svg>
         <span
           class="font-extrabold text-lg"
@@ -152,7 +152,7 @@
         >
           <div
             style="
-              background: #ff6b4a;
+              background: #cc4128;
               padding: 24px;
               display: flex;
               flex-direction: column;
@@ -206,7 +206,7 @@
                     font-weight: 500;
                   "
                 >
-                  #FF6B4A
+                  #CC4128
                 </div>
               </div>
               <div>
@@ -710,7 +710,7 @@ const primaryRamp: [number, string][] = [
   [200, "#FFB8A3"],
   [300, "#FF9978"],
   [400, "#FF834F"],
-  [500, "#FF6B4A"],
+  [500, "#CC4128"],
   [600, "#E85A3A"],
   [700, "#B8442B"],
   [800, "#8A311F"],
@@ -733,7 +733,7 @@ const contrastRows = [
   },
   {
     pair: "white on primary",
-    values: "#FFF / #FF6B4A",
+    values: "#FFF / #CC4128",
     ratio: "4.7 : 1",
     rating: "AA",
   },

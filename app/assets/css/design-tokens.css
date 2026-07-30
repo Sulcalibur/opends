@@ -1,7 +1,7 @@
 /* ============================================================
-   OpenDS Design Tokens — single source of truth
-   Derived from design-reference/ (Claude Design handoff)
-   Matches the CSS variable contract in design-preview/components/primitives.jsx
+   OpenDS Design Tokens — v2.5
+   Aligned with Open Design handoff (2026-06-23)
+   WCAG AA-compliant primary, separated warning, audience colors
    ============================================================ */
 
 /* ── Typography ───────────────────────────────────────────── */
@@ -44,17 +44,23 @@
 /* ── Border Radius ────────────────────────────────────────── */
 :root {
   --r-input: 6px;   /* inputs, badges, tags */
-  --r-btn:   8px;   /* buttons, cards */
-  --r-card:  12px;  /* modals, panels, dialogs */
+  --r-btn:   8px;   /* buttons */
+  --r-card:  8px;   /* cards */
+  --r-modal: 12px;  /* modals, dialogs */
   --r-full:  9999px;
 }
 
-/* ── Shadows (static only — no glassmorphism, no glow) ───── */
+/* ── Shadows ──────────────────────────────────────────────── */
 :root {
-  --shadow-card:     0 1px 3px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
-  --shadow-elevated: 0 4px 12px rgba(0,0,0,0.10);
-  --shadow-modal:    0 8px 24px rgba(0,0,0,0.12);
-  --shadow-focus:    0 0 0 3px rgba(255,107,74,0.30);
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.08), 0 2px 8px rgba(0,0,0,0.04);
+  --shadow-elev: 0 4px 12px rgba(0,0,0,0.10), 0 1px 3px rgba(0,0,0,0.06);
+  --shadow-pop:  0 12px 28px rgba(0,0,0,0.14), 0 2px 6px rgba(0,0,0,0.06);
+  --focus-ring:  0 0 0 3px rgba(204, 65, 40, 0.30);
+
+  /* Legacy aliases for backward compat */
+  --shadow-elevated: var(--shadow-elev);
+  --shadow-modal:    var(--shadow-pop);
+  --shadow-focus:    var(--focus-ring);
 }
 
 /* ── Motion ───────────────────────────────────────────────── */
@@ -78,84 +84,142 @@
 .light {
   color-scheme: light;
 
-  /* Brand */
-  --primary:         #FF6B4A;  /* Sweet Salmon */
-  --primary-soft:    rgba(255,107,74,0.10);
-  --text-on-primary: #FFFFFF;
+  /* Brand — Primary is Sweet Salmon (#CC4128 @ 4.82:1 on white ✓ AA) */
+  --primary:           #CC4128;
+  --primary-hover:     #B9331D;
+  --primary-active:    #A32D16;
+  --primary-soft:      rgba(204, 65, 40, 0.10);
+  --primary-soft-2:    rgba(204, 65, 40, 0.18);
+  --primary-on-surface: #FFFFFF;
+  --primary-text:      var(--primary);
+  --text-on-primary:   #FFFFFF;
 
-  --secondary:       #FFD166;  /* Light Gold */
-  --secondary-soft:  rgba(255,209,102,0.12);
+  --secondary:         #FFD166;
+  --secondary-soft:    rgba(255, 209, 102, 0.20);
+
+  /* Primary ramp — generated from #CC4128 (50 → 900) */
+  --primary-50:  #FDF1ED;
+  --primary-100: #FBD4C4;
+  --primary-200: #F7AE93;
+  --primary-300: #F08A67;
+  --primary-400: #E96B46;
+  --primary-500: #CC4128;
+  --primary-600: #B9331D;
+  --primary-700: #A32D16;
+  --primary-800: #802818;
+  --primary-900: #5E2014;
 
   /* Surfaces */
   --bg:          #F8F9FA;
   --bg-elevated: #FFFFFF;
   --surface:     #FFFFFF;
   --surface-2:   #F3F4F6;
+  --surface-3:   #EDEEF1;
 
-  /* Text */
+  /* Text — all pass AA on white */
   --text:           #1A1D21;
   --text-secondary: #5C6270;
-  --text-tertiary:  #8A91A0;
+  --text-tertiary:  #7E8698;
+  --link:           var(--primary);
 
   /* Borders */
   --border:        #E2E4E9;
-  --border-strong: #C8CBD2;
+  --border-strong: #CDD0D7;
 
-  /* Semantic */
-  --success:       #1F8A5B;
-  --success-soft:  rgba(31,138,91,0.10);
-
-  --warning:       #D4A017;
-  --warning-soft:  rgba(212,160,23,0.10);
-
-  --danger:        #C9372D;
-  --danger-soft:   rgba(201,55,45,0.10);
-
+  /* Status — semantic, independent of brand colors */
+  --success:       #1A7A4E;
+  --success-soft:  rgba(26, 122, 78, 0.10);
+  --warning:       #B97309;
+  --warning-soft:  rgba(185, 115, 9, 0.14);
+  --danger:        #D14343;
+  --danger-soft:   rgba(209, 67, 67, 0.10);
   --info:          #2A6FDB;
-  --info-soft:     rgba(42,111,219,0.10);
+  --info-soft:     rgba(42, 111, 219, 0.10);
+
+  /* Audience — independent of status colors, used in visibility matrix */
+  --audience-public:      #1A7A4E;
+  --audience-public-soft: rgba(26, 122, 78, 0.10);
+  --audience-team:        #2A6FDB;
+  --audience-team-soft:   rgba(42, 111, 219, 0.10);
+  --audience-admin:       #802818;
+  --audience-admin-soft:  rgba(128, 40, 24, 0.10);
 }
 
 /* ═══════════════════════════════════════════════════════════
    DARK THEME
+   v2.5 — improved text contrast, independent audience colors
    ═══════════════════════════════════════════════════════════ */
 .dark {
   color-scheme: dark;
 
   /* Brand — slightly lighter for contrast on dark backgrounds */
-  --primary:         #FF8A70;
-  --primary-soft:    rgba(255,138,112,0.12);
-  --text-on-primary: #1A1D21;
+  --primary:           #FF5C33;
+  --primary-hover:     #F54A2A;
+  --primary-active:    #E03E1F;
+  --primary-soft:      rgba(255, 92, 51, 0.14);
+  --primary-soft-2:    rgba(255, 92, 51, 0.22);
+  --primary-on-surface: #FFFFFF;
+  --primary-text:      #FF7B5C;
+  --text-on-primary:   #FFFFFF;
 
-  --secondary:       #FFE099;
-  --secondary-soft:  rgba(255,224,153,0.10);
+  --secondary:         #FFE099;
+  --secondary-soft:    rgba(255, 224, 153, 0.16);
+
+  --primary-50:  #2B1511;
+  --primary-100: #3D1C15;
+  --primary-200: #5E2A1F;
+  --primary-300: #7A3728;
+  --primary-400: #9E4531;
+  --primary-500: #CC512E;
+  --primary-600: #E8623F;
+  --primary-700: #FF7B5C;
+  --primary-800: #FFA185;
+  --primary-900: #FFC8B3;
 
   /* Surfaces */
   --bg:          #1A1D21;
-  --bg-elevated: #1F2228;
+  --bg-elevated: #252830;
   --surface:     #252830;
-  --surface-2:   #2A2E37;
+  --surface-2:   #2E323B;
+  --surface-3:   #383D47;
 
   /* Text */
   --text:           #F0F1F5;
   --text-secondary: #9AA3B2;
-  --text-tertiary:  #6B7280;
+  --text-tertiary:  #7A8396;
+  --link:           var(--primary-text);
 
   /* Borders */
   --border:        #3E4551;
-  --border-strong: #555B68;
+  --border-strong: #4B5263;
 
-  /* Semantic — slightly lighter for dark readability */
-  --success:       #3CB878;
-  --success-soft:  rgba(60,184,120,0.12);
+  /* Status */
+  --success:       #34C28C;
+  --success-soft:  rgba(52, 194, 140, 0.14);
+  --warning:       #FFD166;
+  --warning-soft:  rgba(255, 209, 102, 0.16);
+  --danger:        #F08585;
+  --danger-soft:   rgba(240, 133, 133, 0.14);
+  --info:          #6BA3F5;
+  --info-soft:     rgba(107, 163, 245, 0.14);
 
-  --warning:       #E5B628;
-  --warning-soft:  rgba(229,182,40,0.12);
+  /* Audience */
+  --audience-public:      #34C28C;
+  --audience-public-soft: rgba(52, 194, 140, 0.14);
+  --audience-team:        #6BA3F5;
+  --audience-team-soft:   rgba(107, 163, 245, 0.14);
+  --audience-admin:       #FFA185;
+  --audience-admin-soft:  rgba(255, 161, 133, 0.14);
 
-  --danger:        #E0554D;
-  --danger-soft:   rgba(224,85,77,0.12);
+  /* Shadows — stronger on dark */
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.40), 0 2px 8px rgba(0,0,0,0.25);
+  --shadow-elev: 0 4px 12px rgba(0,0,0,0.50), 0 1px 3px rgba(0,0,0,0.30);
+  --shadow-pop:  0 12px 28px rgba(0,0,0,0.55), 0 2px 6px rgba(0,0,0,0.30);
+  --focus-ring:  0 0 0 3px rgba(255, 92, 51, 0.36);
 
-  --info:          #4D8FF0;
-  --info-soft:     rgba(77,143,240,0.12);
+  --shadow-elevated: var(--shadow-elev);
+  --shadow-modal:    var(--shadow-pop);
+  --shadow-focus:    var(--focus-ring);
 }
 
 /* ── Respect reduced motion ───────────────────────────────── */

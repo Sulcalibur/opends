@@ -239,10 +239,10 @@ useHead({
             cy="16"
             r="7"
             fill="none"
-            stroke="#FF6B4A"
+            stroke="#CC4128"
             stroke-width="2.4"
           />
-          <circle cx="16" cy="16" r="2.5" fill="#FF6B4A" />
+          <circle cx="16" cy="16" r="2.5" fill="#CC4128" />
         </svg>
         <span
           class="font-extrabold text-lg"
@@ -420,7 +420,7 @@ useHead({
               to="/docs/components"
               class="flex items-center gap-2.5 pl-4 pr-3 py-1 rounded-md text-sm font-semibold cursor-pointer transition-colors"
               style="
-                color: var(--color-primary, #ff6b4a);
+                color: var(--color-primary, #cc4128);
                 background: var(--color-primary-soft, rgba(255, 107, 74, 0.1));
               "
             >
@@ -548,7 +548,7 @@ useHead({
             <NuxtLink
               to="/login"
               class="font-semibold"
-              style="color: var(--color-primary, #ff6b4a)"
+              style="color: var(--color-primary, #cc4128)"
               >Sign in →</NuxtLink
             >
           </div>
@@ -708,8 +708,8 @@ useHead({
                 :style="
                   activeTab === tab.toLowerCase()
                     ? {
-                        borderColor: 'var(--color-primary, #FF6B4A)',
-                        color: 'var(--color-primary, #FF6B4A)',
+                        borderColor: 'var(--color-primary, #CC4128)',
+                        color: 'var(--color-primary, #CC4128)',
                       }
                     : {
                         borderColor: 'transparent',
@@ -737,7 +737,7 @@ useHead({
                   :style="
                     activeFramework === fw.toLowerCase()
                       ? {
-                          background: 'var(--color-primary, #FF6B4A)',
+                          background: 'var(--color-primary, #CC4128)',
                           color: 'white',
                         }
                       : {
@@ -846,7 +846,7 @@ useHead({
                     <div class="flex items-center gap-3">
                       <div
                         class="w-4 h-4 rounded flex-shrink-0"
-                        style="background: var(--color-primary, #ff6b4a)"
+                        style="background: var(--color-primary, #cc4128)"
                       />
                       <span class="text-sm font-mono">UButton</span>
                       <span
@@ -1018,7 +1018,7 @@ useHead({
                       class="w-8 h-4 rounded-full relative cursor-pointer transition-colors"
                       :style="{
                         background: previewState.icon
-                          ? 'var(--color-primary, #FF6B4A)'
+                          ? 'var(--color-primary, #CC4128)'
                           : 'var(--color-border, #E2E4E9)',
                       }"
                       @click="previewState.icon = !previewState.icon"
@@ -1046,7 +1046,7 @@ useHead({
                       class="w-8 h-4 rounded-full relative cursor-pointer transition-colors"
                       :style="{
                         background: previewState.loading
-                          ? 'var(--color-primary, #FF6B4A)'
+                          ? 'var(--color-primary, #CC4128)'
                           : 'var(--color-border, #E2E4E9)',
                       }"
                       @click="previewState.loading = !previewState.loading"
@@ -1340,8 +1340,8 @@ useHead({
             :style="
               activeToc === item
                 ? {
-                    color: 'var(--color-primary, #FF6B4A)',
-                    borderLeft: '2px solid var(--color-primary, #FF6B4A)',
+                    color: 'var(--color-primary, #CC4128)',
+                    borderLeft: '2px solid var(--color-primary, #CC4128)',
                     marginLeft: '-2px',
                     paddingLeft: '10px',
                   }

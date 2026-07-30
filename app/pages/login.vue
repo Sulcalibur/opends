@@ -156,7 +156,7 @@ useHead({ title: `Sign in — ${orgName.value}` })
       <div class="brand-preview-card-wrap">
         <div class="brand-preview-card">
           <div class="brand-preview-chrome">
-            <span class="chrome-dot" style="background: #FF6B4A" />
+            <span class="chrome-dot" style="background: #CC4128" />
             <span class="chrome-dot" style="background: #FFD166" />
             <span class="chrome-dot" style="background: #3E4551" />
             <span class="chrome-url">lumen.opends.dev/components/button</span>
@@ -441,7 +441,7 @@ useHead({ title: `Sign in — ${orgName.value}` })
 }
 
 .sidebar-active-item {
-  color: #FF8A70;
+  color: #FF5C33;
   font-weight: 600;
 }
 
@@ -470,7 +470,7 @@ useHead({ title: `Sign in — ${orgName.value}` })
 }
 
 .brand-preview-btn {
-  background: #FF8A70;
+  background: #FF5C33;
   color: #1A1D21;
   padding: 8px 14px;
   border-radius: 6px;

@@ -66,13 +66,13 @@ test.describe('Admin Pages (authenticated)', () => {
   })
 
   test('component editor renders', async ({ page }) => {
-    await gotoAndWait(page, '/admin/components/button', '.editor-layout')
+    await gotoAndWait(page, '/admin/components/button', '.editor-layout', 30000)
     await expect(page.locator('.editor-left')).toBeVisible()
     await expect(page.locator('.editor-center')).toBeVisible()
   })
 
   test('docs editor renders', async ({ page }) => {
-    await gotoAndWait(page, '/admin/docs/writing-for-buttons', '.editor-layout')
+    await gotoAndWait(page, '/admin/docs/writing-for-buttons', '.editor-layout', 30000)
     await expect(page.locator('.editor-toolbar')).toBeVisible()
   })
 

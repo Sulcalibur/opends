@@ -10,17 +10,17 @@
 
 /* ── Salmon color scale — required by NuxtUI (maps to primary) ── */
 @theme {
-  --color-salmon-50:  #fff7f5;
-  --color-salmon-100: #ffe8e2;
-  --color-salmon-200: #ffc9bb;
-  --color-salmon-300: #ffa48f;
-  --color-salmon-400: #ff8066;
-  --color-salmon-500: #FF6B4A;
-  --color-salmon-600: #E85A3A;
-  --color-salmon-700: #c44a2d;
-  --color-salmon-800: #9e3c24;
-  --color-salmon-900: #7d301d;
-  --color-salmon-950: #44180d;
+  --color-salmon-50:  #FDF1ED;
+  --color-salmon-100: #FBD4C4;
+  --color-salmon-200: #F7AE93;
+  --color-salmon-300: #F08A67;
+  --color-salmon-400: #E96B46;
+  --color-salmon-500: #CC4128;
+  --color-salmon-600: #B9331D;
+  --color-salmon-700: #A32D16;
+  --color-salmon-800: #802818;
+  --color-salmon-900: #5E2014;
+  --color-salmon-950: #3D120A;
 }
 
 /* Source directories for Tailwind to scan */
@@ -41,39 +41,39 @@
 @import "@milkdown/crepe/theme/frame.css";
 
 /* ============================================================
-   NuxtUI primary color override — Sweet Salmon #FF6B4A
+   NuxtUI primary color override — Sweet Salmon #CC4128
    Maps design token values to NuxtUI's internal variable system
    so UButton, UBadge, etc. render correctly.
    ============================================================ */
 :root {
-  --ui-color-primary-50:  #fff7f5;
-  --ui-color-primary-100: #ffe8e2;
-  --ui-color-primary-200: #ffc9bb;
-  --ui-color-primary-300: #ffa48f;
-  --ui-color-primary-400: #ff8066;
-  --ui-color-primary-500: #FF6B4A;
-  --ui-color-primary-600: #E85A3A;
-  --ui-color-primary-700: #c44a2d;
-  --ui-color-primary-800: #9e3c24;
-  --ui-color-primary-900: #7d301d;
-  --ui-color-primary-950: #44180d;
-  --ui-primary:           #FF6B4A;
+  --ui-color-primary-50:  #FDF1ED;
+  --ui-color-primary-100: #FBD4C4;
+  --ui-color-primary-200: #F7AE93;
+  --ui-color-primary-300: #F08A67;
+  --ui-color-primary-400: #E96B46;
+  --ui-color-primary-500: #CC4128;
+  --ui-color-primary-600: #B9331D;
+  --ui-color-primary-700: #A32D16;
+  --ui-color-primary-800: #802818;
+  --ui-color-primary-900: #5E2014;
+  --ui-color-primary-950: #3D120A;
+  --ui-primary:           #CC4128;
 }
 
 /* Dark mode primary overrides for NuxtUI */
 .dark {
-  --ui-color-primary-50:  #44180d;
-  --ui-color-primary-100: #7d301d;
-  --ui-color-primary-200: #9e3c24;
-  --ui-color-primary-300: #c44a2d;
-  --ui-color-primary-400: #E85A3A;
-  --ui-color-primary-500: #FF8A70;
-  --ui-color-primary-600: #ff9e88;
-  --ui-color-primary-700: #ffb2a0;
-  --ui-color-primary-800: #ffc6b8;
-  --ui-color-primary-900: #ffdad0;
-  --ui-color-primary-950: #fff0eb;
-  --ui-primary:           #FF8A70;
+  --ui-color-primary-50:  #2B1511;
+  --ui-color-primary-100: #3D1C15;
+  --ui-color-primary-200: #5E2A1F;
+  --ui-color-primary-300: #7A3728;
+  --ui-color-primary-400: #9E4531;
+  --ui-color-primary-500: #FF5C33;
+  --ui-color-primary-600: #E8623F;
+  --ui-color-primary-700: #FF7B5C;
+  --ui-color-primary-800: #FFA185;
+  --ui-color-primary-900: #FFC8B3;
+  --ui-color-primary-950: #FFE8E0;
+  --ui-primary:           #FF5C33;
 }
 
 /* ============================================================

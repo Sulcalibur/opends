@@ -78,17 +78,17 @@ const user = computed(() => auth.user)
 
       <div class="sidebar-section">Status</div>
       <div class="admin-nav-item faint">
-        <span class="nav-dot" style="background: #FF6B4A" />
+        <span class="nav-dot" style="background: var(--warning)" />
         Draft
         <span class="nav-count">12</span>
       </div>
       <div class="admin-nav-item faint">
-        <span class="nav-dot" style="background: #1F8A5B" />
+        <span class="nav-dot" style="background: var(--success)" />
         Approved
         <span class="nav-count">34</span>
       </div>
       <div class="admin-nav-item faint">
-        <span class="nav-dot" style="background: #8A91A0" />
+        <span class="nav-dot" style="background: var(--text-tertiary)" />
         Deprecated
         <span class="nav-count">2</span>
       </div>

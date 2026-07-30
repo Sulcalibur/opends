@@ -5,11 +5,17 @@
         <NuxtPage />
       </template>
     </NuxtLayout>
+    <ClientOnly>
+      <UNotifications />
+    </ClientOnly>
+    <CmdK v-model="isCmdKOpen" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from "vue";
+
+const { isCmdKOpen } = useCmdK()
 
 const { data: settingsData } = await useFetch("/api/settings/public").catch(
   () => ({ data: ref(null) }),

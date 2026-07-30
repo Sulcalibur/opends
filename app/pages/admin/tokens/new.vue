@@ -72,8 +72,8 @@ useHead({ title: 'New Token — Admin' })
         <div class="field">
           <label for="value" class="field-label">Value <span class="field-required">*</span></label>
           <div class="value-row">
-            <div class="color-swatch" v-if="form.value.startsWith('#')" :style="{ background: form.value }" />
-            <UInput id="value" v-model="form.value" placeholder="e.g., #FF6B4A or 16px or 0.25s" size="md" class="flex-1" />
+            <div v-if="form.value.startsWith('#')" class="color-swatch" :style="{ background: form.value }" />
+            <UInput id="value" v-model="form.value" placeholder="e.g., #CC4128 or 16px or 0.25s" size="md" class="flex-1" />
           </div>
         </div>
 

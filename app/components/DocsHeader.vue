@@ -20,8 +20,8 @@ function toggleTheme() {
     <div class="header-brand">
       <svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true">
         <rect x="2" y="2" width="28" height="28" rx="7" :fill="isDark ? '#F0F1F5' : '#1A1D21'" />
-        <circle cx="16" cy="16" r="7" fill="none" :stroke="isDark ? '#FF8A70' : '#FF6B4A'" stroke-width="2.4" />
-        <circle cx="16" cy="16" r="2.5" :fill="isDark ? '#FF8A70' : '#FF6B4A'" />
+        <circle cx="16" cy="16" r="7" fill="none" :stroke="isDark ? '#FF5C33' : '#CC4128'" stroke-width="2.4" />
+        <circle cx="16" cy="16" r="2.5" :fill="isDark ? '#FF5C33' : '#CC4128'" />
       </svg>
       <span class="header-team-name">{{ orgName }}</span>
       <UBadge color="neutral" variant="soft" size="sm">v2.4</UBadge>
