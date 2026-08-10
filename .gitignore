@@ -74,6 +74,15 @@ backend/opends.db
 test-results/
 playwright-report/
 
+# PocketBase runtime data (never commit — contains local data.db + uploaded files)
+pb_data/
+
+# pnpm store (local cache)
+.pnpm-store/
+
+# SQLite runtime database (auto-created from migrations on boot)
+data/
+
 # TypeScript build info
 *.tsbuildinfo
 

@@ -85,7 +85,7 @@ useHead({ title: `${display.value.display_name || display.value.name} — OpenDS
 </script>
 
 <template>
-  <div class="component-detail-page" v-if="display">
+  <div v-if="display" class="component-detail-page">
     <!-- Breadcrumbs -->
     <nav class="breadcrumbs">
       <NuxtLink to="/docs/components">Components</NuxtLink>
@@ -169,13 +169,13 @@ useHead({ title: `${display.value.display_name || display.value.name} — OpenDS
         <div class="sandbox-code">
           <div class="code-block">
             <span class="code-tag">&lt;UButton</span>
-            <template v-if="showIcon"><br/>  <span class="code-attr">icon</span>=<span class="code-str">"i-lucide-sparkles"</span></template>
-            <br/>  <span class="code-attr">size</span>=<span class="code-str">"{{ activeSize }}"</span>
-            <br/>  <span class="code-attr">variant</span>=<span class="code-str">"{{ activeVariant }}"</span>
-            <template v-if="isLoading"><br/>  <span class="code-attr">loading</span></template>
-            <br/><span class="code-tag">&gt;</span>
-            <br/>  Generate suggestions
-            <br/><span class="code-tag">&lt;/UButton&gt;</span>
+            <template v-if="showIcon"><br>  <span class="code-attr">icon</span>=<span class="code-str">"i-lucide-sparkles"</span></template>
+            <br>  <span class="code-attr">size</span>=<span class="code-str">"{{ activeSize }}"</span>
+            <br>  <span class="code-attr">variant</span>=<span class="code-str">"{{ activeVariant }}"</span>
+            <template v-if="isLoading"><br>  <span class="code-attr">loading</span></template>
+            <br><span class="code-tag">&gt;</span>
+            <br>  Generate suggestions
+            <br><span class="code-tag">&lt;/UButton&gt;</span>
           </div>
         </div>
       </div>

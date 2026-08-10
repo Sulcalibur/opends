@@ -4,8 +4,11 @@ version: '3.8'
 
 services:
   # PocketBase — auth, database, file storage, real-time
+  # NOTE: pin the image tag to the validated PocketBase version — never use
+  # :latest, because pre-1.0 releases (v0.x) can ship breaking changes between
+  # minor versions (e.g. the v0.40 CLI behavior changes).
   pocketbase:
-    image: ghcr.io/muchobien/pocketbase:latest
+    image: ghcr.io/muchobien/pocketbase:0.39.10
     container_name: opends-pocketbase
     restart: unless-stopped
     ports:
