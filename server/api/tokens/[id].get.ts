@@ -11,10 +11,14 @@ import {
   createErrorResponse,
 } from "../../utils/response";
 import DesignTokenRepository from "../../repositories/token.repository";
+import { isPocketBaseMode } from "../../utils/pocketbase";
 import { getRouterParam, setResponseStatus } from "h3";
 
+// PocketBase uses 15-char alphanumeric ids, not UUIDs
 const paramsSchema = z.object({
-  id: z.string().uuid("Invalid token ID format"),
+  id: isPocketBaseMode()
+    ? z.string().min(5).max(50)
+    : z.string().uuid("Invalid token ID format"),
 });
 
 export default asyncHandler(async (event) => {

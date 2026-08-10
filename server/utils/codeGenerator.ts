@@ -3,7 +3,15 @@
  * Generates framework-specific code from component definitions
  */
 
-import type { Component } from "../repositories/component.repository";
+/**
+ * Structural subset of a Component consumed by the code generator.
+ * Both the SQL and PocketBase repositories satisfy it.
+ */
+export interface CodeGenComponent {
+  name: string;
+  display_name?: string | null;
+  spec?: Record<string, unknown>;
+}
 
 export interface GeneratedCode {
   code: string;
@@ -15,7 +23,7 @@ export interface GeneratedCode {
  * Generate component code for specified framework
  */
 export async function generateComponentCode(
-  component: Component,
+  component: CodeGenComponent,
   framework: "vue" | "react" | "svelte",
   _variant?: string,
 ): Promise<string> {
@@ -34,7 +42,7 @@ export async function generateComponentCode(
 /**
  * Generate Vue 3 SFC
  */
-function generateVueCode(component: Component): string {
+function generateVueCode(component: CodeGenComponent): string {
   const spec = (component.spec as Record<string, unknown>) || {};
   const props =
     (spec.props as Array<{
@@ -149,7 +157,7 @@ ${style}`;
 /**
  * Generate React component
  */
-function generateReactCode(component: Component): string {
+function generateReactCode(component: CodeGenComponent): string {
   const spec = (component.spec as Record<string, unknown>) || {};
   const props =
     (spec.props as Array<{
@@ -214,7 +222,7 @@ ${eventHandlers}
 /**
  * Generate Svelte component
  */
-function generateSvelteCode(component: Component): string {
+function generateSvelteCode(component: CodeGenComponent): string {
   const spec = (component.spec as Record<string, unknown>) || {};
   const props =
     (spec.props as Array<{

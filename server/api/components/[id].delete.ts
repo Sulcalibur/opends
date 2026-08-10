@@ -6,9 +6,9 @@
 import { asyncHandler } from '../../middleware/error-handler'
 import { createSuccessResponse, ErrorCodes, createErrorResponse } from '../../utils/response'
 import ComponentRepository from '../../repositories/component.repository'
-import JwtService from '../../services/jwt.service'
+import { getCurrentUser } from '../../utils/auth'
 
-import { getRouterParam, setResponseStatus, getRequestHeader } from 'h3'
+import { getRouterParam, setResponseStatus } from 'h3'
 
 export default asyncHandler(async (event) => {
     const id = getRouterParam(event, 'id')
@@ -18,19 +18,12 @@ export default asyncHandler(async (event) => {
         return createErrorResponse(ErrorCodes.VALIDATION_ERROR, 'Component ID is required')
     }
 
-    // Get user from JWT
-    const authHeader = getRequestHeader(event, 'authorization')
-    if (!authHeader?.startsWith('Bearer ')) {
-        setResponseStatus(event, 401)
-        return createErrorResponse(ErrorCodes.UNAUTHORIZED, 'Missing authentication token')
-    }
+    // Get current user (JWT in SQL mode, pb_auth cookie in PocketBase mode)
+    const currentUser = await getCurrentUser(event)
 
-    const token = authHeader.substring(7)
-    const payload = JwtService.verify(token)
-
-    if (!payload) {
+    if (!currentUser) {
         setResponseStatus(event, 401)
-        return createErrorResponse(ErrorCodes.UNAUTHORIZED, 'Invalid token')
+        return createErrorResponse(ErrorCodes.UNAUTHORIZED, 'Missing or invalid authentication token')
     }
 
     // Delete component

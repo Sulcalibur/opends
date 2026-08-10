@@ -443,7 +443,23 @@ function createNoopDatabase(): UniversalDatabase {
         query: async () => ({ rows: [], rowCount: 0 }),
         connect: async () => {},
         close: async () => {},
-        healthCheck: async () => ({ connected: false, error: 'PocketBase mode — SQLite disabled' }),
+        // In PocketBase mode the real health signal is PocketBase itself —
+        // ping it so /api/health reports the true state instead of lying.
+        healthCheck: async () => {
+            const pbUrl = process.env.POCKETBASE_URL || 'http://localhost:8090'
+            try {
+                const res = await fetch(`${pbUrl}/api/health`)
+                if (!res.ok) {
+                    return { connected: false, error: `PocketBase responded ${res.status}` }
+                }
+                return { connected: true }
+            } catch (error) {
+                return {
+                    connected: false,
+                    error: error instanceof Error ? error.message : 'PocketBase unreachable',
+                }
+            }
+        },
         getStats: () => null,
         getClient: async () => null,
         transaction: async <T>(cb: any) => cb(async () => ({ rows: [], rowCount: 0 })),

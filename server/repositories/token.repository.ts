@@ -4,6 +4,8 @@
  */
 
 import getDatabase from '../utils/db'
+import { isPocketBaseMode } from '../utils/pocketbase'
+import pbTokenRepository from './token.repository.pb'
 
 export interface DesignToken {
     id: string
@@ -242,4 +244,8 @@ class DesignTokenRepository {
     }
 }
 
-export default new DesignTokenRepository()
+// Seam: in PocketBase mode, route through the PocketBase-backed repository
+// (same interface — SQL mode keeps the implementation above)
+export default isPocketBaseMode()
+    ? pbTokenRepository
+    : new DesignTokenRepository()

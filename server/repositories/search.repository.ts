@@ -4,6 +4,8 @@
  */
 
 import getDatabase from "../utils/db";
+import { isPocketBaseMode } from "../utils/pocketbase";
+import pbSearchRepository from "./search.repository.pb";
 import type { SearchResult } from "../../app/types/search";
 
 export interface SearchRepositoryOptions {
@@ -165,4 +167,8 @@ class SearchRepository {
   }
 }
 
-export default new SearchRepository();
+// Seam: in PocketBase mode, route through the PocketBase-backed repository
+// (same interface — SQL mode keeps the implementation above)
+export default isPocketBaseMode()
+  ? pbSearchRepository
+  : new SearchRepository();

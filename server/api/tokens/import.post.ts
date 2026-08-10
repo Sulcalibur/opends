@@ -7,27 +7,20 @@ import { z } from 'zod'
 import { asyncHandler } from '../../middleware/error-handler'
 import { createSuccessResponse, ErrorCodes, createErrorResponse } from '../../utils/response'
 import DesignTokenRepository from '../../repositories/token.repository'
-import JwtService from '../../services/jwt.service'
-import { getRequestHeader, setResponseStatus, readBody } from 'h3'
+import { getCurrentUser } from '../../utils/auth'
+import { setResponseStatus, readBody } from 'h3'
 
 const importSchema = z.object({
     tokens: z.record(z.string(), z.any())
 })
 
 export default asyncHandler(async (event) => {
-    // Get user from JWT
-    const authHeader = getRequestHeader(event, 'authorization')
-    if (!authHeader?.startsWith('Bearer ')) {
-        setResponseStatus(event, 401)
-        return createErrorResponse(ErrorCodes.UNAUTHORIZED, 'Missing authentication token')
-    }
+    // Get current user (JWT in SQL mode, pb_auth cookie in PocketBase mode)
+    const currentUser = await getCurrentUser(event)
 
-    const token = authHeader.substring(7)
-    const payload = JwtService.verify(token)
-
-    if (!payload) {
+    if (!currentUser) {
         setResponseStatus(event, 401)
-        return createErrorResponse(ErrorCodes.UNAUTHORIZED, 'Invalid token')
+        return createErrorResponse(ErrorCodes.UNAUTHORIZED, 'Missing or invalid authentication token')
     }
 
     // Parse and validate request
@@ -35,7 +28,7 @@ export default asyncHandler(async (event) => {
     const data = importSchema.parse(body)
 
     // Import tokens
-    const result = await DesignTokenRepository.importTokens(data.tokens, payload.userId)
+    const result = await DesignTokenRepository.importTokens(data.tokens, currentUser.id)
 
     return createSuccessResponse(result)
 })

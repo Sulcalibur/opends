@@ -9,8 +9,15 @@ import { asyncHandler } from '../../middleware/error-handler'
 import { createSuccessResponse, ErrorCodes, createErrorResponse } from '../../utils/response'
 import JwtService from '../../services/jwt.service'
 import UserRepository from '../../repositories/user.repository'
+import { isPocketBaseMode } from '../../utils/pocketbase'
 
 export default asyncHandler(async (event) => {
+    // PocketBase mode: session check is handled by /api/auth-pb/me (pb_auth cookie)
+    if (isPocketBaseMode()) {
+        setResponseStatus(event, 501)
+        return createErrorResponse('NOT_IMPLEMENTED', 'Use /api/auth-pb/me in PocketBase mode')
+    }
+
     // Get token from Authorization header
     const authHeader = getRequestHeader(event, 'authorization')
 

@@ -5,30 +5,23 @@ import {
   ErrorCodes,
 } from "../../utils/response";
 import SettingsRepository from "../../repositories/settings.repository";
-import JwtService from "../../services/jwt.service";
-import { getRequestHeader, setResponseStatus, readBody } from "h3";
+import { getCurrentUser } from "../../utils/auth";
+import { setResponseStatus, readBody } from "h3";
 
 export default asyncHandler(async (event) => {
-  // Get user from JWT
-  const authHeader = getRequestHeader(event, "authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
+  // Get current user (JWT in SQL mode, pb_auth cookie in PocketBase mode)
+  const currentUser = await getCurrentUser(event);
+
+  if (!currentUser) {
     setResponseStatus(event, 401);
     return createErrorResponse(
       ErrorCodes.UNAUTHORIZED,
-      "Missing authentication token",
+      "Missing or invalid authentication token",
     );
   }
 
-  const token = authHeader.substring(7);
-  const payload = JwtService.verify(token);
-
-  if (!payload) {
-    setResponseStatus(event, 401);
-    return createErrorResponse(ErrorCodes.UNAUTHORIZED, "Invalid token");
-  }
-
   // Check if user is admin
-  if (payload.role !== "admin") {
+  if (currentUser.role !== "admin") {
     setResponseStatus(event, 403);
     return createErrorResponse(ErrorCodes.FORBIDDEN, "Admin access required");
   }

@@ -4,6 +4,8 @@
  */
 
 import getDatabase from '../utils/db'
+import { isPocketBaseMode } from '../utils/pocketbase'
+import { UserRepository as PbUserRepository } from './user.repository.pb'
 import type { UserRole } from '../utils/validation'
 
 export interface User {
@@ -219,7 +221,8 @@ export class UserRepository {
     static async list(
         page: number = 1,
         limit: number = 20,
-        role?: UserRole
+        role?: UserRole,
+        search?: string
     ): Promise<{ users: User[]; total: number }> {
         const db = getDatabase()
         const offset = (page - 1) * limit
@@ -232,6 +235,12 @@ export class UserRepository {
             whereClause += ` AND role = $${paramIndex}`
             params.push(role)
             paramIndex++
+        }
+
+        if (search) {
+            whereClause += ` AND (email ILIKE $${paramIndex} OR name ILIKE $${paramIndex + 1})`
+            params.push(`%${search}%`, `%${search}%`)
+            paramIndex += 2
         }
 
         // Get total count
@@ -269,4 +278,8 @@ export class UserRepository {
     }
 }
 
-export default UserRepository
+// Seam: in PocketBase mode, route through the PocketBase-backed repository
+// (same static interface — SQL mode keeps the class above)
+export default isPocketBaseMode()
+    ? PbUserRepository
+    : UserRepository

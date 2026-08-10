@@ -149,7 +149,7 @@ function highlightMatch(text: string): string {
               type="text"
               placeholder="Search components, tokens, docs…"
               class="cmdk-input"
-            />
+            >
             <kbd class="cmdk-kbd">esc</kbd>
           </div>
 

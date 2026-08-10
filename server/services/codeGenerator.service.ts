@@ -6,9 +6,8 @@
 import {
   generateComponentCode,
   generateUsageExample,
-  type GeneratedCode,
+  type CodeGenComponent,
 } from "../utils/codeGenerator";
-import type { Component } from "../repositories/component.repository";
 
 const SUPPORTED_FRAMEWORKS = ["vue", "react", "svelte"] as const;
 export type SupportedFramework = (typeof SUPPORTED_FRAMEWORKS)[number];
@@ -29,7 +28,7 @@ function validateFramework(framework: string): SupportedFramework {
  * Generate component code for specified framework
  */
 export async function generateComponentCodeService(
-  component: Component,
+  component: CodeGenComponent,
   framework: string,
   variant?: string,
 ): Promise<string> {

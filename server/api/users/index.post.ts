@@ -6,7 +6,7 @@
 
 import { z } from "zod";
 import bcrypt from "bcryptjs";
-import { getRequestHeader, setResponseStatus, readBody } from "h3";
+import { getRequestHeader, setResponseStatus, readBody, getCookie } from "h3";
 import { asyncHandler } from "../../middleware/error-handler";
 import {
   createSuccessResponse,
@@ -15,6 +15,7 @@ import {
 } from "../../utils/response";
 import UserRepository from "../../repositories/user.repository";
 import JwtService from "../../services/jwt.service";
+import { isPocketBaseMode, getPbAuthRecord, PB_AUTH_COOKIE } from "../../utils/pocketbase";
 import {
   userRoleSchema,
   emailSchema,
@@ -29,20 +30,45 @@ const createUserSchema = z.object({
 });
 
 export default asyncHandler(async (event) => {
-  // Verify admin authentication
-  const authHeader = getRequestHeader(event, "authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
-    setResponseStatus(event, 401);
-    return createErrorResponse(
-      ErrorCodes.UNAUTHORIZED,
-      "Authentication required",
-    );
+  // Resolve the acting user: pb_auth cookie in PocketBase mode, JWT Bearer
+  // token in SQL mode. A missing/invalid credential yields null -> 403 below,
+  // preserving the route's historical semantics.
+  let currentUser: { userId: string; role: string; email: string } | null = null;
+
+  if (isPocketBaseMode()) {
+    const cookieToken = getCookie(event, PB_AUTH_COOKIE);
+    const record = cookieToken ? await getPbAuthRecord(cookieToken) : null;
+    if (record) {
+      currentUser = {
+        userId: record.id,
+        role: record.role || "viewer",
+        email: record.email,
+      };
+    }
+  } else {
+    const authHeader = getRequestHeader(event, "authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      setResponseStatus(event, 401);
+      return createErrorResponse(
+        ErrorCodes.UNAUTHORIZED,
+        "Authentication required",
+      );
+    }
+
+    const token = authHeader.substring(7);
+    try {
+      const payload = JwtService.verify(token) as {
+        userId: string;
+        role: string;
+        email: string;
+      } | null;
+      if (payload) currentUser = payload;
+    } catch {
+      currentUser = null;
+    }
   }
 
-  const token = authHeader.substring(7);
-  const payload = JwtService.verify(token);
-
-  if (!payload || payload.role !== "admin") {
+  if (!currentUser || currentUser.role !== "admin") {
     setResponseStatus(event, 403);
     return createErrorResponse(ErrorCodes.FORBIDDEN, "Admin access required");
   }
@@ -59,8 +85,10 @@ export default asyncHandler(async (event) => {
   }
   const data = parseResult.data;
 
-  // Hash password
-  const passwordHash = await bcrypt.hash(data.password, 10);
+  // Hash password (PocketBase hashes internally — pass the plaintext)
+  const passwordHash = isPocketBaseMode()
+    ? data.password
+    : await bcrypt.hash(data.password, 10);
 
   try {
     // Create user

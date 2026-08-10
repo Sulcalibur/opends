@@ -54,7 +54,8 @@
     "storybook": "^8.6.15",
     "tailwindcss": "^4.2.1",
     "typescript": "~5.9.3",
-    "vitest": "^4.0.16"
+    "vitest": "^4.0.16",
+    "vue-tsc": "^3.3.9"
   },
   "engines": {
     "node": ">=20.0.0",

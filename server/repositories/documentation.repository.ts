@@ -4,6 +4,8 @@
  */
 
 import getDatabase from '../utils/db'
+import { isPocketBaseMode } from '../utils/pocketbase'
+import { DocumentationRepository as PbDocumentationRepository } from './documentation.repository.pb'
 
 export interface DocumentationPage {
     id: string
@@ -284,4 +286,8 @@ export class DocumentationRepository {
     }
 }
 
-export default DocumentationRepository
+// Seam: in PocketBase mode, route through the PocketBase-backed repository
+// (same static interface — SQL mode keeps the class above)
+export default isPocketBaseMode()
+    ? PbDocumentationRepository
+    : DocumentationRepository

@@ -7,7 +7,7 @@ import { z } from 'zod'
 import { createPaginatedResponse } from '../../utils/response'
 import { paginationSchema } from '../../utils/validation'
 import { asyncHandler } from '../../middleware/error-handler'
-import getDatabase from '../../utils/db'
+import UserRepository from '../../repositories/user.repository'
 
 // Request validation schema
 const querySchema = z.object({
@@ -22,51 +22,22 @@ export default asyncHandler(async (event) => {
 
     // Extract pagination
     const { page, limit, role, search } = query
-    const offset = (page - 1) * limit
 
-    // Get database
-    const db = getDatabase()
+    // List users through the repository (SQL or PocketBase depending on mode)
+    const { users, total } = await UserRepository.list(page, limit, role, search)
 
-    // Build query
-    let whereClause = 'WHERE deleted_at IS NULL'
-    const params: (string | number)[] = []
-    let paramIndex = 1
-
-    if (role) {
-        whereClause += ` AND role = $${paramIndex}`
-        params.push(role)
-        paramIndex++
-    }
-
-    if (search) {
-        whereClause += ` AND (email LIKE $${paramIndex} OR name LIKE $${paramIndex})`
-        params.push(`%${search}%`)
-        paramIndex++
-    }
-
-    // Get total count
-    const countResult = await db.query<{ count: number }>(
-        `SELECT COUNT(*) as count FROM users ${whereClause}`,
-        params
-    )
-    const total = countResult.rows[0]?.count || 0
-
-    // Get users
-    const usersResult = await db.query(
-        `SELECT 
-      id, email, name, role, avatar_url, is_active, created_at, last_login_at
-     FROM users 
-     ${whereClause}
-     ORDER BY created_at DESC
-     LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`,
-        [...params, limit, offset]
-    )
+    // Only expose safe fields (never password hashes)
+    const safeUsers = users.map((user) => ({
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        role: user.role,
+        avatar_url: user.avatar_url,
+        is_active: user.is_active,
+        created_at: user.created_at,
+        last_login_at: user.last_login_at,
+    }))
 
     // Return paginated response
-    return createPaginatedResponse(
-        usersResult.rows,
-        page,
-        limit,
-        total
-    )
+    return createPaginatedResponse(safeUsers, page, limit, total)
 })

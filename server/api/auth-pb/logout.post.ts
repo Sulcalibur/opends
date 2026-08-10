@@ -3,7 +3,9 @@
  *
  * Clear the PocketBase auth cookie.
  */
-export default defineEventHandler(async () => {
-  deleteCookie(getEvent(), 'pb_auth')
+import { PB_AUTH_COOKIE } from '../../utils/pocketbase'
+
+export default defineEventHandler(async (event) => {
+  deleteCookie(event, PB_AUTH_COOKIE)
   return { success: true }
 })

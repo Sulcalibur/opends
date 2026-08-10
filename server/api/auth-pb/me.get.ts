@@ -5,8 +5,10 @@
  * Reads the pb_auth httpOnly cookie set during login.
  */
 
+import { PB_AUTH_COOKIE } from '../../utils/pocketbase'
+
 export default defineEventHandler(async (event) => {
-  const token = getCookie(event, 'pb_auth')
+  const token = getCookie(event, PB_AUTH_COOKIE)
 
   if (!token) {
     throw createError({
@@ -45,7 +47,7 @@ export default defineEventHandler(async (event) => {
     }
   } catch {
     // Token invalid or expired — clear it
-    deleteCookie(event, 'pb_auth')
+    deleteCookie(event, PB_AUTH_COOKIE)
     throw createError({
       statusCode: 401,
       statusMessage: 'Session expired. Please log in again.',

@@ -10,6 +10,7 @@ import { emailSchema, passwordSchema } from '../../utils/validation'
 import PasswordService from '../../services/password.service'
 import JwtService from '../../services/jwt.service'
 import UserRepository from '../../repositories/user.repository'
+import { isPocketBaseMode } from '../../utils/pocketbase'
 
 // Registration request schema
 const registerSchema = z.object({
@@ -19,6 +20,12 @@ const registerSchema = z.object({
 })
 
 export default asyncHandler(async (event) => {
+    // PocketBase mode: registration is handled by /api/auth-pb/register
+    if (isPocketBaseMode()) {
+        setResponseStatus(event, 501)
+        return createErrorResponse('NOT_IMPLEMENTED', 'Use /api/auth-pb/register in PocketBase mode')
+    }
+
     // Parse and validate request body
     const body = await readBody(event)
     const { email, password, name } = registerSchema.parse(body)

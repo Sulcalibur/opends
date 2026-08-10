@@ -22,7 +22,7 @@ npx nuxi typecheck    # TypeScript type checking
 pnpm storybook        # Start Storybook at http://localhost:6006
 
 # Docker
-pnpm docker:up        # Start PostgreSQL + app via Docker Compose
+pnpm docker:up        # Start PocketBase + app via Docker Compose
 ```
 
 ## Architecture
@@ -45,20 +45,30 @@ OpenDS is a **Nuxt 4** full-stack app. The `nuxt.config.ts` sets the app source 
 | `server/middleware/` | Server middleware (CORS, auth, logging) |
 | `server/mcp/` | MCP server tools and resources |
 
-### Database layer (`server/utils/db.ts`)
+### Database layer
 
-The `UniversalDatabase` class supports three backends via a single `query()` API:
+**PocketBase mode (primary self-host path):** when `POCKETBASE_URL` is set (or `SKIP_DATABASE_INIT=true`), `server/plugins/database.ts` skips SQLite/Postgres init and every repository delegates to its `*.repository.pb.ts` twin via `isPocketBaseMode()` (from `server/utils/pocketbase.ts`). Never delete the SQL implementations — the seam is the escape hatch.
+
+Legacy `UniversalDatabase` mode (`server/utils/db.ts`) supports three backends via a single `query()` API:
 - **SQLite** (default local dev) — auto-selected when no `DATABASE_URL` is set
 - **PostgreSQL** — selected when `DATABASE_URL` starts with `postgresql://`
 - **Cloudflare D1** — selected when `CF_PAGES=1` or `DATABASE_URL` starts with `d1:`
 
 Queries are written in PostgreSQL syntax (`$1`, `$2` params). The SQLite adapter translates these to `?` automatically. Always write queries in PostgreSQL syntax.
 
-Migrations run automatically on server startup via `server/utils/migrations.ts` through the Nitro plugin at `server/plugins/database.ts`.
+Migrations run automatically on server startup via `server/utils/migrations.ts` through the Nitro plugin at `server/plugins/database.ts`. In PocketBase mode, `pb_migrations/` (committed) is the schema source of truth.
 
 ### Authentication
 
-JWT-based auth. Tokens (access: 15m, refresh: 7d) are stored in `localStorage` and managed by `app/stores/auth.ts`. The `auth` route middleware redirects unauthenticated users to `/login`. Server routes validate tokens via `server/utils/auth.ts`. Roles: `admin`, `editor`, `viewer`.
+**PocketBase mode (primary):** auth runs through `/api/auth-pb/*` (login/register/me/logout). The token lives in an httpOnly `pb_auth` cookie; `requireAuth()`/`requireRole()`/`getCurrentUser()` in `server/utils/auth.ts` validate it against PocketBase's `auth-refresh` endpoint. Roles (`admin`, `editor`, `viewer`) live on the PB `users` collection.
+
+**SQL/JWT mode (fallback):** JWT-based auth. Tokens (access: 15m, refresh: 7d) are stored in `localStorage` and managed by `app/stores/auth.ts`. The `auth` route middleware redirects unauthenticated users to `/login`. Server routes validate tokens via `server/utils/auth.ts`. Roles: `admin`, `editor`, `viewer`.
+
+### PocketBase rules
+
+- **Pin the image tag** in `docker-compose.yml` — PocketBase is pre-1.0 (v0.x); `:latest` can break on upgrade. Bump deliberately and re-run the smoke tests.
+- `pb_migrations/` is committed and is the version-controlled schema source of truth; `pb_data/` is runtime state (gitignored).
+- PB collections use different field names than SQL tables (`created`/`updated` vs `created_at`/`updated_at`). The `*.repository.pb.ts` files own that mapping — never do it in routes.
 
 ### MCP Server
 
@@ -100,8 +110,9 @@ An MCP server is exposed at `/mcp` via `@nuxtjs/mcp-toolkit`. Tools and resource
 ## Environment Setup
 
 Copy `.env.example` to `.env`. Key variables:
-- `DATABASE_URL` — PostgreSQL connection string (omit to use SQLite)
-- `JWT_SECRET` — required for auth; generate with `openssl rand -base64 32`
+- `POCKETBASE_URL` — PocketBase connection (omit for SQL mode); `PB_ADMIN_EMAIL`/`PB_ADMIN_PASSWORD` for the admin account
+- `DATABASE_URL` — PostgreSQL connection string (omit to use SQLite) — SQL mode only
+- `JWT_SECRET` — required for auth in SQL mode; generate with `openssl rand -base64 32`
 - `ALLOW_REGISTRATION` — set to `false` to disable public sign-up
 
 ## Nuxt UI CSS workaround

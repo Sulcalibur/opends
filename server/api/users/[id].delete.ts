@@ -13,38 +13,56 @@ import {
 } from "../../utils/response";
 import UserRepository from "../../repositories/user.repository";
 import JwtService from "../../services/jwt.service";
+import { isPocketBaseMode, getPbAuthRecord, PB_AUTH_COOKIE } from "../../utils/pocketbase";
 
-import { getRouterParam, setResponseStatus, getRequestHeader } from "h3";
+import { getRouterParam, setResponseStatus, getRequestHeader, getCookie } from "h3";
 
+// PocketBase uses 15-char alphanumeric ids, not UUIDs
 const paramsSchema = z.object({
-  id: z.string().uuid("Invalid user ID format"),
+  id: isPocketBaseMode()
+    ? z.string().min(5).max(50)
+    : z.string().uuid("Invalid user ID format"),
 });
 
 export default asyncHandler(async (event) => {
-  // Verify admin authentication
-  const authHeader = getRequestHeader(event, "authorization");
-  if (!authHeader?.startsWith("Bearer ")) {
-    setResponseStatus(event, 401);
-    return createErrorResponse(
-      ErrorCodes.UNAUTHORIZED,
-      "Authentication required",
-    );
+  // Resolve the acting user: pb_auth cookie in PocketBase mode, JWT Bearer
+  // token in SQL mode. A verification failure yields null -> 403 below,
+  // preserving the route's historical semantics.
+  let currentUser: { userId: string; role: string; email: string } | null = null;
+
+  if (isPocketBaseMode()) {
+    const cookieToken = getCookie(event, PB_AUTH_COOKIE);
+    const record = cookieToken ? await getPbAuthRecord(cookieToken) : null;
+    if (record) {
+      currentUser = {
+        userId: record.id,
+        role: record.role || "viewer",
+        email: record.email,
+      };
+    }
+  } else {
+    const authHeader = getRequestHeader(event, "authorization");
+    if (!authHeader?.startsWith("Bearer ")) {
+      setResponseStatus(event, 401);
+      return createErrorResponse(
+        ErrorCodes.UNAUTHORIZED,
+        "Authentication required",
+      );
+    }
+
+    const token = authHeader.substring(7);
+    try {
+      currentUser = JwtService.verify(token) as {
+        userId: string;
+        role: string;
+        email: string;
+      } | null;
+    } catch {
+      currentUser = null;
+    }
   }
 
-  const token = authHeader.substring(7);
-  let payload: { userId: string; role: string; email: string } | null = null;
-
-  try {
-    payload = JwtService.verify(token) as {
-      userId: string;
-      role: string;
-      email: string;
-    } | null;
-  } catch {
-    payload = null;
-  }
-
-  if (!payload || payload.role !== "admin") {
+  if (!currentUser || currentUser.role !== "admin") {
     setResponseStatus(event, 403);
     return createErrorResponse(ErrorCodes.FORBIDDEN, "Admin access required");
   }
@@ -74,7 +92,7 @@ export default asyncHandler(async (event) => {
   const { id: userIdToDelete } = paramsValidation.data;
 
   // Prevent self-deletion
-  if (payload.userId === userIdToDelete) {
+  if (currentUser.userId === userIdToDelete) {
     setResponseStatus(event, 403);
     return createErrorResponse(
       ErrorCodes.FORBIDDEN,

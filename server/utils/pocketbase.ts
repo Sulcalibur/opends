@@ -21,6 +21,20 @@ import PocketBase from 'pocketbase'
 
 let pb: PocketBase | null = null
 
+/**
+ * Name of the httpOnly cookie holding the PocketBase auth token.
+ * Set by /api/auth-pb/login, read by /api/auth-pb/me and requireAuth().
+ */
+export const PB_AUTH_COOKIE = 'pb_auth'
+
+/**
+ * True when the app runs in PocketBase mode (no SQLite/Postgres).
+ * Mirrors the skipDatabaseInit logic in nuxt.config.ts.
+ */
+export function isPocketBaseMode(): boolean {
+  return !!(process.env.POCKETBASE_URL || process.env.SKIP_DATABASE_INIT === 'true')
+}
+
 export function getPocketBase(): PocketBase {
   if (!pb) {
     const url = process.env.POCKETBASE_URL || 'http://localhost:8090'
@@ -35,17 +49,43 @@ export function getPocketBase(): PocketBase {
 }
 
 /**
- * Authenticate as the PocketBase super admin (for server-side operations).
- * The admin credentials are set via PB_ADMIN_EMAIL/PB_ADMIN_PASSWORD env vars.
+ * Resolve a user record from a raw PocketBase auth token by calling the
+ * auth-refresh endpoint (the same check /api/auth-pb/me performs).
+ * Returns null when the token is invalid or expired.
+ */
+export async function getPbAuthRecord(
+  token: string,
+): Promise<{ id: string; email: string; name: string; role?: string } | null> {
+  try {
+    const pbUrl = process.env.POCKETBASE_URL || 'http://localhost:8090'
+    const response = await $fetch<{
+      record: { id: string; email: string; name: string; role?: string }
+    }>(`${pbUrl}/api/collections/users/auth-refresh`, {
+      method: 'POST',
+      headers: {
+        Authorization: token, // PocketBase accepts the raw token as Authorization
+      },
+    })
+    return response.record ?? null
+  } catch {
+    return null
+  }
+}
+
+/**
+ * Authenticate as the PocketBase superuser for server-side operations.
+ * Always re-authenticates: the shared client may hold a stale token after a
+ * PocketBase restart (fresh data dir rotates the JWT secret). Uses the
+ * modern _superusers collection — the legacy /api/admins endpoint is gone in
+ * PocketBase 0.39+.
  */
 export async function authenticateAdmin(): Promise<void> {
   const client = getPocketBase()
-  if (client.authStore.isAdmin) return
 
   const email = process.env.PB_ADMIN_EMAIL || 'admin@opends.local'
   const password = process.env.PB_ADMIN_PASSWORD || 'admin'
 
-  await client.admins.authWithPassword(email, password)
+  await client.collection('_superusers').authWithPassword(email, password)
 }
 
 /**
@@ -79,6 +119,7 @@ export async function createUser(data: {
     passwordConfirm: data.passwordConfirm,
     name: data.name,
     role: data.role || 'editor',
+    is_active: true, // PB bool defaults to false — new accounts must start active
   })
   return record
 }

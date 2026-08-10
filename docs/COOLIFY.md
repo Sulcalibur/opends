@@ -1,12 +1,54 @@
 # Coolify Deployment Guide for OpenDS
 
-Deploy OpenDS with PostgreSQL on Coolify for a production-ready, self-hosted design system documentation tool.
+Deploy OpenDS on Coolify. Two backends are supported:
+
+- **Option A — PocketBase (recommended):** zero DB to manage, built-in auth + admin UI. Follow the steps below.
+- **Option B — PostgreSQL:** the classic SQL path. [Skip to Option B](#option-b--postgresql).
 
 ## Prerequisites
 
 - Coolify installed on a VPS (recommended: Hetzner CCX22 €8.40/mo or similar)
 - GitHub account with access to `Sulcalibur/opends` repository
 - At least 2GB RAM, 20GB storage
+
+## Option A: PocketBase (recommended)
+
+### Step A1: Create the PocketBase service
+
+1. Coolify → **Resources** → **Create New Resource** → **Docker Image**
+2. Image: `ghcr.io/muchobien/pocketbase:0.39.10` (**pin the version** — PocketBase is pre-1.0, never use `latest`)
+3. Ports: `8090` → `8090`
+4. Volumes: mount a volume at `/pb_data`
+5. Environment: `PB_ADMIN_EMAIL` and `PB_ADMIN_PASSWORD` (creates the admin account on first boot)
+6. Deploy, then open `https://<your-domain>:8090/_/` and confirm the admin login works
+
+### Step A2: Create the OpenDS application
+
+1. **Resources** → **Create New Resource** → **Application** → **GitHub**
+2. Repository: `https://github.com/Sulcalibur/opends`, Branch: `main`, Name: `opends`
+3. Build settings: Build Command `pnpm install && pnpm build`, Start Command `node .output/server/index.mjs`, Port `3000`
+4. Environment variables:
+
+```env
+POCKETBASE_URL=https://<your-pocketbase-domain>
+NODE_ENV=production
+PORT=3000
+HOST=0.0.0.0
+ALLOW_REGISTRATION=true
+```
+
+5. Health check: URL `/api/health`, GET, 30s interval
+6. Deploy — PocketBase collections auto-apply from the committed `pb_migrations/` on first boot
+
+### Step A3: Verify
+
+1. Visit your OpenDS domain → register the first account (becomes editor)
+2. Make it admin: open PocketBase admin → Users → set the `role` field to `admin`
+3. The admin panel now works end-to-end (components, tokens, docs, settings, API keys)
+
+---
+
+## Option B: PostgreSQL
 
 ## Step 1: Create PostgreSQL Database
 

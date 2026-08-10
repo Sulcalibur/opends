@@ -10,6 +10,7 @@ import { emailSchema } from '../../utils/validation'
 import PasswordService from '../../services/password.service'
 import JwtService from '../../services/jwt.service'
 import UserRepository from '../../repositories/user.repository'
+import { isPocketBaseMode } from '../../utils/pocketbase'
 
 // Login request schema
 const loginSchema = z.object({
@@ -21,6 +22,12 @@ const MAX_LOGIN_ATTEMPTS = 5
 const LOCK_DURATION_MINUTES = 30
 
 export default asyncHandler(async (event) => {
+    // PocketBase mode: auth is handled by /api/auth-pb/* (httpOnly cookie)
+    if (isPocketBaseMode()) {
+        setResponseStatus(event, 501)
+        return createErrorResponse('NOT_IMPLEMENTED', 'Use /api/auth-pb/login in PocketBase mode')
+    }
+
     // Parse and validate request body
     const body = await readBody(event)
     const { email, password } = loginSchema.parse(body)

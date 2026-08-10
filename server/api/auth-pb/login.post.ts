@@ -8,7 +8,7 @@
  *           server/services/password.service.ts
  *           server/services/jwt.service.ts
  */
-import { authenticateUser } from '../../utils/pocketbase'
+import { authenticateUser, PB_AUTH_COOKIE } from '../../utils/pocketbase'
 
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ email: string; password: string }>(event)
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
     const { token, user } = await authenticateUser(body.email, body.password)
 
     // Set the token as an httpOnly cookie for SSR auth
-    setCookie(event, 'pb_auth', token, {
+    setCookie(event, PB_AUTH_COOKIE, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',

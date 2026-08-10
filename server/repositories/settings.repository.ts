@@ -5,6 +5,8 @@
  */
 
 import getDatabase from "../utils/db";
+import { isPocketBaseMode } from "../utils/pocketbase";
+import pbSettingsRepository from "./settings.repository.pb";
 
 export interface Setting {
   id: string;
@@ -144,4 +146,8 @@ class SettingsRepository {
   }
 }
 
-export default new SettingsRepository();
+// Seam: in PocketBase mode, route through the PocketBase-backed repository
+// (same interface — SQL mode keeps the implementation above)
+export default isPocketBaseMode()
+  ? pbSettingsRepository
+  : new SettingsRepository();

@@ -12,13 +12,17 @@ import {
   createErrorResponse,
 } from "../../../utils/response";
 import ComponentRepository from "../../../repositories/component.repository";
+import { isPocketBaseMode } from "../../../utils/pocketbase";
 import {
   generateComponentCodeService,
   generateUsageExampleService,
 } from "../../../services/codeGenerator.service";
 
+// PocketBase uses 15-char alphanumeric ids, not UUIDs
 const paramsSchema = z.object({
-  id: z.string().uuid("Invalid component ID format"),
+  id: isPocketBaseMode()
+    ? z.string().min(5).max(50)
+    : z.string().uuid("Invalid component ID format"),
 });
 
 const bodySchema = z.object({

@@ -4,6 +4,8 @@
  */
 
 import getDatabase from '../utils/db'
+import { isPocketBaseMode } from '../utils/pocketbase'
+import pbComponentRepository from './component.repository.pb'
 
 export interface Component {
     id: string
@@ -211,4 +213,8 @@ class ComponentRepository {
     }
 }
 
-export default new ComponentRepository()
+// Seam: in PocketBase mode, route through the PocketBase-backed repository
+// (same interface — SQL mode keeps the implementation above)
+export default isPocketBaseMode()
+    ? pbComponentRepository
+    : new ComponentRepository()

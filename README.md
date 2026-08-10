@@ -35,14 +35,25 @@ pnpm install
 # Copy environment template
 cp .env.example .env
 
-# Edit .env with your database settings
-# DATABASE_URL=postgresql://user:password@localhost:5432/opends
-
-# Start development server
+# Start development server (SQLite mode by default)
 pnpm dev
 ```
 
 Visit `http://localhost:3000` to access OpenDS.
+
+### PocketBase mode (recommended for self-host)
+
+```bash
+# 1. Start PocketBase (auth + database in a single binary)
+docker compose up pocketbase
+#    → create the admin account at http://localhost:8090/_/
+
+# 2. Run the app pointed at PocketBase
+export POCKETBASE_URL=http://localhost:8090
+pnpm dev
+```
+
+No SQL database or migrations to manage — collections auto-apply from `pb_migrations/` on startup.
 
 ### Docker Compose (Recommended)
 
@@ -50,15 +61,19 @@ Visit `http://localhost:3000` to access OpenDS.
 # Copy environment template
 cp .env.example .env
 
-# Start services (PostgreSQL + OpenDS)
-docker-compose up -d
+# Start services (PocketBase + OpenDS)
+docker compose up -d
 
 # Check logs
-docker-compose logs -f opends
+docker compose logs -f opends
 
 # Stop services
-docker-compose down
+docker compose down
 ```
+
+`docker compose up` runs PocketBase (port 8090) plus the app. The PocketBase image tag is pinned in `docker-compose.yml` — bump it deliberately (PocketBase is pre-1.0).
+
+> SQL mode (PostgreSQL/SQLite/D1) is still supported — omit `POCKETBASE_URL` and set `DATABASE_URL` instead. See `docs/COOLIFY.md` for the PostgreSQL path on Coolify.
 
 ## 🌐 Deploy to Coolify
 
