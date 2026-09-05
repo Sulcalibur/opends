@@ -7,7 +7,7 @@ definePageMeta({
 // Token tree
 interface TokenGroup {
   name: string
-  open: boolean
+  open?: boolean
   count: number
   active?: boolean
   children?: TokenGroup[]

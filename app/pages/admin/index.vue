@@ -7,7 +7,16 @@ definePageMeta({
 const api = useApi()
 
 // Stats
-const stats = ref([
+type StatDeltaTone = 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'error' | 'neutral'
+interface StatCard {
+  label: string
+  value: number
+  delta: string
+  deltaTone: StatDeltaTone
+  sub: string
+  icon: string
+}
+const stats = ref<StatCard[]>([
   { label: 'Components', value: 48, delta: '+3', deltaTone: 'success', sub: 'this week', icon: 'i-lucide-component' },
   { label: 'Tokens', value: 218, delta: '+12', deltaTone: 'success', sub: 'this week', icon: 'i-lucide-palette' },
   { label: 'Published pages', value: 32, delta: '2 drafts', deltaTone: 'warning', sub: 'pending review', icon: 'i-lucide-file-text' },

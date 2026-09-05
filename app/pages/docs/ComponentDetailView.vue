@@ -30,6 +30,14 @@ const activeFramework = ref<"vue" | "react" | "svelte">("vue");
 // Active tab in sandbox
 const activeTab = ref<"preview" | "code" | "anatomy">("preview");
 
+// Narrowing setters — templates pass .toLowerCase() results typed as string
+function setActiveTab(tab: string) {
+  if (tab === "preview" || tab === "code" || tab === "anatomy") activeTab.value = tab;
+}
+function setFramework(fw: string) {
+  if (fw === "vue" || fw === "react" || fw === "svelte") activeFramework.value = fw;
+}
+
 // Preview state (props for the live UButton preview)
 const previewState = ref({
   variant: "primary",
@@ -716,7 +724,7 @@ useHead({
                         color: 'var(--color-text-secondary, #5C6270)',
                       }
                 "
-                @click="activeTab = tab.toLowerCase()"
+                @click="setActiveTab(tab.toLowerCase())"
               >
                 {{ tab }}
               </button>
@@ -745,7 +753,7 @@ useHead({
                           color: 'var(--color-text-secondary, #5C6270)',
                         }
                   "
-                  @click="activeFramework = fw.toLowerCase()"
+                  @click="setFramework(fw.toLowerCase())"
                 >
                   {{ fw }}
                 </button>

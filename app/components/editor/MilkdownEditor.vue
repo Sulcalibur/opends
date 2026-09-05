@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { Crepe } from '@milkdown/crepe'
 import { Milkdown, MilkdownProvider, useEditor } from '@milkdown/vue'
-import { replaceAll } from '@milkdown/kit/utils'
 
 const props = defineProps<{
   modelValue: string
@@ -21,21 +20,26 @@ watch(content, (val) => {
   emit('update:modelValue', val)
 })
 
-const editor = useEditor((root) => {
+// @milkdown/vue v7 useEditor returns { loading, get } — the editor is created
+// on mount by <Milkdown/>. Crepe surfaces markdown updates via its listener.
+const { get } = useEditor((root) => {
   const crepe = new Crepe({
     root,
     defaultValue: content.value,
   })
 
-  crepe.editor.onMarkdownUpdated((_, markdown) => {
-    content.value = markdown
+  crepe.on((listener) => {
+    listener.markdownUpdated((_ctx, markdown) => {
+      content.value = markdown
+    })
   })
 
   return crepe
 })
 
 onUnmounted(() => {
-  editor.value?.destroy()
+  const editor = get()
+  if (editor) void editor.destroy()
 })
 </script>
 

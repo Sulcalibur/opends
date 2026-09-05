@@ -163,7 +163,7 @@
         </p>
         <p class="warning-text">This action cannot be undone.</p>
         <template #footer>
-          <UButton variant="ghost" @click="showDeleteModal = false">
+          <UButton variant="ghost" @click="() => { showDeleteModal = false }">
             Cancel
           </UButton>
           <UButton color="error" :loading="deleting" @click="deleteComponent">

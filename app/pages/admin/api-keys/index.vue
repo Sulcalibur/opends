@@ -12,7 +12,7 @@
           <UButton
             icon="i-lucide-plus"
             label="Create New Key"
-            @click="showCreateDialog = true"
+            @click="() => { showCreateDialog = true }"
           />
         </div>
       </template>
@@ -53,7 +53,7 @@
         <UButton
           icon="i-lucide-plus"
           label="Create API Key"
-          @click="showCreateDialog = true"
+          @click="() => { showCreateDialog = true }"
         />
       </div>
     </UCard>
@@ -76,7 +76,7 @@
           <UButton
             variant="ghost"
             label="Cancel"
-            @click="showCreateDialog = false"
+            @click="() => { showCreateDialog = false }"
           />
           <UButton
             icon="i-lucide-check"
@@ -110,7 +110,7 @@
       </template>
       <template #footer>
         <div class="flex justify-end">
-          <UButton label="Done" @click="showSuccessDialog = false" />
+          <UButton label="Done" @click="() => { showSuccessDialog = false }" />
         </div>
       </template>
     </UModal>
@@ -132,7 +132,7 @@
           <UButton
             variant="ghost"
             label="Cancel"
-            @click="showDeleteDialog = false"
+            @click="() => { showDeleteDialog = false }"
           />
           <UButton
             color="error"

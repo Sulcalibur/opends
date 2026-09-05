@@ -9,7 +9,8 @@ const users = ref([
   { name: 'Taylor Kim', email: 'taylor@acme.co', role: 'Editor', status: 'invited', joined: '—' },
 ])
 
-const roleColors: Record<string, string> = { Admin: 'primary', Editor: 'info', Viewer: 'neutral' }
+type BadgeTone = 'primary' | 'secondary' | 'success' | 'info' | 'warning' | 'error' | 'neutral'
+const roleColors: Record<string, BadgeTone> = { Admin: 'primary', Editor: 'info', Viewer: 'neutral' }
 
 const loading = ref(true)
 

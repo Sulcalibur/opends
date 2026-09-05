@@ -283,7 +283,7 @@ function getStatusColor(published: boolean) {
                 color="neutral"
                 variant="ghost"
                 :disabled="deleting"
-                @click="showDeleteModal = false"
+                @click="() => { showDeleteModal = false }"
               >
                 Cancel
               </UButton>

@@ -80,12 +80,16 @@
     "url": "https://github.com/opends/opends/issues"
   },
   "pnpm": {
-    "onlyBuiltDependencies": [
-      "better-sqlite3",
-      "@parcel/watcher",
-      "esbuild",
-      "unrs-resolver"
-    ]
+    "overrides": {
+      "vue": "3.5.38",
+      "@vue/runtime-core": "3.5.38",
+      "@vue/runtime-dom": "3.5.38",
+      "@vue/server-renderer": "3.5.38",
+      "@vue/compiler-core": "3.5.38",
+      "@vue/compiler-dom": "3.5.38",
+      "@vue/compiler-sfc": "3.5.38",
+      "@vue/shared": "3.5.38"
+    }
   },
   "homepage": "https://opends.dev",
   "dependencies": {
@@ -101,21 +105,10 @@
     "h3": "^1.15.0",
     "h3-zod": "^0.5.3",
     "jsonwebtoken": "^9.0.3",
+    "marked": "^18.0.11",
     "pg": "^8.16.3",
     "pocketbase": "^0.26.0",
     "shiki": "^4.2.0",
     "zod": "^4.2.1"
-  },
-  "pnpm": {
-    "overrides": {
-      "vue": "3.5.38",
-      "@vue/runtime-core": "3.5.38",
-      "@vue/runtime-dom": "3.5.38",
-      "@vue/server-renderer": "3.5.38",
-      "@vue/compiler-core": "3.5.38",
-      "@vue/compiler-dom": "3.5.38",
-      "@vue/compiler-sfc": "3.5.38",
-      "@vue/shared": "3.5.38"
-    }
   }
 }

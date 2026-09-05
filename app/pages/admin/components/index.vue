@@ -15,7 +15,7 @@
       <UButton
         icon="i-lucide-plus"
         label="New Component"
-        @click="showCreateDialog = true"
+        @click="() => { showCreateDialog = true }"
       />
     </div>
 
@@ -140,7 +140,7 @@
       <UButton
         icon="i-lucide-plus"
         label="Create Component"
-        @click="showCreateDialog = true"
+        @click="() => { showCreateDialog = true }"
       />
     </UCard>
 

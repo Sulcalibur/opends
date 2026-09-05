@@ -10,15 +10,15 @@ const slug = computed(() => route.params.slug as string || 'button')
 // Tabs
 const activeTab = ref('Props')
 
-// Variants
-type VariantKey = 'primary' | 'secondary' | 'soft' | 'ghost' | 'danger' | 'link'
-const variants: VariantKey[] = ['primary', 'secondary', 'soft', 'ghost', 'danger', 'link']
-const activeVariant = ref<VariantKey>('primary')
+// Variants — NuxtUI v4 button variant vocabulary (solid/outline/soft/subtle/ghost/link)
+type VariantKey = 'solid' | 'outline' | 'soft' | 'subtle' | 'ghost' | 'link'
+const variants: VariantKey[] = ['solid', 'outline', 'soft', 'subtle', 'ghost', 'link']
+const activeVariant = ref<VariantKey>('solid')
 
 // Prop editor state
 const propType = ref('enum')
-const allowedValues = ref(['primary', 'secondary', 'soft', 'ghost', 'danger', 'link'])
-const propDefault = ref('primary')
+const allowedValues = ref(['solid', 'outline', 'soft', 'subtle', 'ghost', 'link'])
+const propDefault = ref('solid')
 const propRequired = ref(false)
 const propDesc = ref('Visual emphasis level. Use primary for the single most important action on a page.')
 
@@ -139,7 +139,7 @@ useHead({ title: computed(() => `${slug.value} — Edit`) })
         <div class="canvas-code">
           <div class="canvas-code-header">
             <span>Vue · UButton</span>
-            <UButton variant="ghost" size="2xs" icon="i-lucide-copy">Copy</UButton>
+            <UButton variant="ghost" size="xs" icon="i-lucide-copy">Copy</UButton>
           </div>
           <pre class="code-out"><code>{{ codeOutput }}</code></pre>
         </div>
