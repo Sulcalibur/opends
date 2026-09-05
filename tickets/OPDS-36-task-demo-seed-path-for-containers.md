@@ -23,3 +23,19 @@ Acceptance Criteria:
 - A fresh container install shows no demo content
 - A documented one-command demo load works against a running instance
 - Seed is idempotent — re-running does not duplicate content
+
+---
+## Decision memo (2026-09-05, draft for human)
+Constraint discovered: the Dockerfile production stage copies only .output + package.json — scripts/seed-demo.mjs and design-system-data/ are NOT in the image today, so seeding inside a container needs the files present.
+
+Option A (RECOMMENDED) — bake dataset + script into the image; document a one-shot command:
+  docker compose exec opends node scripts/seed-demo.mjs   (targets the running instance)
+- Clean default: nothing runs on boot. Explicit user action. Seed script is already idempotent and auth-auto-detecting (env OPENDS_ADMIN_EMAIL/PASSWORD on fresh instances registers the first admin). Cost: ~35 KB image layer + a compose/docs one-liner. No production entrypoint changes.
+
+Option B — env opt-in SEED_DEMO=true handled by a wrapper entrypoint on first boot.
+- Nicer UX (set env, restart) but requires replacing the CMD with a script that seeds before/after server start, adds first-boot state handling, and raises accidental-seed risk. More moving parts in the production entrypoint.
+
+Option C — exclude the demo from the image entirely; publish the Ember dataset as a separate downloadable/volume artifact.
+- Minimal image, but fragments the "try the demo" story and adds a second distribution surface to maintain.
+
+Recommendation: Option A. Also note this only matters once OPDS-32 (CI publish) lands, since the image isn't published yet.

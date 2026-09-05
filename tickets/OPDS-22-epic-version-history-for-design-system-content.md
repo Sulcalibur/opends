@@ -8,7 +8,11 @@
 
 ## Triage
 **State:** needs-triage
-**Updated:** 2026-09-05T11:49:59.104Z
+**Updated:** 2026-09-05T15:30:00.000Z
 
 ## Description
 Goal Version history for OpenDS content — tokens, components, and docs — so teams can see what changed, when, and restore a previous version of a design system. Currently parked: this is a requested feature with the design still open. Open design questions (resting — not started) What gets versioned: token values, component specs, doc pages, or the whole design-system state? Storage approach: audit trail rows vs snapshot table vs diff records (SQL and PocketBase modes). Who can view and restore: admin-only vs editor; per-entity or whole-system restore. How auto-sync from Penpot/Figma interacts with versioning (each push = new version?). UI: history drawer on entity pages + diff view; nothing decided yet. Next step Write a short design note (opends/openspec change proposal) capturing scope + storage before implementation. Acceptance Criteria Change history visible per token/component/doc with author + timestamp Admin can restore a previous version Works in SQL and PocketBase modes Status: parked/backlog — deliberately no implementation yet.
+
+---
+## Verification (2026-09-05, auto)
+Still parked/backlog as filed. No versioning code on main. Recommended next step in the ticket (design note in opends/openspec) not started. Triage: needs-triage → parked (no change to Flowlu).
