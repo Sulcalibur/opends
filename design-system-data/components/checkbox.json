@@ -1,0 +1,36 @@
+{
+  "name": "checkbox",
+  "displayName": "Checkbox",
+  "description": "A binary choice control with support for an indeterminate state, typically used in forms and tables.",
+  "category": "Inputs",
+  "status": "review",
+  "spec": {
+    "variants": [
+      { "name": "Default", "label": "default", "description": "Standard checkbox with label." },
+      { "name": "Switch", "label": "switch", "description": "Pill toggle presentation of the same control." }
+    ],
+    "props": [
+      { "name": "label", "type": "string", "default": "—", "description": "Text rendered next to the box." },
+      { "name": "modelValue", "type": "boolean | 'indeterminate'", "default": "false", "description": "Checked state (v-model)." },
+      { "name": "value", "type": "string", "default": "—", "description": "Value submitted with the form." },
+      { "name": "name", "type": "string", "default": "—", "description": "Native name attribute." },
+      { "name": "disabled", "type": "boolean", "default": "false", "description": "Disables the control." },
+      { "name": "required", "type": "boolean", "default": "false", "description": "Requires the box to be checked." },
+      { "name": "invalid", "type": "boolean", "default": "false", "description": "Shows the error border." },
+      { "name": "description", "type": "string", "default": "—", "description": "Supporting text under the label." }
+    ],
+    "a11y": [
+      { "check": "Labels", "result": "Pass", "detail": "Native input with a real <label> element", "pass": true },
+      { "check": "Keyboard", "result": "Pass", "detail": "Space toggles; focus ring visible", "pass": true },
+      { "check": "Screen reader", "result": "Pass", "detail": "aria-checked reflects indeterminate state", "pass": true },
+      { "check": "Touch target", "result": "Pass", "detail": "Entire row clickable, 44px minimum", "pass": true }
+    ],
+    "slots": [
+      { "name": "default", "description": "Custom label content." }
+    ],
+    "events": [
+      { "name": "update:modelValue", "payload": "boolean | 'indeterminate'" },
+      { "name": "change", "payload": "Event" }
+    ]
+  }
+}

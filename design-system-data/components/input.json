@@ -1,0 +1,44 @@
+{
+  "name": "input",
+  "displayName": "Text Input",
+  "description": "A single-line text field for free-form user input with optional label, help text, and validation state.",
+  "category": "Inputs",
+  "status": "approved",
+  "spec": {
+    "variants": [
+      { "name": "Default", "label": "default", "description": "Outlined field with a subtle border." },
+      { "name": "Filled", "label": "filled", "description": "Tinted background, borderless emphasis." }
+    ],
+    "props": [
+      { "name": "label", "type": "string", "default": "—", "description": "Field label shown above the input." },
+      { "name": "placeholder", "type": "string", "default": "—", "description": "Hint text inside the empty field." },
+      { "name": "type", "type": "\"text\" | \"email\" | \"password\" | \"number\" | \"search\" | \"tel\" | \"url\"", "default": "\"text\"", "description": "Native input type." },
+      { "name": "name", "type": "string", "default": "—", "description": "Native name attribute for forms." },
+      { "name": "value", "type": "string | number", "default": "—", "description": "Controlled value (v-model:value)." },
+      { "name": "size", "type": "\"sm\" | \"md\" | \"lg\"", "default": "\"md\"", "description": "Field height and font size." },
+      { "name": "leadingIcon", "type": "string | Component", "default": "—", "description": "Icon inside the left edge of the field." },
+      { "name": "disabled", "type": "boolean", "default": "false", "description": "Disables input and removes from tab order." },
+      { "name": "required", "type": "boolean", "default": "false", "description": "Marks the label with an asterisk." },
+      { "name": "invalid", "type": "boolean", "default": "false", "description": "Shows the error border; pair with an error message." },
+      { "name": "help", "type": "string", "default": "—", "description": "Helper or error text below the field." }
+    ],
+    "a11y": [
+      { "check": "Labels", "result": "Pass", "detail": "label is programmatically associated via for/id", "pass": true },
+      { "check": "Focus visible", "result": "Pass", "detail": "2px ring in color.focus.ring", "pass": true },
+      { "check": "Error announcement", "result": "Pass", "detail": "help text wired with aria-describedby when invalid", "pass": true },
+      { "check": "Touch target", "result": "Pass", "detail": "Height never below 40px", "pass": true }
+    ],
+    "slots": [
+      { "name": "label", "description": "Custom label content." },
+      { "name": "help", "description": "Custom helper/error content." },
+      { "name": "default", "description": "Arbitrary content rendered inside the field wrapper." }
+    ],
+    "events": [
+      { "name": "update:modelValue", "payload": "string" },
+      { "name": "input", "payload": "InputEvent" },
+      { "name": "change", "payload": "Event" },
+      { "name": "focus", "payload": "FocusEvent" },
+      { "name": "blur", "payload": "FocusEvent" }
+    ]
+  }
+}

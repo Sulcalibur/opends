@@ -1,0 +1,24 @@
+{
+  "name": "spinner",
+  "displayName": "Spinner",
+  "description": "An indeterminate progress indicator shown while content loads or an async action is pending.",
+  "category": "Feedback",
+  "status": "draft",
+  "spec": {
+    "variants": [
+      { "name": "Default", "label": "default", "description": "Animated circular spinner." },
+      { "name": "Dots", "label": "dots", "description": "Three pulsing dots for inline loading." }
+    ],
+    "props": [
+      { "name": "size", "type": "\"sm\" | \"md\" | \"lg\"", "default": "\"md\"", "description": "Diameter of the indicator." },
+      { "name": "label", "type": "string", "default": "\"Loading\"", "description": "Accessible name announced by screen readers." },
+      { "name": "color", "type": "string", "default": "\"currentColor\"", "description": "Stroke color." }
+    ],
+    "a11y": [
+      { "check": "Screen reader", "result": "Pass", "detail": "role=\"status\" + aria-label", "pass": true },
+      { "check": "Reduced motion", "result": "Review", "detail": "Animation is decorative and pauses under prefers-reduced-motion", "pass": false }
+    ],
+    "slots": [],
+    "events": []
+  }
+}

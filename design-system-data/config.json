@@ -1,0 +1,16 @@
+{
+  "name": "Ember",
+  "organizationName": "Ember",
+  "version": "1.0.0",
+  "description": "Ember is the reference design system that ships with OpenDS. It gives a fresh instance realistic tokens, components, and guidelines to explore — replace or delete it once you start your own system.",
+  "repository": "https://github.com/opends/design-system",
+  "designTool": "penpot",
+  "designFileId": null,
+  "syncFrequency": "manual",
+  "seed": {
+    "organizationName": true,
+    "tokens": true,
+    "components": true,
+    "docs": true
+  }
+}

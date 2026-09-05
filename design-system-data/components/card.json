@@ -1,0 +1,32 @@
+{
+  "name": "card",
+  "displayName": "Card",
+  "description": "A flexible container that groups related content into a distinct surface with optional header and footer.",
+  "category": "Layout",
+  "status": "approved",
+  "spec": {
+    "variants": [
+      { "name": "Default", "label": "default", "description": "Bordered surface with a subtle shadow." },
+      { "name": "Hoverable", "label": "hoverable", "description": "Raises elevation and border color on hover." },
+      { "name": "Inset", "label": "inset", "description": "Flat, tinted surface for secondary content." }
+    ],
+    "props": [
+      { "name": "title", "type": "string", "default": "—", "description": "Card heading." },
+      { "name": "subtitle", "type": "string", "default": "—", "description": "Supporting line under the heading." },
+      { "name": "variant", "type": "\"default\" | \"hoverable\" | \"inset\"", "default": "\"default\"", "description": "Surface treatment." },
+      { "name": "padding", "type": "\"none\" | \"sm\" | \"md\" | \"lg\"", "default": "\"md\"", "description": "Internal padding using the space scale." },
+      { "name": "elevation", "type": "\"none\" | \"sm\" | \"md\" | \"lg\"", "default": "\"sm\"", "description": "Shadow depth from the shadow tokens." }
+    ],
+    "a11y": [
+      { "check": "Semantics", "result": "Pass", "detail": "Renders an <article>; interactive cards use a real button/link", "pass": true },
+      { "check": "Heading order", "result": "Pass", "detail": "Title renders as the appropriate h-level via prop", "pass": true },
+      { "check": "Keyboard", "result": "Pass", "detail": "Hover-only affordances have keyboard equivalents", "pass": true }
+    ],
+    "slots": [
+      { "name": "header", "description": "Custom header content replacing title/subtitle." },
+      { "name": "default", "description": "Primary body content." },
+      { "name": "footer", "description": "Footer actions or meta." }
+    ],
+    "events": []
+  }
+}

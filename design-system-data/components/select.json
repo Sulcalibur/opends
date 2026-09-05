@@ -1,0 +1,42 @@
+{
+  "name": "select",
+  "displayName": "Select",
+  "description": "A dropdown picker for choosing one or more options from a defined list.",
+  "category": "Inputs",
+  "status": "approved",
+  "spec": {
+    "variants": [
+      { "name": "Default", "label": "default", "description": "Native <select> presentation." },
+      { "name": "Custom", "label": "custom", "description": "Styled listbox with search and keyboard nav." }
+    ],
+    "props": [
+      { "name": "label", "type": "string", "default": "—", "description": "Field label." },
+      { "name": "placeholder", "type": "string", "default": "—", "description": "Shown before a selection is made." },
+      { "name": "options", "type": "Array<{ label: string; value: string; disabled?: boolean }>", "default": "[]", "description": "List of selectable options." },
+      { "name": "modelValue", "type": "string | number | Array", "default": "—", "description": "Selected value(s) via v-model." },
+      { "name": "multiple", "type": "boolean", "default": "false", "description": "Allows multi-selection with chips." },
+      { "name": "searchable", "type": "boolean", "default": "false", "description": "Shows a filter box over long option lists." },
+      { "name": "size", "type": "\"sm\" | \"md\" | \"lg\"", "default": "\"md\"", "description": "Field height and font size." },
+      { "name": "disabled", "type": "boolean", "default": "false", "description": "Disables the control." },
+      { "name": "required", "type": "boolean", "default": "false", "description": "Marks the label with an asterisk." },
+      { "name": "invalid", "type": "boolean", "default": "false", "description": "Shows the error border." },
+      { "name": "help", "type": "string", "default": "—", "description": "Helper or error text below the control." }
+    ],
+    "a11y": [
+      { "check": "Labels", "result": "Pass", "detail": "label associated via for/id on native path", "pass": true },
+      { "check": "Keyboard", "result": "Pass", "detail": "Typeahead on native path; arrow + type on listbox", "pass": true },
+      { "check": "Screen reader", "result": "Pass", "detail": "listbox pattern with aria-activedescendant", "pass": true },
+      { "check": "Focus visible", "result": "Pass", "detail": "2px ring in color.focus.ring", "pass": true }
+    ],
+    "slots": [
+      { "name": "label", "description": "Custom label content." },
+      { "name": "option", "description": "Scoped slot for custom option rendering." }
+    ],
+    "events": [
+      { "name": "update:modelValue", "payload": "any" },
+      { "name": "change", "payload": "Event" },
+      { "name": "open", "payload": "void" },
+      { "name": "close", "payload": "void" }
+    ]
+  }
+}

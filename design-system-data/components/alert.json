@@ -1,0 +1,34 @@
+{
+  "name": "alert",
+  "displayName": "Alert",
+  "description": "A prominent banner that communicates a message requiring attention — success, info, warning, or error.",
+  "category": "Feedback",
+  "status": "approved",
+  "spec": {
+    "variants": [
+      { "name": "Info", "label": "info", "description": "Neutral guidance or context." },
+      { "name": "Success", "label": "success", "description": "Confirmation that an action succeeded." },
+      { "name": "Warning", "label": "warning", "description": "A caution that needs consideration." },
+      { "name": "Danger", "label": "danger", "description": "An error that blocks progress." }
+    ],
+    "props": [
+      { "name": "title", "type": "string", "default": "—", "description": "Short, scannable headline." },
+      { "name": "description", "type": "string", "default": "—", "description": "Supporting detail or next step." },
+      { "name": "variant", "type": "\"info\" | \"success\" | \"warning\" | \"danger\"", "default": "\"info\"", "description": "Semantic tone." },
+      { "name": "closable", "type": "boolean", "default": "false", "description": "Shows a dismiss control." },
+      { "name": "icon", "type": "string | Component", "default": "—", "description": "Overrides the default per-tone icon." }
+    ],
+    "a11y": [
+      { "check": "Live region", "result": "Pass", "detail": "role=\"status\" for info/success; role=\"alert\" for warning/danger", "pass": true },
+      { "check": "Contrast", "result": "Pass", "detail": "Tone text on tinted fill passes AA", "pass": true },
+      { "check": "Dismiss keyboard", "result": "Pass", "detail": "Close button is focusable and labelled", "pass": true }
+    ],
+    "slots": [
+      { "name": "action", "description": "Action buttons rendered in the banner footer." },
+      { "name": "default", "description": "Custom body content below the description." }
+    ],
+    "events": [
+      { "name": "close", "payload": "void" }
+    ]
+  }
+}

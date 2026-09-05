@@ -10,6 +10,8 @@
     "build": "nuxt build",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
+    "seed:demo": "node scripts/seed-demo.mjs",
+    "test:e2e": "playwright test",
     "test": "vitest",
     "test:simplified": "vitest src/api/admin/auth.test.ts",
     "lint": "eslint . --fix",
@@ -103,5 +105,17 @@
     "pocketbase": "^0.26.0",
     "shiki": "^4.2.0",
     "zod": "^4.2.1"
+  },
+  "pnpm": {
+    "overrides": {
+      "vue": "3.5.38",
+      "@vue/runtime-core": "3.5.38",
+      "@vue/runtime-dom": "3.5.38",
+      "@vue/server-renderer": "3.5.38",
+      "@vue/compiler-core": "3.5.38",
+      "@vue/compiler-dom": "3.5.38",
+      "@vue/compiler-sfc": "3.5.38",
+      "@vue/shared": "3.5.38"
+    }
   }
 }

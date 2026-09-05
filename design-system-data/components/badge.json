@@ -1,0 +1,32 @@
+{
+  "name": "badge",
+  "displayName": "Badge",
+  "description": "A compact label that surfaces status, counts, or categories without interrupting the layout.",
+  "category": "Feedback",
+  "status": "approved",
+  "spec": {
+    "variants": [
+      { "name": "Soft", "label": "soft", "description": "Tinted background — the default treatment." },
+      { "name": "Solid", "label": "solid", "description": "Filled background for high emphasis." },
+      { "name": "Outline", "label": "outline", "description": "Bordered, minimal fill." }
+    ],
+    "props": [
+      { "name": "label", "type": "string", "default": "—", "description": "Badge text." },
+      { "name": "color", "type": "\"neutral\" | \"primary\" | \"success\" | \"warning\" | \"danger\" | \"info\"", "default": "\"neutral\"", "description": "Semantic color mapping to the token ramps." },
+      { "name": "variant", "type": "\"soft\" | \"solid\" | \"outline\"", "default": "\"soft\"", "description": "Visual treatment." },
+      { "name": "size", "type": "\"sm\" | \"md\"", "default": "\"sm\"", "description": "Height and font size." },
+      { "name": "dot", "type": "boolean", "default": "false", "description": "Prepends a status dot." },
+      { "name": "icon", "type": "string | Component", "default": "—", "description": "Lucide name or icon component." }
+    ],
+    "a11y": [
+      { "check": "Color independence", "result": "Pass", "detail": "Color never used alone; label text always present", "pass": true },
+      { "check": "Contrast", "result": "Pass", "detail": "Soft variants reach AA against canvas", "pass": true },
+      { "check": "Screen reader", "result": "Pass", "detail": "Plain text — no redundant role needed", "pass": true }
+    ],
+    "slots": [
+      { "name": "default", "description": "Replaces label with arbitrary content." },
+      { "name": "leading", "description": "Leading icon content." }
+    ],
+    "events": []
+  }
+}

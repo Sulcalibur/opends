@@ -1,0 +1,49 @@
+{
+  "docs": [
+    {
+      "slug": "getting-started",
+      "title": "Getting started",
+      "excerpt": "A five-minute tour of Ember — foundations, components, and the first things to try in OpenDS.",
+      "category": "Guides",
+      "sortOrder": 1,
+      "isPublished": true,
+      "file": "./docs/getting-started.md"
+    },
+    {
+      "slug": "installation",
+      "title": "Installation",
+      "excerpt": "Consume Ember as CSS custom properties, generated component code, or a live sync from your design tool.",
+      "category": "Guides",
+      "sortOrder": 2,
+      "isPublished": true,
+      "file": "./docs/installation.md"
+    },
+    {
+      "slug": "accessibility",
+      "title": "Accessibility",
+      "excerpt": "The WCAG baseline every Ember component commits to, and the rules for focus, screen readers, and motion.",
+      "category": "Foundations",
+      "sortOrder": 1,
+      "isPublished": true,
+      "file": "./docs/accessibility.md"
+    },
+    {
+      "slug": "theming",
+      "title": "Theming with tokens",
+      "excerpt": "How to re-skin Ember by overriding tokens — dark mode, brand colors, and contrast checks.",
+      "category": "Foundations",
+      "sortOrder": 2,
+      "isPublished": true,
+      "file": "./docs/theming.md"
+    },
+    {
+      "slug": "contributing",
+      "title": "Contributing",
+      "excerpt": "How changes to Ember land: component definitions, props, variants, and the definition of done.",
+      "category": "Guides",
+      "sortOrder": 3,
+      "isPublished": true,
+      "file": "./docs/contributing.md"
+    }
+  ]
+}

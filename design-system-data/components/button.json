@@ -1,0 +1,45 @@
+{
+  "name": "button",
+  "displayName": "Button",
+  "description": "A versatile button for actions and links — the single most important action on a page is a primary button.",
+  "category": "Inputs",
+  "status": "approved",
+  "spec": {
+    "variants": [
+      { "name": "Primary", "label": "primary", "description": "The single most important action on a page." },
+      { "name": "Secondary", "label": "secondary", "description": "Lower-emphasis action paired with primary." },
+      { "name": "Soft", "label": "soft", "description": "Tinted action for repeat actions in toolbars." },
+      { "name": "Ghost", "label": "ghost", "description": "Minimal weight, no chrome." },
+      { "name": "Danger", "label": "danger", "description": "Destructive or irreversible action." },
+      { "name": "Link", "label": "link", "description": "Inline navigation action." }
+    ],
+    "props": [
+      { "name": "label", "type": "string", "default": "—", "description": "Visible text. Required unless icon-only." },
+      { "name": "variant", "type": "\"primary\" | \"secondary\" | \"soft\" | \"ghost\" | \"danger\" | \"link\"", "default": "\"primary\"", "description": "Visual emphasis level." },
+      { "name": "size", "type": "\"sm\" | \"md\" | \"lg\"", "default": "\"md\"", "description": "Affects height, padding, and font size." },
+      { "name": "icon", "type": "string | Component", "default": "—", "description": "Lucide name or icon component to lead the label." },
+      { "name": "trailingIcon", "type": "string | Component", "default": "—", "description": "Icon on the right-hand side of the label." },
+      { "name": "loading", "type": "boolean", "default": "false", "description": "Shows a spinner and disables interaction." },
+      { "name": "disabled", "type": "boolean", "default": "false", "description": "Fully disables and removes from tab order." },
+      { "name": "block", "type": "boolean", "default": "false", "description": "Fills the available width of its container." }
+    ],
+    "a11y": [
+      { "check": "Focus visible", "result": "Pass", "detail": "3px ring in color.focus.ring on :focus-visible", "pass": true },
+      { "check": "Color contrast", "result": "Pass", "detail": "AAA · 14.2:1 on primary", "pass": true },
+      { "check": "Screen reader", "result": "Pass", "detail": "Native <button>; aria-label derived from label or icon", "pass": true },
+      { "check": "Keyboard", "result": "Pass", "detail": "Enter and Space activate", "pass": true },
+      { "check": "Touch target", "result": "Pass", "detail": "Minimum 44×44px hit area", "pass": true },
+      { "check": "Motion safe", "result": "Pass", "detail": "150ms fade, respects prefers-reduced-motion", "pass": true }
+    ],
+    "slots": [
+      { "name": "leading", "description": "Custom leading icon content." },
+      { "name": "trailing", "description": "Custom trailing icon content." },
+      { "name": "default", "description": "Replaces the label prop with arbitrary content." }
+    ],
+    "events": [
+      { "name": "click", "payload": "MouseEvent" },
+      { "name": "focus", "payload": "FocusEvent" },
+      { "name": "blur", "payload": "FocusEvent" }
+    ]
+  }
+}
