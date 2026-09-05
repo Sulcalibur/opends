@@ -13,12 +13,14 @@ export default defineMcpTool({
   cache: "5m",
 
   handler: async ({ query, category, status, limit }) => {
-    const components = await ComponentRepository.list({
-      query,
+    // findAll (both SQL and PB repos) takes { category, status, search } —
+    // limit is applied here since the SQL repo returns all matches.
+    const components = await ComponentRepository.findAll({
       category,
       status: status || "approved",
-      limit: limit || 20,
+      search: query,
     });
+    const limited = components.slice(0, limit || 20);
 
     return {
       content: [
@@ -26,7 +28,7 @@ export default defineMcpTool({
           type: "text",
           text: JSON.stringify(
             {
-              components: components.map((c) => ({
+              components: limited.map((c) => ({
                 id: c.id,
                 name: c.name,
                 displayName: c.display_name,
@@ -35,7 +37,7 @@ export default defineMcpTool({
                 status: c.status,
                 previewUrl: c.preview_url,
               })),
-              total: components.length,
+              total: limited.length,
               filters: { query, category, status },
             },
             null,
