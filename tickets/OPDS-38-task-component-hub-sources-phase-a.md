@@ -30,3 +30,7 @@ Acceptance Criteria:
 - No Storybook iframe is rendered when no storybook.url is set
 - Penpot deep link resolves from spec source metadata
 - Typecheck green, vitest + E2E pass
+
+---
+## Amendment (2026-09-05)
+IMPLEMENTATION NOTE: OPDS-42 supersedes the named-slot spec.sources design in this ticket. Build the hub on the generic spec.external array model ({ type, label, url, embed? }) + tool registry from OPDS-42, with version as its own scalar. Composition ("Uses") is OPDS-41.
