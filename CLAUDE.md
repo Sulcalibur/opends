@@ -126,3 +126,9 @@ In dev mode, Nuxt UI CSS is served from `/nuxt-ui.css` (copied from `.nuxt/ui.cs
 3. `pnpm test -- --run` — verify tests pass
 
 Husky runs pre-commit hooks automatically.
+
+## Decision Log
+
+Append a session entry to the monorepo root `DECISION-LOG.md` at the end of
+work: `node ../scripts/decision-log.mjs "Summary" --cat <Category> --detail "..." --ref "..."`.
+Never rewrite past entries. Durable ADRs live in `docs/ARCHITECTURE-DECISIONS.md`.
