@@ -203,3 +203,58 @@ INSERT OR IGNORE INTO settings (key, value, description, is_public) VALUES
   ('organization_name', '"OpenDS"', 'Organization name displayed in the app', 1),
   ('allow_registration', 'false', 'Allow public user registration', 0),
   ('require_email_verification', 'false', 'Require email verification for new users', 0);
+
+-- =============================================================================
+-- DOCUMENTATION PAGES
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS documentation_pages (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  slug TEXT UNIQUE NOT NULL,
+  title TEXT NOT NULL,
+  content TEXT NOT NULL DEFAULT '', -- Markdown content
+  excerpt TEXT,
+  category TEXT DEFAULT 'general',
+  parent_id TEXT REFERENCES documentation_pages(id) ON DELETE SET NULL,
+  sort_order INTEGER DEFAULT 0,
+  is_published INTEGER NOT NULL DEFAULT 0,
+  published_at TEXT,
+  created_by TEXT REFERENCES users(id) ON DELETE SET NULL,
+  updated_by TEXT REFERENCES users(id) ON DELETE SET NULL,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  deleted_at TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_docs_slug ON documentation_pages(slug);
+CREATE INDEX IF NOT EXISTS idx_docs_category ON documentation_pages(category);
+CREATE INDEX IF NOT EXISTS idx_docs_deleted_at ON documentation_pages(deleted_at);
+
+-- =============================================================================
+-- API KEYS (legacy header-token lookup used by server/utils/auth.ts)
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS api_keys (
+  id TEXT PRIMARY KEY DEFAULT (lower(hex(randomblob(16)))),
+  name TEXT NOT NULL,
+  key TEXT NOT NULL UNIQUE,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  last_used TEXT,
+  deleted_at TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_api_keys_deleted_at ON api_keys(deleted_at);
+
+-- =============================================================================
+-- MCP API KEYS
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS mcp_api_keys (
+  id TEXT PRIMARY KEY,
+  user_id TEXT REFERENCES users(id) ON DELETE CASCADE,
+  key_hash TEXT NOT NULL UNIQUE,
+  name TEXT NOT NULL,
+  scope TEXT, -- JSON array of permission scopes
+  expires_at TEXT,
+  last_used_at TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  deleted_at TEXT
+);
+CREATE INDEX IF NOT EXISTS idx_mcp_keys_user_id ON mcp_api_keys(user_id);
+CREATE INDEX IF NOT EXISTS idx_mcp_keys_hash ON mcp_api_keys(key_hash);
+CREATE INDEX IF NOT EXISTS idx_mcp_keys_deleted_at ON mcp_api_keys(deleted_at);

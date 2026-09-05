@@ -25,6 +25,12 @@ class SearchRepository {
     const db = getDatabase();
     const { type, limit = 20, offset = 0 } = options;
 
+    // SQLite/D1 have no Postgres tsvector engine — fall back to a LIKE scan
+    // over the content tables so search works on a fresh SQL install too.
+    if (db.type !== "postgres") {
+      return this.likeSearch(query, { type, limit, offset });
+    }
+
     try {
       // Build query with ts_rank for relevance and ts_headline for highlighting
       let sql = `
@@ -106,9 +112,13 @@ class SearchRepository {
     const db = getDatabase();
     const { type } = options;
 
+    if (db.type !== "postgres") {
+      return this.likeCount(query, { type });
+    }
+
     try {
       let sql = `
-        SELECT COUNT(*)::int as count
+        SELECT COUNT(*) as count
         FROM search_index
         WHERE search_vector @@ plainto_tsquery('english', $1)
       `;
@@ -134,6 +144,106 @@ class SearchRepository {
   async getSuggestions(query: string, limit = 5): Promise<SearchResult[]> {
     // Use the main search but with smaller limit
     return this.search(query, { limit });
+  }
+
+  /**
+   * LIKE-based fallback search for SQLite/D1 (raw '?' params — this branch
+   * never runs against Postgres). Searches the content tables directly.
+   */
+  private buildLikeQuery(query: string, type?: SearchRepositoryOptions["type"]): { sql: string; params: (string | number)[] } {
+    const like = `%${query}%`;
+    const union: string[] = [];
+    const params: string[] = [];
+
+    if (!type || type === "component") {
+      union.push(`
+        SELECT 'component' AS content_type, id AS content_id,
+               COALESCE(display_name, name) AS title,
+               COALESCE(description, '') AS content, updated_at
+        FROM components
+        WHERE deleted_at IS NULL
+          AND (name LIKE ? OR COALESCE(display_name, '') LIKE ? OR COALESCE(description, '') LIKE ?)`);
+      params.push(like, like, like);
+    }
+    if (!type || type === "token") {
+      union.push(`
+        SELECT 'token' AS content_type, id AS content_id, name AS title,
+               COALESCE(description, '') AS content, updated_at
+        FROM design_tokens
+        WHERE deleted_at IS NULL
+          AND (name LIKE ? OR COALESCE(description, '') LIKE ? OR COALESCE(value, '') LIKE ?)`);
+      params.push(like, like, like);
+    }
+    if (!type || type === "doc") {
+      union.push(`
+        SELECT 'doc' AS content_type, id AS content_id, title AS title,
+               COALESCE(content, '') AS content, updated_at
+        FROM documentation_pages
+        WHERE deleted_at IS NULL AND is_published = 1
+          AND (title LIKE ? OR COALESCE(content, '') LIKE ? OR COALESCE(excerpt, '') LIKE ?)`);
+      params.push(like, like, like);
+    }
+
+    return { sql: union.join(" UNION ALL "), params };
+  }
+
+  private async likeSearch(
+    query: string,
+    options: { type?: SearchRepositoryOptions["type"]; limit: number; offset: number },
+  ): Promise<SearchResult[]> {
+    const db = getDatabase();
+    const { type, limit, offset } = options;
+
+    try {
+      const { sql, params } = this.buildLikeQuery(query, type);
+
+      const result = await db.query<{
+        content_type: SearchResult["type"];
+        content_id: string;
+        title: string;
+        content: string;
+        updated_at: string;
+      }>(
+        `SELECT content_type, content_id, title, content, updated_at
+         FROM ( ${sql} ) AS matches
+         ORDER BY updated_at DESC
+         LIMIT ? OFFSET ?`,
+        [...params, limit, offset],
+      );
+
+      return result.rows.map((row) => ({
+        id: row.content_id,
+        type: row.content_type,
+        contentId: row.content_id,
+        title: row.title,
+        excerpt: row.content.substring(0, 150) + (row.content.length > 150 ? "..." : ""),
+        highlight: row.title,
+        url: this.generateUrl(row.content_type, row.content_id, row.title),
+        updatedAt: row.updated_at,
+      }));
+    } catch (error) {
+      console.error("[SearchRepository] Search error:", error);
+      return [];
+    }
+  }
+
+  private async likeCount(
+    query: string,
+    options: { type?: SearchRepositoryOptions["type"] },
+  ): Promise<number> {
+    const db = getDatabase();
+
+    try {
+      const { sql, params } = this.buildLikeQuery(query, options.type);
+      const result = await db.query<{ count: number }>(
+        `SELECT COUNT(*) AS count FROM ( ${sql} ) AS matches`,
+        params,
+      );
+      return result.rows[0]?.count || 0;
+    } catch (error) {
+      console.error("[SearchRepository] Count error:", error);
+      return 0;
+    }
   }
 
   /**

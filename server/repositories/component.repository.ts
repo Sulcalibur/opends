@@ -190,7 +190,7 @@ class ComponentRepository {
     }> {
         const db = getDatabase()
         const result = await db.query<{ status: string; count: number }>(
-            `SELECT status, COUNT(*)::int as count 
+            `SELECT status, COUNT(*) as count 
        FROM components 
        WHERE deleted_at IS NULL 
        GROUP BY status`

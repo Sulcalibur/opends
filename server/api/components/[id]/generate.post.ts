@@ -18,11 +18,15 @@ import {
   generateUsageExampleService,
 } from "../../../services/codeGenerator.service";
 
-// PocketBase uses 15-char alphanumeric ids, not UUIDs
+// PocketBase uses 15-char alphanumeric ids; SQL ids arrive as canonical
+// hyphenated UUIDs or the raw 32-char hex from SQLite's default id generator.
 const paramsSchema = z.object({
   id: isPocketBaseMode()
     ? z.string().min(5).max(50)
-    : z.string().uuid("Invalid component ID format"),
+    : z
+        .string()
+        .uuid()
+        .or(z.string().regex(/^[0-9a-fA-F]{32}$/, "Invalid component ID format")),
 });
 
 const bodySchema = z.object({

@@ -129,3 +129,58 @@ CREATE TRIGGER update_components_updated_at BEFORE UPDATE ON components
 
 CREATE TRIGGER update_tokens_updated_at BEFORE UPDATE ON design_tokens
   FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+
+-- =============================================================================
+-- DOCUMENTATION PAGES
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS documentation_pages (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  slug VARCHAR(255) UNIQUE NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  content TEXT NOT NULL DEFAULT '', -- Markdown content
+  excerpt TEXT,
+  category VARCHAR(100) DEFAULT 'general',
+  parent_id UUID REFERENCES documentation_pages(id) ON DELETE SET NULL,
+  sort_order INTEGER DEFAULT 0,
+  is_published BOOLEAN NOT NULL DEFAULT false,
+  published_at TIMESTAMP,
+  created_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  updated_by UUID REFERENCES users(id) ON DELETE SET NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_docs_slug ON documentation_pages(slug);
+CREATE INDEX IF NOT EXISTS idx_docs_category ON documentation_pages(category);
+CREATE INDEX IF NOT EXISTS idx_docs_deleted_at ON documentation_pages(deleted_at);
+
+-- =============================================================================
+-- API KEYS (legacy header-token lookup used by server/utils/auth.ts)
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS api_keys (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  name VARCHAR(255) NOT NULL,
+  key TEXT NOT NULL UNIQUE,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  last_used TIMESTAMP,
+  deleted_at TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_api_keys_deleted_at ON api_keys(deleted_at);
+
+-- =============================================================================
+-- MCP API KEYS
+-- =============================================================================
+CREATE TABLE IF NOT EXISTS mcp_api_keys (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  key_hash VARCHAR(64) NOT NULL UNIQUE,
+  name VARCHAR(255) NOT NULL,
+  scope JSONB DEFAULT '["read:tokens", "read:components"]', -- Permission scoping
+  expires_at TIMESTAMP,
+  last_used_at TIMESTAMP,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  deleted_at TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_mcp_keys_user_id ON mcp_api_keys(user_id);
+CREATE INDEX IF NOT EXISTS idx_mcp_keys_hash ON mcp_api_keys(key_hash);
+CREATE INDEX IF NOT EXISTS idx_mcp_keys_deleted_at ON mcp_api_keys(deleted_at);

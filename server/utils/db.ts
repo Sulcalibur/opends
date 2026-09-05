@@ -194,16 +194,38 @@ class UniversalDatabase {
             throw new Error('SQLite not connected')
         }
 
-        // Convert PostgreSQL-style $1, $2 to SQLite-style ?
-        const sqliteQuery = text.replace(/\$\d+/g, '?')
+        // Convert PostgreSQL-style $1, $2 to SQLite-style ?.
+        // PostgreSQL allows reusing the same $N placeholder in one statement
+        // (e.g. "$8, $8"); better-sqlite3 binds positionally, so each reuse
+        // needs its own '?' with the bound value repeated.
+        const expanded: unknown[] = []
+        const sqliteQuery = text.replace(/\$(\d+)/g, (_match, num: string) => {
+            expanded.push(params ? params[Number(num) - 1] : undefined)
+            return '?'
+        })
+        // Queries already written with '?' (no $N placeholders) keep the
+        // caller's params verbatim; only $N queries use the expanded list.
+        const bound =
+          params && params.length > 0
+            ? (expanded.length > 0 ? expanded : params)
+            : undefined
 
         if (text.trim().toUpperCase().startsWith('SELECT')) {
             const stmt = this.sqliteDb.prepare(sqliteQuery)
-            const rows = params ? stmt.all(...params) : stmt.all()
+            const rows = bound ? stmt.all(...bound) : stmt.all()
             return { rows: rows as T[], rowCount: rows.length }
         } else {
             const stmt = this.sqliteDb.prepare(sqliteQuery)
-            const result = params ? stmt.run(...params) : stmt.run()
+            // INSERT/UPDATE/DELETE ... RETURNING must be executed with get()
+            // so the returned row is captured (run() discards it and reports
+            // only changes).
+            const isReturning = /\bRETURNING\b/i.test(text)
+            if (isReturning) {
+                const row = bound ? stmt.get(...bound) : stmt.get()
+                const rows = (row === undefined ? [] : [row]) as T[]
+                return { rows, rowCount: rows.length }
+            }
+            const result = bound ? stmt.run(...bound) : stmt.run()
             return { rows: [], rowCount: result.changes }
         }
     }

@@ -1,11 +1,15 @@
 /**
  * Auth Status Endpoint
  * GET /api/auth/status
- * 
- * Returns authentication status and system information
+ *
+ * Returns authentication status, system information, and which auth mode this
+ * deployment runs in ('pocketbase' | 'sql'). The client uses `mode` to decide
+ * whether to talk to /api/auth-pb/* (httpOnly cookie) or /api/auth/* (Bearer
+ * token stored by the client).
  */
 
 import UserRepository from '../../repositories/user.repository'
+import { isPocketBaseMode } from '../../utils/pocketbase'
 
 export default defineEventHandler(async () => {
     try {
@@ -15,6 +19,7 @@ export default defineEventHandler(async () => {
         return {
             success: true,
             data: {
+                mode: isPocketBaseMode() ? 'pocketbase' : 'sql',
                 isFirstUser,
                 registrationEnabled: process.env.ALLOW_REGISTRATION === 'true' || isFirstUser
             }
@@ -24,6 +29,7 @@ export default defineEventHandler(async () => {
         return {
             success: true,
             data: {
+                mode: isPocketBaseMode() ? 'pocketbase' : 'sql',
                 isFirstUser: true,
                 registrationEnabled: true
             }

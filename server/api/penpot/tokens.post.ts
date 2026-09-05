@@ -53,8 +53,9 @@ export default defineEventHandler(async (event) => {
     };
   }
 
-  // Persist tokens to database
-  const result = await tokenRepository.importTokens(tokensData, 'penpot-plugin');
+  // Persist tokens to database. API-key imports have no user session —
+  // created_by is a nullable FK, so pass null.
+  const result = await tokenRepository.importTokens(tokensData, null as unknown as string);
 
   return {
     success: true,

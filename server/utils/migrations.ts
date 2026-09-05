@@ -64,11 +64,14 @@ export async function runMigrations() {
           // PostgreSQL can execute multi-statement SQL
           await db.query(sql);
         } else {
-          // SQLite - split by semicolons and execute each statement individually
-          const statements = sql
-            .split(';')
-            .map((s: string) => s.trim())
-            .filter((s: string) => s.length > 0 && !s.startsWith('--'));
+          // SQLite - execute each statement separately (better-sqlite3 cannot
+          // run multi-statement SQL). A naive split(';') breaks on triggers,
+          // whose body contains internal semicolons (BEGIN ... UPDATE ...; END;),
+          // and drops chunks that start with a "--" banner comment. This
+          // tokenizer splits only on statement-terminating semicolons:
+          // inside string literals, identifiers, parentheses, BEGIN/END
+          // trigger blocks, or after inline "--" comments it never splits.
+          const statements = splitSqlStatements(sql);
 
           for (const statement of statements) {
             if (statement.length > 0) {
@@ -103,3 +106,104 @@ export async function runMigrations() {
 }
 
 export default runMigrations;
+
+/**
+ * Split a SQLite script into individual statements without breaking on:
+ *  - string literals ('...', "...")
+ *  - quoted/backtick/bracket identifiers
+ *  - trigger bodies (BEGIN ... END) whose internal UPDATEs end with ';'
+ *  - "--" comments (skipped)
+ * Splits only on ';' at paren depth 0 outside any BEGIN block.
+ */
+function splitSqlStatements(sql: string): string[] {
+  const statements: string[] = []
+  let current = ''
+  let paren = 0
+  let block = 0 // BEGIN ... END trigger depth
+  let i = 0
+  const n = sql.length
+
+  const isWordChar = (ch: string) => /[A-Za-z0-9_]/.test(ch)
+
+  while (i < n) {
+    const ch = sql[i]
+    const next = sql[i + 1]
+
+    // Line comment — skip to end of line
+    if (ch === '-' && next === '-') {
+      while (i < n && sql[i] !== '\n') i++
+      current += '\n'
+      i++
+      continue
+    }
+
+    // Quoted string or identifier — copy verbatim until its closer
+    if (ch === "'" || ch === '"' || ch === '`') {
+      const quote = ch
+      current += quote
+      i++
+      while (i < n) {
+        if (sql[i] === quote) {
+          if (sql[i + 1] === quote) {
+            current += quote + quote // escaped quote
+            i += 2
+            continue
+          }
+          current += quote
+          i++
+          break
+        }
+        current += sql[i]
+        i++
+      }
+      continue
+    }
+
+    // [bracket] identifiers
+    if (ch === '[') {
+      current += ch
+      i++
+      while (i < n && sql[i] !== ']') {
+        current += sql[i]
+        i++
+      }
+      if (i < n) { current += ']'; i++ }
+      continue
+    }
+
+    // Parenthesis depth
+    if (ch === '(') paren++
+    if (ch === ')') paren = Math.max(0, paren - 1)
+
+    // BEGIN / END block tracking (only meaningful outside parentheses)
+    if (/[A-Za-z]/.test(ch)) {
+      let j = i
+      while (j < n && isWordChar(sql[j])) j++
+      const word = sql.slice(i, j).toUpperCase()
+      current += sql.slice(i, j)
+      if (paren === 0) {
+        if (word === 'BEGIN') block++
+        else if (word === 'END') block = Math.max(0, block - 1)
+      }
+      i = j
+      continue
+    }
+
+    // Statement terminator
+    if (ch === ';' && paren === 0 && block === 0) {
+      const trimmed = current.trim()
+      if (trimmed) statements.push(trimmed)
+      current = ''
+      i++
+      continue
+    }
+
+    current += ch
+    i++
+  }
+
+  const last = current.trim()
+  if (last) statements.push(last)
+
+  return statements
+}

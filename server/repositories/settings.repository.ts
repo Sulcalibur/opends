@@ -18,6 +18,20 @@ export interface Setting {
   updated_at: string;
 }
 
+/**
+ * Parse a stored setting value. PostgreSQL's JSONB column returns values as
+ * native objects, but SQLite stores them as JSON text (e.g. '"Ember"'), so
+ * plain reads would surface the JSON quoting. Best-effort parse fixes that.
+ */
+function parseSettingValue(value: unknown): unknown {
+  if (typeof value !== "string") return value;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return value;
+  }
+}
+
 class SettingsRepository {
   /**
    * Get all settings
@@ -28,10 +42,9 @@ class SettingsRepository {
       "SELECT * FROM settings ORDER BY key ASC",
     );
 
-    // Values are already parsed by PostgreSQL JSONB column
     return result.rows.map((row) => ({
       ...row,
-      value: row.value,
+      value: parseSettingValue(row.value),
     }));
   }
 
@@ -46,7 +59,7 @@ class SettingsRepository {
 
     const publicSettings: Record<string, unknown> = {};
     result.rows.forEach((row) => {
-      publicSettings[row.key] = row.value;
+      publicSettings[row.key] = parseSettingValue(row.value);
     });
 
     return publicSettings;
@@ -98,27 +111,29 @@ class SettingsRepository {
   }
 
   /**
-   * Update multiple settings in a transaction
+   * Update multiple settings (key/value upserts).
+   * Executed sequentially, not via db.transaction: the SQLite adapter's
+   * transaction wrapper is synchronous (better-sqlite3) and rejects async
+   * callbacks ("Transaction function cannot return a promise"), and the
+   * Postgres adapter would need a client checkout per call. A single upsert
+   * per key is atomic on its own and plenty for settings writes.
    */
   async updateMultiple(settings: Record<string, unknown>): Promise<void> {
     const db = getDatabase();
 
-    // Use transaction for batch update
-    await db.transaction(async (execute) => {
-      for (const [key, value] of Object.entries(settings)) {
-        const jsonValue = JSON.stringify(value);
+    for (const [key, value] of Object.entries(settings)) {
+      const jsonValue = JSON.stringify(value);
 
-        // Use upsert (PostgreSQL 9.5+ syntax)
-        await execute(
-          `INSERT INTO settings (key, value, is_public, updated_at) 
-                     VALUES ($1, $2, true, CURRENT_TIMESTAMP)
-                     ON CONFLICT (key) DO UPDATE SET 
-                     value = EXCLUDED.value, 
-                     updated_at = EXCLUDED.updated_at`,
-          [key, jsonValue],
-        );
-      }
-    });
+      // Use upsert (PostgreSQL 9.5+ syntax)
+      await db.query(
+        `INSERT INTO settings (key, value, is_public, updated_at)
+                   VALUES ($1, $2, true, CURRENT_TIMESTAMP)
+                   ON CONFLICT (key) DO UPDATE SET
+                   value = EXCLUDED.value,
+                   updated_at = EXCLUDED.updated_at`,
+        [key, jsonValue],
+      );
+    }
   }
 
   /**
