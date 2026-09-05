@@ -45,7 +45,7 @@ build/
 .nuxt/
 
 # Development Tools (keep local only)
-.github/
+# Note: .github/workflows IS committed (CI) — do not ignore
 .husky/
 .npmrc
 .prettierignore
