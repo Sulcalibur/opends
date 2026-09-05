@@ -8,7 +8,7 @@
 
 ## Triage
 **State:** needs-triage
-**Updated:** 2026-09-05T14:30:00.000Z
+**Updated:** 2026-09-05T19:30:00.000Z
 
 ## Description
 
@@ -39,3 +39,7 @@ Option C — exclude the demo from the image entirely; publish the Ember dataset
 - Minimal image, but fragments the "try the demo" story and adds a second distribution surface to maintain.
 
 Recommendation: Option A. Also note this only matters once OPDS-32 (CI publish) lands, since the image isn't published yet.
+
+---
+## Update (2026-09-05, auto) — OPTION A IMPLEMENTED (human confirmed)
+Dockerfile now bakes scripts/seed-demo.mjs + design-system-data/ into the production image (cd57bad) — nothing auto-seeds. README documents the one-shot: docker compose exec opends node scripts/seed-demo.mjs. Remaining: verify inside a real container once an image is published (OPDS-32/34 chain); smoke ticket is OPDS-37.

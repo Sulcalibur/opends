@@ -8,7 +8,7 @@
 
 ## Triage
 **State:** needs-triage
-**Updated:** 2026-09-05T14:30:00.000Z
+**Updated:** 2026-09-05T19:30:00.000Z
 
 ## Description
 
@@ -23,3 +23,7 @@ Acceptance Criteria:
 - Pushing a v* tag publishes ghcr.io/opends:<tag>
 - Pushing main publishes ghcr.io/opends:latest
 - Published image boots and passes /api/health in the CI smoke step
+
+---
+## Update (2026-09-05, auto) — workflow added, CI unverified until first run
+.github/workflows/publish-image.yml committed (461e57a): build+push on main (latest) and v* tags (<semver>+latest), GHCR login via GITHUB_TOKEN, smoke job boots the image in SQLite mode and checks /api/health. Also un-ignored .github/ (461e57a). NOTE: publishing target is ghcr.io/<this repo owner> — confirm the repo/org is happy hosting the public package and that Actions are enabled; first tag push will validate end-to-end (docker unavailable in this session).
