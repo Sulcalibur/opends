@@ -36,6 +36,11 @@ RUN corepack enable && \
 COPY --from=builder --chown=nodejs:nodejs /app/.output /app/.output
 COPY --from=builder --chown=nodejs:nodejs /app/package.json /app/package.json
 
+# Copy the demo seed script + Ember dataset so a running instance can load the
+# demo on demand (OPDS-36, option A). Nothing seeds automatically — see README.
+COPY --from=builder --chown=nodejs:nodejs /app/scripts/seed-demo.mjs /app/scripts/seed-demo.mjs
+COPY --from=builder --chown=nodejs:nodejs /app/design-system-data /app/design-system-data
+
 # Create data directory for database
 RUN mkdir -p /app/data && chown -R nodejs:nodejs /app/data
 

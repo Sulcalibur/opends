@@ -75,6 +75,17 @@ docker compose down
 
 > SQL mode (PostgreSQL/SQLite/D1) is still supported — omit `POCKETBASE_URL` and set `DATABASE_URL` instead. See `docs/COOLIFY.md` for the PostgreSQL path on Coolify.
 
+### Loading the demo design system ("Ember") in Docker
+
+The image ships with the Ember demo dataset but **never seeds it automatically** — a fresh install stays clean. To load the demo into a running instance:
+
+```bash
+# Seed through the running app (idempotent — safe to re-run)
+docker compose exec opends node scripts/seed-demo.mjs
+```
+
+On a fresh SQL-mode container the script registers the first admin from `OPENDS_ADMIN_EMAIL` / `OPENDS_ADMIN_PASSWORD`; on an existing instance pass those env vars for an admin account. For a plain local/dev run the same one-shot is `pnpm seed:demo` (see `design-system-data/README.md`).
+
 ## 🌐 Deploy to Coolify
 
 The easiest way to deploy OpenDS is using [Coolify](https://coolify.io) - an open-source Heroku/Vercel/Netlify alternative.
