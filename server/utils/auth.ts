@@ -30,11 +30,21 @@ export async function validateApiKey(apiKey: string): Promise<boolean> {
 
   try {
     const db = getDatabase();
+    // Legacy path: raw keys in the api_keys table (pre-hash era, dev keys)
     const result = await db.query(
       "SELECT id FROM api_keys WHERE key = $1 AND deleted_at IS NULL",
       [apiKey],
     );
-    return result.rows.length > 0;
+    if (result.rows.length > 0) return true;
+
+    // Admin-UI-created keys are stored as a sha256 hash in mcp_api_keys —
+    // hash the presented key and look it up there too (mirrors PB mode).
+    const { default: McpApiKeyRepository } = await import(
+      "../repositories/mcp-key.repository",
+    );
+    const hash = createHash("sha256").update(apiKey).digest("hex");
+    const key = await McpApiKeyRepository.findByHash(hash);
+    return !!key;
   } catch {
     return false;
   }
